@@ -1,5 +1,8 @@
+import { Layout } from "../components/Layout";
+
 export function Inventory() {
     return (
-        <h2>Inventario</h2>
+        <Layout title="Inventario">
+        </Layout>
     )
 }
