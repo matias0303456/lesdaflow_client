@@ -1,6 +1,6 @@
 import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Box, Button, FormControl, Input, InputLabel, Typography } from "@mui/material";
+import { Alert, Box, Button, FormControl, Input, InputLabel, Snackbar, Typography } from "@mui/material";
 
 import { useAuth } from "../hooks/useAuth";
 import { AuthContext } from "../contexts/AuthContext";
@@ -10,6 +10,7 @@ export function Login() {
     const navigate = useNavigate()
     const { setAuth } = useContext(AuthContext)
     const { login } = useAuth()
+    const [open, setOpen] = useState(false)
     const [disabled, setDisabled] = useState(false)
     const [data, setData] = useState({
         email: '',
@@ -31,6 +32,8 @@ export function Login() {
             localStorage.setItem('auth', JSON.stringify(result))
             setAuth(result)
             navigate('/inventario')
+        } else {
+            setOpen(true)
         }
         setDisabled(false)
     }
@@ -81,6 +84,11 @@ export function Login() {
                         Volver al inicio
                     </Button>
                 </Box>
+                <Snackbar open={open} autoHideDuration={3000} onClose={() => setOpen(false)}>
+                    <Alert severity="error" sx={{ width: '100%' }}>
+                        Credenciales inválidas
+                    </Alert>
+                </Snackbar>
             </Box>
         </Box>
     )
