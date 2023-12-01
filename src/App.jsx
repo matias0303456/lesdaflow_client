@@ -16,6 +16,7 @@ import { Suppliers } from './pages/Suppliers'
 import { Categories } from './pages/Categories'
 import { Users } from './pages/Users'
 import { Profile } from "./pages/Profile";
+import { Error } from './pages/Error'
 
 function App() {
 
@@ -39,6 +40,7 @@ function App() {
               <Route path="/categorias" element={<Categories />} />
               <Route path="/usuarios" element={<Users />} />
               <Route path="/perfil" element={<Profile />} />
+              <Route path="*" element={<Error />} />
             </Routes>
           </BrowserRouter>
         </Container>
