@@ -1,6 +1,11 @@
+import { useContext } from 'react'
+
 import { LOGIN_URL } from '../utils/urls'
+import { AuthContext } from '../contexts/AuthContext'
 
 export function useAuth() {
+
+    const { setAuth } = useContext(AuthContext)
 
     async function login(user) {
         const res = await fetch(LOGIN_URL, {
@@ -14,5 +19,10 @@ export function useAuth() {
         return { status: res.status, result: json }
     }
 
-    return { login }
+    function logout() {
+        setAuth(null)
+        localStorage.removeItem('auth')
+    }
+
+    return { login, logout }
 }
