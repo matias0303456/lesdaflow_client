@@ -17,6 +17,7 @@ import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
+import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { visuallyHidden } from '@mui/utils';
 
@@ -117,8 +118,15 @@ function EnhancedTableToolbar({ numSelected, title }) {
                     numSelected === 1 ? 'Un registro seleccionado.' :
                         `${numSelected} registros seleccionados.`}
             </Typography>
-            {numSelected > 0 &&
-                <Tooltip title="Delete">
+            {numSelected === 1 &&
+                <Tooltip title="Editar">
+                    <IconButton>
+                        <EditIcon />
+                    </IconButton>
+                </Tooltip>
+            }
+            {numSelected >= 1 &&
+                <Tooltip title="Eliminar">
                     <IconButton>
                         <DeleteIcon />
                     </IconButton>
@@ -242,19 +250,11 @@ export function DataGrid({ title, headCells, rows }) {
                                                 }}
                                             />
                                         </TableCell>
-                                        {headCells.map(cell => cell.id).map(id => {
-                                            return (
-                                                // <TableCell
-                                                //     component="th"
-                                                //     id={labelId}
-                                                //     scope="row"
-                                                //     padding="none"
-                                                // >
-                                                //     {row.name}
-                                                // </TableCell>
-                                                <TableCell align="center">{row[id]}</TableCell>
-                                            )
-                                        })}
+                                        {headCells.map(cell => cell.accessor).map(accessor => (
+                                            <TableCell align="center">
+                                                {typeof accessor === 'function' ? accessor(row) : row[accessor]}
+                                            </TableCell>
+                                        ))}
                                     </TableRow>
                                 );
                             })}

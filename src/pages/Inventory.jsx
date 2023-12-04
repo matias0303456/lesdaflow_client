@@ -1,49 +1,65 @@
+import { useContext } from "react";
+import { Box, LinearProgress } from "@mui/material";
+
+import { ArticleContext } from "../contexts/ArticleProvider";
+
 import { Layout } from "../components/Layout";
 import { DataGrid } from '../components/DataGrid'
 
 export function Inventory() {
 
+    const { articles, loading } = useContext(ArticleContext)
+
     const headCells = [
         {
-            id: 'name',
+            id: 'id',
+            numeric: true,
+            disablePadding: false,
+            label: 'N°',
+            accessor: 'id'
+        },
+        {
+            id: 'article',
             numeric: false,
             disablePadding: true,
-            label: 'Dessert (100g serving)',
+            label: 'Artículo',
+            accessor: 'name'
         },
         {
-            id: 'calories',
-            numeric: true,
-            disablePadding: false,
-            label: 'Calories',
+            id: 'code',
+            numeric: false,
+            disablePadding: true,
+            label: 'Código',
+            accessor: 'code'
         },
         {
-            id: 'fat',
-            numeric: true,
-            disablePadding: false,
-            label: 'Fat (g)',
+            id: 'description',
+            numeric: false,
+            disablePadding: true,
+            label: 'Descripción',
+            accessor: 'description'
         },
         {
-            id: 'carbs',
-            numeric: true,
-            disablePadding: false,
-            label: 'Carbs (g)',
-        },
-        {
-            id: 'protein',
-            numeric: true,
-            disablePadding: false,
-            label: 'Protein (g)',
-        },
-    ];
-
-    const rows = [
-        { id: 1, name: 'asd', calories: 2, fat: 4, carbs: 23, protein: 234 },
-        { id: 2, name: 'sds', calories: 4, fat: 2, carbs: 233, protein: 2234 }
+            id: 'stock',
+            numeric: false,
+            disablePadding: true,
+            label: 'Stock',
+            accessor: (row) => row.incomes.reduce((prev, curr) => {
+                return prev + curr.amount
+            }, 0) - data.outcomes.reduce((prev, curr) => {
+                return prev + curr.amount
+            }, 0)
+        }
     ]
 
     return (
         <Layout title="Inventario">
-            <DataGrid title="Inventario actual" headCells={headCells} rows={rows} />
+            {loading ?
+                <Box sx={{ width: '100%' }}>
+                    <LinearProgress />
+                </Box> :
+                <DataGrid title="Estado actual" headCells={headCells} rows={articles} />
+            }
         </Layout>
     )
 }

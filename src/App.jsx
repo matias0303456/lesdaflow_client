@@ -4,6 +4,7 @@ import { Container } from "@mui/material";
 import CssBaseline from '@mui/material/CssBaseline';
 
 import { AuthContext } from "./contexts/AuthContext";
+import { ArticleProvider } from "./contexts/ArticleProvider";
 
 import { Home } from "./pages/Home"
 import { Login } from "./pages/Login";
@@ -25,25 +26,27 @@ function App() {
   return (
     <>
       <AuthContext.Provider value={{ auth, setAuth }}>
-        <CssBaseline />
-        <Container maxWidth="xl">
-          <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/inventario" element={<Inventory />} />
-              <Route path="/ingresos" element={<Incomes />} />
-              <Route path="/egresos" element={<Outcomes />} />
-              <Route path="/articulos" element={<Articles />} />
-              <Route path="/clientes" element={<Clients />} />
-              <Route path="/proveedores" element={<Suppliers />} />
-              <Route path="/categorias" element={<Categories />} />
-              <Route path="/usuarios" element={<Users />} />
-              <Route path="/perfil" element={<Profile />} />
-              <Route path="*" element={<Error />} />
-            </Routes>
-          </BrowserRouter>
-        </Container>
+        <ArticleProvider>
+          <CssBaseline />
+          <Container maxWidth="xl">
+            <BrowserRouter>
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/inventario" element={<Inventory />} />
+                <Route path="/ingresos" element={<Incomes />} />
+                <Route path="/egresos" element={<Outcomes />} />
+                <Route path="/articulos" element={<Articles />} />
+                <Route path="/clientes" element={<Clients />} />
+                <Route path="/proveedores" element={<Suppliers />} />
+                <Route path="/categorias" element={<Categories />} />
+                <Route path="/usuarios" element={<Users />} />
+                <Route path="/perfil" element={<Profile />} />
+                <Route path="*" element={<Error />} />
+              </Routes>
+            </BrowserRouter>
+          </Container>
+        </ArticleProvider>
       </AuthContext.Provider>
     </>
   )
