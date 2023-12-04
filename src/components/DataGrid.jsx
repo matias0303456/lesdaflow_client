@@ -275,6 +275,7 @@ export function DataGrid({ title, headCells, rows }) {
                     component="div"
                     count={rows.length}
                     rowsPerPage={rowsPerPage}
+                    labelRowsPerPage="Registros por página"
                     page={page}
                     onPageChange={handleChangePage}
                     onRowsPerPageChange={handleChangeRowsPerPage}
@@ -282,7 +283,7 @@ export function DataGrid({ title, headCells, rows }) {
             </Paper>
             <FormControlLabel
                 control={<Switch checked={dense} onChange={handleChangeDense} />}
-                label="Dense padding"
+                label="Condensar tabla"
             />
         </Box>
     );
