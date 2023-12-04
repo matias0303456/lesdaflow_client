@@ -20,6 +20,7 @@ import Switch from '@mui/material/Switch';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { visuallyHidden } from '@mui/utils';
+import AddCircleSharpIcon from '@mui/icons-material/AddCircleSharp';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -95,7 +96,7 @@ function EnhancedTableHead({ headCells, onSelectAllClick, order, orderBy, numSel
     );
 }
 
-function EnhancedTableToolbar({ numSelected, title }) {
+function EnhancedTableToolbar({ numSelected, title, disableAdd }) {
     return (
         <Toolbar
             sx={{
@@ -114,8 +115,17 @@ function EnhancedTableToolbar({ numSelected, title }) {
                 component="div"
             >
                 {numSelected === 0 ?
-                    `${title}` :
-                    numSelected === 1 ? 'Un registro seleccionado.' :
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                        {title}
+                        {!disableAdd &&
+                            <Tooltip title="Nuevo">
+                                <IconButton>
+                                    <AddCircleSharpIcon />
+                                </IconButton>
+                            </Tooltip>
+                        }
+                    </Box>
+                    : numSelected === 1 ? 'Un registro seleccionado.' :
                         `${numSelected} registros seleccionados.`}
             </Typography>
             {numSelected === 1 &&
@@ -136,7 +146,7 @@ function EnhancedTableToolbar({ numSelected, title }) {
     );
 }
 
-export function DataGrid({ title, headCells, rows }) {
+export function DataGrid({ title, headCells, rows, disableAdd = false }) {
     const [order, setOrder] = React.useState('asc');
     const [orderBy, setOrderBy] = React.useState('calories');
     const [selected, setSelected] = React.useState([]);
@@ -209,7 +219,7 @@ export function DataGrid({ title, headCells, rows }) {
     return (
         <Box sx={{ width: '100%' }}>
             <Paper sx={{ width: '100%', mb: 2 }}>
-                <EnhancedTableToolbar numSelected={selected.length} title={title} />
+                <EnhancedTableToolbar numSelected={selected.length} title={title} disableAdd={disableAdd} />
                 <TableContainer>
                     <Table
                         sx={{ minWidth: 750 }}
@@ -251,7 +261,7 @@ export function DataGrid({ title, headCells, rows }) {
                                             />
                                         </TableCell>
                                         {headCells.map(cell => cell.accessor).map(accessor => (
-                                            <TableCell align="center">
+                                            <TableCell key={accessor} align="center">
                                                 {typeof accessor === 'function' ? accessor(row) : row[accessor]}
                                             </TableCell>
                                         ))}

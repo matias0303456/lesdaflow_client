@@ -117,7 +117,7 @@ export function Layout({ children, title }) {
                 <ListItem key={8} disablePadding sx={{ background: pathname === '/usuarios' ? grey[100] : '#fff' }}>
                     <ListItemButton onClick={() => navigate('/usuarios')}>
                         <ListItemIcon>
-                            <ManageAccountsSharpIcon />
+                            <PermContactCalendarSharpIcon />
                         </ListItemIcon>
                         <ListItemText primary="Usuarios" />
                     </ListItemButton>
@@ -162,7 +162,7 @@ export function Layout({ children, title }) {
                                 <MenuItem
                                     sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
                                     onClick={() => navigate('/perfil')}>
-                                    <PermContactCalendarSharpIcon />
+                                    <ManageAccountsSharpIcon />
                                     Perfil
                                 </MenuItem>
                                 <MenuItem
