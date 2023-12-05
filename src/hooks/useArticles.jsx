@@ -1,7 +1,7 @@
 import { useContext, useEffect } from "react"
 
 import { useApi } from "./useApi"
-import { ArticleContext } from "../contexts/ArticleProvider"
+import { ArticleContext } from "../providers/ArticleProvider"
 
 import { ARTICLE_URL } from "../utils/urls"
 

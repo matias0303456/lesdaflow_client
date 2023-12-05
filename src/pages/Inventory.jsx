@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import { Box, LinearProgress } from "@mui/material";
 
-import { ArticleContext } from "../contexts/ArticleProvider";
+import { ArticleContext } from "../providers/ArticleProvider";
 
 import { Layout } from "../components/Layout";
 import { DataGrid } from '../components/DataGrid'

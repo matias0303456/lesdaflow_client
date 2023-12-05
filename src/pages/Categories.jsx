@@ -6,7 +6,7 @@ import { Layout } from "../components/Layout";
 import { useApi } from "../hooks/useApi";
 import { ModalComponent } from '../components/ModalComponent'
 import { useForm } from "../hooks/useForm";
-import { MessageContext } from "../contexts/MessageProvider";
+import { MessageContext } from "../providers/MessageProvider";
 
 import { CATEGORY_URL } from "../utils/urls";
 

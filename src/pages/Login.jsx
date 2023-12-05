@@ -1,16 +1,20 @@
 import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Alert, Box, Button, FormControl, Input, InputLabel, Snackbar, Typography } from "@mui/material";
+import { Box, Button, FormControl, Input, InputLabel, Typography } from "@mui/material";
 
 import { useAuth } from "../hooks/useAuth";
-import { AuthContext } from "../contexts/AuthContext";
+import { AuthContext } from "../providers/AuthProvider";
+import { MessageContext } from "../providers/MessageProvider";
 
 export function Login() {
 
-    const navigate = useNavigate()
     const { setAuth } = useContext(AuthContext)
+    const { setMessage, setOpenMessage, setSeverity } = useContext(MessageContext)
+
+    const navigate = useNavigate()
+
     const { login } = useAuth()
-    const [open, setOpen] = useState(false)
+
     const [disabled, setDisabled] = useState(false)
     const [data, setData] = useState({
         email: '',
@@ -33,7 +37,9 @@ export function Login() {
             setAuth(result)
             navigate('/inventario')
         } else {
-            setOpen(true)
+            setMessage(result.message)
+            setSeverity('error')
+            setOpenMessage(true)
         }
         setDisabled(false)
     }
@@ -84,11 +90,6 @@ export function Login() {
                         Volver al inicio
                     </Button>
                 </Box>
-                <Snackbar open={open} autoHideDuration={3000} onClose={() => setOpen(false)}>
-                    <Alert severity="error" sx={{ width: '100%' }}>
-                        Credenciales inválidas
-                    </Alert>
-                </Snackbar>
             </Box>
         </Box>
     )

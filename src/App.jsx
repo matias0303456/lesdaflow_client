@@ -3,9 +3,9 @@ import { BrowserRouter, Routes, Route } from "react-router-dom"
 import { Container } from "@mui/material";
 import CssBaseline from '@mui/material/CssBaseline';
 
-import { MessageProvider } from "./contexts/MessageProvider";
-import { AuthContext } from "./contexts/AuthContext";
-import { ArticleProvider } from "./contexts/ArticleProvider";
+import { MessageProvider } from "./providers/MessageProvider";
+import { AuthProvider } from "./providers/AuthProvider";
+import { ArticleProvider } from "./providers/ArticleProvider";
 
 import { Home } from "./pages/Home"
 import { Login } from "./pages/Login";
@@ -21,12 +21,9 @@ import { Profile } from "./pages/Profile";
 import { Error } from './pages/Error'
 
 function App() {
-
-  const [auth, setAuth] = useState(JSON.parse(localStorage.getItem('auth')))
-
   return (
     <MessageProvider>
-      <AuthContext.Provider value={{ auth, setAuth }}>
+      <AuthProvider>
         <ArticleProvider>
           <CssBaseline />
           <Container maxWidth="xl">
@@ -48,7 +45,7 @@ function App() {
             </BrowserRouter>
           </Container>
         </ArticleProvider>
-      </AuthContext.Provider>
+      </AuthProvider>
     </MessageProvider>
   )
 }

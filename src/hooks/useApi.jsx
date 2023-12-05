@@ -1,7 +1,7 @@
 import { useContext } from "react"
 
-import { AuthContext } from "../contexts/AuthContext"
-import { MessageContext } from "../contexts/MessageProvider"
+import { AuthContext } from "../providers/AuthProvider"
+import { MessageContext } from "../providers/MessageProvider"
 
 export function useApi(url) {
 

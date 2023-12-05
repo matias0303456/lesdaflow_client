@@ -1,7 +1,7 @@
 import { useContext } from 'react'
 
 import { LOGIN_URL } from '../utils/urls'
-import { AuthContext } from '../contexts/AuthContext'
+import { AuthContext } from '../providers/AuthProvider'
 
 export function useAuth() {
 

@@ -29,7 +29,7 @@ import ManageAccountsSharpIcon from '@mui/icons-material/ManageAccountsSharp';
 import PermContactCalendarSharpIcon from '@mui/icons-material/PermContactCalendarSharp';
 import LogoutSharpIcon from '@mui/icons-material/LogoutSharp';
 
-import { AuthContext } from '../contexts/AuthContext';
+import { AuthContext } from '../providers/AuthProvider';
 import { useAuth } from '../hooks/useAuth';
 
 export function Layout({ children, title }) {
