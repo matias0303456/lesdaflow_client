@@ -1,10 +1,12 @@
 import { useContext } from "react"
 
 import { AuthContext } from "../contexts/AuthContext"
+import { MessageContext } from "../contexts/MessageProvider"
 
 export function useApi(url) {
 
     const { auth } = useContext(AuthContext)
+    const { setOpenMessage, setSeverity, setMessage } = useContext(MessageContext)
 
     async function get() {
         try {
@@ -18,7 +20,9 @@ export function useApi(url) {
             const json = await res.json()
             return { status: res.status, data: json }
         } catch (err) {
-            console.log(err)
+            setMessage('Ocurrió un error.')
+            setSeverity('error')
+            setOpenMessage(true)
         }
     }
 
@@ -35,7 +39,9 @@ export function useApi(url) {
             const json = await res.json()
             return { status: res.status, data: json }
         } catch (err) {
-            console.log(err)
+            setMessage('Ocurrió un error.')
+            setSeverity('error')
+            setOpenMessage(true)
         }
     }
 
@@ -52,7 +58,9 @@ export function useApi(url) {
             const json = await res.json()
             return { status: res.status, data: json }
         } catch (err) {
-            console.log(err)
+            setMessage('Ocurrió un error.')
+            setSeverity('error')
+            setOpenMessage(true)
         }
     }
 
@@ -68,14 +76,11 @@ export function useApi(url) {
             const json = await res.json()
             return { status: res.status, data: json }
         } catch (err) {
-            console.log(err)
+            setMessage('Ocurrió un error.')
+            setSeverity('error')
+            setOpenMessage(true)
         }
     }
 
-    return {
-        get,
-        post,
-        put,
-        destroy
-    }
+    return { get, post, put, destroy }
 }

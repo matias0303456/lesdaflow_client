@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Box, Button, FormControl, Input, InputLabel, LinearProgress, Typography } from "@mui/material";
 
 import { DataGrid } from "../components/DataGrid";
@@ -6,10 +6,13 @@ import { Layout } from "../components/Layout";
 import { useApi } from "../hooks/useApi";
 import { ModalComponent } from '../components/ModalComponent'
 import { useForm } from "../hooks/useForm";
+import { MessageContext } from "../contexts/MessageProvider";
 
 import { CATEGORY_URL } from "../utils/urls";
 
 export function Categories() {
+
+    const { setMessage, setOpenMessage, setSeverity } = useContext(MessageContext)
 
     const { get, post, put, destroy } = useApi(CATEGORY_URL)
 
@@ -27,6 +30,10 @@ export function Categories() {
             if (status === 200) {
                 setCategories(data)
                 setLoading(false)
+            } else {
+                setMessage(data.message)
+                setSeverity('error')
+                setOpenMessage(true)
             }
         })()
     }, [])
@@ -38,13 +45,19 @@ export function Categories() {
             if (status === 200) {
                 if (open === 'NEW') {
                     setCategories([data, ...categories])
+                    setMessage('Categoría creada correctamente.')
                 } else {
                     setCategories([data, ...categories.filter(cat => cat.id !== formData.id)])
+                    setMessage('Categoría editada correctamente.')
                 }
+                setSeverity('success')
                 reset(setOpen)
             } else {
+                setMessage(data.message)
+                setSeverity('error')
                 setDisabled(false)
             }
+            setOpenMessage(true)
         }
     }
 
@@ -54,9 +67,13 @@ export function Categories() {
         if (result.every(r => r.status === 200)) {
             const ids = result.map(r => r.data.id)
             setCategories([...categories.filter(cat => !ids.includes(cat.id))])
+            setMessage(`${result.length === 1 ? 'Categoría eliminada' : 'Categorías eliminadas'} correctamente.`)
+            setSeverity('success')
         } else {
-            console.log('error')
+            setMessage('Ocurrió un error. Actualice la página.')
+            setSeverity('error')
         }
+        setOpenMessage(true)
         setLoading(false)
         setOpen(null)
     }

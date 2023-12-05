@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom"
 import { Container } from "@mui/material";
 import CssBaseline from '@mui/material/CssBaseline';
 
+import { MessageProvider } from "./contexts/MessageProvider";
 import { AuthContext } from "./contexts/AuthContext";
 import { ArticleProvider } from "./contexts/ArticleProvider";
 
@@ -24,7 +25,7 @@ function App() {
   const [auth, setAuth] = useState(JSON.parse(localStorage.getItem('auth')))
 
   return (
-    <>
+    <MessageProvider>
       <AuthContext.Provider value={{ auth, setAuth }}>
         <ArticleProvider>
           <CssBaseline />
@@ -48,7 +49,7 @@ function App() {
           </Container>
         </ArticleProvider>
       </AuthContext.Provider>
-    </>
+    </MessageProvider>
   )
 }
 
