@@ -21,6 +21,9 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { visuallyHidden } from '@mui/utils';
 import AddCircleSharpIcon from '@mui/icons-material/AddCircleSharp';
+import { Button } from '@mui/material';
+
+import { ModalComponent } from './ModalComponent';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -96,7 +99,17 @@ function EnhancedTableHead({ headCells, onSelectAllClick, order, orderBy, numSel
     );
 }
 
-function EnhancedTableToolbar({ numSelected, title, disableAdd, setOpen, data, setData }) {
+function EnhancedTableToolbar({
+    numSelected,
+    title,
+    disableAdd,
+    open,
+    setOpen,
+    data,
+    setData,
+    workOn,
+    handleDelete
+}) {
     return (
         <Toolbar
             sx={{
@@ -132,19 +145,47 @@ function EnhancedTableToolbar({ numSelected, title, disableAdd, setOpen, data, s
                         `${numSelected} registros seleccionados.`}
             </Typography>
             {numSelected === 1 &&
-                <Tooltip title="Editar" onClick={() => setOpen('EDIT')}>
+                <Tooltip title="Editar" onClick={() => {
+                    setData(workOn[0])
+                    setOpen('EDIT')
+                }}>
                     <IconButton>
                         <EditIcon />
                     </IconButton>
                 </Tooltip>
             }
             {numSelected >= 1 &&
-                <Tooltip title="Eliminar" onClick={() => setOpen('DELETE')}>
+                <Tooltip title="Eliminar" onClick={() => {
+                    setOpen('DELETE')
+                }}>
                     <IconButton>
                         <DeleteIcon />
                     </IconButton>
                 </Tooltip>
             }
+            <ModalComponent open={open === 'DELETE'} onClose={() => setOpen(null)}>
+                <Typography variant="h6" sx={{ marginBottom: 3, textAlign: 'center' }}>
+                    ¿Desea eliminar los elementos seleccionados?
+                </Typography>
+                <Box sx={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    gap: 1,
+                    justifyContent: 'center',
+                    marginTop: 1
+                }}>
+                    <Button variant="outlined" onClick={() => setOpen(null)} sx={{
+                        width: '50%'
+                    }}>
+                        Cancelar
+                    </Button>
+                    <Button variant="contained" onClick={() => handleDelete(workOn)} sx={{
+                        width: '50%'
+                    }}>
+                        Eliminar
+                    </Button>
+                </Box>
+            </ModalComponent>
         </Toolbar>
     );
 }
@@ -155,9 +196,11 @@ export function DataGrid({
     headCells,
     rows,
     disableAdd = false,
+    open,
     setOpen,
     data,
-    setData
+    setData,
+    handleDelete
 }) {
 
     const [order, setOrder] = React.useState('asc');
@@ -234,9 +277,12 @@ export function DataGrid({
                     numSelected={selected.length}
                     title={title}
                     disableAdd={disableAdd}
+                    open={open}
                     setOpen={setOpen}
                     data={data}
                     setData={setData}
+                    workOn={rows.filter(row => selected.includes(row.id))}
+                    handleDelete={handleDelete}
                 />
                 <TableContainer>
                     <Table

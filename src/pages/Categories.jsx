@@ -11,7 +11,7 @@ import { CATEGORY_URL } from "../utils/urls";
 
 export function Categories() {
 
-    const { get, post } = useApi(CATEGORY_URL)
+    const { get, post, put, destroy } = useApi(CATEGORY_URL)
 
     const [open, setOpen] = useState(null)
     const [loading, setLoading] = useState(true)
@@ -34,14 +34,31 @@ export function Categories() {
     async function handleSubmit(e) {
         e.preventDefault()
         if (validate()) {
-            const { status, data } = await post(formData)
+            const { status, data } = open === 'NEW' ? await post(formData) : await put(formData)
             if (status === 200) {
-                setCategories([data, ...categories])
+                if (open === 'NEW') {
+                    setCategories([data, ...categories])
+                } else {
+                    setCategories([data, ...categories.filter(cat => cat.id !== formData.id)])
+                }
                 reset(setOpen)
             } else {
                 setDisabled(false)
             }
         }
+    }
+
+    async function handleDelete(elements) {
+        setLoading(true)
+        const result = await Promise.all(elements.map(e => destroy(e)))
+        if (result.every(r => r.status === 200)) {
+            const ids = result.map(r => r.data.id)
+            setCategories([...categories.filter(cat => !ids.includes(cat.id))])
+        } else {
+            console.log('error')
+        }
+        setLoading(false)
+        setOpen(null)
     }
 
     const headCells = [
@@ -71,19 +88,21 @@ export function Categories() {
                     title="Categorías de artículos"
                     headCells={headCells}
                     rows={categories}
+                    open={open}
                     setOpen={setOpen}
                     data={formData}
                     setData={setFormData}
+                    handleDelete={handleDelete}
                 >
                     <ModalComponent open={open === 'NEW' || open === 'EDIT'} onClose={() => reset(setOpen)}>
                         <Typography variant="h6" sx={{ marginBottom: 2 }}>
-                            Nueva categoría
+                            {`${open === 'NEW' ? 'Nueva' : 'Editar'} categoría`}
                         </Typography>
                         <form onChange={handleChange} onSubmit={handleSubmit}>
                             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
                                 <FormControl>
                                     <InputLabel htmlFor="name">Nombre</InputLabel>
-                                    <Input id="name" type="text" name="name" />
+                                    <Input id="name" type="text" name="name" value={formData.name} />
                                     {errors.name?.type === 'required' &&
                                         <Typography variant="caption" color="red" marginTop={1}>
                                             * Este campo es requerido.
