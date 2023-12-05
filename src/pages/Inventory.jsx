@@ -5,10 +5,12 @@ import { ArticleContext } from "../contexts/ArticleProvider";
 
 import { Layout } from "../components/Layout";
 import { DataGrid } from '../components/DataGrid'
+import { useArticles } from "../hooks/useArticles";
 
 export function Inventory() {
 
-    const { articles, loading } = useContext(ArticleContext)
+    const { loading } = useContext(ArticleContext)
+    const { articles } = useArticles()
 
     const headCells = [
         {

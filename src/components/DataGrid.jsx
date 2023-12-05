@@ -96,7 +96,7 @@ function EnhancedTableHead({ headCells, onSelectAllClick, order, orderBy, numSel
     );
 }
 
-function EnhancedTableToolbar({ numSelected, title, disableAdd }) {
+function EnhancedTableToolbar({ numSelected, title, disableAdd, setOpen, data, setData }) {
     return (
         <Toolbar
             sx={{
@@ -119,7 +119,10 @@ function EnhancedTableToolbar({ numSelected, title, disableAdd }) {
                         {title}
                         {!disableAdd &&
                             <Tooltip title="Nuevo">
-                                <IconButton>
+                                <IconButton onClick={() => {
+                                    setData(data)
+                                    setOpen('NEW')
+                                }}>
                                     <AddCircleSharpIcon />
                                 </IconButton>
                             </Tooltip>
@@ -129,14 +132,14 @@ function EnhancedTableToolbar({ numSelected, title, disableAdd }) {
                         `${numSelected} registros seleccionados.`}
             </Typography>
             {numSelected === 1 &&
-                <Tooltip title="Editar">
+                <Tooltip title="Editar" onClick={() => setOpen('EDIT')}>
                     <IconButton>
                         <EditIcon />
                     </IconButton>
                 </Tooltip>
             }
             {numSelected >= 1 &&
-                <Tooltip title="Eliminar">
+                <Tooltip title="Eliminar" onClick={() => setOpen('DELETE')}>
                     <IconButton>
                         <DeleteIcon />
                     </IconButton>
@@ -146,7 +149,17 @@ function EnhancedTableToolbar({ numSelected, title, disableAdd }) {
     );
 }
 
-export function DataGrid({ title, headCells, rows, disableAdd = false }) {
+export function DataGrid({
+    children,
+    title,
+    headCells,
+    rows,
+    disableAdd = false,
+    setOpen,
+    data,
+    setData
+}) {
+
     const [order, setOrder] = React.useState('asc');
     const [orderBy, setOrderBy] = React.useState('calories');
     const [selected, setSelected] = React.useState([]);
@@ -203,9 +216,7 @@ export function DataGrid({ title, headCells, rows, disableAdd = false }) {
 
     const isSelected = (id) => selected.indexOf(id) !== -1;
 
-    // Avoid a layout jump when reaching the last page with empty rows.
-    const emptyRows =
-        page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
+    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
 
     const visibleRows = React.useMemo(
         () =>
@@ -219,7 +230,14 @@ export function DataGrid({ title, headCells, rows, disableAdd = false }) {
     return (
         <Box sx={{ width: '100%' }}>
             <Paper sx={{ width: '100%', mb: 2 }}>
-                <EnhancedTableToolbar numSelected={selected.length} title={title} disableAdd={disableAdd} />
+                <EnhancedTableToolbar
+                    numSelected={selected.length}
+                    title={title}
+                    disableAdd={disableAdd}
+                    setOpen={setOpen}
+                    data={data}
+                    setData={setData}
+                />
                 <TableContainer>
                     <Table
                         sx={{ minWidth: 750 }}
@@ -291,6 +309,7 @@ export function DataGrid({ title, headCells, rows, disableAdd = false }) {
                     onRowsPerPageChange={handleChangeRowsPerPage}
                 />
             </Paper>
+            {children}
             <FormControlLabel
                 control={<Switch checked={dense} onChange={handleChangeDense} />}
                 label="Condensar tabla"
