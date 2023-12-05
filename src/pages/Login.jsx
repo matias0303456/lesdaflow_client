@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Box, Button, FormControl, Input, InputLabel, Typography } from "@mui/material";
 
 import { useAuth } from "../hooks/useAuth";
+import { useForm } from "../hooks/useForm";
 import { AuthContext } from "../providers/AuthProvider";
 import { MessageContext } from "../providers/MessageProvider";
 
@@ -15,33 +16,29 @@ export function Login() {
 
     const { login } = useAuth()
 
-    const [disabled, setDisabled] = useState(false)
-    const [data, setData] = useState({
-        email: '',
-        password: ''
+    const { formData, handleChange, disabled, setDisabled, validate, errors } = useForm({
+        defaultData: { email: '', password: '' },
+        rules: {
+            email: { required: true, maxLength: 55 },
+            password: { required: true, maxLength: 55 }
+        }
     })
-
-    const handleChange = e => {
-        setData({
-            ...data,
-            [e.target.name]: e.target.value
-        })
-    }
 
     const handleSubmit = async e => {
         e.preventDefault()
-        setDisabled(true)
-        const { status, result } = await login(data)
-        if (status === 200) {
-            localStorage.setItem('auth', JSON.stringify(result))
-            setAuth(result)
-            navigate('/inventario')
-        } else {
-            setMessage(result.message)
-            setSeverity('error')
-            setOpenMessage(true)
+        if (validate()) {
+            const { status, result } = await login(formData)
+            if (status === 200) {
+                localStorage.setItem('auth', JSON.stringify(result))
+                setAuth(result)
+                navigate('/inventario')
+            } else {
+                setMessage(result.message)
+                setSeverity('error')
+                setOpenMessage(true)
+            }
+            setDisabled(false)
         }
-        setDisabled(false)
     }
 
     return (
@@ -54,8 +51,13 @@ export function Login() {
                     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
                         <FormControl>
                             <InputLabel htmlFor="email">Email</InputLabel>
-                            <Input id="email" type="email" name="email" required />
-                            {data.email.length > 55 &&
+                            <Input id="email" type="email" name="email" value={formData.email} />
+                            {errors.email?.type === 'required' &&
+                                <Typography variant="caption" color="red" marginTop={1}>
+                                    * El email es requerido.
+                                </Typography>
+                            }
+                            {errors.email?.type === 'maxLength' &&
                                 <Typography variant="caption" color="red" marginTop={1}>
                                     * El email es demasiado largo.
                                 </Typography>
@@ -63,8 +65,13 @@ export function Login() {
                         </FormControl>
                         <FormControl>
                             <InputLabel htmlFor="password">Contraseña</InputLabel>
-                            <Input id="password" type="password" name="password" required />
-                            {data.password.length > 55 &&
+                            <Input id="password" type="password" name="password" value={formData.password} />
+                            {errors.password?.type === 'required' &&
+                                <Typography variant="caption" color="red" marginTop={1}>
+                                    * La contraseña es requerida.
+                                </Typography>
+                            }
+                            {errors.password?.type === 'maxLength' &&
                                 <Typography variant="caption" color="red" marginTop={1}>
                                     * La contraseña es demasiado larga.
                                 </Typography>
@@ -76,10 +83,7 @@ export function Login() {
                                 margin: '0 auto',
                                 marginTop: 1,
                                 marginBottom: 4
-                            }} disabled={
-                                data.email.length === 0 || data.email.length > 55 ||
-                                data.password.length === 0 || data.password.length > 55 || disabled
-                            }>
+                            }} disabled={disabled}>
                                 Ingresar
                             </Button>
                         </FormControl>
