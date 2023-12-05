@@ -1,11 +1,13 @@
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { Box, Button, FormControl, Input, InputLabel, Typography } from "@mui/material";
 
-import { useAuth } from "../hooks/useAuth";
 import { useForm } from "../hooks/useForm";
 import { AuthContext } from "../providers/AuthProvider";
 import { MessageContext } from "../providers/MessageProvider";
+import { useApi } from "../hooks/useApi";
+
+import { LOGIN_URL } from "../utils/urls";
 
 export function Login() {
 
@@ -14,7 +16,7 @@ export function Login() {
 
     const navigate = useNavigate()
 
-    const { login } = useAuth()
+    const { post } = useApi(LOGIN_URL)
 
     const { formData, handleChange, disabled, setDisabled, validate, errors } = useForm({
         defaultData: { email: '', password: '' },
@@ -27,13 +29,13 @@ export function Login() {
     const handleSubmit = async e => {
         e.preventDefault()
         if (validate()) {
-            const { status, result } = await login(formData)
+            const { status, data } = await post(formData, true)
             if (status === 200) {
-                localStorage.setItem('auth', JSON.stringify(result))
-                setAuth(result)
+                localStorage.setItem('auth', JSON.stringify(data))
+                setAuth(data)
                 navigate('/inventario')
             } else {
-                setMessage(result.message)
+                setMessage(data.message)
                 setSeverity('error')
                 setOpenMessage(true)
             }

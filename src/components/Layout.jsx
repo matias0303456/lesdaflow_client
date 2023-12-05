@@ -30,14 +30,12 @@ import PermContactCalendarSharpIcon from '@mui/icons-material/PermContactCalenda
 import LogoutSharpIcon from '@mui/icons-material/LogoutSharp';
 
 import { AuthContext } from '../providers/AuthProvider';
-import { useAuth } from '../hooks/useAuth';
 
 export function Layout({ children, title }) {
 
     const navigate = useNavigate()
     const { pathname } = useLocation()
-    const { auth } = useContext(AuthContext)
-    const { logout } = useAuth()
+    const { auth, setAuth } = useContext(AuthContext)
     const [mobileOpen, setMobileOpen] = useState(false)
     const drawerWidth = 240
 
@@ -169,7 +167,8 @@ export function Layout({ children, title }) {
                                     sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
                                     onClick={() => {
                                         navigate('/')
-                                        logout()
+                                        setAuth(null)
+                                        localStorage.removeItem('auth')
                                     }}>
                                     <LogoutSharpIcon />
                                     Salir

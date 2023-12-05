@@ -26,14 +26,13 @@ export function useApi(url) {
         }
     }
 
-    async function post(req) {
+    async function post(req, publicUrl = false) {
+        let headers = { 'Content-Type': 'application/json' }
+        if (!publicUrl) headers = { ...headers, 'Authorization': auth.token }
         try {
             const res = await fetch(url, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': auth.token
-                },
+                headers,
                 body: JSON.stringify(req)
             })
             const json = await res.json()

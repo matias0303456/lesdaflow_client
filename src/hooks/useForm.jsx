@@ -8,6 +8,7 @@ export function useForm({ defaultData, rules }) {
 
     function handleChange(e) {
         setErrors(defaultData)
+        setDisabled(false)
         setFormData({
             ...formData,
             [e.target.name]: e.target.value
