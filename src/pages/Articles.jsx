@@ -44,8 +44,7 @@ export function Articles() {
                 maxLength: 55
             },
             category_id: {
-                required: true,
-                maxLength: 55
+                required: true
             }
         }
     })
