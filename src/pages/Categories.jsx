@@ -1,12 +1,14 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { Box, Button, FormControl, Input, InputLabel, LinearProgress, Typography } from "@mui/material";
+
+import { useApi } from "../hooks/useApi";
+import { useForm } from "../hooks/useForm";
+import { useCategories } from "../hooks/useCategories";
+import { MessageContext } from "../providers/MessageProvider";
 
 import { DataGrid } from "../components/DataGrid";
 import { Layout } from "../components/Layout";
-import { useApi } from "../hooks/useApi";
 import { ModalComponent } from '../components/ModalComponent'
-import { useForm } from "../hooks/useForm";
-import { MessageContext } from "../providers/MessageProvider";
 
 import { CATEGORY_URL } from "../utils/urls";
 
@@ -14,29 +16,14 @@ export function Categories() {
 
     const { setMessage, setOpenMessage, setSeverity } = useContext(MessageContext)
 
-    const { get, post, put, destroy } = useApi(CATEGORY_URL)
+    const { post, put, destroy } = useApi(CATEGORY_URL)
+    const { categories, setCategories, loadingCategories, setLoadingCategories } = useCategories()
 
     const [open, setOpen] = useState(null)
-    const [loading, setLoading] = useState(true)
-    const [categories, setCategories] = useState([])
     const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
         defaultData: { id: '', name: '' },
         rules: { name: { required: true, maxLength: 55 } }
     })
-
-    useEffect(() => {
-        (async () => {
-            const { status, data } = await get()
-            if (status === 200) {
-                setCategories(data)
-                setLoading(false)
-            } else {
-                setMessage(data.message)
-                setSeverity('error')
-                setOpenMessage(true)
-            }
-        })()
-    }, [])
 
     async function handleSubmit(e) {
         e.preventDefault()
@@ -62,7 +49,7 @@ export function Categories() {
     }
 
     async function handleDelete(elements) {
-        setLoading(true)
+        setLoadingCategories(true)
         const result = await Promise.all(elements.map(e => destroy(e)))
         if (result.every(r => r.status === 200)) {
             const ids = result.map(r => r.data.id)
@@ -74,7 +61,7 @@ export function Categories() {
             setSeverity('error')
         }
         setOpenMessage(true)
-        setLoading(false)
+        setLoadingCategories(false)
         setOpen(null)
     }
 
@@ -97,7 +84,7 @@ export function Categories() {
 
     return (
         <Layout title="Categorías">
-            {loading || disabled ?
+            {loadingCategories || disabled ?
                 <Box sx={{ width: '100%' }}>
                     <LinearProgress />
                 </Box> :
@@ -113,7 +100,8 @@ export function Categories() {
                 >
                     <ModalComponent open={open === 'NEW' || open === 'EDIT'} onClose={() => reset(setOpen)}>
                         <Typography variant="h6" sx={{ marginBottom: 2 }}>
-                            {`${open === 'NEW' ? 'Nueva' : 'Editar'} categoría`}
+                            {open === 'NEW' && 'Nueva categoría'}
+                            {open === 'EDIT' && 'Editar categoría'}
                         </Typography>
                         <form onChange={handleChange} onSubmit={handleSubmit}>
                             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
@@ -122,7 +110,7 @@ export function Categories() {
                                     <Input id="name" type="text" name="name" value={formData.name} />
                                     {errors.name?.type === 'required' &&
                                         <Typography variant="caption" color="red" marginTop={1}>
-                                            * Este campo es requerido.
+                                            * El nombre es requerido.
                                         </Typography>
                                     }
                                     {errors.name?.type === 'maxLength' &&

@@ -1,16 +1,13 @@
-import { useContext } from "react";
 import { Box, LinearProgress } from "@mui/material";
 
-import { ArticleContext } from "../providers/ArticleProvider";
+import { useArticles } from "../hooks/useArticles";
 
 import { Layout } from "../components/Layout";
 import { DataGrid } from '../components/DataGrid'
-import { useArticles } from "../hooks/useArticles";
 
 export function Inventory() {
 
-    const { loading } = useContext(ArticleContext)
-    const { articles } = useArticles()
+    const { articles, loadingArticles } = useArticles()
 
     const headCells = [
         {
@@ -56,7 +53,7 @@ export function Inventory() {
 
     return (
         <Layout title="Inventario">
-            {loading ?
+            {loadingArticles ?
                 <Box sx={{ width: '100%' }}>
                     <LinearProgress />
                 </Box> :

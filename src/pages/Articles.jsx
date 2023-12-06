@@ -1,15 +1,94 @@
-import { useContext } from "react";
-import { Box, LinearProgress } from "@mui/material";
+import { useContext, useState } from "react";
+import { Box, Button, FormControl, Input, InputLabel, LinearProgress, MenuItem, Select, Typography } from "@mui/material";
 
-import { ArticleContext } from "../providers/ArticleProvider";
+import { useArticles } from '../hooks/useArticles'
+import { useCategories } from "../hooks/useCategories";
+import { useForm } from "../hooks/useForm";
+import { MessageContext } from "../providers/MessageProvider";
+
 import { Layout } from "../components/Layout";
 import { DataGrid } from "../components/DataGrid";
-import { useArticles } from '../hooks/useArticles'
+import { ModalComponent } from "../components/ModalComponent";
+
+import { ARTICLE_URL } from "../utils/urls";
+import { useApi } from "../hooks/useApi";
 
 export function Articles() {
 
-    const { loading } = useContext(ArticleContext)
-    const { articles } = useArticles()
+    const { setMessage, setOpenMessage, setSeverity } = useContext(MessageContext)
+
+    const { post, put, destroy } = useApi(ARTICLE_URL)
+    const { articles, setArticles, loadingArticles, setLoadingArticles } = useArticles()
+    const { categories, loadingCategories } = useCategories()
+
+    const [open, setOpen] = useState(null)
+    const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
+        defaultData: {
+            id: '',
+            name: '',
+            code: '',
+            description: '',
+            category_id: ''
+        },
+        rules: {
+            name: {
+                required: true,
+                maxLength: 55
+            },
+            code: {
+                required: true,
+                maxLength: 55
+            },
+            description: {
+                required: true,
+                maxLength: 55
+            },
+            category_id: {
+                required: true,
+                maxLength: 55
+            }
+        }
+    })
+
+    async function handleSubmit(e) {
+        e.preventDefault()
+        if (validate()) {
+            const { status, data } = open === 'NEW' ? await post(formData) : await put(formData)
+            if (status === 200) {
+                if (open === 'NEW') {
+                    setArticles([data, ...articles])
+                    setMessage('Artículo creado correctamente.')
+                } else {
+                    setArticles([data, ...articles.filter(art => art.id !== formData.id)])
+                    setMessage('Artículo editado correctamente.')
+                }
+                setSeverity('success')
+                reset(setOpen)
+            } else {
+                setMessage(data.message)
+                setSeverity('error')
+                setDisabled(false)
+            }
+            setOpenMessage(true)
+        }
+    }
+
+    async function handleDelete(elements) {
+        setLoadingArticles(true)
+        const result = await Promise.all(elements.map(e => destroy(e)))
+        if (result.every(r => r.status === 200)) {
+            const ids = result.map(r => r.data.id)
+            setArticles([...articles.filter(art => !ids.includes(art.id))])
+            setMessage(`${result.length === 1 ? 'Artículo eliminado' : 'Articulos eliminados'} correctamente.`)
+            setSeverity('success')
+        } else {
+            setMessage('Ocurrió un error. Actualice la página.')
+            setSeverity('error')
+        }
+        setOpenMessage(true)
+        setLoadingArticles(false)
+        setOpen(null)
+    }
 
     const headCells = [
         {
@@ -51,11 +130,111 @@ export function Articles() {
 
     return (
         <Layout title="Artículos">
-            {loading ?
+            {loadingArticles || loadingCategories || disabled ?
                 <Box sx={{ width: '100%' }}>
                     <LinearProgress />
                 </Box> :
-                <DataGrid title="Artículos registrados" headCells={headCells} rows={articles} />
+                <DataGrid
+                    title="Artículos registrados"
+                    headCells={headCells}
+                    rows={articles}
+                    open={open}
+                    setOpen={setOpen}
+                    data={formData}
+                    setData={setFormData}
+                    handleDelete={handleDelete}
+                >
+                    <ModalComponent open={open === 'NEW' || open === 'EDIT'} onClose={() => reset(setOpen)}>
+                        <Typography variant="h6" sx={{ marginBottom: 2 }}>
+                            {open === 'NEW' && 'Nuevo artículo'}
+                            {open === 'EDIT' && 'Editar artículo'}
+                        </Typography>
+                        <form onChange={handleChange} onSubmit={handleSubmit}>
+                            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+                                <FormControl>
+                                    <InputLabel htmlFor="name">Nombre</InputLabel>
+                                    <Input id="name" type="text" name="name" value={formData.name} />
+                                    {errors.name?.type === 'required' &&
+                                        <Typography variant="caption" color="red" marginTop={1}>
+                                            * El nombre es requerido.
+                                        </Typography>
+                                    }
+                                    {errors.name?.type === 'maxLength' &&
+                                        <Typography variant="caption" color="red" marginTop={1}>
+                                            * El nombre es demasiado largo.
+                                        </Typography>
+                                    }
+                                </FormControl>
+                                <FormControl>
+                                    <InputLabel htmlFor="code">Código</InputLabel>
+                                    <Input id="code" type="text" name="code" value={formData.code} />
+                                    {errors.code?.type === 'required' &&
+                                        <Typography variant="caption" color="red" marginTop={1}>
+                                            * El código es requerido.
+                                        </Typography>
+                                    }
+                                    {errors.code?.type === 'maxLength' &&
+                                        <Typography variant="caption" color="red" marginTop={1}>
+                                            * El código es demasiado largo.
+                                        </Typography>
+                                    }
+                                </FormControl>
+                                <FormControl>
+                                    <InputLabel htmlFor="description">Descripción</InputLabel>
+                                    <Input id="description" type="text" name="description" value={formData.description} />
+                                    {errors.description?.type === 'required' &&
+                                        <Typography variant="caption" color="red" marginTop={1}>
+                                            * El código es requerido.
+                                        </Typography>
+                                    }
+                                    {errors.description?.type === 'maxLength' &&
+                                        <Typography variant="caption" color="red" marginTop={1}>
+                                            * El código es demasiado largo.
+                                        </Typography>
+                                    }
+                                </FormControl>
+                                <FormControl>
+                                    <InputLabel id="category-select">Categoría</InputLabel>
+                                    <Select
+                                        labelId="category-select"
+                                        id="category_id"
+                                        value={formData.category_id}
+                                        label="Categoría"
+                                        name="category_id"
+                                        onChange={handleChange}
+                                    >
+                                        {categories.map(cat => (
+                                            <MenuItem key={cat.id} value={cat.id}>{cat.name}</MenuItem>
+                                        ))}
+                                    </Select>
+                                    {errors.category_id?.type === 'required' &&
+                                        <Typography variant="caption" color="red" marginTop={1}>
+                                            * La categoría es requerida.
+                                        </Typography>
+                                    }
+                                </FormControl>
+                                <FormControl sx={{
+                                    display: 'flex',
+                                    flexDirection: 'row',
+                                    gap: 1,
+                                    justifyContent: 'center',
+                                    marginTop: 1
+                                }}>
+                                    <Button type="button" variant="outlined" onClick={() => reset(setOpen)} sx={{
+                                        width: '50%'
+                                    }}>
+                                        Cancelar
+                                    </Button>
+                                    <Button type="submit" variant="contained" disabled={disabled} sx={{
+                                        width: '50%'
+                                    }}>
+                                        Guardar
+                                    </Button>
+                                </FormControl>
+                            </Box>
+                        </form>
+                    </ModalComponent>
+                </DataGrid>
             }
         </Layout>
     )

@@ -3,23 +3,23 @@ import { useContext, useEffect, useState } from "react"
 import { useApi } from "./useApi"
 import { MessageContext } from "../providers/MessageProvider"
 
-import { ARTICLE_URL } from "../utils/urls"
+import { CATEGORY_URL } from "../utils/urls"
 
-export function useArticles() {
+export function useCategories() {
 
     const { setMessage, setOpenMessage, setSeverity } = useContext(MessageContext)
 
-    const [loadingArticles, setLoadingArticles] = useState(true)
-    const [articles, setArticles] = useState([])
+    const [loadingCategories, setLoadingCategories] = useState(true)
+    const [categories, setCategories] = useState([])
 
-    const { get } = useApi(ARTICLE_URL)
+    const { get } = useApi(CATEGORY_URL)
 
     useEffect(() => {
         (async () => {
             const { status, data } = await get()
             if (status === 200) {
-                setArticles(data)
-                setLoadingArticles(false)
+                setCategories(data)
+                setLoadingCategories(false)
             } else {
                 setMessage(data.message)
                 setSeverity('error')
@@ -28,5 +28,5 @@ export function useArticles() {
         })()
     }, [])
 
-    return { articles, setArticles, loadingArticles, setLoadingArticles }
+    return { categories, setCategories, loadingCategories, setLoadingCategories }
 }
