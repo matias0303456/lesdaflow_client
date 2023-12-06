@@ -1,10 +1,11 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { Box, Button, FormControl, Input, InputLabel, LinearProgress, MenuItem, Select, Typography } from "@mui/material";
 
 import { MessageContext } from "../providers/MessageProvider";
 import { useApi } from "../hooks/useApi";
 import { useForm } from "../hooks/useForm";
 import { useCountries } from "../hooks/useCountries";
+import { useSuppliers } from "../hooks/useSuppliers";
 
 import { Layout } from "../components/Layout";
 import { DataGrid } from "../components/DataGrid";
@@ -16,8 +17,9 @@ export function Suppliers() {
 
     const { setMessage, setOpenMessage, setSeverity } = useContext(MessageContext)
 
-    const { get, post, put, destroy } = useApi(SUPPLIER_URL)
+    const { post, put, destroy } = useApi(SUPPLIER_URL)
     const { countries, loadingCountries } = useCountries()
+    const { suppliers, setSuppliers, loadingSuppliers, setLoadingSuppliers } = useSuppliers()
     const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
         defaultData: {
             id: '',
@@ -55,19 +57,7 @@ export function Suppliers() {
         }
     })
 
-    const [loading, setLoading] = useState(true)
-    const [suppliers, setSuppliers] = useState([])
     const [open, setOpen] = useState(null)
-
-    useEffect(() => {
-        (async () => {
-            const { status, data } = await get()
-            if (status === 200) {
-                setSuppliers(data)
-                setLoading(false)
-            }
-        })()
-    }, [])
 
     async function handleSubmit(e) {
         e.preventDefault()
@@ -93,7 +83,7 @@ export function Suppliers() {
     }
 
     async function handleDelete(elements) {
-        setLoading(true)
+        setLoadingSuppliers(true)
         const result = await Promise.all(elements.map(e => destroy(e)))
         if (result.every(r => r.status === 200)) {
             const ids = result.map(r => r.data.id)
@@ -105,7 +95,7 @@ export function Suppliers() {
             setSeverity('error')
         }
         setOpenMessage(true)
-        setLoading(false)
+        setLoadingSuppliers(false)
         setOpen(null)
     }
 
@@ -163,7 +153,7 @@ export function Suppliers() {
 
     return (
         <Layout title="Proveedores">
-            {loading || loadingCountries || disabled ?
+            {loadingSuppliers || loadingCountries || disabled ?
                 <Box sx={{ width: '100%' }}>
                     <LinearProgress />
                 </Box> :

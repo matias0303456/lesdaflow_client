@@ -15,8 +15,8 @@ import { ROLE_URL, USER_URL } from "../utils/urls";
 export function Users() {
 
     const { setMessage, setOpenMessage, setSeverity } = useContext(MessageContext)
-
     const { auth } = useContext(AuthContext)
+
     const { get: getUsers, post, put, destroy } = useApi(USER_URL)
     const { get: getRoles } = useApi(ROLE_URL)
     const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({

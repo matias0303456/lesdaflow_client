@@ -20,8 +20,6 @@ export function Articles() {
     const { post, put, destroy } = useApi(ARTICLE_URL)
     const { articles, setArticles, loadingArticles, setLoadingArticles } = useArticles()
     const { categories, loadingCategories } = useCategories()
-
-    const [open, setOpen] = useState(null)
     const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
         defaultData: {
             id: '',
@@ -48,6 +46,8 @@ export function Articles() {
             }
         }
     })
+
+    const [open, setOpen] = useState(null)
 
     async function handleSubmit(e) {
         e.preventDefault()

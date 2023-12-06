@@ -18,12 +18,12 @@ export function Categories() {
 
     const { post, put, destroy } = useApi(CATEGORY_URL)
     const { categories, setCategories, loadingCategories, setLoadingCategories } = useCategories()
-
-    const [open, setOpen] = useState(null)
     const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
         defaultData: { id: '', name: '' },
         rules: { name: { required: true, maxLength: 55 } }
     })
+
+    const [open, setOpen] = useState(null)
 
     async function handleSubmit(e) {
         e.preventDefault()
