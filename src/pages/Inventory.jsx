@@ -57,7 +57,13 @@ export function Inventory() {
                 <Box sx={{ width: '100%' }}>
                     <LinearProgress />
                 </Box> :
-                <DataGrid title="Estado actual" headCells={headCells} rows={articles} disableAdd />
+                <DataGrid
+                    title="Estado actual"
+                    headCells={headCells}
+                    rows={articles}
+                    disableAdd
+                    disableSelection
+                />
             }
         </Layout>
     )

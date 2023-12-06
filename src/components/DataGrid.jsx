@@ -53,7 +53,16 @@ function stableSort(array, comparator) {
     return stabilizedThis.map((el) => el[0]);
 }
 
-function EnhancedTableHead({ headCells, onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort }) {
+function EnhancedTableHead({
+    headCells,
+    onSelectAllClick,
+    order,
+    orderBy,
+    numSelected,
+    rowCount,
+    onRequestSort,
+    disableSelection
+}) {
 
     const createSortHandler = (property) => (event) => {
         onRequestSort(event, property);
@@ -62,17 +71,19 @@ function EnhancedTableHead({ headCells, onSelectAllClick, order, orderBy, numSel
     return (
         <TableHead>
             <TableRow>
-                <TableCell padding="checkbox">
-                    <Checkbox
-                        color="primary"
-                        indeterminate={numSelected > 0 && numSelected < rowCount}
-                        checked={rowCount > 0 && numSelected === rowCount}
-                        onChange={onSelectAllClick}
-                        inputProps={{
-                            'aria-label': 'select all desserts',
-                        }}
-                    />
-                </TableCell>
+                {!disableSelection &&
+                    <TableCell padding="checkbox">
+                        <Checkbox
+                            color="primary"
+                            indeterminate={numSelected > 0 && numSelected < rowCount}
+                            checked={rowCount > 0 && numSelected === rowCount}
+                            onChange={onSelectAllClick}
+                            inputProps={{
+                                'aria-label': 'select all desserts',
+                            }}
+                        />
+                    </TableCell>
+                }
                 {headCells.map((headCell) => (
                     <TableCell
                         key={headCell.id}
@@ -200,7 +211,8 @@ export function DataGrid({
     setOpen,
     data,
     setData,
-    handleDelete
+    handleDelete,
+    disableSelection = false
 }) {
 
     const [order, setOrder] = React.useState('asc');
@@ -298,6 +310,7 @@ export function DataGrid({
                             onSelectAllClick={handleSelectAllClick}
                             onRequestSort={handleRequestSort}
                             rowCount={rows.length}
+                            disableSelection={disableSelection}
                         />
                         <TableBody>
                             {visibleRows.map((row, index) => {
@@ -307,23 +320,29 @@ export function DataGrid({
                                 return (
                                     <TableRow
                                         hover
-                                        onClick={(event) => handleClick(event, row.id)}
+                                        onClick={(event) => {
+                                            if (!disableSelection) {
+                                                handleClick(event, row.id)
+                                            }
+                                        }}
                                         role="checkbox"
                                         aria-checked={isItemSelected}
                                         tabIndex={-1}
                                         key={row.id}
                                         selected={isItemSelected}
-                                        sx={{ cursor: 'pointer' }}
+                                        sx={{ cursor: !disableSelection ? 'pointer' : 'auto' }}
                                     >
-                                        <TableCell padding="checkbox">
-                                            <Checkbox
-                                                color="primary"
-                                                checked={isItemSelected}
-                                                inputProps={{
-                                                    'aria-labelledby': labelId,
-                                                }}
-                                            />
-                                        </TableCell>
+                                        {!disableSelection &&
+                                            <TableCell padding="checkbox">
+                                                <Checkbox
+                                                    color="primary"
+                                                    checked={isItemSelected}
+                                                    inputProps={{
+                                                        'aria-labelledby': labelId,
+                                                    }}
+                                                />
+                                            </TableCell>
+                                        }
                                         {headCells.map(cell => cell.accessor).map(accessor => (
                                             <TableCell key={accessor} align="center">
                                                 {typeof accessor === 'function' ? accessor(row) : row[accessor]}
