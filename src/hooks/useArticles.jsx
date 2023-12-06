@@ -5,14 +5,14 @@ import { MessageContext } from "../providers/MessageProvider"
 
 import { ARTICLE_URL } from "../utils/urls"
 
-export function useArticles() {
+export function useArticles(inventory = false) {
 
     const { setMessage, setOpenMessage, setSeverity } = useContext(MessageContext)
 
     const [loadingArticles, setLoadingArticles] = useState(true)
     const [articles, setArticles] = useState([])
 
-    const { get } = useApi(ARTICLE_URL)
+    const { get } = useApi(ARTICLE_URL + (inventory ? '?inventory=true' : ''))
 
     useEffect(() => {
         (async () => {

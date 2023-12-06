@@ -7,7 +7,7 @@ import { DataGrid } from '../components/DataGrid'
 
 export function Inventory() {
 
-    const { articles, loadingArticles } = useArticles()
+    const { articles, loadingArticles } = useArticles(true)
 
     const headCells = [
         {
@@ -45,7 +45,7 @@ export function Inventory() {
             label: 'Stock',
             accessor: (row) => row.incomes.reduce((prev, curr) => {
                 return prev + curr.amount
-            }, 0) - data.outcomes.reduce((prev, curr) => {
+            }, 0) - row.outcomes.reduce((prev, curr) => {
                 return prev + curr.amount
             }, 0)
         }

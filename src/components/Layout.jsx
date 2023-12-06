@@ -112,14 +112,16 @@ export function Layout({ children, title }) {
                         <ListItemText primary="Categorías" />
                     </ListItemButton>
                 </ListItem>
-                <ListItem key={8} disablePadding sx={{ background: pathname === '/usuarios' ? grey[100] : '#fff' }}>
-                    <ListItemButton onClick={() => navigate('/usuarios')}>
-                        <ListItemIcon>
-                            <PermContactCalendarSharpIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Usuarios" />
-                    </ListItemButton>
-                </ListItem>
+                {(auth.user.role.name === 'SUPER_ADMIN' || auth.user.role.name === 'ADMIN') &&
+                    <ListItem key={8} disablePadding sx={{ background: pathname === '/usuarios' ? grey[100] : '#fff' }}>
+                        <ListItemButton onClick={() => navigate('/usuarios')}>
+                            <ListItemIcon>
+                                <PermContactCalendarSharpIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="Usuarios" />
+                        </ListItemButton>
+                    </ListItem>
+                }
             </List>
         </div>
     );

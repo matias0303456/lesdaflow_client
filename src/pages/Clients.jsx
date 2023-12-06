@@ -18,10 +18,6 @@ export function Clients() {
 
     const { get, post, put, destroy } = useApi(CLIENT_URL)
     const { countries, loadingCountries } = useCountries()
-
-    const [loading, setLoading] = useState(true)
-    const [clients, setClients] = useState([])
-    const [open, setOpen] = useState(null)
     const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
         defaultData: {
             id: '',
@@ -58,6 +54,10 @@ export function Clients() {
             }
         }
     })
+
+    const [loading, setLoading] = useState(true)
+    const [clients, setClients] = useState([])
+    const [open, setOpen] = useState(null)
 
     useEffect(() => {
         (async () => {
