@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Box, Button, FormControl, Input, InputLabel, Typography } from "@mui/material";
 
@@ -11,7 +11,7 @@ import { LOGIN_URL } from "../utils/urls";
 
 export function Login() {
 
-    const { setAuth } = useContext(AuthContext)
+    const { auth, setAuth } = useContext(AuthContext)
     const { setMessage, setOpenMessage, setSeverity } = useContext(MessageContext)
 
     const navigate = useNavigate()
@@ -22,9 +22,13 @@ export function Login() {
         defaultData: { email: '', password: '' },
         rules: {
             email: { required: true, maxLength: 55 },
-            password: { required: true, maxLength: 55 }
+            password: { required: true, minLength: 8, maxLength: 55 }
         }
     })
+
+    useEffect(() => {
+        if (auth) return navigate('/inventario')
+    }, [])
 
     const handleSubmit = async e => {
         e.preventDefault()
@@ -71,6 +75,11 @@ export function Login() {
                             {errors.password?.type === 'required' &&
                                 <Typography variant="caption" color="red" marginTop={1}>
                                     * La contraseña es requerida.
+                                </Typography>
+                            }
+                            {errors.password?.type === 'minLength' &&
+                                <Typography variant="caption" color="red" marginTop={1}>
+                                    * Este valor es demasiado corto.
                                 </Typography>
                             }
                             {errors.password?.type === 'maxLength' &&

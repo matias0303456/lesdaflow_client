@@ -11,3 +11,4 @@ export const CLIENT_URL = `${BASE_URL}/clients`
 export const SUPPLIER_URL = `${BASE_URL}/suppliers`
 export const CATEGORY_URL = `${BASE_URL}/categories`
 export const USER_URL = `${BASE_URL}/users`
+export const CHANGE_PASSWORD_URL = `${USER_URL}/change-password`

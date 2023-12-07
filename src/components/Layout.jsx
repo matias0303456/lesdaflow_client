@@ -28,15 +28,19 @@ import CategorySharpIcon from '@mui/icons-material/CategorySharp';
 import ManageAccountsSharpIcon from '@mui/icons-material/ManageAccountsSharp';
 import PermContactCalendarSharpIcon from '@mui/icons-material/PermContactCalendarSharp';
 import LogoutSharpIcon from '@mui/icons-material/LogoutSharp';
+import AssessmentSharpIcon from '@mui/icons-material/AssessmentSharp';
 
 import { AuthContext } from '../providers/AuthProvider';
 
 export function Layout({ children, title }) {
 
+    const { auth, setAuth } = useContext(AuthContext)
+
     const navigate = useNavigate()
     const { pathname } = useLocation()
-    const { auth, setAuth } = useContext(AuthContext)
+
     const [mobileOpen, setMobileOpen] = useState(false)
+
     const drawerWidth = 240
 
     useEffect(() => {
@@ -112,7 +116,7 @@ export function Layout({ children, title }) {
                         <ListItemText primary="Categorías" />
                     </ListItemButton>
                 </ListItem>
-                {(auth.user.role.name === 'SUPER_ADMIN' || auth.user.role.name === 'ADMIN') &&
+                {(auth?.user.role.name === 'SUPER_ADMIN' || auth?.user.role.name === 'ADMIN') &&
                     <ListItem key={8} disablePadding sx={{ background: pathname === '/usuarios' ? grey[100] : '#fff' }}>
                         <ListItemButton onClick={() => navigate('/usuarios')}>
                             <ListItemIcon>
@@ -122,6 +126,14 @@ export function Layout({ children, title }) {
                         </ListItemButton>
                     </ListItem>
                 }
+                <ListItem key={9} disablePadding sx={{ background: pathname === '/reportes' ? grey[100] : '#fff' }}>
+                    <ListItemButton onClick={() => navigate('/reportes')}>
+                        <ListItemIcon>
+                            <AssessmentSharpIcon />
+                        </ListItemIcon>
+                        <ListItemText primary="Reportes" />
+                    </ListItemButton>
+                </ListItem>
             </List>
         </div>
     );
@@ -157,7 +169,7 @@ export function Layout({ children, title }) {
                             {title}
                         </Typography>
                         <Dropdown>
-                            <MenuButton>¡Hola, {`${auth.user.first_name} ${auth.user.last_name}`}!</MenuButton>
+                            <MenuButton>¡Hola, {`${auth?.user.first_name} ${auth?.user.last_name}`}!</MenuButton>
                             <Menu slots={{ listbox: Listbox }}>
                                 <MenuItem
                                     sx={{ display: 'flex', alignItems: 'center', gap: 1 }}

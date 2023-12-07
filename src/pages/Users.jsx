@@ -43,6 +43,7 @@ export function Users() {
             },
             password: {
                 required: true,
+                minLength: 8,
                 maxLength: 255
             },
             role_id: {
@@ -227,6 +228,11 @@ export function Users() {
                                         {errors.password?.type === 'required' &&
                                             <Typography variant="caption" color="red" marginTop={1}>
                                                 * La contraseña es requerida.
+                                            </Typography>
+                                        }
+                                        {errors.password?.type === 'minLength' &&
+                                            <Typography variant="caption" color="red" marginTop={1}>
+                                                * Este valor es demasiado corto.
                                             </Typography>
                                         }
                                         {errors.password?.type === 'maxLength' &&

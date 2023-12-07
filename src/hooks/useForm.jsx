@@ -26,6 +26,11 @@ export function useForm({ defaultData, rules }) {
                 setDisabled(false)
                 flag = false
             }
+            if (rules[key]?.minLength && formData[key]?.length < rules[key]?.maxLength) {
+                result[key] = { ...result[key], type: 'minLength' }
+                setDisabled(false)
+                flag = false
+            }
             if (rules[key]?.maxLength && formData[key]?.length > rules[key]?.maxLength) {
                 result[key] = { ...result[key], type: 'maxLength' }
                 setDisabled(false)
