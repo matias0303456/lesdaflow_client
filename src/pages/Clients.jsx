@@ -5,6 +5,7 @@ import { MessageContext } from "../providers/MessageProvider";
 import { useApi } from "../hooks/useApi";
 import { useForm } from "../hooks/useForm";
 import { useCountries } from "../hooks/useCountries";
+import { useClients } from "../hooks/useClients";
 
 import { Layout } from "../components/Layout";
 import { DataGrid } from "../components/DataGrid";
@@ -18,6 +19,7 @@ export function Clients() {
 
     const { get, post, put, destroy } = useApi(CLIENT_URL)
     const { countries, loadingCountries } = useCountries()
+    const { clients, setClients, loadingClients, setLoadingClients } = useClients()
     const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
         defaultData: {
             id: '',
@@ -55,8 +57,6 @@ export function Clients() {
         }
     })
 
-    const [loading, setLoading] = useState(true)
-    const [clients, setClients] = useState([])
     const [open, setOpen] = useState(null)
 
     useEffect(() => {
@@ -64,7 +64,7 @@ export function Clients() {
             const { status, data } = await get()
             if (status === 200) {
                 setClients(data)
-                setLoading(false)
+                setLoadingClients(false)
             }
         })()
     }, [])
@@ -93,7 +93,7 @@ export function Clients() {
     }
 
     async function handleDelete(elements) {
-        setLoading(true)
+        setLoadingClients(true)
         const result = await Promise.all(elements.map(e => destroy(e)))
         if (result.every(r => r.status === 200)) {
             const ids = result.map(r => r.data.id)
@@ -105,7 +105,7 @@ export function Clients() {
             setSeverity('error')
         }
         setOpenMessage(true)
-        setLoading(false)
+        setLoadingClients(false)
         setOpen(null)
     }
 
@@ -163,7 +163,7 @@ export function Clients() {
 
     return (
         <Layout title="Clientes">
-            {loading || loadingCountries || disabled ?
+            {loadingClients || loadingCountries || disabled ?
                 <Box sx={{ width: '100%' }}>
                     <LinearProgress />
                 </Box> :
