@@ -79,7 +79,7 @@ export function Login() {
                             }
                             {errors.password?.type === 'minLength' &&
                                 <Typography variant="caption" color="red" marginTop={1}>
-                                    * Este valor es demasiado corto.
+                                    * La contraseña es demasiado corta.
                                 </Typography>
                             }
                             {errors.password?.type === 'maxLength' &&
@@ -92,14 +92,18 @@ export function Login() {
                             <Button type="submit" variant="contained" sx={{
                                 width: '50%',
                                 margin: '0 auto',
-                                marginTop: 1,
-                                marginBottom: 4
+                                marginTop: 1
                             }} disabled={disabled}>
                                 Ingresar
                             </Button>
                         </FormControl>
                     </Box>
                 </form>
+                <Box textAlign="center" sx={{ marginTop: 4 }}>
+                    <Button variant="text" onClick={() => navigate('/')}>
+                        Recuperar contraseña
+                    </Button>
+                </Box>
                 <Box textAlign="center">
                     <Button variant="text" onClick={() => navigate('/')}>
                         Volver al inicio

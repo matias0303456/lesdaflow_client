@@ -180,7 +180,7 @@ export function Layout({ children, title }) {
                                 <MenuItem
                                     sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
                                     onClick={() => {
-                                        navigate('/')
+                                        navigate('/login')
                                         setAuth(null)
                                         localStorage.removeItem('auth')
                                     }}>

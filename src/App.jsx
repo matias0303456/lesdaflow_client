@@ -1,5 +1,4 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom"
-import { Container } from "@mui/material";
 import CssBaseline from '@mui/material/CssBaseline';
 
 import { MessageProvider } from "./providers/MessageProvider";
@@ -15,6 +14,7 @@ import { Clients } from './pages/Clients'
 import { Suppliers } from './pages/Suppliers'
 import { Categories } from './pages/Categories'
 import { Users } from './pages/Users'
+import { Reports } from "./pages/Reports";
 import { Profile } from "./pages/Profile";
 import { Error } from './pages/Error'
 
@@ -23,24 +23,23 @@ function App() {
     <MessageProvider>
       <AuthProvider>
         <CssBaseline />
-        <Container maxWidth="xl">
-          <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/inventario" element={<Inventory />} />
-              <Route path="/ingresos" element={<Incomes />} />
-              <Route path="/egresos" element={<Outcomes />} />
-              <Route path="/articulos" element={<Articles />} />
-              <Route path="/clientes" element={<Clients />} />
-              <Route path="/proveedores" element={<Suppliers />} />
-              <Route path="/categorias" element={<Categories />} />
-              <Route path="/usuarios" element={<Users />} />
-              <Route path="/perfil" element={<Profile />} />
-              <Route path="*" element={<Error />} />
-            </Routes>
-          </BrowserRouter>
-        </Container>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/inventario" element={<Inventory />} />
+            <Route path="/ingresos" element={<Incomes />} />
+            <Route path="/egresos" element={<Outcomes />} />
+            <Route path="/articulos" element={<Articles />} />
+            <Route path="/clientes" element={<Clients />} />
+            <Route path="/proveedores" element={<Suppliers />} />
+            <Route path="/categorias" element={<Categories />} />
+            <Route path="/usuarios" element={<Users />} />
+            <Route path="/reportes" element={<Reports />} />
+            <Route path="/perfil" element={<Profile />} />
+            <Route path="*" element={<Error />} />
+          </Routes>
+        </BrowserRouter>
       </AuthProvider>
     </MessageProvider>
   )
