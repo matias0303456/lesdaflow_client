@@ -169,7 +169,7 @@ export function Layout({ children, title }) {
                             {title}
                         </Typography>
                         <Dropdown>
-                            <MenuButton>¡Hola, {`${auth?.user.first_name} ${auth?.user.last_name}`}!</MenuButton>
+                            <MenuButton>¡Hola, {auth?.user.username}!</MenuButton>
                             <Menu slots={{ listbox: Listbox }}>
                                 <MenuItem
                                     sx={{ display: 'flex', alignItems: 'center', gap: 1 }}

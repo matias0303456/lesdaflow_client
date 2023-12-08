@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Box, Button, FormControl, Input, InputLabel, Select, Typography } from "@mui/material";
 
@@ -87,6 +87,20 @@ export function Profile() {
             }
         }
     })
+
+    const [dataHasChanged, setDataHasChanged] = useState(false)
+
+    useEffect(() => {
+        if (
+            formDataUser.first_name === auth?.user.first_name &&
+            formDataUser.last_name === auth?.user.last_name &&
+            formDataUser.username === auth?.user.username &&
+            formDataUser.email === auth?.user.email) {
+            setDataHasChanged(false)
+        } else {
+            setDataHasChanged(true)
+        }
+    }, [formDataUser])
 
     async function handleSubmitUser(e) {
         e.preventDefault()
@@ -198,7 +212,7 @@ export function Profile() {
                         gap: 1,
                         justifyContent: 'center'
                     }}>
-                        <Button type="submit" variant="contained" disabled={disabledUser} sx={{
+                        <Button type="submit" variant="contained" disabled={disabledUser || !dataHasChanged} sx={{
                             width: '50%'
                         }}>
                             Guardar
