@@ -19,9 +19,9 @@ export function Login() {
     const { post } = useApi(LOGIN_URL)
 
     const { formData, handleChange, disabled, setDisabled, validate, errors } = useForm({
-        defaultData: { email: '', password: '' },
+        defaultData: { username: '', password: '' },
         rules: {
-            email: { required: true, maxLength: 55 },
+            username: { required: true, maxLength: 55 },
             password: { required: true, minLength: 8, maxLength: 55 }
         }
     })
@@ -56,16 +56,16 @@ export function Login() {
                 <form onChange={handleChange} onSubmit={handleSubmit}>
                     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
                         <FormControl>
-                            <InputLabel htmlFor="email">Email</InputLabel>
-                            <Input id="email" type="email" name="email" value={formData.email} />
-                            {errors.email?.type === 'required' &&
+                            <InputLabel htmlFor="username">Usuario</InputLabel>
+                            <Input id="username" type="text" name="username" value={formData.username} />
+                            {errors.username?.type === 'required' &&
                                 <Typography variant="caption" color="red" marginTop={1}>
-                                    * El email es requerido.
+                                    * El nombre de usuario es requerido.
                                 </Typography>
                             }
-                            {errors.email?.type === 'maxLength' &&
+                            {errors.username?.type === 'maxLength' &&
                                 <Typography variant="caption" color="red" marginTop={1}>
-                                    * El email es demasiado largo.
+                                    * El nombre de usuario es demasiado largo.
                                 </Typography>
                             }
                         </FormControl>

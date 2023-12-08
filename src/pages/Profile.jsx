@@ -33,6 +33,7 @@ export function Profile() {
             first_name: auth?.user.first_name,
             last_name: auth?.user.last_name,
             email: auth?.user.email,
+            username: auth?.user.username,
             role_id: auth?.user.role.id
         },
         rules: {
@@ -45,6 +46,10 @@ export function Profile() {
                 maxLength: 55
             },
             email: {
+                required: true,
+                maxLength: 55
+            },
+            username: {
                 required: true,
                 maxLength: 55
             }
@@ -123,10 +128,13 @@ export function Profile() {
 
     return (
         <Layout title="Perfil">
-            <Typography variant="h6" sx={{ marginBottom: 2 }}>
+            <Typography variant="h6">
                 Editar mis datos
             </Typography>
-            <form onChange={handleChangeUser} onSubmit={handleSubmitUser}>
+            <Typography variant="caption" color="gray">
+                * Si cambia sus datos, deberá iniciar sesión nuevamente.
+            </Typography>
+            <form onChange={handleChangeUser} onSubmit={handleSubmitUser} style={{ marginTop: 30 }}>
                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, width: '40%' }}>
                     <FormControl>
                         <InputLabel htmlFor="first_name">Nombre</InputLabel>
@@ -157,11 +165,22 @@ export function Profile() {
                         }
                     </FormControl>
                     <FormControl>
+                        <InputLabel htmlFor="username">Usuario</InputLabel>
+                        <Input id="username" type="text" name="username" value={formDataUser.username} />
+                        {errorsUser.username?.type === 'required' &&
+                            <Typography variant="caption" color="red" marginTop={1}>
+                                * El nombre de usuario es requerido.
+                            </Typography>
+                        }
+                        {errorsUser.username?.type === 'maxLength' &&
+                            <Typography variant="caption" color="red" marginTop={1}>
+                                * El nombre de usuario es demasiado largo.
+                            </Typography>
+                        }
+                    </FormControl>
+                    <FormControl>
                         <InputLabel htmlFor="email">Email</InputLabel>
                         <Input id="email" type="email" name="email" value={formDataUser.email} />
-                        <Typography variant="caption" color="gray" marginTop={1}>
-                            * Si cambia el email, deberá iniciar sesión nuevamente.
-                        </Typography>
                         {errorsUser.email?.type === 'required' &&
                             <Typography variant="caption" color="red" marginTop={1}>
                                 * El email es requerido.
@@ -189,9 +208,6 @@ export function Profile() {
             </form>
             <Typography variant="h6" sx={{ marginTop: 10 }}>
                 Cambiar contraseña
-            </Typography>
-            <Typography variant="caption" color="gray">
-                * Si cambia la contraseña, deberá iniciar sesión nuevamente.
             </Typography>
             <form onChange={handleChangePwd} onSubmit={handleSubmitPwd}>
                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, width: '40%', marginTop: 2 }}>
