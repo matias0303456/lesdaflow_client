@@ -29,6 +29,7 @@ import ManageAccountsSharpIcon from '@mui/icons-material/ManageAccountsSharp';
 import PermContactCalendarSharpIcon from '@mui/icons-material/PermContactCalendarSharp';
 import LogoutSharpIcon from '@mui/icons-material/LogoutSharp';
 import AssessmentSharpIcon from '@mui/icons-material/AssessmentSharp';
+import KeyboardReturnSharpIcon from '@mui/icons-material/KeyboardReturnSharp';
 
 import { AuthContext } from '../providers/AuthProvider';
 
@@ -126,7 +127,15 @@ export function Layout({ children, title }) {
                         </ListItemButton>
                     </ListItem>
                 }
-                <ListItem key={9} disablePadding sx={{ background: pathname === '/reportes' ? grey[100] : '#fff' }}>
+                <ListItem key={9} disablePadding sx={{ background: pathname === '/devoluciones' ? grey[100] : '#fff' }}>
+                    <ListItemButton onClick={() => navigate('/devoluciones')}>
+                        <ListItemIcon>
+                            <KeyboardReturnSharpIcon />
+                        </ListItemIcon>
+                        <ListItemText primary="Devoluciones" />
+                    </ListItemButton>
+                </ListItem>
+                <ListItem key={10} disablePadding sx={{ background: pathname === '/reportes' ? grey[100] : '#fff' }}>
                     <ListItemButton onClick={() => navigate('/reportes')}>
                         <ListItemIcon>
                             <AssessmentSharpIcon />

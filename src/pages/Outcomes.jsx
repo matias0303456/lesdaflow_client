@@ -14,6 +14,7 @@ import { DataGrid } from "../components/DataGrid";
 import { ModalComponent } from "../components/ModalComponent";
 
 import { OUTCOME_URL } from "../utils/urls";
+import { getStock } from "../utils/helpers";
 
 export function Outcomes() {
 
@@ -21,7 +22,7 @@ export function Outcomes() {
 
     const { setMessage, setOpenMessage, setSeverity } = useContext(MessageContext)
 
-    const { articles, loadingArticles } = useArticles()
+    const { articles, loadingArticles } = useArticles(true)
     const { clients, loadingClients } = useClients()
     const { currencies, loadingCurrencies } = useCurrencies()
     const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
@@ -31,6 +32,7 @@ export function Outcomes() {
             client_id: '',
             amount: '',
             price: '',
+            currency_id: '',
             discount: '',
             observations: ''
         },
@@ -47,6 +49,9 @@ export function Outcomes() {
             price: {
                 required: true
             },
+            currency_id: {
+                required: true
+            },
             discount: {
                 required: true
             },
@@ -59,6 +64,7 @@ export function Outcomes() {
     const [loadingOutcomes, setLoadingOutcomes] = useState(true)
     const [outcomes, setOutcomes] = useState([])
     const [open, setOpen] = useState(null)
+    const [hasStock, setHasStock] = useState(false)
 
     useEffect(() => {
         (async () => {
@@ -70,9 +76,19 @@ export function Outcomes() {
         })()
     }, [])
 
+    useEffect(() => {
+        setHasStock(getStock(articles.find(art => art.id === formData.article_id)) >= parseInt(formData.amount) && formData.amount.toString().length > 0)
+    }, [formData])
+
     async function handleSubmit(e) {
         e.preventDefault()
-        if (validate()) {
+        if (!hasStock) {
+            setMessage('No hay stock disponible.')
+            setSeverity('error')
+            setOpenMessage(true)
+            return
+        }
+        if (validate() && hasStock) {
             const { status, data } = open === 'NEW' ? await post(formData) : await put(formData)
             if (status === 200) {
                 if (open === 'NEW') {
@@ -212,7 +228,7 @@ export function Outcomes() {
                                         labelId="article-select"
                                         id="article_id"
                                         value={formData.article_id}
-                                        label="Proveedor"
+                                        label="Artículo"
                                         name="article_id"
                                         onChange={handleChange}
                                     >

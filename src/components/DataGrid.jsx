@@ -375,10 +375,10 @@ export function DataGrid({
                 />
             </Paper>
             {children}
-            <FormControlLabel
+            {/* <FormControlLabel
                 control={<Switch checked={dense} onChange={handleChangeDense} />}
                 label="Condensar tabla"
-            />
+            /> */}
         </Box>
     );
 }

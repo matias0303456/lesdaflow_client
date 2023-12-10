@@ -13,3 +13,5 @@ export const CATEGORY_URL = `${BASE_URL}/categories`
 export const USER_URL = `${BASE_URL}/users`
 export const CHANGE_PASSWORD_URL = `${USER_URL}/change-password`
 export const REPORT_URL = `${BASE_URL}/reports`
+export const CLIENT_RETURN_URL = `${BASE_URL}/client-returns`
+export const SUPPLIER_RETURN_URL = `${BASE_URL}/supplier-returns`

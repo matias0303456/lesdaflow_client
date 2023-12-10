@@ -5,6 +5,8 @@ import { useArticles } from "../hooks/useArticles";
 import { Layout } from "../components/Layout";
 import { DataGrid } from '../components/DataGrid'
 
+import { getStock } from "../utils/helpers";
+
 export function Inventory() {
 
     const { articles, loadingArticles } = useArticles(true)
@@ -43,11 +45,7 @@ export function Inventory() {
             numeric: false,
             disablePadding: true,
             label: 'Stock',
-            accessor: (row) => row.incomes.reduce((prev, curr) => {
-                return prev + curr.amount
-            }, 0) - row.outcomes.reduce((prev, curr) => {
-                return prev + curr.amount
-            }, 0)
+            accessor: (row) => getStock(row)
         }
     ]
 

@@ -14,6 +14,7 @@ import { Clients } from './pages/Clients'
 import { Suppliers } from './pages/Suppliers'
 import { Categories } from './pages/Categories'
 import { Users } from './pages/Users'
+import { Returns } from "./pages/Returns";
 import { Reports } from "./pages/Reports";
 import { Profile } from "./pages/Profile";
 import { Error } from './pages/Error'
@@ -35,6 +36,7 @@ function App() {
             <Route path="/proveedores" element={<Suppliers />} />
             <Route path="/categorias" element={<Categories />} />
             <Route path="/usuarios" element={<Users />} />
+            <Route path="/devoluciones" element={<Returns />} />
             <Route path="/reportes" element={<Reports />} />
             <Route path="/perfil" element={<Profile />} />
             <Route path="*" element={<Error />} />

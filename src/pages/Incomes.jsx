@@ -31,6 +31,7 @@ export function Incomes() {
             supplier_id: '',
             amount: '',
             price: '',
+            currency_id: '',
             discount: '',
             observations: ''
         },
@@ -45,6 +46,9 @@ export function Incomes() {
                 required: true
             },
             price: {
+                required: true
+            },
+            currency_id: {
                 required: true
             },
             discount: {
