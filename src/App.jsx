@@ -26,20 +26,20 @@ function App() {
         <CssBaseline />
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/inventario" element={<Inventory />} />
-            <Route path="/ingresos" element={<Incomes />} />
-            <Route path="/egresos" element={<Outcomes />} />
-            <Route path="/articulos" element={<Articles />} />
-            <Route path="/clientes" element={<Clients />} />
-            <Route path="/proveedores" element={<Suppliers />} />
-            <Route path="/categorias" element={<Categories />} />
-            <Route path="/usuarios" element={<Users />} />
-            <Route path="/devoluciones" element={<Returns />} />
-            <Route path="/reportes" element={<Reports />} />
-            <Route path="/perfil" element={<Profile />} />
-            <Route path="*" element={<Error />} />
+            <Route path="/lesdaflow/" element={<Home />} />
+            <Route path="/lesdaflow/login" element={<Login />} />
+            <Route path="/lesdaflow/inventario" element={<Inventory />} />
+            <Route path="/lesdaflow/ingresos" element={<Incomes />} />
+            <Route path="/lesdaflow/egresos" element={<Outcomes />} />
+            <Route path="/lesdaflow/articulos" element={<Articles />} />
+            <Route path="/lesdaflow/clientes" element={<Clients />} />
+            <Route path="/lesdaflow/proveedores" element={<Suppliers />} />
+            <Route path="/lesdaflow/categorias" element={<Categories />} />
+            <Route path="/lesdaflow/usuarios" element={<Users />} />
+            <Route path="/lesdaflow/devoluciones" element={<Returns />} />
+            <Route path="/lesdaflow/reportes" element={<Reports />} />
+            <Route path="/lesdaflow/perfil" element={<Profile />} />
+            <Route path="/lesdaflow*" element={<Error />} />
           </Routes>
         </BrowserRouter>
       </AuthProvider>

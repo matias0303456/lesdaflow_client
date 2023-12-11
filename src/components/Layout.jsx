@@ -61,56 +61,56 @@ export function Layout({ children, title }) {
             </Toolbar>
             <Divider />
             <List>
-                <ListItem key={1} disablePadding sx={{ background: pathname === '/inventario' ? grey[100] : '#fff' }}>
-                    <ListItemButton onClick={() => navigate('/inventario')}>
+                <ListItem key={1} disablePadding sx={{ background: pathname === '/lesdaflow/inventario' ? grey[100] : '#fff' }}>
+                    <ListItemButton onClick={() => navigate('/lesdaflow/inventario')}>
                         <ListItemIcon>
                             <Inventory2SharpIcon />
                         </ListItemIcon>
                         <ListItemText primary="Inventario" />
                     </ListItemButton>
                 </ListItem>
-                <ListItem key={2} disablePadding sx={{ background: pathname === '/ingresos' ? grey[100] : '#fff' }}>
-                    <ListItemButton onClick={() => navigate('/ingresos')}>
+                <ListItem key={2} disablePadding sx={{ background: pathname === '/lesdaflow/ingresos' ? grey[100] : '#fff' }}>
+                    <ListItemButton onClick={() => navigate('/lesdaflow/ingresos')}>
                         <ListItemIcon>
                             <InputSharpIcon />
                         </ListItemIcon>
                         <ListItemText primary="Ingresos" />
                     </ListItemButton>
                 </ListItem>
-                <ListItem key={3} disablePadding sx={{ background: pathname === '/egresos' ? grey[100] : '#fff' }}>
-                    <ListItemButton onClick={() => navigate('/egresos')}>
+                <ListItem key={3} disablePadding sx={{ background: pathname === '/lesdaflow/egresos' ? grey[100] : '#fff' }}>
+                    <ListItemButton onClick={() => navigate('/lesdaflow/egresos')}>
                         <ListItemIcon>
                             <MonetizationOnSharpIcon />
                         </ListItemIcon>
                         <ListItemText primary="Egresos" />
                     </ListItemButton>
                 </ListItem>
-                <ListItem key={4} disablePadding sx={{ background: pathname === '/articulos' ? grey[100] : '#fff' }}>
-                    <ListItemButton onClick={() => navigate('/articulos')}>
+                <ListItem key={4} disablePadding sx={{ background: pathname === '/lesdaflow/articulos' ? grey[100] : '#fff' }}>
+                    <ListItemButton onClick={() => navigate('/lesdaflow/articulos')}>
                         <ListItemIcon>
                             <ProductionQuantityLimitsSharpIcon />
                         </ListItemIcon>
                         <ListItemText primary="Artículos" />
                     </ListItemButton>
                 </ListItem>
-                <ListItem key={5} disablePadding sx={{ background: pathname === '/clientes' ? grey[100] : '#fff' }}>
-                    <ListItemButton onClick={() => navigate('/clientes')}>
+                <ListItem key={5} disablePadding sx={{ background: pathname === '/lesdaflow/clientes' ? grey[100] : '#fff' }}>
+                    <ListItemButton onClick={() => navigate('/lesdaflow/clientes')}>
                         <ListItemIcon>
                             <Person2SharpIcon />
                         </ListItemIcon>
                         <ListItemText primary="Clientes" />
                     </ListItemButton>
                 </ListItem>
-                <ListItem key={6} disablePadding sx={{ background: pathname === '/proveedores' ? grey[100] : '#fff' }}>
-                    <ListItemButton onClick={() => navigate('/proveedores')}>
+                <ListItem key={6} disablePadding sx={{ background: pathname === '/lesdaflow/proveedores' ? grey[100] : '#fff' }}>
+                    <ListItemButton onClick={() => navigate('/lesdaflow/proveedores')}>
                         <ListItemIcon>
                             <LocalShippingSharpIcon />
                         </ListItemIcon>
                         <ListItemText primary="Proveedores" />
                     </ListItemButton>
                 </ListItem>
-                <ListItem key={7} disablePadding sx={{ background: pathname === '/categorias' ? grey[100] : '#fff' }}>
-                    <ListItemButton onClick={() => navigate('/categorias')}>
+                <ListItem key={7} disablePadding sx={{ background: pathname === '/lesdaflow/categorias' ? grey[100] : '#fff' }}>
+                    <ListItemButton onClick={() => navigate('/lesdaflow/categorias')}>
                         <ListItemIcon>
                             <CategorySharpIcon />
                         </ListItemIcon>
@@ -118,8 +118,8 @@ export function Layout({ children, title }) {
                     </ListItemButton>
                 </ListItem>
                 {(auth?.user.role.name === 'SUPER_ADMIN' || auth?.user.role.name === 'ADMIN') &&
-                    <ListItem key={8} disablePadding sx={{ background: pathname === '/usuarios' ? grey[100] : '#fff' }}>
-                        <ListItemButton onClick={() => navigate('/usuarios')}>
+                    <ListItem key={8} disablePadding sx={{ background: pathname === '/lesdaflow/usuarios' ? grey[100] : '#fff' }}>
+                        <ListItemButton onClick={() => navigate('/lesdaflow/usuarios')}>
                             <ListItemIcon>
                                 <PermContactCalendarSharpIcon />
                             </ListItemIcon>
@@ -127,16 +127,16 @@ export function Layout({ children, title }) {
                         </ListItemButton>
                     </ListItem>
                 }
-                <ListItem key={9} disablePadding sx={{ background: pathname === '/devoluciones' ? grey[100] : '#fff' }}>
-                    <ListItemButton onClick={() => navigate('/devoluciones')}>
+                <ListItem key={9} disablePadding sx={{ background: pathname === '/lesdaflow/devoluciones' ? grey[100] : '#fff' }}>
+                    <ListItemButton onClick={() => navigate('/lesdaflow/devoluciones')}>
                         <ListItemIcon>
                             <KeyboardReturnSharpIcon />
                         </ListItemIcon>
                         <ListItemText primary="Devoluciones" />
                     </ListItemButton>
                 </ListItem>
-                <ListItem key={10} disablePadding sx={{ background: pathname === '/reportes' ? grey[100] : '#fff' }}>
-                    <ListItemButton onClick={() => navigate('/reportes')}>
+                <ListItem key={10} disablePadding sx={{ background: pathname === '/lesdaflow/reportes' ? grey[100] : '#fff' }}>
+                    <ListItemButton onClick={() => navigate('/lesdaflow/reportes')}>
                         <ListItemIcon>
                             <AssessmentSharpIcon />
                         </ListItemIcon>
@@ -182,7 +182,7 @@ export function Layout({ children, title }) {
                             <Menu slots={{ listbox: Listbox }}>
                                 <MenuItem
                                     sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
-                                    onClick={() => navigate('/perfil')}>
+                                    onClick={() => navigate('/lesdaflow/perfil')}>
                                     <ManageAccountsSharpIcon />
                                     Perfil
                                 </MenuItem>
