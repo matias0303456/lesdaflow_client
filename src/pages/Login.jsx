@@ -100,7 +100,7 @@ export function Login() {
                     </Box>
                 </form>
                 <Box textAlign="center" sx={{ marginTop: 4 }}>
-                    <Button variant="text" onClick={() => navigate('/')}>
+                    <Button variant="text" onClick={() => navigate('/lesdaflow/')}>
                         Volver al inicio
                     </Button>
                 </Box>
