@@ -24,6 +24,7 @@ export function Users() {
             id: '',
             first_name: '',
             last_name: '',
+            username: '',
             email: '',
             password: '',
             role_id: ''
@@ -34,6 +35,10 @@ export function Users() {
                 maxLength: 55
             },
             last_name: {
+                required: true,
+                maxLength: 55
+            },
+            username: {
                 required: true,
                 maxLength: 55
             },
@@ -204,6 +209,20 @@ export function Users() {
                                     {errors.last_name?.type === 'maxLength' &&
                                         <Typography variant="caption" color="red" marginTop={1}>
                                             * El apellido es demasiado largo.
+                                        </Typography>
+                                    }
+                                </FormControl>
+                                <FormControl>
+                                    <InputLabel htmlFor="username">Usuario</InputLabel>
+                                    <Input id="username" type="text" name="username" value={formData.username} />
+                                    {errors.username?.type === 'required' &&
+                                        <Typography variant="caption" color="red" marginTop={1}>
+                                            * El nombre de usuario es requerido.
+                                        </Typography>
+                                    }
+                                    {errors.username?.type === 'maxLength' &&
+                                        <Typography variant="caption" color="red" marginTop={1}>
+                                            * El nombre de usuario es demasiado largo.
                                         </Typography>
                                     }
                                 </FormControl>
