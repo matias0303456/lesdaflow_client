@@ -146,6 +146,13 @@ export function Users() {
             accessor: 'last_name'
         },
         {
+            id: 'username',
+            numeric: false,
+            disablePadding: true,
+            label: 'Usuario',
+            accessor: 'username'
+        },
+        {
             id: 'email',
             numeric: false,
             disablePadding: true,
