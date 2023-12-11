@@ -39,7 +39,7 @@ function App() {
             <Route path="/lesdaflow/devoluciones" element={<Returns />} />
             <Route path="/lesdaflow/reportes" element={<Reports />} />
             <Route path="/lesdaflow/perfil" element={<Profile />} />
-            <Route path="/lesdaflow*" element={<Error />} />
+            <Route path="*" element={<Error />} />
           </Routes>
         </BrowserRouter>
       </AuthProvider>
