@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Box, Button, FormControl, InputLabel, LinearProgress, MenuItem, Select, Typography } from "@mui/material";
 
+import { AuthContext } from "../providers/AuthProvider";
 import { useForm } from '../hooks/useForm'
 import { useClients } from "../hooks/useClients";
 
@@ -10,6 +11,8 @@ import { Layout } from "../components/Layout";
 import { REPORT_URL } from "../utils/urls";
 
 export function Reports() {
+
+    const { auth } = useContext(AuthContext)
 
     const { clients, loadingClients } = useClients()
     const { formData, handleChange } = useForm({
@@ -35,7 +38,7 @@ export function Reports() {
                             Movimientos de cliente
                         </Typography>
                         <Typography variant="caption" color="gray">
-                            En este reporte se detallan los egresos vinculados al cliente seleccionado.
+                            En este reporte se detallan los egresos y devoluciones vinculados al cliente seleccionado.
                         </Typography>
                         <form onChange={handleChange} style={{ marginTop: 10 }}>
                             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 3 }}>
@@ -55,7 +58,7 @@ export function Reports() {
                                     </Select>
                                 </FormControl>
                                 <Link
-                                    to={canDownload ? `${REPORT_URL}/client-movements/${formData.client_id}` : '#'}
+                                    to={canDownload ? `${REPORT_URL}/client-movements/${auth.token}/${formData.client_id}` : '#'}
                                     target={canDownload ? "_blank" : '_self'}
                                     style={{ width: '50%', cursor: canDownload ? 'pointer' : 'auto' }}
                                 >

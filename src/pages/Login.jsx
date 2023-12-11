@@ -101,11 +101,6 @@ export function Login() {
                 </form>
                 <Box textAlign="center" sx={{ marginTop: 4 }}>
                     <Button variant="text" onClick={() => navigate('/')}>
-                        Recuperar contraseña
-                    </Button>
-                </Box>
-                <Box textAlign="center">
-                    <Button variant="text" onClick={() => navigate('/')}>
                         Volver al inicio
                     </Button>
                 </Box>
