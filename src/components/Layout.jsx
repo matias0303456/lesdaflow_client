@@ -45,7 +45,7 @@ export function Layout({ children, title }) {
     const drawerWidth = 240
 
     useEffect(() => {
-        if (!auth) return navigate('/login')
+        if (!auth) return navigate('/lesdaflow/login')
     }, [])
 
     const handleDrawerToggle = () => {
