@@ -35,7 +35,7 @@ export function Home() {
     const navigate = useNavigate()
 
     useEffect(() => {
-        if (auth) return navigate('/inventario')
+        if (auth) return navigate('/lesdaflow/inventario')
     }, [])
 
     return (
@@ -44,7 +44,7 @@ export function Home() {
                 <Button
                     variant="outlined"
                     sx={{ color: "white", borderColor: "white" }}
-                    onClick={() => navigate('/login')}
+                    onClick={() => navigate('/lesdaflow/login')}
                 >
                     Ingresar
                 </Button>

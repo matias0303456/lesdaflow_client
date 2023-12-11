@@ -111,7 +111,7 @@ export function Profile() {
                 setAuth(null)
                 setMessage('Datos editados correctamente.')
                 setSeverity('success')
-                navigate('/')
+                navigate('/lesdaflow/')
             } else {
                 setMessage(data.message)
                 setSeverity('error')
@@ -130,7 +130,7 @@ export function Profile() {
                 setAuth(null)
                 setMessage('Se cambió la contraseña correctamente.')
                 setSeverity('success')
-                navigate('/')
+                navigate('/lesdaflow/')
             } else {
                 setMessage(data.message)
                 setSeverity('error')

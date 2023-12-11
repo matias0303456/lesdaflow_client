@@ -189,7 +189,7 @@ export function Layout({ children, title }) {
                                 <MenuItem
                                     sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
                                     onClick={() => {
-                                        navigate('/login')
+                                        navigate('/lesdaflow/login')
                                         setAuth(null)
                                         localStorage.removeItem('auth')
                                     }}>
