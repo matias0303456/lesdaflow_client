@@ -77,7 +77,7 @@ export function Home() {
                 />
                 <FeatureCard
                     icon={<AssessmentRoundedIcon />}
-                    text="Generación de reportes en PFD"
+                    text="Generación de reportes en PDF"
                 />
             </Box>
         </Box>
