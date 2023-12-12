@@ -170,7 +170,7 @@ export function Layout({ children, title }) {
                         display: 'flex',
                         width: '100%',
                         flexWrap: 'wrap',
-                        justifyContent: { xs: 'center', sm: 'space-between' },
+                        justifyContent: 'space-between',
                         gap: { xs: 1, sm: 2 },
                         padding: { xs: 2, sm: 0 }
                     }}>

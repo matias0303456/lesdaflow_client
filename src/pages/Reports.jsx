@@ -27,14 +27,14 @@ export function Reports() {
     }, [formData])
 
     return (
-        <Layout title="Generación de reportes en PDF">
+        <Layout title="Reportes">
             {loadingClients ?
                 <Box sx={{ width: '100%' }}>
                     <LinearProgress />
                 </Box> :
                 <Box>
                     <Box>
-                        <Typography variant="h6">
+                        <Typography variant="h6" sx={{ marginTop: { xs: 3, sm: 0 } }}>
                             Movimientos de cliente
                         </Typography>
                         <Typography variant="caption" color="gray">
@@ -60,10 +60,10 @@ export function Reports() {
                                 <Link
                                     to={canDownload ? `${REPORT_URL}/client-movements/${auth.token}/${formData.client_id}` : '#'}
                                     target={canDownload ? "_blank" : '_self'}
-                                    style={{ width: '50%', cursor: canDownload ? 'pointer' : 'auto' }}
+                                    style={{ width: { xs: '30%', lg: '50%' }, cursor: canDownload ? 'pointer' : 'auto' }}
                                 >
                                     <Button type="button" variant="contained" disabled={!canDownload}>
-                                        Descargar
+                                        Descargar PDF
                                     </Button>
                                 </Link>
                             </Box>

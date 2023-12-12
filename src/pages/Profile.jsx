@@ -149,7 +149,7 @@ export function Profile() {
                 * Si cambia sus datos, deberá iniciar sesión nuevamente.
             </Typography>
             <form onChange={handleChangeUser} onSubmit={handleSubmitUser} style={{ marginTop: 30 }}>
-                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, width: '40%' }}>
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, width: { sm: '80%', lg: '40%' } }}>
                     <FormControl>
                         <InputLabel htmlFor="first_name">Nombre</InputLabel>
                         <Input id="first_name" type="text" name="first_name" value={formDataUser.first_name} />
@@ -224,7 +224,7 @@ export function Profile() {
                 Cambiar contraseña
             </Typography>
             <form onChange={handleChangePwd} onSubmit={handleSubmitPwd}>
-                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, width: '40%', marginTop: 2 }}>
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, width: { sm: '80%', lg: '40%' }, marginTop: 2 }}>
                     <FormControl>
                         <InputLabel htmlFor="current">Contraseña actual</InputLabel>
                         <Input id="current" type="password" name="current" value={formDataPwd.current} />
