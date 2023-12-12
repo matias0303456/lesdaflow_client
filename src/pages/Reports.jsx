@@ -41,7 +41,7 @@ export function Reports() {
                             En este reporte se detallan los egresos y devoluciones vinculados al cliente seleccionado.
                         </Typography>
                         <form onChange={handleChange} style={{ marginTop: 10 }}>
-                            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 3 }}>
+                            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'start', gap: 3 }}>
                                 <FormControl sx={{ width: '50%' }} >
                                     <InputLabel id="client-select">Cliente</InputLabel>
                                     <Select

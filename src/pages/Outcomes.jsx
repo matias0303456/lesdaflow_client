@@ -6,7 +6,6 @@ import { MessageContext } from "../providers/MessageProvider";
 import { useApi } from "../hooks/useApi";
 import { useArticles } from "../hooks/useArticles";
 import { useClients } from '../hooks/useClients'
-import { useCurrencies } from "../hooks/useCurrencies";
 import { useForm } from "../hooks/useForm";
 
 import { Layout } from "../components/Layout";
@@ -24,15 +23,12 @@ export function Outcomes() {
 
     const { articles, loadingArticles } = useArticles(true)
     const { clients, loadingClients } = useClients()
-    const { currencies, loadingCurrencies } = useCurrencies()
     const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
         defaultData: {
             id: '',
             article_id: '',
             client_id: '',
             amount: '',
-            price: '',
-            currency_id: '',
             discount: '',
             observations: ''
         },
@@ -44,12 +40,6 @@ export function Outcomes() {
                 required: true
             },
             amount: {
-                required: true
-            },
-            price: {
-                required: true
-            },
-            currency_id: {
                 required: true
             },
             discount: {
@@ -160,28 +150,28 @@ export function Outcomes() {
             numeric: false,
             disablePadding: true,
             label: 'Precio unitario',
-            accessor: (row) => `${row.price} ${row.currency.iso}`
+            accessor: (row) => row.article.sale_price
         },
         {
             id: 'discount',
             numeric: false,
             disablePadding: true,
-            label: 'Descuento',
-            accessor: (row) => `${row.discount} %`
+            label: '% Descuento',
+            accessor: 'discount'
         },
         {
             id: 'total',
             numeric: false,
             disablePadding: true,
             label: 'Total',
-            accessor: (row) => `${(row.price * row.amount) - (((row.price * row.amount) / 100) * row.discount)} ${row.currency.iso}`
+            accessor: (row) => (row.article.sale_price * row.amount) - (((row.article.sale_price * row.amount) / 100) * row.discount)
         },
         {
             id: 'currency',
             numeric: false,
             disablePadding: true,
             label: 'Moneda',
-            accessor: (row) => row.currency.iso
+            accessor: (row) => row.article.currency.iso
         },
         {
             id: 'observations',
@@ -194,14 +184,14 @@ export function Outcomes() {
             id: 'created_at',
             numeric: false,
             disablePadding: true,
-            label: 'Creado',
+            label: 'Fecha',
             accessor: (row) => format(new Date(row.created_at), 'dd-MM-yyyy')
         }
     ]
 
     return (
         <Layout title="Egresos">
-            {loadingClients || loadingOutcomes || loadingArticles || loadingCurrencies || disabled ?
+            {loadingClients || loadingOutcomes || loadingArticles || disabled ?
                 <Box sx={{ width: '100%' }}>
                     <LinearProgress />
                 </Box> :
@@ -268,35 +258,6 @@ export function Outcomes() {
                                     {errors.amount?.type === 'required' &&
                                         <Typography variant="caption" color="red" marginTop={1}>
                                             * La cantidad es requerida.
-                                        </Typography>
-                                    }
-                                </FormControl>
-                                <FormControl>
-                                    <InputLabel htmlFor="price">Precio</InputLabel>
-                                    <Input id="price" type="number" name="price" value={formData.price} />
-                                    {errors.price?.type === 'required' &&
-                                        <Typography variant="caption" color="red" marginTop={1}>
-                                            * El precio es requerido.
-                                        </Typography>
-                                    }
-                                </FormControl>
-                                <FormControl>
-                                    <InputLabel id="currency-select">Moneda</InputLabel>
-                                    <Select
-                                        labelId="currency-select"
-                                        id="currency_id"
-                                        value={formData.currency_id}
-                                        label="Moneda"
-                                        name="currency_id"
-                                        onChange={handleChange}
-                                    >
-                                        {currencies.map(c => (
-                                            <MenuItem key={c.id} value={c.id}>{c.iso}</MenuItem>
-                                        ))}
-                                    </Select>
-                                    {errors.currency_id?.type === 'required' &&
-                                        <Typography variant="caption" color="red" marginTop={1}>
-                                            * La moneda es requerida.
                                         </Typography>
                                     }
                                 </FormControl>

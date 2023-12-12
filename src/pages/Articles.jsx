@@ -1,10 +1,11 @@
 import { useContext, useState } from "react";
 import { Box, Button, FormControl, Input, InputLabel, LinearProgress, MenuItem, Select, Typography } from "@mui/material";
 
+import { MessageContext } from "../providers/MessageProvider";
 import { useArticles } from '../hooks/useArticles'
 import { useCategories } from "../hooks/useCategories";
 import { useForm } from "../hooks/useForm";
-import { MessageContext } from "../providers/MessageProvider";
+import { useCurrencies } from '../hooks/useCurrencies'
 
 import { Layout } from "../components/Layout";
 import { DataGrid } from "../components/DataGrid";
@@ -19,13 +20,17 @@ export function Articles() {
 
     const { post, put, destroy } = useApi(ARTICLE_URL)
     const { articles, setArticles, loadingArticles, setLoadingArticles } = useArticles()
+    const { currencies, loadingCurrencies } = useCurrencies()
     const { categories, loadingCategories } = useCategories()
     const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
         defaultData: {
             id: '',
             name: '',
             code: '',
-            description: '',
+            purchase_price: '',
+            sale_price: '',
+            currency_id: '',
+            details: '',
             category_id: ''
         },
         rules: {
@@ -37,8 +42,16 @@ export function Articles() {
                 required: true,
                 maxLength: 55
             },
-            description: {
-                required: true,
+            purchase_price: {
+                required: true
+            },
+            sale_price: {
+                required: true
+            },
+            currency_id: {
+                required: true
+            },
+            details: {
                 maxLength: 55
             },
             category_id: {
@@ -112,11 +125,32 @@ export function Articles() {
             accessor: 'code'
         },
         {
-            id: 'description',
+            id: 'purchase_price',
+            numeric: true,
+            disablePadding: true,
+            label: 'Precio de compra',
+            accessor: 'purchase_price'
+        },
+        {
+            id: 'sale_price',
+            numeric: true,
+            disablePadding: true,
+            label: 'Precio de venta',
+            accessor: 'sale_price'
+        },
+        {
+            id: 'currency',
+            numeric: true,
+            disablePadding: true,
+            label: 'Moneda',
+            accessor: (row) => row.currency.iso
+        },
+        {
+            id: 'details',
             numeric: false,
             disablePadding: true,
-            label: 'Descripción',
-            accessor: 'description'
+            label: 'Detalle',
+            accessor: 'details'
         },
         {
             id: 'category',
@@ -129,7 +163,7 @@ export function Articles() {
 
     return (
         <Layout title="Artículos">
-            {loadingArticles || loadingCategories || disabled ?
+            {loadingArticles || loadingCategories || loadingCurrencies || disabled ?
                 <Box sx={{ width: '100%' }}>
                     <LinearProgress />
                 </Box> :
@@ -144,12 +178,12 @@ export function Articles() {
                     handleDelete={handleDelete}
                 >
                     <ModalComponent open={open === 'NEW' || open === 'EDIT'} onClose={() => reset(setOpen)}>
-                        <Typography variant="h6" sx={{ marginBottom: 2 }}>
+                        <Typography variant="h6" sx={{ marginBottom: 0.5 }}>
                             {open === 'NEW' && 'Nuevo artículo'}
                             {open === 'EDIT' && 'Editar artículo'}
                         </Typography>
                         <form onChange={handleChange} onSubmit={handleSubmit}>
-                            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+                            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                                 <FormControl>
                                     <InputLabel htmlFor="name">Nombre</InputLabel>
                                     <Input id="name" type="text" name="name" value={formData.name} />
@@ -179,16 +213,49 @@ export function Articles() {
                                     }
                                 </FormControl>
                                 <FormControl>
-                                    <InputLabel htmlFor="description">Descripción</InputLabel>
-                                    <Input id="description" type="text" name="description" value={formData.description} />
-                                    {errors.description?.type === 'required' &&
+                                    <InputLabel htmlFor="purchase_price">Precio de compra</InputLabel>
+                                    <Input id="purchase_price" type="number" name="purchase_price" value={formData.purchase_price} />
+                                    {errors.purchase_price?.type === 'required' &&
                                         <Typography variant="caption" color="red" marginTop={1}>
-                                            * El código es requerido.
+                                            * El precio de compra es requerido.
                                         </Typography>
                                     }
-                                    {errors.description?.type === 'maxLength' &&
+                                </FormControl>
+                                <FormControl>
+                                    <InputLabel htmlFor="sale_price">Precio de venta</InputLabel>
+                                    <Input id="sale_price" type="number" name="sale_price" value={formData.sale_price} />
+                                    {errors.sale_price?.type === 'required' &&
                                         <Typography variant="caption" color="red" marginTop={1}>
-                                            * El código es demasiado largo.
+                                            * El precio de venta es requerido.
+                                        </Typography>
+                                    }
+                                </FormControl>
+                                <FormControl>
+                                    <InputLabel id="currency-select">Moneda</InputLabel>
+                                    <Select
+                                        labelId="currency-select"
+                                        id="currency_id"
+                                        value={formData.currency_id}
+                                        label="Moneda"
+                                        name="currency_id"
+                                        onChange={handleChange}
+                                    >
+                                        {currencies.map(c => (
+                                            <MenuItem key={c.id} value={c.id}>{c.iso}</MenuItem>
+                                        ))}
+                                    </Select>
+                                    {errors.currency_id?.type === 'required' &&
+                                        <Typography variant="caption" color="red" marginTop={1}>
+                                            * La moneda es requerida.
+                                        </Typography>
+                                    }
+                                </FormControl>
+                                <FormControl>
+                                    <InputLabel htmlFor="details">Detalle</InputLabel>
+                                    <Input id="details" type="text" name="details" value={formData.details} />
+                                    {errors.details?.type === 'maxLength' &&
+                                        <Typography variant="caption" color="red" marginTop={1}>
+                                            * El detalle es demasiado largo.
                                         </Typography>
                                     }
                                 </FormControl>

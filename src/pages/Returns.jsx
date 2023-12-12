@@ -6,7 +6,6 @@ import { MessageContext } from "../providers/MessageProvider";
 import { useForm } from "../hooks/useForm";
 import { useArticles } from '../hooks/useArticles'
 import { useClients } from "../hooks/useClients";
-import { useCurrencies } from "../hooks/useCurrencies";
 import { useSuppliers } from "../hooks/useSuppliers";
 import { useApi } from "../hooks/useApi";
 
@@ -35,7 +34,6 @@ export function Returns() {
     } = useApi(SUPPLIER_RETURN_URL)
     const { articles, loadingArticles } = useArticles(true)
     const { clients, loadingClients } = useClients()
-    const { currencies, loadingCurrencies } = useCurrencies()
     const { suppliers, loadingSuppliers } = useSuppliers()
     const {
         formData: formDataClient,
@@ -52,8 +50,6 @@ export function Returns() {
             article_id: '',
             client_id: '',
             amount: '',
-            price: '',
-            currency_id: '',
             observations: ''
         },
         rules: {
@@ -64,12 +60,6 @@ export function Returns() {
                 required: true
             },
             amount: {
-                required: true
-            },
-            price: {
-                required: true
-            },
-            currency_id: {
                 required: true
             },
             observations: {
@@ -92,8 +82,6 @@ export function Returns() {
             article_id: '',
             supplier_id: '',
             amount: '',
-            price: '',
-            currency_id: '',
             observations: ''
         },
         rules: {
@@ -104,12 +92,6 @@ export function Returns() {
                 required: true
             },
             amount: {
-                required: true
-            },
-            price: {
-                required: true
-            },
-            currency_id: {
                 required: true
             },
             observations: {
@@ -267,25 +249,11 @@ export function Returns() {
             accessor: 'amount'
         },
         {
-            id: 'price',
-            numeric: false,
-            disablePadding: true,
-            label: 'Precio unitario',
-            accessor: 'price'
-        },
-        {
             id: 'total',
             numeric: false,
             disablePadding: true,
             label: 'Total',
-            accessor: (row) => row.price * row.amount
-        },
-        {
-            id: 'currency',
-            numeric: false,
-            disablePadding: true,
-            label: 'Moneda',
-            accessor: (row) => row.currency.iso
+            accessor: (row) => `${row.article.sale_price * row.amount} ${row.article.currency.iso}`
         },
         {
             id: 'observations',
@@ -333,25 +301,11 @@ export function Returns() {
             accessor: 'amount'
         },
         {
-            id: 'price',
-            numeric: false,
-            disablePadding: true,
-            label: 'Precio unitario',
-            accessor: 'price'
-        },
-        {
             id: 'total',
             numeric: false,
             disablePadding: true,
             label: 'Total',
-            accessor: (row) => row.price * row.amount
-        },
-        {
-            id: 'currency',
-            numeric: false,
-            disablePadding: true,
-            label: 'Moneda',
-            accessor: (row) => row.currency.iso
+            accessor: (row) => `${row.article.purchase_price * row.amount} ${row.article.currency.iso}`
         },
         {
             id: 'observations',
@@ -374,7 +328,6 @@ export function Returns() {
             {loadingSuppliers ||
                 loadingClients ||
                 loadingArticles ||
-                loadingCurrencies ||
                 loadingClientReturns ||
                 loadingSupplierReturns ||
                 disabledClient ||
@@ -446,35 +399,6 @@ export function Returns() {
                                         {errorsClient.amount?.type === 'required' &&
                                             <Typography variant="caption" color="red" marginTop={1}>
                                                 * La cantidad es requerida.
-                                            </Typography>
-                                        }
-                                    </FormControl>
-                                    <FormControl>
-                                        <InputLabel htmlFor="price">Precio</InputLabel>
-                                        <Input id="price" type="number" name="price" value={formDataClient.price} />
-                                        {errorsClient.price?.type === 'required' &&
-                                            <Typography variant="caption" color="red" marginTop={1}>
-                                                * El precio es requerido.
-                                            </Typography>
-                                        }
-                                    </FormControl>
-                                    <FormControl>
-                                        <InputLabel id="currency-select">Moneda</InputLabel>
-                                        <Select
-                                            labelId="currency-select"
-                                            id="currency_id"
-                                            value={formDataClient.currency_id}
-                                            label="Moneda"
-                                            name="currency_id"
-                                            onChange={handleChangeClient}
-                                        >
-                                            {currencies.map(c => (
-                                                <MenuItem key={c.id} value={c.id}>{c.iso}</MenuItem>
-                                            ))}
-                                        </Select>
-                                        {errorsClient.currency_id?.type === 'required' &&
-                                            <Typography variant="caption" color="red" marginTop={1}>
-                                                * La moneda es requerida.
                                             </Typography>
                                         }
                                     </FormControl>
@@ -573,35 +497,6 @@ export function Returns() {
                                         {errorsSupplier.amount?.type === 'required' &&
                                             <Typography variant="caption" color="red" marginTop={1}>
                                                 * La cantidad es requerida.
-                                            </Typography>
-                                        }
-                                    </FormControl>
-                                    <FormControl>
-                                        <InputLabel htmlFor="price">Precio</InputLabel>
-                                        <Input id="price" type="number" name="price" value={formDataSupplier.price} />
-                                        {errorsSupplier.price?.type === 'required' &&
-                                            <Typography variant="caption" color="red" marginTop={1}>
-                                                * El precio es requerido.
-                                            </Typography>
-                                        }
-                                    </FormControl>
-                                    <FormControl>
-                                        <InputLabel id="currency-select">Moneda</InputLabel>
-                                        <Select
-                                            labelId="currency-select"
-                                            id="currency_id"
-                                            value={formDataSupplier.currency_id}
-                                            label="Moneda"
-                                            name="currency_id"
-                                            onChange={handleChangeSupplier}
-                                        >
-                                            {currencies.map(c => (
-                                                <MenuItem key={c.id} value={c.id}>{c.iso}</MenuItem>
-                                            ))}
-                                        </Select>
-                                        {errorsSupplier.currency_id?.type === 'required' &&
-                                            <Typography variant="caption" color="red" marginTop={1}>
-                                                * La moneda es requerida.
                                             </Typography>
                                         }
                                     </FormControl>
