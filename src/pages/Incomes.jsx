@@ -21,21 +21,16 @@ export function Incomes() {
     const { get, post, put, destroy } = useApi(INCOME_URL)
 
     const { articles, loadingArticles } = useArticles()
-    const { suppliers, loadingSuppliers } = useSuppliers()
     const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
         defaultData: {
             id: '',
             article_id: '',
-            supplier_id: '',
             amount: '',
             discount: '',
             observations: ''
         },
         rules: {
             article_id: {
-                required: true
-            },
-            supplier_id: {
                 required: true
             },
             amount: {
@@ -120,13 +115,6 @@ export function Incomes() {
             accessor: (row) => `${row.article.name} (${row.article.code})`
         },
         {
-            id: 'supplier',
-            numeric: false,
-            disablePadding: true,
-            label: 'Proveedor',
-            accessor: (row) => row.supplier.name
-        },
-        {
             id: 'amount',
             numeric: false,
             disablePadding: true,
@@ -179,7 +167,7 @@ export function Incomes() {
 
     return (
         <Layout title="Ingresos">
-            {loadingSuppliers || loadingIncomes || loadingArticles || disabled ?
+            {loadingIncomes || loadingArticles || disabled ?
                 <Box sx={{ width: '100%' }}>
                     <LinearProgress />
                 </Box> :
@@ -217,26 +205,6 @@ export function Incomes() {
                                     {errors.article_id?.type === 'required' &&
                                         <Typography variant="caption" color="red" marginTop={1}>
                                             * El artículo es requerido.
-                                        </Typography>
-                                    }
-                                </FormControl>
-                                <FormControl>
-                                    <InputLabel id="supplier-select">Proveedor</InputLabel>
-                                    <Select
-                                        labelId="supplier-select"
-                                        id="supplier_id"
-                                        value={formData.supplier_id}
-                                        label="Proveedor"
-                                        name="supplier_id"
-                                        onChange={handleChange}
-                                    >
-                                        {suppliers.map(s => (
-                                            <MenuItem key={s.id} value={s.id}>{s.name}</MenuItem>
-                                        ))}
-                                    </Select>
-                                    {errors.supplier_id?.type === 'required' &&
-                                        <Typography variant="caption" color="red" marginTop={1}>
-                                            * El proveedor es requerido.
                                         </Typography>
                                     }
                                 </FormControl>

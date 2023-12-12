@@ -6,6 +6,7 @@ import { useArticles } from '../hooks/useArticles'
 import { useCategories } from "../hooks/useCategories";
 import { useForm } from "../hooks/useForm";
 import { useCurrencies } from '../hooks/useCurrencies'
+import { useSuppliers } from "../hooks/useSuppliers";
 
 import { Layout } from "../components/Layout";
 import { DataGrid } from "../components/DataGrid";
@@ -22,6 +23,7 @@ export function Articles() {
     const { articles, setArticles, loadingArticles, setLoadingArticles } = useArticles()
     const { currencies, loadingCurrencies } = useCurrencies()
     const { categories, loadingCategories } = useCategories()
+    const { suppliers, loadingSuppliers } = useSuppliers()
     const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
         defaultData: {
             id: '',
@@ -30,6 +32,7 @@ export function Articles() {
             purchase_price: '',
             sale_price: '',
             currency_id: '',
+            supplier_id: '',
             details: '',
             category_id: ''
         },
@@ -49,6 +52,9 @@ export function Articles() {
                 required: true
             },
             currency_id: {
+                required: true
+            },
+            supplier_id: {
                 required: true
             },
             details: {
@@ -153,6 +159,13 @@ export function Articles() {
             accessor: 'details'
         },
         {
+            id: 'supplier',
+            numeric: false,
+            disablePadding: true,
+            label: 'Proveedor',
+            accessor: (row) => row.supplier.name
+        },
+        {
             id: 'category',
             numeric: false,
             disablePadding: true,
@@ -163,7 +176,7 @@ export function Articles() {
 
     return (
         <Layout title="Artículos">
-            {loadingArticles || loadingCategories || loadingCurrencies || disabled ?
+            {loadingArticles || loadingCategories || loadingCurrencies || loadingSuppliers || disabled ?
                 <Box sx={{ width: '100%' }}>
                     <LinearProgress />
                 </Box> :
@@ -256,6 +269,26 @@ export function Articles() {
                                     {errors.details?.type === 'maxLength' &&
                                         <Typography variant="caption" color="red" marginTop={1}>
                                             * El detalle es demasiado largo.
+                                        </Typography>
+                                    }
+                                </FormControl>
+                                <FormControl>
+                                    <InputLabel id="supplier-select">Proveedor</InputLabel>
+                                    <Select
+                                        labelId="supplier-select"
+                                        id="supplier_id"
+                                        value={formData.supplier_id}
+                                        label="Proveedor"
+                                        name="supplier_id"
+                                        onChange={handleChange}
+                                    >
+                                        {suppliers.map(s => (
+                                            <MenuItem key={s.id} value={s.id}>{s.name}</MenuItem>
+                                        ))}
+                                    </Select>
+                                    {errors.supplier_id?.type === 'required' &&
+                                        <Typography variant="caption" color="red" marginTop={1}>
+                                            * El proveedor es requerido.
                                         </Typography>
                                     }
                                 </FormControl>

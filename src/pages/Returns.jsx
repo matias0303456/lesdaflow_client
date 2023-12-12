@@ -6,7 +6,6 @@ import { MessageContext } from "../providers/MessageProvider";
 import { useForm } from "../hooks/useForm";
 import { useArticles } from '../hooks/useArticles'
 import { useClients } from "../hooks/useClients";
-import { useSuppliers } from "../hooks/useSuppliers";
 import { useApi } from "../hooks/useApi";
 
 import { Layout } from "../components/Layout";
@@ -34,7 +33,6 @@ export function Returns() {
     } = useApi(SUPPLIER_RETURN_URL)
     const { articles, loadingArticles } = useArticles(true)
     const { clients, loadingClients } = useClients()
-    const { suppliers, loadingSuppliers } = useSuppliers()
     const {
         formData: formDataClient,
         setFormData: setFormDataClient,
@@ -80,15 +78,11 @@ export function Returns() {
         defaultData: {
             id: '',
             article_id: '',
-            supplier_id: '',
             amount: '',
             observations: ''
         },
         rules: {
             article_id: {
-                required: true
-            },
-            supplier_id: {
                 required: true
             },
             amount: {
@@ -291,7 +285,7 @@ export function Returns() {
             numeric: false,
             disablePadding: true,
             label: 'Proveedor',
-            accessor: (row) => row.supplier.name
+            accessor: (row) => row.article.supplier.name
         },
         {
             id: 'amount',
@@ -325,8 +319,7 @@ export function Returns() {
 
     return (
         <Layout title="Devoluciones">
-            {loadingSuppliers ||
-                loadingClients ||
+            {loadingClients ||
                 loadingArticles ||
                 loadingClientReturns ||
                 loadingSupplierReturns ||
@@ -468,26 +461,6 @@ export function Returns() {
                                         {errorsSupplier.article_id?.type === 'required' &&
                                             <Typography variant="caption" color="red" marginTop={1}>
                                                 * El artículo es requerido.
-                                            </Typography>
-                                        }
-                                    </FormControl>
-                                    <FormControl>
-                                        <InputLabel id="supplier-select">Proveedor</InputLabel>
-                                        <Select
-                                            labelId="supplier-select"
-                                            id="supplier_id"
-                                            value={formDataSupplier.supplier_id}
-                                            label="Proveedor"
-                                            name="supplier_id"
-                                            onChange={handleChangeSupplier}
-                                        >
-                                            {suppliers.map(s => (
-                                                <MenuItem key={s.id} value={s.id}>{s.name}</MenuItem>
-                                            ))}
-                                        </Select>
-                                        {errorsSupplier.supplier_id?.type === 'required' &&
-                                            <Typography variant="caption" color="red" marginTop={1}>
-                                                * El proveedor es requerido.
                                             </Typography>
                                         }
                                     </FormControl>
