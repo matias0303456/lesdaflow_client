@@ -34,11 +34,11 @@ export function Inventory() {
             accessor: 'code'
         },
         {
-            id: 'description',
+            id: 'details',
             numeric: false,
             disablePadding: true,
-            label: 'Descripción',
-            accessor: 'description'
+            label: 'Detalle',
+            accessor: 'details'
         },
         {
             id: 'stock',

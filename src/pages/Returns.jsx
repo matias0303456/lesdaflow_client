@@ -281,13 +281,6 @@ export function Returns() {
             accessor: (row) => `${row.article.name} (${row.article.code})`
         },
         {
-            id: 'supplier',
-            numeric: false,
-            disablePadding: true,
-            label: 'Proveedor',
-            accessor: (row) => row.article.supplier.name
-        },
-        {
             id: 'amount',
             numeric: false,
             disablePadding: true,
