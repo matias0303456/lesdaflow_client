@@ -8,14 +8,13 @@ const style = {
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: 400,
     bgcolor: 'background.paper',
     boxShadow: 24,
     p: 3,
     borderRadius: 1
 };
 
-export function ModalComponent({ children, open, onClose }) {
+export function ModalComponent({ children, open, onClose, width = 400 }) {
     return (
         <Modal
             aria-labelledby="transition-modal-title"
@@ -31,7 +30,7 @@ export function ModalComponent({ children, open, onClose }) {
             }}
         >
             <Fade in={open}>
-                <Box sx={style}>
+                <Box sx={{ ...style, width }}>
                     {children}
                 </Box>
             </Fade>

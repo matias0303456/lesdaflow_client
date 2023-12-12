@@ -190,128 +190,138 @@ export function Articles() {
                     setData={setFormData}
                     handleDelete={handleDelete}
                 >
-                    <ModalComponent open={open === 'NEW' || open === 'EDIT'} onClose={() => reset(setOpen)}>
+                    <ModalComponent
+                        open={open === 'NEW' || open === 'EDIT'}
+                        onClose={() => reset(setOpen)}
+                        width={800}
+                    >
                         <Typography variant="h6" sx={{ marginBottom: 0.5 }}>
                             {open === 'NEW' && 'Nuevo artículo'}
                             {open === 'EDIT' && 'Editar artículo'}
                         </Typography>
                         <form onChange={handleChange} onSubmit={handleSubmit}>
                             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                                <FormControl>
-                                    <InputLabel htmlFor="name">Nombre</InputLabel>
-                                    <Input id="name" type="text" name="name" value={formData.name} />
-                                    {errors.name?.type === 'required' &&
-                                        <Typography variant="caption" color="red" marginTop={1}>
-                                            * El nombre es requerido.
-                                        </Typography>
-                                    }
-                                    {errors.name?.type === 'maxLength' &&
-                                        <Typography variant="caption" color="red" marginTop={1}>
-                                            * El nombre es demasiado largo.
-                                        </Typography>
-                                    }
-                                </FormControl>
-                                <FormControl>
-                                    <InputLabel htmlFor="code">Código</InputLabel>
-                                    <Input id="code" type="text" name="code" value={formData.code} />
-                                    {errors.code?.type === 'required' &&
-                                        <Typography variant="caption" color="red" marginTop={1}>
-                                            * El código es requerido.
-                                        </Typography>
-                                    }
-                                    {errors.code?.type === 'maxLength' &&
-                                        <Typography variant="caption" color="red" marginTop={1}>
-                                            * El código es demasiado largo.
-                                        </Typography>
-                                    }
-                                </FormControl>
-                                <FormControl>
-                                    <InputLabel htmlFor="purchase_price">Precio de compra</InputLabel>
-                                    <Input id="purchase_price" type="number" name="purchase_price" value={formData.purchase_price} />
-                                    {errors.purchase_price?.type === 'required' &&
-                                        <Typography variant="caption" color="red" marginTop={1}>
-                                            * El precio de compra es requerido.
-                                        </Typography>
-                                    }
-                                </FormControl>
-                                <FormControl>
-                                    <InputLabel htmlFor="sale_price">Precio de venta</InputLabel>
-                                    <Input id="sale_price" type="number" name="sale_price" value={formData.sale_price} />
-                                    {errors.sale_price?.type === 'required' &&
-                                        <Typography variant="caption" color="red" marginTop={1}>
-                                            * El precio de venta es requerido.
-                                        </Typography>
-                                    }
-                                </FormControl>
-                                <FormControl>
-                                    <InputLabel id="currency-select">Moneda</InputLabel>
-                                    <Select
-                                        labelId="currency-select"
-                                        id="currency_id"
-                                        value={formData.currency_id}
-                                        label="Moneda"
-                                        name="currency_id"
-                                        onChange={handleChange}
-                                    >
-                                        {currencies.map(c => (
-                                            <MenuItem key={c.id} value={c.id}>{c.iso}</MenuItem>
-                                        ))}
-                                    </Select>
-                                    {errors.currency_id?.type === 'required' &&
-                                        <Typography variant="caption" color="red" marginTop={1}>
-                                            * La moneda es requerida.
-                                        </Typography>
-                                    }
-                                </FormControl>
-                                <FormControl>
-                                    <InputLabel htmlFor="details">Detalle</InputLabel>
-                                    <Input id="details" type="text" name="details" value={formData.details} />
-                                    {errors.details?.type === 'maxLength' &&
-                                        <Typography variant="caption" color="red" marginTop={1}>
-                                            * El detalle es demasiado largo.
-                                        </Typography>
-                                    }
-                                </FormControl>
-                                <FormControl>
-                                    <InputLabel id="supplier-select">Proveedor</InputLabel>
-                                    <Select
-                                        labelId="supplier-select"
-                                        id="supplier_id"
-                                        value={formData.supplier_id}
-                                        label="Proveedor"
-                                        name="supplier_id"
-                                        onChange={handleChange}
-                                    >
-                                        {suppliers.map(s => (
-                                            <MenuItem key={s.id} value={s.id}>{s.name}</MenuItem>
-                                        ))}
-                                    </Select>
-                                    {errors.supplier_id?.type === 'required' &&
-                                        <Typography variant="caption" color="red" marginTop={1}>
-                                            * El proveedor es requerido.
-                                        </Typography>
-                                    }
-                                </FormControl>
-                                <FormControl>
-                                    <InputLabel id="category-select">Categoría</InputLabel>
-                                    <Select
-                                        labelId="category-select"
-                                        id="category_id"
-                                        value={formData.category_id}
-                                        label="Categoría"
-                                        name="category_id"
-                                        onChange={handleChange}
-                                    >
-                                        {categories.map(cat => (
-                                            <MenuItem key={cat.id} value={cat.id}>{cat.name}</MenuItem>
-                                        ))}
-                                    </Select>
-                                    {errors.category_id?.type === 'required' &&
-                                        <Typography variant="caption" color="red" marginTop={1}>
-                                            * La categoría es requerida.
-                                        </Typography>
-                                    }
-                                </FormControl>
+                                <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 3 }}>
+                                    <Box sx={{ display: 'flex', flexDirection: 'column', width: '50%', gap: 3 }}>
+                                        <FormControl>
+                                            <InputLabel htmlFor="name">Nombre</InputLabel>
+                                            <Input id="name" type="text" name="name" value={formData.name} />
+                                            {errors.name?.type === 'required' &&
+                                                <Typography variant="caption" color="red" marginTop={1}>
+                                                    * El nombre es requerido.
+                                                </Typography>
+                                            }
+                                            {errors.name?.type === 'maxLength' &&
+                                                <Typography variant="caption" color="red" marginTop={1}>
+                                                    * El nombre es demasiado largo.
+                                                </Typography>
+                                            }
+                                        </FormControl>
+                                        <FormControl>
+                                            <InputLabel htmlFor="code">Código</InputLabel>
+                                            <Input id="code" type="text" name="code" value={formData.code} />
+                                            {errors.code?.type === 'required' &&
+                                                <Typography variant="caption" color="red" marginTop={1}>
+                                                    * El código es requerido.
+                                                </Typography>
+                                            }
+                                            {errors.code?.type === 'maxLength' &&
+                                                <Typography variant="caption" color="red" marginTop={1}>
+                                                    * El código es demasiado largo.
+                                                </Typography>
+                                            }
+                                        </FormControl>
+                                        <FormControl>
+                                            <InputLabel htmlFor="purchase_price">Precio de compra</InputLabel>
+                                            <Input id="purchase_price" type="number" name="purchase_price" value={formData.purchase_price} />
+                                            {errors.purchase_price?.type === 'required' &&
+                                                <Typography variant="caption" color="red" marginTop={1}>
+                                                    * El precio de compra es requerido.
+                                                </Typography>
+                                            }
+                                        </FormControl>
+                                        <FormControl>
+                                            <InputLabel htmlFor="sale_price">Precio de venta</InputLabel>
+                                            <Input id="sale_price" type="number" name="sale_price" value={formData.sale_price} />
+                                            {errors.sale_price?.type === 'required' &&
+                                                <Typography variant="caption" color="red" marginTop={1}>
+                                                    * El precio de venta es requerido.
+                                                </Typography>
+                                            }
+                                        </FormControl>
+                                    </Box>
+                                    <Box sx={{ display: 'flex', flexDirection: 'column', width: '50%', gap: 3 }}>
+                                        <FormControl>
+                                            <InputLabel id="currency-select">Moneda</InputLabel>
+                                            <Select
+                                                labelId="currency-select"
+                                                id="currency_id"
+                                                value={formData.currency_id}
+                                                label="Moneda"
+                                                name="currency_id"
+                                                onChange={handleChange}
+                                            >
+                                                {currencies.map(c => (
+                                                    <MenuItem key={c.id} value={c.id}>{c.iso}</MenuItem>
+                                                ))}
+                                            </Select>
+                                            {errors.currency_id?.type === 'required' &&
+                                                <Typography variant="caption" color="red" marginTop={1}>
+                                                    * La moneda es requerida.
+                                                </Typography>
+                                            }
+                                        </FormControl>
+                                        <FormControl>
+                                            <InputLabel htmlFor="details">Detalle</InputLabel>
+                                            <Input id="details" type="text" name="details" value={formData.details} />
+                                            {errors.details?.type === 'maxLength' &&
+                                                <Typography variant="caption" color="red" marginTop={1}>
+                                                    * El detalle es demasiado largo.
+                                                </Typography>
+                                            }
+                                        </FormControl>
+                                        <FormControl>
+                                            <InputLabel id="supplier-select">Proveedor</InputLabel>
+                                            <Select
+                                                labelId="supplier-select"
+                                                id="supplier_id"
+                                                value={formData.supplier_id}
+                                                label="Proveedor"
+                                                name="supplier_id"
+                                                onChange={handleChange}
+                                            >
+                                                {suppliers.map(s => (
+                                                    <MenuItem key={s.id} value={s.id}>{s.name}</MenuItem>
+                                                ))}
+                                            </Select>
+                                            {errors.supplier_id?.type === 'required' &&
+                                                <Typography variant="caption" color="red" marginTop={1}>
+                                                    * El proveedor es requerido.
+                                                </Typography>
+                                            }
+                                        </FormControl>
+                                        <FormControl>
+                                            <InputLabel id="category-select">Categoría</InputLabel>
+                                            <Select
+                                                labelId="category-select"
+                                                id="category_id"
+                                                value={formData.category_id}
+                                                label="Categoría"
+                                                name="category_id"
+                                                onChange={handleChange}
+                                            >
+                                                {categories.map(cat => (
+                                                    <MenuItem key={cat.id} value={cat.id}>{cat.name}</MenuItem>
+                                                ))}
+                                            </Select>
+                                            {errors.category_id?.type === 'required' &&
+                                                <Typography variant="caption" color="red" marginTop={1}>
+                                                    * La categoría es requerida.
+                                                </Typography>
+                                            }
+                                        </FormControl>
+                                    </Box>
+                                </Box>
                                 <FormControl sx={{
                                     display: 'flex',
                                     flexDirection: 'row',
