@@ -2,27 +2,23 @@ import { useContext, useState } from "react";
 import { Box, Button, FormControl, Input, InputLabel, LinearProgress, MenuItem, Select, Typography } from "@mui/material";
 
 import { MessageContext } from "../providers/MessageProvider";
-import { useArticles } from '../hooks/useArticles'
-import { useCategories } from "../hooks/useCategories";
+import { useProducts } from '../hooks/useProducts'
 import { useForm } from "../hooks/useForm";
-import { useCurrencies } from '../hooks/useCurrencies'
 import { useSuppliers } from "../hooks/useSuppliers";
 
 import { Layout } from "../components/Layout";
 import { DataGrid } from "../components/DataGrid";
 import { ModalComponent } from "../components/ModalComponent";
 
-import { ARTICLE_URL } from "../utils/urls";
+import { PRODUCT_URL } from "../utils/urls";
 import { useApi } from "../hooks/useApi";
 
 export function Articles() {
 
     const { setMessage, setOpenMessage, setSeverity } = useContext(MessageContext)
 
-    const { post, put, destroy } = useApi(ARTICLE_URL)
-    const { articles, setArticles, loadingArticles, setLoadingArticles } = useArticles()
-    const { currencies, loadingCurrencies } = useCurrencies()
-    const { categories, loadingCategories } = useCategories()
+    const { post, put, destroy } = useApi(PRODUCT_URL)
+    const { products, setProducts, loadingProducts, setLoadingProducts } = useProducts()
     const { suppliers, loadingSuppliers } = useSuppliers()
     const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
         defaultData: {
@@ -74,11 +70,11 @@ export function Articles() {
             const { status, data } = open === 'NEW' ? await post(formData) : await put(formData)
             if (status === 200) {
                 if (open === 'NEW') {
-                    setArticles([data, ...articles])
-                    setMessage('Artículo creado correctamente.')
+                    setProducts([data, ...products])
+                    setMessage('Producto creado correctamente.')
                 } else {
-                    setArticles([data, ...articles.filter(art => art.id !== formData.id)])
-                    setMessage('Artículo editado correctamente.')
+                    setProducts([data, ...products.filter(p => p.id !== formData.id)])
+                    setMessage('Producto editado correctamente.')
                 }
                 setSeverity('success')
                 reset(setOpen)
@@ -92,19 +88,19 @@ export function Articles() {
     }
 
     async function handleDelete(elements) {
-        setLoadingArticles(true)
+        setLoadingProducts(true)
         const result = await Promise.all(elements.map(e => destroy(e)))
         if (result.every(r => r.status === 200)) {
             const ids = result.map(r => r.data.id)
-            setArticles([...articles.filter(art => !ids.includes(art.id))])
-            setMessage(`${result.length === 1 ? 'Artículo eliminado' : 'Articulos eliminados'} correctamente.`)
+            setProducts([...products.filter(p => !ids.includes(p.id))])
+            setMessage(`${result.length === 1 ? 'Producto eliminado' : 'Productos eliminados'} correctamente.`)
             setSeverity('success')
         } else {
             setMessage('Ocurrió un error. Actualice la página.')
             setSeverity('error')
         }
         setOpenMessage(true)
-        setLoadingArticles(false)
+        setLoadingProducts(false)
         setOpen(null)
     }
 
@@ -164,26 +160,19 @@ export function Articles() {
             disablePadding: true,
             label: 'Proveedor',
             accessor: (row) => row.supplier.name
-        },
-        {
-            id: 'category',
-            numeric: false,
-            disablePadding: true,
-            label: 'Categoría',
-            accessor: (row) => row.category.name
         }
     ]
 
     return (
-        <Layout title="Artículos">
-            {loadingArticles || loadingCategories || loadingCurrencies || loadingSuppliers || disabled ?
+        <Layout title="Productos">
+            {loadingProducts || loadingSuppliers || disabled ?
                 <Box sx={{ width: '100%' }}>
                     <LinearProgress />
                 </Box> :
                 <DataGrid
-                    title="Artículos registrados"
+                    title="Productos registrados"
                     headCells={headCells}
-                    rows={articles}
+                    rows={products}
                     open={open}
                     setOpen={setOpen}
                     data={formData}
@@ -232,45 +221,16 @@ export function Articles() {
                                             }
                                         </FormControl>
                                         <FormControl>
-                                            <InputLabel htmlFor="purchase_price">Precio de compra</InputLabel>
-                                            <Input id="purchase_price" type="number" name="purchase_price" value={formData.purchase_price} />
-                                            {errors.purchase_price?.type === 'required' &&
+                                            <InputLabel htmlFor="price">Precio</InputLabel>
+                                            <Input id="price" type="number" name="price" value={formData.price} />
+                                            {errors.price?.type === 'required' &&
                                                 <Typography variant="caption" color="red" marginTop={1}>
-                                                    * El precio de compra es requerido.
-                                                </Typography>
-                                            }
-                                        </FormControl>
-                                        <FormControl>
-                                            <InputLabel htmlFor="sale_price">Precio de venta</InputLabel>
-                                            <Input id="sale_price" type="number" name="sale_price" value={formData.sale_price} />
-                                            {errors.sale_price?.type === 'required' &&
-                                                <Typography variant="caption" color="red" marginTop={1}>
-                                                    * El precio de venta es requerido.
+                                                    * El precio es requerido.
                                                 </Typography>
                                             }
                                         </FormControl>
                                     </Box>
                                     <Box sx={{ display: 'flex', flexDirection: 'column', width: '50%', gap: 3 }}>
-                                        <FormControl>
-                                            <InputLabel id="currency-select">Moneda</InputLabel>
-                                            <Select
-                                                labelId="currency-select"
-                                                id="currency_id"
-                                                value={formData.currency_id}
-                                                label="Moneda"
-                                                name="currency_id"
-                                                onChange={handleChange}
-                                            >
-                                                {currencies.map(c => (
-                                                    <MenuItem key={c.id} value={c.id}>{c.iso}</MenuItem>
-                                                ))}
-                                            </Select>
-                                            {errors.currency_id?.type === 'required' &&
-                                                <Typography variant="caption" color="red" marginTop={1}>
-                                                    * La moneda es requerida.
-                                                </Typography>
-                                            }
-                                        </FormControl>
                                         <FormControl>
                                             <InputLabel htmlFor="details">Detalle</InputLabel>
                                             <Input id="details" type="text" name="details" value={formData.details} />
@@ -297,26 +257,6 @@ export function Articles() {
                                             {errors.supplier_id?.type === 'required' &&
                                                 <Typography variant="caption" color="red" marginTop={1}>
                                                     * El proveedor es requerido.
-                                                </Typography>
-                                            }
-                                        </FormControl>
-                                        <FormControl>
-                                            <InputLabel id="category-select">Categoría</InputLabel>
-                                            <Select
-                                                labelId="category-select"
-                                                id="category_id"
-                                                value={formData.category_id}
-                                                label="Categoría"
-                                                name="category_id"
-                                                onChange={handleChange}
-                                            >
-                                                {categories.map(cat => (
-                                                    <MenuItem key={cat.id} value={cat.id}>{cat.name}</MenuItem>
-                                                ))}
-                                            </Select>
-                                            {errors.category_id?.type === 'required' &&
-                                                <Typography variant="caption" color="red" marginTop={1}>
-                                                    * La categoría es requerida.
                                                 </Typography>
                                             }
                                         </FormControl>

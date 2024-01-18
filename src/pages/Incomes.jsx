@@ -4,9 +4,8 @@ import { format } from 'date-fns'
 
 import { MessageContext } from "../providers/MessageProvider";
 import { useApi } from "../hooks/useApi";
-import { useSuppliers } from "../hooks/useSuppliers";
 import { useForm } from "../hooks/useForm";
-import { useArticles } from "../hooks/useArticles";
+import { useProducts } from "../hooks/useProducts";
 
 import { Layout } from "../components/Layout";
 import { DataGrid } from "../components/DataGrid";
@@ -20,7 +19,7 @@ export function Incomes() {
 
     const { get, post, put, destroy } = useApi(INCOME_URL)
 
-    const { articles, loadingArticles } = useArticles()
+    const { articles, loadingArticles } = useProducts()
     const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
         defaultData: {
             id: '',

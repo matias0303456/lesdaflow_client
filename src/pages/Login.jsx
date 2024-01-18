@@ -99,11 +99,6 @@ export function Login() {
                         </FormControl>
                     </Box>
                 </form>
-                <Box textAlign="center" sx={{ marginTop: 4 }}>
-                    <Button variant="text" onClick={() => navigate('/lesdaflow/')}>
-                        Volver al inicio
-                    </Button>
-                </Box>
             </Box>
         </Box>
     )

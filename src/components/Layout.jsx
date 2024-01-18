@@ -24,12 +24,10 @@ import MonetizationOnSharpIcon from '@mui/icons-material/MonetizationOnSharp';
 import ProductionQuantityLimitsSharpIcon from '@mui/icons-material/ProductionQuantityLimitsSharp';
 import Person2SharpIcon from '@mui/icons-material/Person2Sharp';
 import LocalShippingSharpIcon from '@mui/icons-material/LocalShippingSharp';
-import CategorySharpIcon from '@mui/icons-material/CategorySharp';
 import ManageAccountsSharpIcon from '@mui/icons-material/ManageAccountsSharp';
 import PermContactCalendarSharpIcon from '@mui/icons-material/PermContactCalendarSharp';
 import LogoutSharpIcon from '@mui/icons-material/LogoutSharp';
 import AssessmentSharpIcon from '@mui/icons-material/AssessmentSharp';
-import KeyboardReturnSharpIcon from '@mui/icons-material/KeyboardReturnSharp';
 
 import { AuthContext } from '../providers/AuthProvider';
 
@@ -56,7 +54,7 @@ export function Layout({ children, title }) {
         <div>
             <Toolbar sx={{ display: 'flex', justifyContent: 'center' }}>
                 <Typography variant="h5" noWrap component="div">
-                    {auth?.user.license.name}
+                    MGA
                 </Typography>
             </Toolbar>
             <Divider />
@@ -109,14 +107,6 @@ export function Layout({ children, title }) {
                         <ListItemText primary="Proveedores" />
                     </ListItemButton>
                 </ListItem>
-                <ListItem key={7} disablePadding sx={{ background: pathname === '/lesdaflow/categorias' ? grey[100] : '#fff' }}>
-                    <ListItemButton onClick={() => navigate('/lesdaflow/categorias')}>
-                        <ListItemIcon>
-                            <CategorySharpIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Categorías" />
-                    </ListItemButton>
-                </ListItem>
                 {(auth?.user.role.name === 'SUPER_ADMIN' || auth?.user.role.name === 'ADMIN') &&
                     <ListItem key={8} disablePadding sx={{ background: pathname === '/lesdaflow/usuarios' ? grey[100] : '#fff' }}>
                         <ListItemButton onClick={() => navigate('/lesdaflow/usuarios')}>
@@ -127,14 +117,6 @@ export function Layout({ children, title }) {
                         </ListItemButton>
                     </ListItem>
                 }
-                <ListItem key={9} disablePadding sx={{ background: pathname === '/lesdaflow/devoluciones' ? grey[100] : '#fff' }}>
-                    <ListItemButton onClick={() => navigate('/lesdaflow/devoluciones')}>
-                        <ListItemIcon>
-                            <KeyboardReturnSharpIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Devoluciones" />
-                    </ListItemButton>
-                </ListItem>
                 <ListItem key={10} disablePadding sx={{ background: pathname === '/lesdaflow/reportes' ? grey[100] : '#fff' }}>
                     <ListItemButton onClick={() => navigate('/lesdaflow/reportes')}>
                         <ListItemIcon>

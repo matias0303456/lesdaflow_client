@@ -4,7 +4,6 @@ import { Box, Button, FormControl, Input, InputLabel, LinearProgress, MenuItem, 
 import { MessageContext } from "../providers/MessageProvider";
 import { useApi } from "../hooks/useApi";
 import { useForm } from "../hooks/useForm";
-import { useCountries } from "../hooks/useCountries";
 import { useClients } from "../hooks/useClients";
 
 import { Layout } from "../components/Layout";
@@ -18,7 +17,6 @@ export function Clients() {
     const { setMessage, setOpenMessage, setSeverity } = useContext(MessageContext)
 
     const { get, post, put, destroy } = useApi(CLIENT_URL)
-    const { countries, loadingCountries } = useCountries()
     const { clients, setClients, loadingClients, setLoadingClients } = useClients()
     const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
         defaultData: {
@@ -163,7 +161,7 @@ export function Clients() {
 
     return (
         <Layout title="Clientes">
-            {loadingClients || loadingCountries || disabled ?
+            {loadingClients || disabled ?
                 <Box sx={{ width: '100%' }}>
                     <LinearProgress />
                 </Box> :
@@ -251,26 +249,6 @@ export function Clients() {
                                     {errors.province?.type === 'maxLength' &&
                                         <Typography variant="caption" color="red" marginTop={1}>
                                             * La provincia es demasiado larga.
-                                        </Typography>
-                                    }
-                                </FormControl>
-                                <FormControl>
-                                    <InputLabel id="country-select">País</InputLabel>
-                                    <Select
-                                        labelId="country-select"
-                                        id="country_id"
-                                        value={formData.country_id}
-                                        label="País"
-                                        name="country_id"
-                                        onChange={handleChange}
-                                    >
-                                        {countries.map(c => (
-                                            <MenuItem key={c.id} value={c.id}>{c.name}</MenuItem>
-                                        ))}
-                                    </Select>
-                                    {errors.country_id?.type === 'required' &&
-                                        <Typography variant="caption" color="red" marginTop={1}>
-                                            * El país es requerido.
                                         </Typography>
                                     }
                                 </FormControl>

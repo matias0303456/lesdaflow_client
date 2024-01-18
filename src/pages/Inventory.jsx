@@ -1,6 +1,6 @@
 import { Box, LinearProgress } from "@mui/material";
 
-import { useArticles } from "../hooks/useArticles";
+import { useProducts } from "../hooks/useProducts";
 
 import { Layout } from "../components/Layout";
 import { DataGrid } from '../components/DataGrid'
@@ -9,7 +9,7 @@ import { getStock } from "../utils/helpers";
 
 export function Inventory() {
 
-    const { articles, loadingArticles } = useArticles(true)
+    const { products, loadingProducts } = useProducts(true)
 
     const headCells = [
         {
@@ -20,10 +20,10 @@ export function Inventory() {
             accessor: 'id'
         },
         {
-            id: 'article',
+            id: 'product',
             numeric: false,
             disablePadding: true,
-            label: 'Artículo',
+            label: 'Producto',
             accessor: 'name'
         },
         {
@@ -51,14 +51,14 @@ export function Inventory() {
 
     return (
         <Layout title="Inventario">
-            {loadingArticles ?
+            {loadingProducts ?
                 <Box sx={{ width: '100%' }}>
                     <LinearProgress />
                 </Box> :
                 <DataGrid
                     title="Estado actual"
                     headCells={headCells}
-                    rows={articles}
+                    rows={products}
                     disableAdd
                     disableSelection
                 />

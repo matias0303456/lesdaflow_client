@@ -4,7 +4,7 @@ import { format } from "date-fns";
 
 import { MessageContext } from "../providers/MessageProvider";
 import { useApi } from "../hooks/useApi";
-import { useArticles } from "../hooks/useArticles";
+import { useProducts } from "../hooks/useProducts";
 import { useClients } from '../hooks/useClients'
 import { useForm } from "../hooks/useForm";
 
@@ -12,16 +12,16 @@ import { Layout } from "../components/Layout";
 import { DataGrid } from "../components/DataGrid";
 import { ModalComponent } from "../components/ModalComponent";
 
-import { OUTCOME_URL } from "../utils/urls";
+import { SALE_URL } from "../utils/urls";
 import { getStock } from "../utils/helpers";
 
 export function Outcomes() {
 
-    const { get, post, put, destroy } = useApi(OUTCOME_URL)
+    const { get, post, put, destroy } = useApi(SALE_URL)
 
     const { setMessage, setOpenMessage, setSeverity } = useContext(MessageContext)
 
-    const { articles, loadingArticles } = useArticles(true)
+    const { products, loadingProducts } = useProducts(true)
     const { clients, loadingClients } = useClients()
     const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
         defaultData: {
@@ -67,7 +67,7 @@ export function Outcomes() {
     }, [])
 
     useEffect(() => {
-        setHasStock(getStock(articles.find(art => art.id === formData.article_id)) >= parseInt(formData.amount) && formData.amount.toString().length > 0)
+        setHasStock(getStock(products.find(p => p.id === formData.product_id)) >= parseInt(formData.amount) && formData.amount.toString().length > 0)
     }, [formData])
 
     async function handleSubmit(e) {
@@ -191,7 +191,7 @@ export function Outcomes() {
 
     return (
         <Layout title="Egresos">
-            {loadingClients || loadingOutcomes || loadingArticles || disabled ?
+            {loadingClients || loadingOutcomes || loadingProducts || disabled ?
                 <Box sx={{ width: '100%' }}>
                     <LinearProgress />
                 </Box> :
@@ -213,22 +213,22 @@ export function Outcomes() {
                         <form onChange={handleChange} onSubmit={handleSubmit}>
                             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                                 <FormControl>
-                                    <InputLabel id="article-select">Artículo</InputLabel>
+                                    <InputLabel id="article-select">Producto</InputLabel>
                                     <Select
                                         labelId="article-select"
-                                        id="article_id"
+                                        id="product_id"
                                         value={formData.article_id}
-                                        label="Artículo"
+                                        label="Producto"
                                         name="article_id"
                                         onChange={handleChange}
                                     >
-                                        {articles.map(art => (
-                                            <MenuItem key={art.id} value={art.id}>{art.name}</MenuItem>
+                                        {products.map(p => (
+                                            <MenuItem key={p.id} value={p.id}>{p.name}</MenuItem>
                                         ))}
                                     </Select>
-                                    {errors.article_id?.type === 'required' &&
+                                    {errors.product_id?.type === 'required' &&
                                         <Typography variant="caption" color="red" marginTop={1}>
-                                            * El artículo es requerido.
+                                            * El producto es requerido.
                                         </Typography>
                                     }
                                 </FormControl>
