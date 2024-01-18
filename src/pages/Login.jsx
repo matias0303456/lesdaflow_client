@@ -27,7 +27,7 @@ export function Login() {
     })
 
     useEffect(() => {
-        if (auth) return navigate('/lesdaflow/inventario')
+        if (auth) return navigate('/lesdaflow/productos')
     }, [])
 
     const handleSubmit = async e => {
@@ -37,7 +37,7 @@ export function Login() {
             if (status === 200) {
                 localStorage.setItem('auth', JSON.stringify(data))
                 setAuth(data)
-                navigate('/lesdaflow/inventario')
+                navigate('/lesdaflow/productos')
             } else {
                 setMessage(data.message)
                 setSeverity('error')

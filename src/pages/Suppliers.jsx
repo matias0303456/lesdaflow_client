@@ -22,35 +22,27 @@ export function Suppliers() {
         defaultData: {
             id: '',
             name: '',
-            email: '',
             address: '',
             city: '',
             province: '',
-            country_id: ''
+            email: ''
         },
         rules: {
             name: {
                 required: true,
                 maxLength: 55
             },
-            email: {
-                required: true,
-                maxLength: 55
-            },
             address: {
-                required: true,
                 maxLength: 55
             },
             city: {
-                required: true,
                 maxLength: 55
             },
             province: {
-                required: true,
                 maxLength: 55
             },
-            country_id: {
-                required: true
+            email: {
+                maxLength: 55
             }
         }
     })
@@ -113,13 +105,6 @@ export function Suppliers() {
             accessor: 'name'
         },
         {
-            id: 'email',
-            numeric: false,
-            disablePadding: true,
-            label: 'Email',
-            accessor: 'email'
-        },
-        {
             id: 'address',
             numeric: false,
             disablePadding: true,
@@ -141,11 +126,11 @@ export function Suppliers() {
             accessor: 'province'
         },
         {
-            id: 'country',
+            id: 'email',
             numeric: false,
             disablePadding: true,
-            label: 'País',
-            accessor: (row) => row.country.name
+            label: 'Email',
+            accessor: 'email'
         }
     ]
 
@@ -156,7 +141,7 @@ export function Suppliers() {
                     <LinearProgress />
                 </Box> :
                 <DataGrid
-                    title="Proveedores de artículos"
+                    title="Proveedores de productos"
                     headCells={headCells}
                     rows={suppliers}
                     open={open}
@@ -183,20 +168,6 @@ export function Suppliers() {
                                     {errors.name?.type === 'maxLength' &&
                                         <Typography variant="caption" color="red" marginTop={1}>
                                             * El nombre es demasiado largo.
-                                        </Typography>
-                                    }
-                                </FormControl>
-                                <FormControl>
-                                    <InputLabel htmlFor="email">Email</InputLabel>
-                                    <Input id="email" type="email" name="email" value={formData.email} />
-                                    {errors.email?.type === 'required' &&
-                                        <Typography variant="caption" color="red" marginTop={1}>
-                                            * El email es requerido.
-                                        </Typography>
-                                    }
-                                    {errors.email?.type === 'maxLength' &&
-                                        <Typography variant="caption" color="red" marginTop={1}>
-                                            * El email es demasiado largo.
                                         </Typography>
                                     }
                                 </FormControl>
@@ -239,6 +210,20 @@ export function Suppliers() {
                                     {errors.province?.type === 'maxLength' &&
                                         <Typography variant="caption" color="red" marginTop={1}>
                                             * La provincia es demasiado larga.
+                                        </Typography>
+                                    }
+                                </FormControl>
+                                <FormControl>
+                                    <InputLabel htmlFor="email">Email</InputLabel>
+                                    <Input id="email" type="email" name="email" value={formData.email} />
+                                    {errors.email?.type === 'required' &&
+                                        <Typography variant="caption" color="red" marginTop={1}>
+                                            * El email es requerido.
+                                        </Typography>
+                                    }
+                                    {errors.email?.type === 'maxLength' &&
+                                        <Typography variant="caption" color="red" marginTop={1}>
+                                            * El email es demasiado largo.
                                         </Typography>
                                     }
                                 </FormControl>

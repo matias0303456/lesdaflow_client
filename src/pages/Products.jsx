@@ -12,8 +12,9 @@ import { ModalComponent } from "../components/ModalComponent";
 
 import { PRODUCT_URL } from "../utils/urls";
 import { useApi } from "../hooks/useApi";
+import { getStock } from "../utils/helpers";
 
-export function Articles() {
+export function Products() {
 
     const { setMessage, setOpenMessage, setSeverity } = useContext(MessageContext)
 
@@ -25,12 +26,10 @@ export function Articles() {
             id: '',
             name: '',
             code: '',
-            purchase_price: '',
-            sale_price: '',
-            currency_id: '',
-            supplier_id: '',
+            price: '',
             details: '',
-            category_id: ''
+            supplier_id: '',
+            min_stock: ''
         },
         rules: {
             name: {
@@ -41,22 +40,16 @@ export function Articles() {
                 required: true,
                 maxLength: 55
             },
-            purchase_price: {
-                required: true
-            },
-            sale_price: {
-                required: true
-            },
-            currency_id: {
-                required: true
-            },
-            supplier_id: {
+            price: {
                 required: true
             },
             details: {
                 maxLength: 55
             },
-            category_id: {
+            supplier_id: {
+                required: true
+            },
+            min_stock: {
                 required: true
             }
         }
@@ -127,25 +120,11 @@ export function Articles() {
             accessor: 'code'
         },
         {
-            id: 'purchase_price',
-            numeric: true,
+            id: 'price',
+            numeric: false,
             disablePadding: true,
-            label: 'Precio de compra',
-            accessor: 'purchase_price'
-        },
-        {
-            id: 'sale_price',
-            numeric: true,
-            disablePadding: true,
-            label: 'Precio de venta',
-            accessor: 'sale_price'
-        },
-        {
-            id: 'currency',
-            numeric: true,
-            disablePadding: true,
-            label: 'Moneda',
-            accessor: (row) => row.currency.iso
+            label: 'Precio',
+            accessor: 'price'
         },
         {
             id: 'details',
@@ -160,6 +139,20 @@ export function Articles() {
             disablePadding: true,
             label: 'Proveedor',
             accessor: (row) => row.supplier.name
+        },
+        {
+            id: 'min_stock',
+            numeric: false,
+            disablePadding: true,
+            label: 'Stock mínimo',
+            accessor: 'min_stock'
+        },
+        {
+            id: 'stock',
+            numeric: false,
+            disablePadding: true,
+            label: 'Stock actual',
+            accessor: (row) => getStock(row)
         }
     ]
 
@@ -170,7 +163,7 @@ export function Articles() {
                     <LinearProgress />
                 </Box> :
                 <DataGrid
-                    title="Productos registrados"
+                    title="Inventario"
                     headCells={headCells}
                     rows={products}
                     open={open}
@@ -185,8 +178,8 @@ export function Articles() {
                         width={800}
                     >
                         <Typography variant="h6" sx={{ marginBottom: 0.5 }}>
-                            {open === 'NEW' && 'Nuevo artículo'}
-                            {open === 'EDIT' && 'Editar artículo'}
+                            {open === 'NEW' && 'Nuevo producto'}
+                            {open === 'EDIT' && 'Editar producto'}
                         </Typography>
                         <form onChange={handleChange} onSubmit={handleSubmit}>
                             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
@@ -237,6 +230,15 @@ export function Articles() {
                                             {errors.details?.type === 'maxLength' &&
                                                 <Typography variant="caption" color="red" marginTop={1}>
                                                     * El detalle es demasiado largo.
+                                                </Typography>
+                                            }
+                                        </FormControl>
+                                        <FormControl>
+                                            <InputLabel htmlFor="min_stock">Stock mínimo</InputLabel>
+                                            <Input id="min_stock" type="number" name="min_stock" value={formData.min_stock} />
+                                            {errors.min_stock?.type === 'required' &&
+                                                <Typography variant="caption" color="red" marginTop={1}>
+                                                    * El stock mínimo es requerido.
                                                 </Typography>
                                             }
                                         </FormControl>

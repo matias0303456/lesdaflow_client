@@ -5,10 +5,9 @@ import { MessageProvider } from "./providers/MessageProvider";
 import { AuthProvider } from "./providers/AuthProvider";
 
 import { Login } from "./pages/Login";
-import { Inventory } from "./pages/Inventory";
+import { Products } from './pages/Products'
 import { Incomes } from "./pages/Incomes";
 import { Outcomes } from './pages/Outcomes'
-import { Articles } from './pages/Articles'
 import { Clients } from './pages/Clients'
 import { Suppliers } from './pages/Suppliers'
 import { Users } from './pages/Users'
@@ -23,11 +22,10 @@ function App() {
         <BrowserRouter>
           <Routes>
             <Route path="/lesdaflow/" element={<Login />} />
+            <Route path="/lesdaflow/productos" element={<Products />} />
             <Route path="/lesdaflow/login" element={<Login />} />
-            <Route path="/lesdaflow/inventario" element={<Inventory />} />
             <Route path="/lesdaflow/ingresos" element={<Incomes />} />
             <Route path="/lesdaflow/egresos" element={<Outcomes />} />
-            <Route path="/lesdaflow/articulos" element={<Articles />} />
             <Route path="/lesdaflow/clientes" element={<Clients />} />
             <Route path="/lesdaflow/proveedores" element={<Suppliers />} />
             <Route path="/lesdaflow/usuarios" element={<Users />} />
