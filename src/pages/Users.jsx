@@ -278,7 +278,7 @@ export function Users() {
                                         name="role_id"
                                         onChange={handleChange}
                                     >
-                                        {roles.filter(r => r.name !== 'SUPER_ADMIN').map(r => (
+                                        {roles.map(r => (
                                             <MenuItem key={r.id} value={r.id}>{r.name}</MenuItem>
                                         ))}
                                     </Select>
