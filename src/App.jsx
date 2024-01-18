@@ -21,15 +21,15 @@ function App() {
         <CssBaseline />
         <BrowserRouter>
           <Routes>
-            <Route path="/lesdaflow/" element={<Login />} />
-            <Route path="/lesdaflow/productos" element={<Products />} />
-            <Route path="/lesdaflow/login" element={<Login />} />
-            <Route path="/lesdaflow/ingresos" element={<Incomes />} />
-            <Route path="/lesdaflow/egresos" element={<Outcomes />} />
-            <Route path="/lesdaflow/clientes" element={<Clients />} />
-            <Route path="/lesdaflow/proveedores" element={<Suppliers />} />
-            <Route path="/lesdaflow/usuarios" element={<Users />} />
-            <Route path="/lesdaflow/reportes" element={<Reports />} />
+            <Route path="/mga/" element={<Login />} />
+            <Route path="/mga/productos" element={<Products />} />
+            <Route path="/mga/login" element={<Login />} />
+            <Route path="/mga/ingresos" element={<Incomes />} />
+            <Route path="/mga/egresos" element={<Outcomes />} />
+            <Route path="/mga/clientes" element={<Clients />} />
+            <Route path="/mga/proveedores" element={<Suppliers />} />
+            <Route path="/mga/usuarios" element={<Users />} />
+            <Route path="/mga/reportes" element={<Reports />} />
             <Route path="*" element={<Error />} />
           </Routes>
         </BrowserRouter>

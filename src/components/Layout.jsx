@@ -43,7 +43,7 @@ export function Layout({ children, title }) {
     const drawerWidth = 240
 
     useEffect(() => {
-        if (!auth) return navigate('/lesdaflow/login')
+        if (!auth) return navigate('/mga/login')
     }, [])
 
     const handleDrawerToggle = () => {
@@ -59,49 +59,49 @@ export function Layout({ children, title }) {
             </Toolbar>
             <Divider />
             <List>
-                <ListItem key={4} disablePadding sx={{ background: pathname === '/lesdaflow/productos' ? grey[100] : '#fff' }}>
-                    <ListItemButton onClick={() => navigate('/lesdaflow/productos')}>
+                <ListItem key={4} disablePadding sx={{ background: pathname === '/mga/productos' ? grey[100] : '#fff' }}>
+                    <ListItemButton onClick={() => navigate('/mga/productos')}>
                         <ListItemIcon>
                             <ProductionQuantityLimitsSharpIcon />
                         </ListItemIcon>
                         <ListItemText primary="Productos" />
                     </ListItemButton>
                 </ListItem>
-                <ListItem key={2} disablePadding sx={{ background: pathname === '/lesdaflow/ingresos' ? grey[100] : '#fff' }}>
-                    <ListItemButton onClick={() => navigate('/lesdaflow/ingresos')}>
+                <ListItem key={2} disablePadding sx={{ background: pathname === '/mga/ingresos' ? grey[100] : '#fff' }}>
+                    <ListItemButton onClick={() => navigate('/mga/ingresos')}>
                         <ListItemIcon>
                             <InputSharpIcon />
                         </ListItemIcon>
                         <ListItemText primary="Ingresos" />
                     </ListItemButton>
                 </ListItem>
-                <ListItem key={3} disablePadding sx={{ background: pathname === '/lesdaflow/egresos' ? grey[100] : '#fff' }}>
-                    <ListItemButton onClick={() => navigate('/lesdaflow/egresos')}>
+                <ListItem key={3} disablePadding sx={{ background: pathname === '/mga/egresos' ? grey[100] : '#fff' }}>
+                    <ListItemButton onClick={() => navigate('/mga/egresos')}>
                         <ListItemIcon>
                             <MonetizationOnSharpIcon />
                         </ListItemIcon>
                         <ListItemText primary="Egresos" />
                     </ListItemButton>
                 </ListItem>
-                <ListItem key={5} disablePadding sx={{ background: pathname === '/lesdaflow/clientes' ? grey[100] : '#fff' }}>
-                    <ListItemButton onClick={() => navigate('/lesdaflow/clientes')}>
+                <ListItem key={5} disablePadding sx={{ background: pathname === '/mga/clientes' ? grey[100] : '#fff' }}>
+                    <ListItemButton onClick={() => navigate('/mga/clientes')}>
                         <ListItemIcon>
                             <Person2SharpIcon />
                         </ListItemIcon>
                         <ListItemText primary="Clientes" />
                     </ListItemButton>
                 </ListItem>
-                <ListItem key={6} disablePadding sx={{ background: pathname === '/lesdaflow/proveedores' ? grey[100] : '#fff' }}>
-                    <ListItemButton onClick={() => navigate('/lesdaflow/proveedores')}>
+                <ListItem key={6} disablePadding sx={{ background: pathname === '/mga/proveedores' ? grey[100] : '#fff' }}>
+                    <ListItemButton onClick={() => navigate('/mga/proveedores')}>
                         <ListItemIcon>
                             <LocalShippingSharpIcon />
                         </ListItemIcon>
                         <ListItemText primary="Proveedores" />
                     </ListItemButton>
                 </ListItem>
-                {(auth?.user.role.name === 'SUPER_ADMIN' || auth?.user.role.name === 'ADMIN') &&
-                    <ListItem key={8} disablePadding sx={{ background: pathname === '/lesdaflow/usuarios' ? grey[100] : '#fff' }}>
-                        <ListItemButton onClick={() => navigate('/lesdaflow/usuarios')}>
+                {auth?.user.role.name === 'ADMINISTRADOR' &&
+                    <ListItem key={8} disablePadding sx={{ background: pathname === '/mga/usuarios' ? grey[100] : '#fff' }}>
+                        <ListItemButton onClick={() => navigate('/mga/usuarios')}>
                             <ListItemIcon>
                                 <PermContactCalendarSharpIcon />
                             </ListItemIcon>
@@ -109,8 +109,8 @@ export function Layout({ children, title }) {
                         </ListItemButton>
                     </ListItem>
                 }
-                <ListItem key={10} disablePadding sx={{ background: pathname === '/lesdaflow/reportes' ? grey[100] : '#fff' }}>
-                    <ListItemButton onClick={() => navigate('/lesdaflow/reportes')}>
+                <ListItem key={10} disablePadding sx={{ background: pathname === '/mga/reportes' ? grey[100] : '#fff' }}>
+                    <ListItemButton onClick={() => navigate('/mga/reportes')}>
                         <ListItemIcon>
                             <AssessmentSharpIcon />
                         </ListItemIcon>
@@ -156,14 +156,14 @@ export function Layout({ children, title }) {
                             <Menu slots={{ listbox: Listbox }}>
                                 <MenuItem
                                     sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
-                                    onClick={() => navigate('/lesdaflow/perfil')}>
+                                    onClick={() => navigate('/mga/perfil')}>
                                     <ManageAccountsSharpIcon />
                                     Perfil
                                 </MenuItem>
                                 <MenuItem
                                     sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
                                     onClick={() => {
-                                        navigate('/lesdaflow/login')
+                                        navigate('/mga/login')
                                         setAuth(null)
                                         localStorage.removeItem('auth')
                                     }}>

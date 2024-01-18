@@ -19,23 +19,19 @@ export function Incomes() {
 
     const { get, post, put, destroy } = useApi(INCOME_URL)
 
-    const { articles, loadingArticles } = useProducts()
+    const { products, loadingProducts } = useProducts()
     const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
         defaultData: {
             id: '',
-            article_id: '',
+            product_id: '',
             amount: '',
-            discount: '',
             observations: ''
         },
         rules: {
-            article_id: {
+            product_id: {
                 required: true
             },
             amount: {
-                required: true
-            },
-            discount: {
                 required: true
             },
             observations: {
@@ -107,11 +103,11 @@ export function Incomes() {
             accessor: 'id'
         },
         {
-            id: 'article',
+            id: 'product',
             numeric: false,
             disablePadding: true,
-            label: 'Artículo',
-            accessor: (row) => `${row.article.name} (${row.article.code})`
+            label: 'Producto',
+            accessor: (row) => `${row.product.name} (${row.product.code})`
         },
         {
             id: 'amount',
@@ -119,34 +115,6 @@ export function Incomes() {
             disablePadding: true,
             label: 'Cantidad',
             accessor: 'amount'
-        },
-        {
-            id: 'price',
-            numeric: false,
-            disablePadding: true,
-            label: 'Precio unitario',
-            accessor: (row) => row.article.purchase_price
-        },
-        {
-            id: 'discount',
-            numeric: false,
-            disablePadding: true,
-            label: '% Descuento',
-            accessor: 'discount'
-        },
-        {
-            id: 'total',
-            numeric: false,
-            disablePadding: true,
-            label: 'Total',
-            accessor: (row) => (row.article.purchase_price * row.amount) - (((row.article.purchase_price * row.amount) / 100) * row.discount)
-        },
-        {
-            id: 'currency',
-            numeric: false,
-            disablePadding: true,
-            label: 'Moneda',
-            accessor: (row) => row.article.currency.iso
         },
         {
             id: 'observations',
@@ -166,7 +134,7 @@ export function Incomes() {
 
     return (
         <Layout title="Ingresos">
-            {loadingIncomes || loadingArticles || disabled ?
+            {loadingIncomes || loadingProducts || disabled ?
                 <Box sx={{ width: '100%' }}>
                     <LinearProgress />
                 </Box> :
@@ -188,22 +156,22 @@ export function Incomes() {
                         <form onChange={handleChange} onSubmit={handleSubmit}>
                             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                                 <FormControl>
-                                    <InputLabel id="article-select">Artículo</InputLabel>
+                                    <InputLabel id="product-select">Producto</InputLabel>
                                     <Select
-                                        labelId="article-select"
-                                        id="article_id"
-                                        value={formData.article_id}
-                                        label="Proveedor"
-                                        name="article_id"
+                                        labelId="product-select"
+                                        id="product_id"
+                                        value={formData.product_id}
+                                        label="Producto"
+                                        name="product_id"
                                         onChange={handleChange}
                                     >
-                                        {articles.map(art => (
-                                            <MenuItem key={art.id} value={art.id}>{art.name}</MenuItem>
+                                        {products.map(p => (
+                                            <MenuItem key={p.id} value={p.id}>{p.name}</MenuItem>
                                         ))}
                                     </Select>
-                                    {errors.article_id?.type === 'required' &&
+                                    {errors.product_id?.type === 'required' &&
                                         <Typography variant="caption" color="red" marginTop={1}>
-                                            * El artículo es requerido.
+                                            * El producto es requerido.
                                         </Typography>
                                     }
                                 </FormControl>
@@ -213,15 +181,6 @@ export function Incomes() {
                                     {errors.amount?.type === 'required' &&
                                         <Typography variant="caption" color="red" marginTop={1}>
                                             * La cantidad es requerida.
-                                        </Typography>
-                                    }
-                                </FormControl>
-                                <FormControl>
-                                    <InputLabel htmlFor="discount">Descuento</InputLabel>
-                                    <Input id="discount" type="number" name="discount" value={formData.discount} />
-                                    {errors.discount?.type === 'required' &&
-                                        <Typography variant="caption" color="red" marginTop={1}>
-                                            * El descuento es requerido.
                                         </Typography>
                                     }
                                 </FormControl>
