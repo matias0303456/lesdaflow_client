@@ -25,8 +25,7 @@ export function Clients() {
             email: '',
             address: '',
             city: '',
-            province: '',
-            country_id: ''
+            province: ''
         },
         rules: {
             name: {
@@ -48,9 +47,6 @@ export function Clients() {
             province: {
                 required: true,
                 maxLength: 55
-            },
-            country_id: {
-                required: true
             }
         }
     })
@@ -151,11 +147,11 @@ export function Clients() {
             accessor: 'province'
         },
         {
-            id: 'country',
+            id: 'seller',
             numeric: false,
             disablePadding: true,
-            label: 'País',
-            accessor: (row) => row.country.name
+            label: 'Vendedor',
+            accessor: (row) => row.user.username
         }
     ]
 

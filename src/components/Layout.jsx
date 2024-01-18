@@ -67,20 +67,22 @@ export function Layout({ children, title }) {
                         <ListItemText primary="Productos" />
                     </ListItemButton>
                 </ListItem>
-                <ListItem key={2} disablePadding sx={{ background: pathname === '/mga/ingresos' ? grey[100] : '#fff' }}>
-                    <ListItemButton onClick={() => navigate('/mga/ingresos')}>
-                        <ListItemIcon>
-                            <InputSharpIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Ingresos" />
-                    </ListItemButton>
-                </ListItem>
-                <ListItem key={3} disablePadding sx={{ background: pathname === '/mga/egresos' ? grey[100] : '#fff' }}>
-                    <ListItemButton onClick={() => navigate('/mga/egresos')}>
+                {auth?.user.role.name === 'ADMINISTRADOR' &&
+                    <ListItem key={2} disablePadding sx={{ background: pathname === '/mga/ingresos' ? grey[100] : '#fff' }}>
+                        <ListItemButton onClick={() => navigate('/mga/ingresos')}>
+                            <ListItemIcon>
+                                <InputSharpIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="Ingresos" />
+                        </ListItemButton>
+                    </ListItem>
+                }
+                <ListItem key={3} disablePadding sx={{ background: pathname === '/mga/ventas' ? grey[100] : '#fff' }}>
+                    <ListItemButton onClick={() => navigate('/mga/ventas')}>
                         <ListItemIcon>
                             <MonetizationOnSharpIcon />
                         </ListItemIcon>
-                        <ListItemText primary="Egresos" />
+                        <ListItemText primary="Ventas" />
                     </ListItemButton>
                 </ListItem>
                 <ListItem key={5} disablePadding sx={{ background: pathname === '/mga/clientes' ? grey[100] : '#fff' }}>
@@ -91,23 +93,25 @@ export function Layout({ children, title }) {
                         <ListItemText primary="Clientes" />
                     </ListItemButton>
                 </ListItem>
-                <ListItem key={6} disablePadding sx={{ background: pathname === '/mga/proveedores' ? grey[100] : '#fff' }}>
-                    <ListItemButton onClick={() => navigate('/mga/proveedores')}>
-                        <ListItemIcon>
-                            <LocalShippingSharpIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Proveedores" />
-                    </ListItemButton>
-                </ListItem>
                 {auth?.user.role.name === 'ADMINISTRADOR' &&
-                    <ListItem key={8} disablePadding sx={{ background: pathname === '/mga/usuarios' ? grey[100] : '#fff' }}>
-                        <ListItemButton onClick={() => navigate('/mga/usuarios')}>
-                            <ListItemIcon>
-                                <PermContactCalendarSharpIcon />
-                            </ListItemIcon>
-                            <ListItemText primary="Usuarios" />
-                        </ListItemButton>
-                    </ListItem>
+                    <>
+                        <ListItem key={6} disablePadding sx={{ background: pathname === '/mga/proveedores' ? grey[100] : '#fff' }}>
+                            <ListItemButton onClick={() => navigate('/mga/proveedores')}>
+                                <ListItemIcon>
+                                    <LocalShippingSharpIcon />
+                                </ListItemIcon>
+                                <ListItemText primary="Proveedores" />
+                            </ListItemButton>
+                        </ListItem>
+                        <ListItem key={8} disablePadding sx={{ background: pathname === '/mga/usuarios' ? grey[100] : '#fff' }}>
+                            <ListItemButton onClick={() => navigate('/mga/usuarios')}>
+                                <ListItemIcon>
+                                    <PermContactCalendarSharpIcon />
+                                </ListItemIcon>
+                                <ListItemText primary="Usuarios" />
+                            </ListItemButton>
+                        </ListItem>
+                    </>
                 }
                 <ListItem key={10} disablePadding sx={{ background: pathname === '/mga/reportes' ? grey[100] : '#fff' }}>
                     <ListItemButton onClick={() => navigate('/mga/reportes')}>

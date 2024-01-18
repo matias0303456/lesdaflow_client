@@ -13,9 +13,8 @@ import { DataGrid } from "../components/DataGrid";
 import { ModalComponent } from "../components/ModalComponent";
 
 import { SALE_URL } from "../utils/urls";
-import { getStock } from "../utils/helpers";
 
-export function Outcomes() {
+export function Sales() {
 
     const { get, post, put, destroy } = useApi(SALE_URL)
 
@@ -26,14 +25,14 @@ export function Outcomes() {
     const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
         defaultData: {
             id: '',
-            article_id: '',
+            product_id: '',
             client_id: '',
             amount: '',
             discount: '',
             observations: ''
         },
         rules: {
-            article_id: {
+            product_id: {
                 required: true
             },
             client_id: {
@@ -54,7 +53,6 @@ export function Outcomes() {
     const [loadingOutcomes, setLoadingOutcomes] = useState(true)
     const [outcomes, setOutcomes] = useState([])
     const [open, setOpen] = useState(null)
-    const [hasStock, setHasStock] = useState(false)
 
     useEffect(() => {
         (async () => {
@@ -66,27 +64,17 @@ export function Outcomes() {
         })()
     }, [])
 
-    useEffect(() => {
-        setHasStock(getStock(products.find(p => p.id === formData.product_id)) >= parseInt(formData.amount) && formData.amount.toString().length > 0)
-    }, [formData])
-
     async function handleSubmit(e) {
         e.preventDefault()
-        if (!hasStock) {
-            setMessage('No hay stock disponible.')
-            setSeverity('error')
-            setOpenMessage(true)
-            return
-        }
-        if (validate() && hasStock) {
+        if (validate()) {
             const { status, data } = open === 'NEW' ? await post(formData) : await put(formData)
             if (status === 200) {
                 if (open === 'NEW') {
                     setOutcomes([data, ...outcomes])
-                    setMessage('Egreso creado correctamente.')
+                    setMessage('Venta creada correctamente.')
                 } else {
                     setOutcomes([data, ...outcomes.filter(out => out.id !== formData.id)])
-                    setMessage('Egreso editado correctamente.')
+                    setMessage('Venta editada correctamente.')
                 }
                 setSeverity('success')
                 reset(setOpen)
@@ -105,7 +93,7 @@ export function Outcomes() {
         if (result.every(r => r.status === 200)) {
             const ids = result.map(r => r.data.id)
             setOutcomes([...outcomes.filter(out => !ids.includes(out.id))])
-            setMessage(`${result.length === 1 ? 'Egreso eliminado' : 'Egresos eliminados'} correctamente.`)
+            setMessage(`${result.length === 1 ? 'Venta eliminada' : 'Ventas eliminadas'} correctamente.`)
             setSeverity('success')
         } else {
             setMessage('Ocurrió un error. Actualice la página.')
@@ -125,11 +113,11 @@ export function Outcomes() {
             accessor: 'id'
         },
         {
-            id: 'article',
+            id: 'product',
             numeric: false,
             disablePadding: true,
-            label: 'Artículo',
-            accessor: (row) => `${row.article.name} (${row.article.code})`
+            label: 'Producto',
+            accessor: (row) => `${row.product.name} (${row.product.code})`
         },
         {
             id: 'client',
@@ -150,7 +138,7 @@ export function Outcomes() {
             numeric: false,
             disablePadding: true,
             label: 'Precio unitario',
-            accessor: (row) => row.article.sale_price
+            accessor: (row) => row.product.price
         },
         {
             id: 'discount',
@@ -164,14 +152,7 @@ export function Outcomes() {
             numeric: false,
             disablePadding: true,
             label: 'Total',
-            accessor: (row) => (row.article.sale_price * row.amount) - (((row.article.sale_price * row.amount) / 100) * row.discount)
-        },
-        {
-            id: 'currency',
-            numeric: false,
-            disablePadding: true,
-            label: 'Moneda',
-            accessor: (row) => row.article.currency.iso
+            accessor: (row) => ((row.product.price * row.amount) - (((row.product.price * row.amount) / 100) * row.discount)).toFixed(2)
         },
         {
             id: 'observations',
@@ -186,17 +167,24 @@ export function Outcomes() {
             disablePadding: true,
             label: 'Fecha',
             accessor: (row) => format(new Date(row.created_at), 'dd-MM-yyyy')
+        },
+        {
+            id: 'seller',
+            numeric: false,
+            disablePadding: true,
+            label: 'Vendedor',
+            accessor: (row) => row.client.user.username
         }
     ]
 
     return (
-        <Layout title="Egresos">
+        <Layout title="Ventas">
             {loadingClients || loadingOutcomes || loadingProducts || disabled ?
                 <Box sx={{ width: '100%' }}>
                     <LinearProgress />
                 </Box> :
                 <DataGrid
-                    title="Egresos registrados"
+                    title="Ventas registradas"
                     headCells={headCells}
                     rows={outcomes}
                     open={open}
@@ -207,19 +195,19 @@ export function Outcomes() {
                 >
                     <ModalComponent open={open === 'NEW' || open === 'EDIT'} onClose={() => reset(setOpen)}>
                         <Typography variant="h6" sx={{ marginBottom: 2 }}>
-                            {open === 'NEW' && 'Nuevo egreso'}
-                            {open === 'EDIT' && 'Editar egreso'}
+                            {open === 'NEW' && 'Nueva venta'}
+                            {open === 'EDIT' && 'Editar venta'}
                         </Typography>
                         <form onChange={handleChange} onSubmit={handleSubmit}>
                             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                                 <FormControl>
-                                    <InputLabel id="article-select">Producto</InputLabel>
+                                    <InputLabel id="product-select">Producto</InputLabel>
                                     <Select
-                                        labelId="article-select"
+                                        labelId="product-select"
                                         id="product_id"
-                                        value={formData.article_id}
+                                        value={formData.product_id}
                                         label="Producto"
-                                        name="article_id"
+                                        name="product_id"
                                         onChange={handleChange}
                                     >
                                         {products.map(p => (

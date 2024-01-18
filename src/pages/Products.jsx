@@ -6,6 +6,7 @@ import { useProducts } from '../hooks/useProducts'
 import { useForm } from "../hooks/useForm";
 import { useSuppliers } from "../hooks/useSuppliers";
 
+import { AuthContext } from "../providers/AuthProvider";
 import { Layout } from "../components/Layout";
 import { DataGrid } from "../components/DataGrid";
 import { ModalComponent } from "../components/ModalComponent";
@@ -16,6 +17,7 @@ import { getStock } from "../utils/helpers";
 
 export function Products() {
 
+    const { auth } = useContext(AuthContext)
     const { setMessage, setOpenMessage, setSeverity } = useContext(MessageContext)
 
     const { post, put, destroy } = useApi(PRODUCT_URL)
@@ -139,20 +141,6 @@ export function Products() {
             disablePadding: true,
             label: 'Proveedor',
             accessor: (row) => row.supplier.name
-        },
-        {
-            id: 'min_stock',
-            numeric: false,
-            disablePadding: true,
-            label: 'Stock mínimo',
-            accessor: 'min_stock'
-        },
-        {
-            id: 'stock',
-            numeric: false,
-            disablePadding: true,
-            label: 'Stock actual',
-            accessor: (row) => getStock(row)
         }
     ]
 
@@ -164,13 +152,35 @@ export function Products() {
                 </Box> :
                 <DataGrid
                     title="Inventario"
-                    headCells={headCells}
+                    headCells={
+                        auth?.user.role.name !== 'ADMINISTRADOR' ?
+                            headCells :
+                            [
+                                ...headCells,
+                                {
+                                    id: 'min_stock',
+                                    numeric: false,
+                                    disablePadding: true,
+                                    label: 'Stock mínimo',
+                                    accessor: 'min_stock'
+                                },
+                                {
+                                    id: 'stock',
+                                    numeric: false,
+                                    disablePadding: true,
+                                    label: 'Stock actual',
+                                    accessor: (row) => getStock(row)
+                                }
+                            ]
+                    }
                     rows={products}
                     open={open}
                     setOpen={setOpen}
                     data={formData}
                     setData={setFormData}
                     handleDelete={handleDelete}
+                    disableSelection={auth?.user.role.name !== 'ADMINISTRADOR'}
+                    disableAdd={auth?.user.role.name !== 'ADMINISTRADOR'}
                 >
                     <ModalComponent
                         open={open === 'NEW' || open === 'EDIT'}

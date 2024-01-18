@@ -5,7 +5,9 @@ import { MessageContext } from "../providers/MessageProvider";
 import { useApi } from "../hooks/useApi";
 import { useForm } from "../hooks/useForm";
 import { useSuppliers } from "../hooks/useSuppliers";
+import { useNavigate } from "react-router-dom";
 
+import { AuthContext } from "../providers/AuthProvider";
 import { Layout } from "../components/Layout";
 import { DataGrid } from "../components/DataGrid";
 import { ModalComponent } from "../components/ModalComponent";
@@ -14,7 +16,10 @@ import { SUPPLIER_URL } from "../utils/urls";
 
 export function Suppliers() {
 
+    const { auth } = useContext(AuthContext)
     const { setMessage, setOpenMessage, setSeverity } = useContext(MessageContext)
+
+    const navigate = useNavigate()
 
     const { post, put, destroy } = useApi(SUPPLIER_URL)
     const { suppliers, setSuppliers, loadingSuppliers, setLoadingSuppliers } = useSuppliers()
@@ -133,6 +138,8 @@ export function Suppliers() {
             accessor: 'email'
         }
     ]
+
+    if (auth?.user.role.name !== 'ADMINISTRADOR') navigate('/mga/productos')
 
     return (
         <Layout title="Proveedores">

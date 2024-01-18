@@ -1,7 +1,9 @@
 import { useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Box, Button, FormControl, Input, InputLabel, LinearProgress, MenuItem, Select, Typography } from "@mui/material";
 import { format } from 'date-fns'
 
+import { AuthContext } from "../providers/AuthProvider";
 import { MessageContext } from "../providers/MessageProvider";
 import { useApi } from "../hooks/useApi";
 import { useForm } from "../hooks/useForm";
@@ -15,7 +17,10 @@ import { INCOME_URL } from "../utils/urls";
 
 export function Incomes() {
 
+    const { auth } = useContext(AuthContext)
     const { setMessage, setOpenMessage, setSeverity } = useContext(MessageContext)
+
+    const navigate = useNavigate()
 
     const { get, post, put, destroy } = useApi(INCOME_URL)
 
@@ -131,6 +136,8 @@ export function Incomes() {
             accessor: (row) => format(new Date(row.created_at), 'dd-MM-yyyy')
         }
     ]
+
+    if (auth?.user.role.name !== 'ADMINISTRADOR') navigate('/mga/productos')
 
     return (
         <Layout title="Ingresos">

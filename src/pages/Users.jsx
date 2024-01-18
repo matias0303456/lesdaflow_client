@@ -1,4 +1,5 @@
 import { useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Box, Button, FormControl, Input, InputLabel, LinearProgress, MenuItem, Select, Typography } from "@mui/material";
 
 import { AuthContext } from "../providers/AuthProvider";
@@ -16,6 +17,8 @@ export function Users() {
 
     const { setMessage, setOpenMessage, setSeverity } = useContext(MessageContext)
     const { auth } = useContext(AuthContext)
+
+    const navigate = useNavigate()
 
     const { get: getUsers, post, put, destroy } = useApi(USER_URL)
     const { get: getRoles } = useApi(ROLE_URL)
@@ -167,6 +170,8 @@ export function Users() {
             accessor: (row) => row.role.name
         },
     ]
+
+    if (auth?.user.role.name !== 'ADMINISTRADOR') navigate('/mga/productos')
 
     return (
         <Layout title="Usuarios">
