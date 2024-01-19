@@ -1,6 +1,10 @@
 import { useContext, useEffect, useState } from "react";
 import { Box, Button, FormControl, Input, InputLabel, LinearProgress, MenuItem, Select, Typography } from "@mui/material";
 import { format } from "date-fns";
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import es from 'date-fns/locale/es';
 
 import { MessageContext } from "../providers/MessageProvider";
 import { useApi } from "../hooks/useApi";
@@ -29,7 +33,8 @@ export function Sales() {
             client_id: '',
             amount: '',
             discount: '',
-            observations: ''
+            observations: '',
+            date: ''
         },
         rules: {
             product_id: {
@@ -41,7 +46,7 @@ export function Sales() {
             amount: {
                 required: true
             },
-            discount: {
+            date: {
                 required: true
             },
             observations: {
@@ -124,7 +129,7 @@ export function Sales() {
             numeric: false,
             disablePadding: true,
             label: 'Cliente',
-            accessor: (row) => row.client.name
+            accessor: (row) => `${row.client.first_name} ${row.client.last_name} (${row.client.code})`
         },
         {
             id: 'amount',
@@ -162,11 +167,11 @@ export function Sales() {
             accessor: 'observations'
         },
         {
-            id: 'created_at',
+            id: 'date',
             numeric: false,
             disablePadding: true,
             label: 'Fecha',
-            accessor: (row) => format(new Date(row.created_at), 'dd-MM-yyyy')
+            accessor: (row) => format(new Date(row.date), 'dd-MM-yyyy')
         },
         {
             id: 'seller',
@@ -193,99 +198,116 @@ export function Sales() {
                     setData={setFormData}
                     handleDelete={handleDelete}
                 >
-                    <ModalComponent open={open === 'NEW' || open === 'EDIT'} onClose={() => reset(setOpen)}>
+                    <ModalComponent open={open === 'NEW' || open === 'EDIT'} onClose={() => reset(setOpen)} width={800}>
                         <Typography variant="h6" sx={{ marginBottom: 2 }}>
                             {open === 'NEW' && 'Nueva venta'}
                             {open === 'EDIT' && 'Editar venta'}
                         </Typography>
                         <form onChange={handleChange} onSubmit={handleSubmit}>
-                            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                                <FormControl>
-                                    <InputLabel id="product-select">Producto</InputLabel>
-                                    <Select
-                                        labelId="product-select"
-                                        id="product_id"
-                                        value={formData.product_id}
-                                        label="Producto"
-                                        name="product_id"
-                                        onChange={handleChange}
-                                    >
-                                        {products.map(p => (
-                                            <MenuItem key={p.id} value={p.id}>{p.name}</MenuItem>
-                                        ))}
-                                    </Select>
-                                    {errors.product_id?.type === 'required' &&
-                                        <Typography variant="caption" color="red" marginTop={1}>
-                                            * El producto es requerido.
-                                        </Typography>
-                                    }
-                                </FormControl>
-                                <FormControl>
-                                    <InputLabel id="client-select">Cliente</InputLabel>
-                                    <Select
-                                        labelId="client-select"
-                                        id="client_id"
-                                        value={formData.client_id}
-                                        label="Cliente"
-                                        name="client_id"
-                                        onChange={handleChange}
-                                    >
-                                        {clients.map(c => (
-                                            <MenuItem key={c.id} value={c.id}>{c.name}</MenuItem>
-                                        ))}
-                                    </Select>
-                                    {errors.client_id?.type === 'required' &&
-                                        <Typography variant="caption" color="red" marginTop={1}>
-                                            * El cliente es requerido.
-                                        </Typography>
-                                    }
-                                </FormControl>
-                                <FormControl>
-                                    <InputLabel htmlFor="amount">Cantidad</InputLabel>
-                                    <Input id="amount" type="number" name="amount" value={formData.amount} />
-                                    {errors.amount?.type === 'required' &&
-                                        <Typography variant="caption" color="red" marginTop={1}>
-                                            * La cantidad es requerida.
-                                        </Typography>
-                                    }
-                                </FormControl>
-                                <FormControl>
-                                    <InputLabel htmlFor="discount">Descuento</InputLabel>
-                                    <Input id="discount" type="number" name="discount" value={formData.discount} />
-                                    {errors.discount?.type === 'required' &&
-                                        <Typography variant="caption" color="red" marginTop={1}>
-                                            * El descuento es requerido.
-                                        </Typography>
-                                    }
-                                </FormControl>
-                                <FormControl>
-                                    <InputLabel htmlFor="observations">Observaciones</InputLabel>
-                                    <Input id="observations" type="text" name="observations" value={formData.observations} />
-                                    {errors.observations?.type === 'maxLength' &&
-                                        <Typography variant="caption" color="red" marginTop={1}>
-                                            * Las observaciones son demasiado largas.
-                                        </Typography>
-                                    }
-                                </FormControl>
-                                <FormControl sx={{
-                                    display: 'flex',
-                                    flexDirection: 'row',
-                                    gap: 1,
-                                    justifyContent: 'center',
-                                    marginTop: 1
-                                }}>
-                                    <Button type="button" variant="outlined" onClick={() => reset(setOpen)} sx={{
-                                        width: '50%'
-                                    }}>
-                                        Cancelar
-                                    </Button>
-                                    <Button type="submit" variant="contained" disabled={disabled} sx={{
-                                        width: '50%'
-                                    }}>
-                                        Guardar
-                                    </Button>
-                                </FormControl>
+                            <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 3 }}>
+                                <Box sx={{ display: 'flex', flexDirection: 'column', width: '50%', gap: 3 }}>
+                                    <FormControl>
+                                        <InputLabel id="product-select">Producto</InputLabel>
+                                        <Select
+                                            labelId="product-select"
+                                            id="product_id"
+                                            value={formData.product_id}
+                                            label="Producto"
+                                            name="product_id"
+                                            onChange={handleChange}
+                                        >
+                                            {products.map(p => (
+                                                <MenuItem key={p.id} value={p.id}>{p.name}</MenuItem>
+                                            ))}
+                                        </Select>
+                                        {errors.product_id?.type === 'required' &&
+                                            <Typography variant="caption" color="red" marginTop={1}>
+                                                * El producto es requerido.
+                                            </Typography>
+                                        }
+                                    </FormControl>
+                                    <FormControl>
+                                        <InputLabel id="client-select">Cliente</InputLabel>
+                                        <Select
+                                            labelId="client-select"
+                                            id="client_id"
+                                            value={formData.client_id}
+                                            label="Cliente"
+                                            name="client_id"
+                                            onChange={handleChange}
+                                        >
+                                            {clients.map(c => (
+                                                <MenuItem key={c.id} value={c.id}>{`${c.code} - ${c.first_name} ${c.last_name}`}</MenuItem>
+                                            ))}
+                                        </Select>
+                                        {errors.client_id?.type === 'required' &&
+                                            <Typography variant="caption" color="red" marginTop={1}>
+                                                * El cliente es requerido.
+                                            </Typography>
+                                        }
+                                    </FormControl>
+                                    <FormControl>
+                                        <InputLabel htmlFor="amount">Cantidad</InputLabel>
+                                        <Input id="amount" type="number" name="amount" value={formData.amount} />
+                                        {errors.amount?.type === 'required' &&
+                                            <Typography variant="caption" color="red" marginTop={1}>
+                                                * La cantidad es requerida.
+                                            </Typography>
+                                        }
+                                    </FormControl>
+                                </Box>
+                                <Box sx={{ display: 'flex', flexDirection: 'column', width: '50%', gap: 3 }}>
+                                    <FormControl>
+                                        <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
+                                            <DatePicker
+                                                label="Fecha"
+                                                onChange={value => handleChange({
+                                                    target: {
+                                                        name: 'date',
+                                                        value: new Date(value.toISOString())
+                                                    }
+                                                })}
+                                            />
+                                        </LocalizationProvider>
+                                        {errors.date?.type === 'required' &&
+                                            <Typography variant="caption" color="red" marginTop={1}>
+                                                * La fecha es requerida.
+                                            </Typography>
+                                        }
+                                    </FormControl>
+                                    <FormControl>
+                                        <InputLabel htmlFor="discount">Descuento</InputLabel>
+                                        <Input id="discount" type="number" name="discount" value={formData.discount} />
+                                    </FormControl>
+                                    <FormControl>
+                                        <InputLabel htmlFor="observations">Observaciones</InputLabel>
+                                        <Input id="observations" type="text" name="observations" value={formData.observations} />
+                                        {errors.observations?.type === 'maxLength' &&
+                                            <Typography variant="caption" color="red" marginTop={1}>
+                                                * Las observaciones son demasiado largas.
+                                            </Typography>
+                                        }
+                                    </FormControl>
+                                </Box>
                             </Box>
+                            <FormControl sx={{
+                                display: 'flex',
+                                flexDirection: 'row',
+                                gap: 1,
+                                justifyContent: 'center',
+                                marginTop: 3
+                            }}>
+                                <Button type="button" variant="outlined" onClick={() => reset(setOpen)} sx={{
+                                    width: '50%'
+                                }}>
+                                    Cancelar
+                                </Button>
+                                <Button type="submit" variant="contained" disabled={disabled} sx={{
+                                    width: '50%'
+                                }}>
+                                    Guardar
+                                </Button>
+                            </FormControl>
                         </form>
                     </ModalComponent>
                 </DataGrid>

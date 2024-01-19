@@ -18,7 +18,6 @@ import ListItemText from '@mui/material/ListItemText';
 import MenuIcon from '@mui/icons-material/Menu';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
-import Inventory2SharpIcon from '@mui/icons-material/Inventory2Sharp';
 import InputSharpIcon from '@mui/icons-material/InputSharp';
 import MonetizationOnSharpIcon from '@mui/icons-material/MonetizationOnSharp';
 import ProductionQuantityLimitsSharpIcon from '@mui/icons-material/ProductionQuantityLimitsSharp';
@@ -28,6 +27,7 @@ import ManageAccountsSharpIcon from '@mui/icons-material/ManageAccountsSharp';
 import PermContactCalendarSharpIcon from '@mui/icons-material/PermContactCalendarSharp';
 import LogoutSharpIcon from '@mui/icons-material/LogoutSharp';
 import AssessmentSharpIcon from '@mui/icons-material/AssessmentSharp';
+import PaymentsSharpIcon from '@mui/icons-material/PaymentsSharp';
 
 import { AuthContext } from '../providers/AuthProvider';
 
@@ -43,7 +43,7 @@ export function Layout({ children, title }) {
     const drawerWidth = 240
 
     useEffect(() => {
-        if (!auth) return navigate('/mga/login')
+        if (!auth) return navigate('/veroshop/login')
     }, [])
 
     const handleDrawerToggle = () => {
@@ -54,13 +54,13 @@ export function Layout({ children, title }) {
         <div>
             <Toolbar sx={{ display: 'flex', justifyContent: 'center' }}>
                 <Typography variant="h5" noWrap component="div">
-                    MGA
+                    Vero's Shop
                 </Typography>
             </Toolbar>
             <Divider />
             <List>
-                <ListItem key={1} disablePadding sx={{ background: pathname === '/mga/productos' ? grey[100] : '#fff' }}>
-                    <ListItemButton onClick={() => navigate('/mga/productos')}>
+                <ListItem key={1} disablePadding sx={{ background: pathname === '/veroshop/productos' ? grey[100] : '#fff' }}>
+                    <ListItemButton onClick={() => navigate('/veroshop/productos')}>
                         <ListItemIcon>
                             <ProductionQuantityLimitsSharpIcon />
                         </ListItemIcon>
@@ -68,8 +68,8 @@ export function Layout({ children, title }) {
                     </ListItemButton>
                 </ListItem>
                 {auth?.user.role.name === 'ADMINISTRADOR' &&
-                    <ListItem key={2} disablePadding sx={{ background: pathname === '/mga/ingresos' ? grey[100] : '#fff' }}>
-                        <ListItemButton onClick={() => navigate('/mga/ingresos')}>
+                    <ListItem key={2} disablePadding sx={{ background: pathname === '/veroshop/ingresos' ? grey[100] : '#fff' }}>
+                        <ListItemButton onClick={() => navigate('/veroshop/ingresos')}>
                             <ListItemIcon>
                                 <InputSharpIcon />
                             </ListItemIcon>
@@ -77,42 +77,42 @@ export function Layout({ children, title }) {
                         </ListItemButton>
                     </ListItem>
                 }
-                <ListItem key={3} disablePadding sx={{ background: pathname === '/mga/ventas' ? grey[100] : '#fff' }}>
-                    <ListItemButton onClick={() => navigate('/mga/ventas')}>
+                <ListItem key={3} disablePadding sx={{ background: pathname === '/veroshop/ventas' ? grey[100] : '#fff' }}>
+                    <ListItemButton onClick={() => navigate('/veroshop/ventas')}>
                         <ListItemIcon>
                             <MonetizationOnSharpIcon />
                         </ListItemIcon>
                         <ListItemText primary="Ventas" />
                     </ListItemButton>
                 </ListItem>
-                <ListItem key={4} disablePadding sx={{ background: pathname === '/mga/clientes' ? grey[100] : '#fff' }}>
-                    <ListItemButton onClick={() => navigate('/mga/clientes')}>
+                <ListItem key={4} disablePadding sx={{ background: pathname === '/veroshop/clientes' ? grey[100] : '#fff' }}>
+                    <ListItemButton onClick={() => navigate('/veroshop/clientes')}>
                         <ListItemIcon>
                             <Person2SharpIcon />
                         </ListItemIcon>
                         <ListItemText primary="Clientes" />
                     </ListItemButton>
                 </ListItem>
-                <ListItem key={5} disablePadding sx={{ background: pathname === '/mga/pagos' ? grey[100] : '#fff' }}>
-                    <ListItemButton onClick={() => navigate('/mga/pagos')}>
+                <ListItem key={5} disablePadding sx={{ background: pathname === '/veroshop/pagos' ? grey[100] : '#fff' }}>
+                    <ListItemButton onClick={() => navigate('/veroshop/pagos')}>
                         <ListItemIcon>
-                            <Person2SharpIcon />
+                            <PaymentsSharpIcon />
                         </ListItemIcon>
                         <ListItemText primary="Pagos" />
                     </ListItemButton>
                 </ListItem>
                 {auth?.user.role.name === 'ADMINISTRADOR' &&
                     <>
-                        <ListItem key={6} disablePadding sx={{ background: pathname === '/mga/proveedores' ? grey[100] : '#fff' }}>
-                            <ListItemButton onClick={() => navigate('/mga/proveedores')}>
+                        <ListItem key={6} disablePadding sx={{ background: pathname === '/veroshop/proveedores' ? grey[100] : '#fff' }}>
+                            <ListItemButton onClick={() => navigate('/veroshop/proveedores')}>
                                 <ListItemIcon>
                                     <LocalShippingSharpIcon />
                                 </ListItemIcon>
                                 <ListItemText primary="Proveedores" />
                             </ListItemButton>
                         </ListItem>
-                        <ListItem key={7} disablePadding sx={{ background: pathname === '/mga/usuarios' ? grey[100] : '#fff' }}>
-                            <ListItemButton onClick={() => navigate('/mga/usuarios')}>
+                        <ListItem key={7} disablePadding sx={{ background: pathname === '/veroshop/usuarios' ? grey[100] : '#fff' }}>
+                            <ListItemButton onClick={() => navigate('/veroshop/usuarios')}>
                                 <ListItemIcon>
                                     <PermContactCalendarSharpIcon />
                                 </ListItemIcon>
@@ -121,8 +121,8 @@ export function Layout({ children, title }) {
                         </ListItem>
                     </>
                 }
-                <ListItem key={8} disablePadding sx={{ background: pathname === '/mga/reportes' ? grey[100] : '#fff' }}>
-                    <ListItemButton onClick={() => navigate('/mga/reportes')}>
+                <ListItem key={8} disablePadding sx={{ background: pathname === '/veroshop/reportes' ? grey[100] : '#fff' }}>
+                    <ListItemButton onClick={() => navigate('/veroshop/reportes')}>
                         <ListItemIcon>
                             <AssessmentSharpIcon />
                         </ListItemIcon>
@@ -168,14 +168,14 @@ export function Layout({ children, title }) {
                             <Menu slots={{ listbox: Listbox }}>
                                 <MenuItem
                                     sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
-                                    onClick={() => navigate('/mga/perfil')}>
+                                    onClick={() => navigate('/veroshop/perfil')}>
                                     <ManageAccountsSharpIcon />
                                     Perfil
                                 </MenuItem>
                                 <MenuItem
                                     sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
                                     onClick={() => {
-                                        navigate('/mga/login')
+                                        navigate('/veroshop/login')
                                         setAuth(null)
                                         localStorage.removeItem('auth')
                                     }}>

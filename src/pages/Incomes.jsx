@@ -137,7 +137,7 @@ export function Incomes() {
         }
     ]
 
-    if (auth?.user.role.name !== 'ADMINISTRADOR') navigate('/mga/productos')
+    if (auth?.user.role.name !== 'ADMINISTRADOR') navigate('/veroshop/productos')
 
     return (
         <Layout title="Ingresos">

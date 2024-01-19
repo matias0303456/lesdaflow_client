@@ -22,16 +22,16 @@ function App() {
         <CssBaseline />
         <BrowserRouter>
           <Routes>
-            <Route path="/mga/" element={<Login />} />
-            <Route path="/mga/productos" element={<Products />} />
-            <Route path="/mga/login" element={<Login />} />
-            <Route path="/mga/ingresos" element={<Incomes />} />
-            <Route path="/mga/ventas" element={<Sales />} />
-            <Route path="/mga/clientes" element={<Clients />} />
-            <Route path="/mga/pagos" element={<Payments />} />
-            <Route path="/mga/proveedores" element={<Suppliers />} />
-            <Route path="/mga/usuarios" element={<Users />} />
-            <Route path="/mga/reportes" element={<Reports />} />
+            <Route path="/veroshop/" element={<Login />} />
+            <Route path="/veroshop/productos" element={<Products />} />
+            <Route path="/veroshop/login" element={<Login />} />
+            <Route path="/veroshop/ingresos" element={<Incomes />} />
+            <Route path="/veroshop/ventas" element={<Sales />} />
+            <Route path="/veroshop/clientes" element={<Clients />} />
+            <Route path="/veroshop/pagos" element={<Payments />} />
+            <Route path="/veroshop/proveedores" element={<Suppliers />} />
+            <Route path="/veroshop/usuarios" element={<Users />} />
+            <Route path="/veroshop/reportes" element={<Reports />} />
             <Route path="*" element={<Error />} />
           </Routes>
         </BrowserRouter>

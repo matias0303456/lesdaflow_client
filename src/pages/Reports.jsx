@@ -35,10 +35,11 @@ export function Reports() {
                 <Box>
                     <Box>
                         <Typography variant="h6" sx={{ marginTop: { xs: 3, sm: 0 } }}>
-                            Movimientos de cliente
+                            Estado de cuenta
                         </Typography>
                         <Typography variant="caption" color="gray">
-                            En este reporte se detallan los egresos y devoluciones vinculados al cliente seleccionado.
+                            En este reporte se detallan las ventas, los pagos y el 
+                            estado de la cuenta vinculada al cliente seleccionado.
                         </Typography>
                         <form onChange={handleChange} style={{ marginTop: 10 }}>
                             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'start', gap: 3 }}>
@@ -53,12 +54,12 @@ export function Reports() {
                                         onChange={handleChange}
                                     >
                                         {clients.map(c => (
-                                            <MenuItem key={c.id} value={c.id}>{c.name}</MenuItem>
+                                            <MenuItem key={c.id} value={c.id}>{`${c.code} - ${c.first_name} ${c.last_name}`}</MenuItem>
                                         ))}
                                     </Select>
                                 </FormControl>
                                 <Link
-                                    to={canDownload ? `${REPORT_URL}/client-movements/${auth.token}/${formData.client_id}` : '#'}
+                                    to={canDownload ? `${REPORT_URL}/account-status/${auth.token}/${formData.client_id}` : '#'}
                                     target={canDownload ? "_blank" : '_self'}
                                     style={{ width: { xs: '30%', lg: '50%' }, cursor: canDownload ? 'pointer' : 'auto' }}
                                 >
