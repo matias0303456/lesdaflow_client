@@ -67,6 +67,10 @@ export function Users() {
     const [open, setOpen] = useState(null)
 
     useEffect(() => {
+        if (auth?.user.role.name !== 'ADMINISTRADOR') navigate('/veroshop/productos')
+    }, [])
+
+    useEffect(() => {
         (async () => {
             const { status, data } = await getUsers()
             if (status === 200) {
@@ -170,8 +174,6 @@ export function Users() {
             accessor: (row) => row.role.name
         },
     ]
-
-    if (auth?.user.role.name !== 'ADMINISTRADOR') navigate('/veroshop/productos')
 
     return (
         <Layout title="Usuarios">

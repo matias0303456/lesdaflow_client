@@ -14,6 +14,7 @@ import { Suppliers } from './pages/Suppliers'
 import { Users } from './pages/Users'
 import { Reports } from "./pages/Reports";
 import { Error } from './pages/Error'
+import { Profile } from './pages/Profile'
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
             <Route path="/veroshop/proveedores" element={<Suppliers />} />
             <Route path="/veroshop/usuarios" element={<Users />} />
             <Route path="/veroshop/reportes" element={<Reports />} />
+            <Route path="/veroshop/perfil" element={<Profile />} />
             <Route path="*" element={<Error />} />
           </Routes>
         </BrowserRouter>

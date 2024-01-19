@@ -50,6 +50,10 @@ export function Incomes() {
     const [open, setOpen] = useState(null)
 
     useEffect(() => {
+        if (auth?.user.role.name !== 'ADMINISTRADOR') navigate('/veroshop/productos')
+    }, [])
+
+    useEffect(() => {
         (async () => {
             const { status, data } = await get()
             if (status === 200) {
@@ -136,8 +140,6 @@ export function Incomes() {
             accessor: (row) => format(new Date(row.created_at), 'dd-MM-yyyy')
         }
     ]
-
-    if (auth?.user.role.name !== 'ADMINISTRADOR') navigate('/veroshop/productos')
 
     return (
         <Layout title="Ingresos">

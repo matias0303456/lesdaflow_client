@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Box, Button, FormControl, Input, InputLabel, LinearProgress, Typography } from "@mui/material";
 
 import { MessageContext } from "../providers/MessageProvider";
@@ -53,6 +53,10 @@ export function Suppliers() {
     })
 
     const [open, setOpen] = useState(null)
+
+    useEffect(() => {
+        if (auth?.user.role.name !== 'ADMINISTRADOR') navigate('/veroshop/productos')
+    }, [])
 
     async function handleSubmit(e) {
         e.preventDefault()
@@ -138,8 +142,6 @@ export function Suppliers() {
             accessor: 'email'
         }
     ]
-
-    if (auth?.user.role.name !== 'ADMINISTRADOR') navigate('/veroshop/productos')
 
     return (
         <Layout title="Proveedores">

@@ -166,12 +166,14 @@ export function Layout({ children, title }) {
                         <Dropdown>
                             <MenuButton>¡Hola, {auth?.user.username}!</MenuButton>
                             <Menu slots={{ listbox: Listbox }}>
-                                <MenuItem
-                                    sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
-                                    onClick={() => navigate('/veroshop/perfil')}>
-                                    <ManageAccountsSharpIcon />
-                                    Perfil
-                                </MenuItem>
+                                {auth?.user.role.name === 'ADMINISTRADOR' &&
+                                    <MenuItem
+                                        sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
+                                        onClick={() => navigate('/veroshop/perfil')}>
+                                        <ManageAccountsSharpIcon />
+                                        Perfil
+                                    </MenuItem>
+                                }
                                 <MenuItem
                                     sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
                                     onClick={() => {
