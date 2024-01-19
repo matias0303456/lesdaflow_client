@@ -10,3 +10,4 @@ export const SUPPLIER_URL = `${BASE_URL}/suppliers`
 export const USER_URL = `${BASE_URL}/users`
 export const CHANGE_PASSWORD_URL = `${USER_URL}/change-password`
 export const REPORT_URL = `${BASE_URL}/reports`
+export const PAYMENT_URL = `${BASE_URL}/payments`

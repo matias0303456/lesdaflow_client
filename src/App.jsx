@@ -9,6 +9,7 @@ import { Products } from './pages/Products'
 import { Incomes } from "./pages/Incomes";
 import { Sales } from "./pages/Sales";
 import { Clients } from './pages/Clients'
+import { Payments } from "./pages/Payments";
 import { Suppliers } from './pages/Suppliers'
 import { Users } from './pages/Users'
 import { Reports } from "./pages/Reports";
@@ -27,6 +28,7 @@ function App() {
             <Route path="/mga/ingresos" element={<Incomes />} />
             <Route path="/mga/ventas" element={<Sales />} />
             <Route path="/mga/clientes" element={<Clients />} />
+            <Route path="/mga/pagos" element={<Payments />} />
             <Route path="/mga/proveedores" element={<Suppliers />} />
             <Route path="/mga/usuarios" element={<Users />} />
             <Route path="/mga/reportes" element={<Reports />} />

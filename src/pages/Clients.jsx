@@ -1,6 +1,14 @@
 import { useContext, useEffect, useState } from "react";
 import { Box, Button, FormControl, Input, InputLabel, LinearProgress, MenuItem, Select, Typography } from "@mui/material";
+// import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
+// import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+// import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+// import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+// import { format, parseISO } from "date-fns";
+import { format } from "date-fns";
+// import es from 'date-fns/locale/es';
 
+import { AuthContext } from "../providers/AuthProvider";
 import { MessageContext } from "../providers/MessageProvider";
 import { useApi } from "../hooks/useApi";
 import { useForm } from "../hooks/useForm";
@@ -14,6 +22,7 @@ import { CLIENT_URL } from "../utils/urls";
 
 export function Clients() {
 
+    const { auth } = useContext(AuthContext)
     const { setMessage, setOpenMessage, setSeverity } = useContext(MessageContext)
 
     const { get, post, put, destroy } = useApi(CLIENT_URL)
@@ -21,14 +30,23 @@ export function Clients() {
     const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
         defaultData: {
             id: '',
-            name: '',
+            code: '',
+            first_name: '',
+            last_name: '',
             email: '',
             address: '',
-            city: '',
-            province: ''
+            phone: ''
         },
         rules: {
-            name: {
+            code: {
+                required: true,
+                maxLength: 55
+            },
+            first_name: {
+                required: true,
+                maxLength: 55
+            },
+            last_name: {
                 required: true,
                 maxLength: 55
             },
@@ -40,14 +58,13 @@ export function Clients() {
                 required: true,
                 maxLength: 55
             },
-            city: {
+            phone: {
                 required: true,
                 maxLength: 55
             },
-            province: {
-                required: true,
-                maxLength: 55
-            }
+            // deadline: {
+            //     required: true,
+            // }
         }
     })
 
@@ -112,11 +129,25 @@ export function Clients() {
             accessor: 'id'
         },
         {
-            id: 'name',
+            id: 'code',
+            numeric: false,
+            disablePadding: true,
+            label: 'Código',
+            accessor: 'code'
+        },
+        {
+            id: 'first_name',
             numeric: false,
             disablePadding: true,
             label: 'Nombre',
-            accessor: 'name'
+            accessor: 'first_name'
+        },
+        {
+            id: 'last_name',
+            numeric: false,
+            disablePadding: true,
+            label: 'Apellido',
+            accessor: 'last_name'
         },
         {
             id: 'email',
@@ -133,25 +164,18 @@ export function Clients() {
             accessor: 'address'
         },
         {
-            id: 'city',
+            id: 'phone',
             numeric: false,
             disablePadding: true,
-            label: 'Ciudad',
-            accessor: 'city'
+            label: 'Teléfono',
+            accessor: 'phone'
         },
         {
-            id: 'province',
+            id: 'deadline',
             numeric: false,
             disablePadding: true,
-            label: 'Provincia',
-            accessor: 'province'
-        },
-        {
-            id: 'seller',
-            numeric: false,
-            disablePadding: true,
-            label: 'Vendedor',
-            accessor: (row) => row.user.username
+            label: 'Vencimiento',
+            accessor: (row) => row.user.account?.deadline ? format(new Date(row.user.account.deadline), 'dd-MM-yyyy') : '-'
         }
     ]
 
@@ -163,7 +187,19 @@ export function Clients() {
                 </Box> :
                 <DataGrid
                     title="Clientes registrados"
-                    headCells={headCells}
+                    headCells={auth.user.role.name !== 'ADMINISTRADOR' ?
+                        headCells :
+                        [
+                            ...headCells,
+                            {
+                                id: 'seller',
+                                numeric: false,
+                                disablePadding: true,
+                                label: 'Vendedor',
+                                accessor: (row) => row.user.username
+                            }
+                        ]
+                    }
                     rows={clients}
                     open={open}
                     setOpen={setOpen}
@@ -171,106 +207,137 @@ export function Clients() {
                     setData={setFormData}
                     handleDelete={handleDelete}
                 >
-                    <ModalComponent open={open === 'NEW' || open === 'EDIT'} onClose={() => reset(setOpen)}>
+                    <ModalComponent open={open === 'NEW' || open === 'EDIT'} onClose={() => reset(setOpen)} width={800}>
                         <Typography variant="h6" sx={{ marginBottom: 2 }}>
                             {open === 'NEW' && 'Nuevo cliente'}
                             {open === 'EDIT' && 'Editar cliente'}
                         </Typography>
                         <form onChange={handleChange} onSubmit={handleSubmit}>
-                            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-                                <FormControl>
-                                    <InputLabel htmlFor="name">Nombre</InputLabel>
-                                    <Input id="name" type="text" name="name" value={formData.name} />
-                                    {errors.name?.type === 'required' &&
+                            <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 3 }}>
+                                <Box sx={{ display: 'flex', flexDirection: 'column', width: '50%', gap: 3 }}>
+                                    <FormControl>
+                                        <InputLabel htmlFor="code">Código</InputLabel>
+                                        <Input id="code" type="text" name="code" value={formData.code} />
+                                        {errors.code?.type === 'required' &&
+                                            <Typography variant="caption" color="red" marginTop={1}>
+                                                * El código es requerido.
+                                            </Typography>
+                                        }
+                                        {errors.name?.type === 'maxLength' &&
+                                            <Typography variant="caption" color="red" marginTop={1}>
+                                                * El código es demasiado largo.
+                                            </Typography>
+                                        }
+                                    </FormControl>
+                                    <FormControl>
+                                        <InputLabel htmlFor="first_name">Nombre</InputLabel>
+                                        <Input id="first_name" type="text" name="first_name" value={formData.first_name} />
+                                        {errors.first_name?.type === 'required' &&
+                                            <Typography variant="caption" color="red" marginTop={1}>
+                                                * El nombre es requerido.
+                                            </Typography>
+                                        }
+                                        {errors.first_name?.type === 'maxLength' &&
+                                            <Typography variant="caption" color="red" marginTop={1}>
+                                                * El nombre es demasiado largo.
+                                            </Typography>
+                                        }
+                                    </FormControl>
+                                    <FormControl>
+                                        <InputLabel htmlFor="last_name">Apellido</InputLabel>
+                                        <Input id="last_name" type="text" name="last_name" value={formData.last_name} />
+                                        {errors.last_name?.type === 'required' &&
+                                            <Typography variant="caption" color="red" marginTop={1}>
+                                                * El apellido es requerido.
+                                            </Typography>
+                                        }
+                                        {errors.last_name?.type === 'maxLength' &&
+                                            <Typography variant="caption" color="red" marginTop={1}>
+                                                * El apellido es demasiado largo.
+                                            </Typography>
+                                        }
+                                    </FormControl>
+                                </Box>
+                                <Box sx={{ display: 'flex', flexDirection: 'column', width: '50%', gap: 3 }}>
+                                    <FormControl>
+                                        <InputLabel htmlFor="email">Email</InputLabel>
+                                        <Input id="email" type="email" name="email" value={formData.email} />
+                                        {errors.email?.type === 'required' &&
+                                            <Typography variant="caption" color="red" marginTop={1}>
+                                                * El email es requerido.
+                                            </Typography>
+                                        }
+                                        {errors.email?.type === 'maxLength' &&
+                                            <Typography variant="caption" color="red" marginTop={1}>
+                                                * El email es demasiado largo.
+                                            </Typography>
+                                        }
+                                    </FormControl>
+                                    <FormControl>
+                                        <InputLabel htmlFor="address">Dirección</InputLabel>
+                                        <Input id="address" type="text" name="address" value={formData.address} />
+                                        {errors.address?.type === 'required' &&
+                                            <Typography variant="caption" color="red" marginTop={1}>
+                                                * La dirección es requerida.
+                                            </Typography>
+                                        }
+                                        {errors.address?.type === 'maxLength' &&
+                                            <Typography variant="caption" color="red" marginTop={1}>
+                                                * La dirección es demasiado larga.
+                                            </Typography>
+                                        }
+                                    </FormControl>
+                                    <FormControl>
+                                        <InputLabel htmlFor="phone">Teléfono</InputLabel>
+                                        <Input id="phone" type="number" name="phone" value={formData.phone} />
+                                        {errors.phone?.type === 'required' &&
+                                            <Typography variant="caption" color="red" marginTop={1}>
+                                                * El teléfono es requerido.
+                                            </Typography>
+                                        }
+                                        {errors.phone?.type === 'maxLength' &&
+                                            <Typography variant="caption" color="red" marginTop={1}>
+                                                * El teléfono es demasiado largo.
+                                            </Typography>
+                                        }
+                                    </FormControl>
+                                    {/* <FormControl>
+                                    <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
+                                        <DatePicker
+                                            label="Vencimiento cuenta corriente"
+                                            onChange={handleChange}
+                                        />
+                                    </LocalizationProvider>
+                                    {errors.deadline?.type === 'required' &&
                                         <Typography variant="caption" color="red" marginTop={1}>
-                                            * El nombre es requerido.
+                                            * La fecha de vencimiento es requerida.
                                         </Typography>
                                     }
-                                    {errors.name?.type === 'maxLength' &&
-                                        <Typography variant="caption" color="red" marginTop={1}>
-                                            * El nombre es demasiado largo.
-                                        </Typography>
-                                    }
-                                </FormControl>
-                                <FormControl>
-                                    <InputLabel htmlFor="email">Email</InputLabel>
-                                    <Input id="email" type="email" name="email" value={formData.email} />
-                                    {errors.email?.type === 'required' &&
-                                        <Typography variant="caption" color="red" marginTop={1}>
-                                            * El email es requerido.
-                                        </Typography>
-                                    }
-                                    {errors.email?.type === 'maxLength' &&
-                                        <Typography variant="caption" color="red" marginTop={1}>
-                                            * El email es demasiado largo.
-                                        </Typography>
-                                    }
-                                </FormControl>
-                                <FormControl>
-                                    <InputLabel htmlFor="address">Dirección</InputLabel>
-                                    <Input id="address" type="text" name="address" value={formData.address} />
-                                    {errors.address?.type === 'required' &&
-                                        <Typography variant="caption" color="red" marginTop={1}>
-                                            * La dirección es requerida.
-                                        </Typography>
-                                    }
-                                    {errors.address?.type === 'maxLength' &&
-                                        <Typography variant="caption" color="red" marginTop={1}>
-                                            * La dirección es demasiado larga.
-                                        </Typography>
-                                    }
-                                </FormControl>
-                                <FormControl>
-                                    <InputLabel htmlFor="city">Ciudad</InputLabel>
-                                    <Input id="city" type="text" name="city" value={formData.city} />
-                                    {errors.city?.type === 'required' &&
-                                        <Typography variant="caption" color="red" marginTop={1}>
-                                            * La ciudad es requerida.
-                                        </Typography>
-                                    }
-                                    {errors.city?.type === 'maxLength' &&
-                                        <Typography variant="caption" color="red" marginTop={1}>
-                                            * La ciudad es demasiado larga.
-                                        </Typography>
-                                    }
-                                </FormControl>
-                                <FormControl>
-                                    <InputLabel htmlFor="province">Provincia / Estado</InputLabel>
-                                    <Input id="province" type="text" name="province" value={formData.province} />
-                                    {errors.province?.type === 'required' &&
-                                        <Typography variant="caption" color="red" marginTop={1}>
-                                            * La provincia es requerida.
-                                        </Typography>
-                                    }
-                                    {errors.province?.type === 'maxLength' &&
-                                        <Typography variant="caption" color="red" marginTop={1}>
-                                            * La provincia es demasiado larga.
-                                        </Typography>
-                                    }
-                                </FormControl>
-                                <FormControl sx={{
-                                    display: 'flex',
-                                    flexDirection: 'row',
-                                    gap: 1,
-                                    justifyContent: 'center',
-                                    marginTop: 1
-                                }}>
-                                    <Button type="button" variant="outlined" onClick={() => reset(setOpen)} sx={{
-                                        width: '50%'
-                                    }}>
-                                        Cancelar
-                                    </Button>
-                                    <Button type="submit" variant="contained" disabled={disabled} sx={{
-                                        width: '50%'
-                                    }}>
-                                        Guardar
-                                    </Button>
-                                </FormControl>
+                                </FormControl> */}
+                                </Box>
                             </Box>
+                            <FormControl sx={{
+                                display: 'flex',
+                                flexDirection: 'row',
+                                gap: 1,
+                                justifyContent: 'center',
+                                marginTop: 5
+                            }}>
+                                <Button type="button" variant="outlined" onClick={() => reset(setOpen)} sx={{
+                                    width: '50%'
+                                }}>
+                                    Cancelar
+                                </Button>
+                                <Button type="submit" variant="contained" disabled={disabled} sx={{
+                                    width: '50%'
+                                }}>
+                                    Guardar
+                                </Button>
+                            </FormControl>
                         </form>
                     </ModalComponent>
                 </DataGrid>
             }
-        </Layout>
+        </Layout >
     )
 }
