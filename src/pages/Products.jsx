@@ -185,7 +185,6 @@ export function Products() {
                     <ModalComponent
                         open={open === 'NEW' || open === 'EDIT'}
                         onClose={() => reset(setOpen)}
-                        width={800}
                     >
                         <Typography variant="h6" sx={{ marginBottom: 0.5 }}>
                             {open === 'NEW' && 'Nuevo producto'}

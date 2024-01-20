@@ -200,7 +200,7 @@ export function Clients() {
                     setData={setFormData}
                     handleDelete={handleDelete}
                 >
-                    <ModalComponent open={open === 'NEW' || open === 'EDIT'} onClose={() => reset(setOpen)} width={800}>
+                    <ModalComponent open={open === 'NEW' || open === 'EDIT'} onClose={() => reset(setOpen)}>
                         <Typography variant="h6" sx={{ marginBottom: 2 }}>
                             {open === 'NEW' && 'Nuevo cliente'}
                             {open === 'EDIT' && 'Editar cliente'}

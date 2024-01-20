@@ -286,102 +286,104 @@ export function DataGrid({
     );
 
     return (
-        <Box sx={{ width: '100%' }}>
-            <Paper sx={{ width: '100%', mb: 2 }}>
-                <EnhancedTableToolbar
-                    numSelected={selected.length}
-                    title={title}
-                    disableAdd={disableAdd}
-                    open={open}
-                    setOpen={setOpen}
-                    data={data}
-                    setData={setData}
-                    workOn={rows.filter(row => selected.includes(row.id))}
-                    handleDelete={handleDelete}
-                />
-                <TableContainer>
-                    <Table
-                        sx={{ minWidth: 750 }}
-                        aria-labelledby="tableTitle"
-                        size={dense ? 'small' : 'medium'}
-                    >
-                        <EnhancedTableHead
-                            headCells={headCells}
-                            numSelected={selected.length}
-                            order={order}
-                            orderBy={orderBy}
-                            onSelectAllClick={handleSelectAllClick}
-                            onRequestSort={handleRequestSort}
-                            rowCount={rows.length}
-                            disableSelection={disableSelection}
-                        />
-                        <TableBody>
-                            {visibleRows.map((row, index) => {
-                                const isItemSelected = isSelected(row.id);
-                                const labelId = `enhanced-table-checkbox-${index}`;
+        <div id='gridContainer'>
+            <Box sx={{ width: '100%' }}>
+                <Paper sx={{ width: '100%', mb: 2 }}>
+                    <EnhancedTableToolbar
+                        numSelected={selected.length}
+                        title={title}
+                        disableAdd={disableAdd}
+                        open={open}
+                        setOpen={setOpen}
+                        data={data}
+                        setData={setData}
+                        workOn={rows.filter(row => selected.includes(row.id))}
+                        handleDelete={handleDelete}
+                    />
+                    <TableContainer>
+                        <Table
+                            sx={{ minWidth: 750 }}
+                            aria-labelledby="tableTitle"
+                            size={dense ? 'small' : 'medium'}
+                        >
+                            <EnhancedTableHead
+                                headCells={headCells}
+                                numSelected={selected.length}
+                                order={order}
+                                orderBy={orderBy}
+                                onSelectAllClick={handleSelectAllClick}
+                                onRequestSort={handleRequestSort}
+                                rowCount={rows.length}
+                                disableSelection={disableSelection}
+                            />
+                            <TableBody>
+                                {visibleRows.map((row, index) => {
+                                    const isItemSelected = isSelected(row.id);
+                                    const labelId = `enhanced-table-checkbox-${index}`;
 
-                                return (
-                                    <TableRow
-                                        hover
-                                        onClick={(event) => {
-                                            if (!disableSelection) {
-                                                handleClick(event, row.id)
+                                    return (
+                                        <TableRow
+                                            hover
+                                            onClick={(event) => {
+                                                if (!disableSelection) {
+                                                    handleClick(event, row.id)
+                                                }
+                                            }}
+                                            role="checkbox"
+                                            aria-checked={isItemSelected}
+                                            tabIndex={-1}
+                                            key={row.id}
+                                            selected={isItemSelected}
+                                            sx={{ cursor: !disableSelection ? 'pointer' : 'auto' }}
+                                        >
+                                            {!disableSelection &&
+                                                <TableCell padding="checkbox">
+                                                    <Checkbox
+                                                        color="primary"
+                                                        checked={isItemSelected}
+                                                        inputProps={{
+                                                            'aria-labelledby': labelId,
+                                                        }}
+                                                    />
+                                                </TableCell>
                                             }
+                                            {headCells.map(cell => cell.accessor).map(accessor => (
+                                                <TableCell key={accessor} align="center" sx={{ color: deadlineColor && deadlineIsPast(row) ? 'red' : '' }}>
+                                                    {typeof accessor === 'function' ? accessor(row) : row[accessor]}
+                                                </TableCell>
+                                            ))}
+                                        </TableRow>
+                                    );
+                                })}
+                                {emptyRows > 0 && (
+                                    <TableRow
+                                        style={{
+                                            height: (dense ? 33 : 53) * emptyRows,
                                         }}
-                                        role="checkbox"
-                                        aria-checked={isItemSelected}
-                                        tabIndex={-1}
-                                        key={row.id}
-                                        selected={isItemSelected}
-                                        sx={{ cursor: !disableSelection ? 'pointer' : 'auto' }}
                                     >
-                                        {!disableSelection &&
-                                            <TableCell padding="checkbox">
-                                                <Checkbox
-                                                    color="primary"
-                                                    checked={isItemSelected}
-                                                    inputProps={{
-                                                        'aria-labelledby': labelId,
-                                                    }}
-                                                />
-                                            </TableCell>
-                                        }
-                                        {headCells.map(cell => cell.accessor).map(accessor => (
-                                            <TableCell key={accessor} align="center" sx={{ color: deadlineColor && deadlineIsPast(row) ? 'red' : '' }}>
-                                                {typeof accessor === 'function' ? accessor(row) : row[accessor]}
-                                            </TableCell>
-                                        ))}
+                                        <TableCell colSpan={6} />
                                     </TableRow>
-                                );
-                            })}
-                            {emptyRows > 0 && (
-                                <TableRow
-                                    style={{
-                                        height: (dense ? 33 : 53) * emptyRows,
-                                    }}
-                                >
-                                    <TableCell colSpan={6} />
-                                </TableRow>
-                            )}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-                <TablePagination
-                    rowsPerPageOptions={[5, 10, 25]}
-                    component="div"
-                    count={rows.length}
-                    rowsPerPage={rowsPerPage}
-                    labelRowsPerPage="Registros por página"
-                    page={page}
-                    onPageChange={handleChangePage}
-                    onRowsPerPageChange={handleChangeRowsPerPage}
+                                )}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                    <TablePagination
+                        rowsPerPageOptions={[5, 10, 25]}
+                        component="div"
+                        count={rows.length}
+                        rowsPerPage={rowsPerPage}
+                        labelRowsPerPage="Registros por página"
+                        page={page}
+                        onPageChange={handleChangePage}
+                        onRowsPerPageChange={handleChangeRowsPerPage}
+                    />
+                </Paper>
+                {children}
+                <FormControlLabel
+                    control={<Switch checked={dense} onChange={handleChangeDense} />}
+                    label="Condensar tabla"
                 />
-            </Paper>
-            {children}
-            <FormControlLabel
-                control={<Switch checked={dense} onChange={handleChangeDense} />}
-                label="Condensar tabla"
-            />
-        </Box>
+            </Box>
+        </div>
     );
 }

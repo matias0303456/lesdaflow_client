@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import Backdrop from '@mui/material/Backdrop';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
@@ -14,7 +15,18 @@ const style = {
     borderRadius: 1
 };
 
-export function ModalComponent({ children, open, onClose, width = 400 }) {
+export function ModalComponent({ children, open, onClose }) {
+
+    const [screenSize, setScreenSize] = useState(window.innerWidth < 600 ? window.innerWidth : window.innerWidth - 200)
+
+    window.onresize = () => {
+        if (window.innerWidth < 600) {
+            setScreenSize(window.innerWidth)
+        } else {
+            setScreenSize(window.innerWidth - 200)
+        }
+    }
+
     return (
         <Modal
             aria-labelledby="transition-modal-title"
@@ -30,7 +42,7 @@ export function ModalComponent({ children, open, onClose, width = 400 }) {
             }}
         >
             <Fade in={open}>
-                <Box sx={{ ...style, width }}>
+                <Box sx={{ ...style, width: screenSize }}>
                     {children}
                 </Box>
             </Fade>

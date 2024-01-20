@@ -218,7 +218,7 @@ export function Sales() {
                     handleDelete={handleDelete}
                     deadlineColor
                 >
-                    <ModalComponent open={open === 'NEW' || open === 'EDIT'} onClose={() => reset(setOpen)} width={800}>
+                    <ModalComponent open={open === 'NEW' || open === 'EDIT'} onClose={() => reset(setOpen)}>
                         <Typography variant="h6" sx={{ marginBottom: 2 }}>
                             {open === 'NEW' && 'Nueva venta'}
                             {open === 'EDIT' && 'Editar venta'}
