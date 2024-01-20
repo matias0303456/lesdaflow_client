@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Box, Button, FormControl, Input, InputLabel, LinearProgress, MenuItem, Select, Typography } from "@mui/material";
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -23,17 +23,17 @@ export function Payments() {
     const { setMessage, setOpenMessage, setSeverity } = useContext(MessageContext)
 
     const { post, put, destroy } = useApi(PAYMENT_URL)
-    const { clients, laodingClients } = useClients()
+    const { clients, loadingClients } = useClients()
     const { payments, setPayments, loadingPayments, setLoadingPayments } = usePayments()
     const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
         defaultData: {
             id: '',
-            account_id: '',
+            sale_id: '',
             amount: '',
-            date: ''
+            date: Date.now()
         },
         rules: {
-            account_id: {
+            sale_id: {
                 required: true
             },
             amount: {
@@ -46,6 +46,11 @@ export function Payments() {
     })
 
     const [open, setOpen] = useState(null)
+    const [selectedClient, setSelectedClient] = useState(null)
+
+    useEffect(() => {
+        if (open === 'EDIT') setSelectedClient(clients.find(c => c.id === formData.sale.client_id))
+    }, [open])
 
     async function handleSubmit(e) {
         e.preventDefault()
@@ -85,6 +90,7 @@ export function Payments() {
         setOpenMessage(true)
         setLoadingPayments(false)
         setOpen(null)
+        setSelectedClient(null)
     }
 
     const headCells = [
@@ -96,17 +102,24 @@ export function Payments() {
             accessor: 'id'
         },
         {
-            id: 'account_id',
+            id: 'client',
             numeric: false,
             disablePadding: true,
             label: 'Cliente',
-            accessor: (row) => `${row.account.client.code} - ${row.account.client.first_name} ${row.account.client.last_name} `
+            accessor: (row) => `${row.sale.client.code} - ${row.sale.client.first_name} ${row.sale.client.last_name} `
+        },
+        {
+            id: 'sale',
+            numeric: false,
+            disablePadding: true,
+            label: 'Venta',
+            accessor: (row) => `${format(new Date(row.sale.date), 'dd-MM-yyyy')} / ${row.sale.product.name} (${row.sale.product.code}) de ${row.sale.product.supplier.name}`
         },
         {
             id: 'amount',
             numeric: false,
             disablePadding: true,
-            label: 'Cantidad',
+            label: 'Monto',
             accessor: 'amount'
         },
         {
@@ -115,12 +128,19 @@ export function Payments() {
             disablePadding: true,
             label: 'Fecha',
             accessor: (row) => format(new Date(row.date), 'dd-MM-yyyy')
+        },
+        {
+            id: 'user',
+            numeric: false,
+            disablePadding: true,
+            label: 'Vendedor',
+            accessor: (row) => row.sale.client.user.username
         }
     ]
 
     return (
         <Layout title="Pagos">
-            {loadingPayments || laodingClients || disabled ?
+            {loadingPayments || loadingClients || disabled ?
                 <Box sx={{ width: '100%' }}>
                     <LinearProgress />
                 </Box> :
@@ -142,27 +162,38 @@ export function Payments() {
                         <form onChange={handleChange} onSubmit={handleSubmit}>
                             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
                                 <FormControl>
-                                    <InputLabel id="account-select">Cliente</InputLabel>
+                                    <InputLabel id="client-select">Cliente</InputLabel>
                                     <Select
-                                        labelId="account-select"
-                                        id="account_id"
-                                        value={formData.account_id}
+                                        labelId="client-select"
+                                        id="client_id"
+                                        value={selectedClient?.id ?? ''}
                                         label="Cliente"
-                                        name="account_id"
-                                        onChange={handleChange}
+                                        name="client_id"
+                                        onChange={(e) => setSelectedClient(clients.find(c => c.id === e.target.value))}
                                     >
                                         {clients.map(c => (
-                                            <MenuItem key={c.id} value={c.account.id}>{`${c.code} - ${c.first_name} ${c.last_name}`}</MenuItem>
+                                            <MenuItem key={c.id} value={c.id}>{`${c.code} - ${c.first_name} ${c.last_name}`}</MenuItem>
                                         ))}
                                     </Select>
-                                    {errors.account_id?.type === 'required' &&
-                                        <Typography variant="caption" color="red" marginTop={1}>
-                                            * El cliente es requerido.
-                                        </Typography>
-                                    }
                                 </FormControl>
                                 <FormControl>
-                                    <InputLabel htmlFor="amount">Cantidad</InputLabel>
+                                    <InputLabel id="sale-select">Venta</InputLabel>
+                                    <Select
+                                        labelId="sale-select"
+                                        id="sale_id"
+                                        value={formData.sale_id}
+                                        label="Venta"
+                                        name="sale_id"
+                                        onChange={handleChange}
+                                        disabled={!selectedClient}
+                                    >
+                                        {selectedClient?.sales.map(s => (
+                                            <MenuItem key={s.id} value={s.id}>{`${format(new Date(s.date), 'dd-MM-yyyy')} / ${s.product.name} (${s.product.code}) de ${s.product.supplier.name}`}</MenuItem>
+                                        ))}
+                                    </Select>
+                                </FormControl>
+                                <FormControl>
+                                    <InputLabel htmlFor="amount">Monto</InputLabel>
                                     <Input id="amount" type="number" name="amount" value={formData.amount} />
                                     {errors.amount?.type === 'required' &&
                                         <Typography variant="caption" color="red" marginTop={1}>
@@ -174,6 +205,7 @@ export function Payments() {
                                     <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
                                         <DatePicker
                                             label="Fecha"
+                                            value={new Date(formData.date)}
                                             onChange={value => handleChange({
                                                 target: {
                                                     name: 'date',
@@ -195,7 +227,10 @@ export function Payments() {
                                     justifyContent: 'center',
                                     marginTop: 1
                                 }}>
-                                    <Button type="button" variant="outlined" onClick={() => reset(setOpen)} sx={{
+                                    <Button type="button" variant="outlined" onClick={() => {
+                                        reset(setOpen)
+                                        setSelectedClient(null)
+                                    }} sx={{
                                         width: '50%'
                                     }}>
                                         Cancelar

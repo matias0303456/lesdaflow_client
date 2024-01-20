@@ -169,13 +169,6 @@ export function Clients() {
             disablePadding: true,
             label: 'Teléfono',
             accessor: 'phone'
-        },
-        {
-            id: 'deadline',
-            numeric: false,
-            disablePadding: true,
-            label: 'Vencimiento',
-            accessor: (row) => row.user.account?.deadline ? format(new Date(row.user.account.deadline), 'dd-MM-yyyy') : '-'
         }
     ]
 

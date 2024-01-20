@@ -25,6 +25,8 @@ import { Button } from '@mui/material';
 
 import { ModalComponent } from './ModalComponent';
 
+import { deadlineIsPast } from '../utils/helpers';
+
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
         return -1;
@@ -212,7 +214,8 @@ export function DataGrid({
     data,
     setData,
     handleDelete,
-    disableSelection = false
+    disableSelection = false,
+    deadlineColor = false
 }) {
 
     const [order, setOrder] = React.useState('asc');
@@ -344,7 +347,7 @@ export function DataGrid({
                                             </TableCell>
                                         }
                                         {headCells.map(cell => cell.accessor).map(accessor => (
-                                            <TableCell key={accessor} align="center">
+                                            <TableCell key={accessor} align="center" sx={{ color: deadlineColor && deadlineIsPast(row) ? 'red' : '' }}>
                                                 {typeof accessor === 'function' ? accessor(row) : row[accessor]}
                                             </TableCell>
                                         ))}

@@ -17,6 +17,7 @@ import { DataGrid } from "../components/DataGrid";
 import { ModalComponent } from "../components/ModalComponent";
 
 import { SALE_URL } from "../utils/urls";
+import { getDeadline } from "../utils/helpers";
 
 export function Sales() {
 
@@ -33,8 +34,9 @@ export function Sales() {
             client_id: '',
             amount: '',
             discount: '',
+            installments: '',
             observations: '',
-            date: ''
+            date: Date.now()
         },
         rules: {
             product_id: {
@@ -47,6 +49,9 @@ export function Sales() {
                 required: true
             },
             date: {
+                required: true
+            },
+            installments: {
                 required: true
             },
             observations: {
@@ -149,8 +154,15 @@ export function Sales() {
             id: 'discount',
             numeric: false,
             disablePadding: true,
-            label: '% Descuento',
-            accessor: 'discount'
+            label: 'Descuento',
+            accessor: (row) => `${row.discount}%`
+        },
+        {
+            id: 'installments',
+            numeric: false,
+            disablePadding: true,
+            label: 'Cuotas',
+            accessor: 'installments'
         },
         {
             id: 'total',
@@ -170,8 +182,15 @@ export function Sales() {
             id: 'date',
             numeric: false,
             disablePadding: true,
-            label: 'Fecha',
+            label: 'Fecha creación',
             accessor: (row) => format(new Date(row.date), 'dd-MM-yyyy')
+        },
+        {
+            id: 'deadline',
+            numeric: false,
+            disablePadding: true,
+            label: 'Fecha vencimiento',
+            accessor: (row) => format(new Date(getDeadline(row.date, row.installments)), 'dd-MM-yyyy')
         },
         {
             id: 'seller',
@@ -197,6 +216,7 @@ export function Sales() {
                     data={formData}
                     setData={setFormData}
                     handleDelete={handleDelete}
+                    deadlineColor
                 >
                     <ModalComponent open={open === 'NEW' || open === 'EDIT'} onClose={() => reset(setOpen)} width={800}>
                         <Typography variant="h6" sx={{ marginBottom: 2 }}>
@@ -261,6 +281,7 @@ export function Sales() {
                                         <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
                                             <DatePicker
                                                 label="Fecha"
+                                                value={new Date(formData.date)}
                                                 onChange={value => handleChange({
                                                     target: {
                                                         name: 'date',
@@ -278,6 +299,15 @@ export function Sales() {
                                     <FormControl>
                                         <InputLabel htmlFor="discount">Descuento</InputLabel>
                                         <Input id="discount" type="number" name="discount" value={formData.discount} />
+                                    </FormControl>
+                                    <FormControl>
+                                        <InputLabel htmlFor="installments">Cantidad Cuotas</InputLabel>
+                                        <Input id="installments" type="number" name="installments" value={formData.installments} />
+                                        {errors.installments?.type === 'required' &&
+                                            <Typography variant="caption" color="red" marginTop={1}>
+                                                * Las cuotas son requeridas.
+                                            </Typography>
+                                        }
                                     </FormControl>
                                     <FormControl>
                                         <InputLabel htmlFor="observations">Observaciones</InputLabel>
