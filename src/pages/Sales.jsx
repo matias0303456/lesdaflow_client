@@ -216,7 +216,7 @@ export function Sales() {
                     data={formData}
                     setData={setFormData}
                     handleDelete={handleDelete}
-                    deadlineColor
+                    deadlineColor="sales"
                 >
                     <ModalComponent open={open === 'NEW' || open === 'EDIT'} onClose={() => reset(setOpen)}>
                         <Typography variant="h6" sx={{ marginBottom: 2 }}>

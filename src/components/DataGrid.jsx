@@ -348,7 +348,10 @@ export function DataGrid({
                                                 </TableCell>
                                             }
                                             {headCells.map(cell => cell.accessor).map(accessor => (
-                                                <TableCell key={accessor} align="center" sx={{ color: deadlineColor && deadlineIsPast(row) ? 'red' : '' }}>
+                                                <TableCell key={accessor} align="center" sx={{
+                                                    color: (deadlineColor === 'sales' && deadlineIsPast(row) || (deadlineColor === 'clients' && row.sales.some(s => deadlineIsPast(s))))
+                                                        ? 'red' : ''
+                                                }}>
                                                     {typeof accessor === 'function' ? accessor(row) : row[accessor]}
                                                 </TableCell>
                                             ))}
