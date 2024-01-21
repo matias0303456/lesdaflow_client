@@ -22,6 +22,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { visuallyHidden } from '@mui/utils';
 import AddCircleSharpIcon from '@mui/icons-material/AddCircleSharp';
 import { Button } from '@mui/material';
+import AttachMoneySharpIcon from '@mui/icons-material/AttachMoneySharp';
 
 import { ModalComponent } from './ModalComponent';
 
@@ -123,7 +124,8 @@ function EnhancedTableToolbar({
     workOn,
     handleDelete,
     allowMassiveEdit,
-    setMassiveEdit
+    setMassiveEdit,
+    updateBySupplier
 }) {
     return (
         <Toolbar
@@ -165,6 +167,16 @@ function EnhancedTableToolbar({
                 }}>
                     <IconButton>
                         <DeleteIcon />
+                    </IconButton>
+                </Tooltip>
+            }
+            {numSelected === 1 && updateBySupplier &&
+                <Tooltip title="Editar precios" onClick={() => {
+                    setData(workOn[0])
+                    setOpen('MASSIVE-EDIT')
+                }}>
+                    <IconButton>
+                        <AttachMoneySharpIcon />
                     </IconButton>
                 </Tooltip>
             }
@@ -224,7 +236,8 @@ export function DataGrid({
     disableSelection = false,
     deadlineColor = false,
     allowMassiveEdit = false,
-    setMassiveEdit
+    setMassiveEdit,
+    updateBySupplier = false
 }) {
 
     const [order, setOrder] = React.useState('asc');
@@ -310,6 +323,7 @@ export function DataGrid({
                         handleDelete={handleDelete}
                         allowMassiveEdit={allowMassiveEdit}
                         setMassiveEdit={setMassiveEdit}
+                        updateBySupplier={updateBySupplier}
                     />
                     <TableContainer>
                         <Table

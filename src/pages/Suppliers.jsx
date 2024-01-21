@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { Box, Button, FormControl, Input, InputLabel, LinearProgress, Typography } from "@mui/material";
+import { Box, Button, FormControl, Input, InputLabel, LinearProgress, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
 
 import { MessageContext } from "../providers/MessageProvider";
 import { useApi } from "../hooks/useApi";
@@ -21,7 +21,7 @@ export function Suppliers() {
 
     const navigate = useNavigate()
 
-    const { post, put, destroy } = useApi(SUPPLIER_URL)
+    const { post, put, destroy, putMassive } = useApi(SUPPLIER_URL)
     const { suppliers, setSuppliers, loadingSuppliers, setLoadingSuppliers } = useSuppliers()
     const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
         defaultData: {
@@ -30,7 +30,8 @@ export function Suppliers() {
             address: '',
             city: '',
             province: '',
-            email: ''
+            email: '',
+            products: []
         },
         rules: {
             name: {
@@ -53,6 +54,7 @@ export function Suppliers() {
     })
 
     const [open, setOpen] = useState(null)
+    const [massiveEditPercentage, setMassiveEditPercentage] = useState(0)
 
     useEffect(() => {
         if (auth?.user.role.name !== 'ADMINISTRADOR') navigate('/veroshop/productos')
@@ -79,6 +81,29 @@ export function Suppliers() {
             }
             setOpenMessage(true)
         }
+    }
+
+    async function handleSubmitMassive() {
+        setLoadingSuppliers(true)
+        const body = {
+            supplier: formData.id,
+            products: formData.products.map(p => ({ id: p.id, price: p.price })),
+            percentage: parseInt(massiveEditPercentage)
+        }
+        const { status, data } = await putMassive(body)
+        if (status === 200) {
+            setSuppliers([data, ...suppliers.filter(s => s.id !== data.id)])
+            setMessage('Precios actualizados correctamente.')
+            setSeverity('success')
+            reset(setOpen)
+            setMassiveEditPercentage(0)
+        } else {
+            setMessage(data.message)
+            setSeverity('error')
+            setDisabled(false)
+        }
+        setLoadingSuppliers(false)
+        setOpenMessage(true)
     }
 
     async function handleDelete(elements) {
@@ -158,6 +183,7 @@ export function Suppliers() {
                     data={formData}
                     setData={setFormData}
                     handleDelete={handleDelete}
+                    updateBySupplier
                 >
                     <ModalComponent open={open === 'NEW' || open === 'EDIT'} onClose={() => reset(setOpen)}>
                         <Typography variant="h6" sx={{ marginBottom: 2 }}>
@@ -256,6 +282,80 @@ export function Suppliers() {
                                 </FormControl>
                             </Box>
                         </form>
+                    </ModalComponent>
+                    <ModalComponent open={open === 'MASSIVE-EDIT'} dynamicContent>
+                        <Typography variant="h6" sx={{ marginBottom: 2 }}>
+                            Actualización de precios del proveedor {formData.name}
+                        </Typography>
+                        <TableContainer component={Paper} sx={{ marginBottom: 2 }}>
+                            <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell align="center">Producto</TableCell>
+                                        <TableCell align="center">Código</TableCell>
+                                        <TableCell align="center">Precio actual</TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {formData.products.map(p => (
+                                        <TableRow
+                                            key={p.id}
+                                            sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                        >
+                                            <TableCell align="center">({p.code}) {p.name}</TableCell>
+                                            <TableCell align="center">{p.name}</TableCell>
+                                            <TableCell align="center">${p.price.toFixed(2)}</TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
+                        <Box sx={{
+                            display: 'flex',
+                            flexDirection: 'row',
+                            gap: 1,
+                            justifyContent: 'center',
+                            marginTop: 5,
+                            marginBottom: 5
+                        }}>
+                            <Typography variant="h6">
+                                Porcentaje
+                            </Typography>
+                            <Input
+                                type="number"
+                                value={massiveEditPercentage}
+                                disabled={formData.products.length === 0}
+                                onChange={e => setMassiveEditPercentage(e.target.value)}
+                            />
+                            <Typography variant="h6">
+                                %
+                            </Typography>
+                        </Box>
+                        <Box sx={{
+                            display: 'flex',
+                            flexDirection: 'row',
+                            gap: 1,
+                            justifyContent: 'center',
+                            width: '60%',
+                            margin: '0 auto'
+                        }}>
+                            <Button type="button" variant="outlined"
+                                sx={{ width: '50%' }}
+                                onClick={() => {
+                                    reset(setOpen)
+                                    setMassiveEditPercentage(0)
+                                }}
+                            >
+                                Cancelar
+                            </Button>
+                            <Button type="submit" variant="contained"
+                                sx={{ width: '50%' }}
+                                disabled={parseInt(massiveEditPercentage) <= 0 || formData.products.length === 0}
+                                onClick={handleSubmitMassive}
+                            >
+                                Guardar
+                            </Button>
+                        </Box>
                     </ModalComponent>
                 </DataGrid>
             }
