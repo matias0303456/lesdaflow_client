@@ -401,6 +401,7 @@ export function DataGrid({
                         count={rows.length}
                         rowsPerPage={rowsPerPage}
                         labelRowsPerPage="Registros por página"
+                        labelDisplayedRows={({from, to, count}) => `${from}–${to} de ${count}`}
                         page={page}
                         onPageChange={handleChangePage}
                         onRowsPerPageChange={handleChangeRowsPerPage}
