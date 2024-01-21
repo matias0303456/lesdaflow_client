@@ -10,6 +10,7 @@ import { AuthContext } from "../providers/AuthProvider";
 import { Layout } from "../components/Layout";
 import { DataGrid } from "../components/DataGrid";
 import { ModalComponent } from "../components/ModalComponent";
+import { ProductFilter } from "../components/filters/ProductFilter";
 
 import { PRODUCT_URL } from "../utils/urls";
 import { useApi } from "../hooks/useApi";
@@ -175,229 +176,236 @@ export function Products() {
                 <Box sx={{ width: '100%' }}>
                     <LinearProgress />
                 </Box> :
-                <DataGrid
-                    title="Inventario"
-                    headCells={
-                        auth?.user.role.name !== 'ADMINISTRADOR' ?
-                            headCells :
-                            [
-                                ...headCells,
-                                {
-                                    id: 'min_stock',
-                                    numeric: false,
-                                    disablePadding: true,
-                                    label: 'Stock mínimo',
-                                    accessor: 'min_stock'
-                                },
-                                {
-                                    id: 'stock',
-                                    numeric: false,
-                                    disablePadding: true,
-                                    label: 'Stock actual',
-                                    accessor: (row) => getStock(row)
-                                }
-                            ]
-                    }
-                    rows={products}
-                    open={open}
-                    setOpen={setOpen}
-                    data={formData}
-                    setData={setFormData}
-                    handleDelete={handleDelete}
-                    disableSelection={auth?.user.role.name !== 'ADMINISTRADOR'}
-                    disableAdd={auth?.user.role.name !== 'ADMINISTRADOR'}
-                    allowMassiveEdit
-                    setMassiveEdit={setMassiveEdit}
-                >
-                    <ModalComponent
-                        open={open === 'NEW' || open === 'EDIT'}
-                        onClose={() => reset(setOpen)}
+                <>
+                    <ProductFilter
+                        products={products}
+                        setProducts={setProducts}
+                        suppliers={suppliers}
+                    />
+                    <DataGrid
+                        title="Inventario"
+                        headCells={
+                            auth?.user.role.name !== 'ADMINISTRADOR' ?
+                                headCells :
+                                [
+                                    ...headCells,
+                                    {
+                                        id: 'min_stock',
+                                        numeric: false,
+                                        disablePadding: true,
+                                        label: 'Stock mínimo',
+                                        accessor: 'min_stock'
+                                    },
+                                    {
+                                        id: 'stock',
+                                        numeric: false,
+                                        disablePadding: true,
+                                        label: 'Stock actual',
+                                        accessor: (row) => getStock(row)
+                                    }
+                                ]
+                        }
+                        rows={products}
+                        open={open}
+                        setOpen={setOpen}
+                        data={formData}
+                        setData={setFormData}
+                        handleDelete={handleDelete}
+                        disableSelection={auth?.user.role.name !== 'ADMINISTRADOR'}
+                        disableAdd={auth?.user.role.name !== 'ADMINISTRADOR'}
+                        allowMassiveEdit
+                        setMassiveEdit={setMassiveEdit}
                     >
-                        <Typography variant="h6" sx={{ marginBottom: 0.5 }}>
-                            {open === 'NEW' && 'Nuevo producto'}
-                            {open === 'EDIT' && 'Editar producto'}
-                        </Typography>
-                        <form onChange={handleChange} onSubmit={handleSubmit}>
-                            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                                <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 3 }}>
-                                    <Box sx={{ display: 'flex', flexDirection: 'column', width: '50%', gap: 3 }}>
-                                        <FormControl>
-                                            <InputLabel htmlFor="name">Nombre</InputLabel>
-                                            <Input id="name" type="text" name="name" value={formData.name} />
-                                            {errors.name?.type === 'required' &&
-                                                <Typography variant="caption" color="red" marginTop={1}>
-                                                    * El nombre es requerido.
-                                                </Typography>
-                                            }
-                                            {errors.name?.type === 'maxLength' &&
-                                                <Typography variant="caption" color="red" marginTop={1}>
-                                                    * El nombre es demasiado largo.
-                                                </Typography>
-                                            }
-                                        </FormControl>
-                                        <FormControl>
-                                            <InputLabel htmlFor="code">Código</InputLabel>
-                                            <Input id="code" type="text" name="code" value={formData.code} />
-                                            {errors.code?.type === 'required' &&
-                                                <Typography variant="caption" color="red" marginTop={1}>
-                                                    * El código es requerido.
-                                                </Typography>
-                                            }
-                                            {errors.code?.type === 'maxLength' &&
-                                                <Typography variant="caption" color="red" marginTop={1}>
-                                                    * El código es demasiado largo.
-                                                </Typography>
-                                            }
-                                        </FormControl>
-                                        <FormControl>
-                                            <InputLabel htmlFor="price">Precio</InputLabel>
-                                            <Input id="price" type="number" name="price" value={formData.price} />
-                                            {errors.price?.type === 'required' &&
-                                                <Typography variant="caption" color="red" marginTop={1}>
-                                                    * El precio es requerido.
-                                                </Typography>
-                                            }
-                                        </FormControl>
+                        <ModalComponent
+                            open={open === 'NEW' || open === 'EDIT'}
+                            onClose={() => reset(setOpen)}
+                        >
+                            <Typography variant="h6" sx={{ marginBottom: 0.5 }}>
+                                {open === 'NEW' && 'Nuevo producto'}
+                                {open === 'EDIT' && 'Editar producto'}
+                            </Typography>
+                            <form onChange={handleChange} onSubmit={handleSubmit}>
+                                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                                    <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 3 }}>
+                                        <Box sx={{ display: 'flex', flexDirection: 'column', width: '50%', gap: 3 }}>
+                                            <FormControl>
+                                                <InputLabel htmlFor="name">Nombre</InputLabel>
+                                                <Input id="name" type="text" name="name" value={formData.name} />
+                                                {errors.name?.type === 'required' &&
+                                                    <Typography variant="caption" color="red" marginTop={1}>
+                                                        * El nombre es requerido.
+                                                    </Typography>
+                                                }
+                                                {errors.name?.type === 'maxLength' &&
+                                                    <Typography variant="caption" color="red" marginTop={1}>
+                                                        * El nombre es demasiado largo.
+                                                    </Typography>
+                                                }
+                                            </FormControl>
+                                            <FormControl>
+                                                <InputLabel htmlFor="code">Código</InputLabel>
+                                                <Input id="code" type="text" name="code" value={formData.code} />
+                                                {errors.code?.type === 'required' &&
+                                                    <Typography variant="caption" color="red" marginTop={1}>
+                                                        * El código es requerido.
+                                                    </Typography>
+                                                }
+                                                {errors.code?.type === 'maxLength' &&
+                                                    <Typography variant="caption" color="red" marginTop={1}>
+                                                        * El código es demasiado largo.
+                                                    </Typography>
+                                                }
+                                            </FormControl>
+                                            <FormControl>
+                                                <InputLabel htmlFor="price">Precio</InputLabel>
+                                                <Input id="price" type="number" name="price" value={formData.price} />
+                                                {errors.price?.type === 'required' &&
+                                                    <Typography variant="caption" color="red" marginTop={1}>
+                                                        * El precio es requerido.
+                                                    </Typography>
+                                                }
+                                            </FormControl>
+                                        </Box>
+                                        <Box sx={{ display: 'flex', flexDirection: 'column', width: '50%', gap: 3 }}>
+                                            <FormControl>
+                                                <InputLabel htmlFor="details">Detalle</InputLabel>
+                                                <Input id="details" type="text" name="details" value={formData.details} />
+                                                {errors.details?.type === 'maxLength' &&
+                                                    <Typography variant="caption" color="red" marginTop={1}>
+                                                        * El detalle es demasiado largo.
+                                                    </Typography>
+                                                }
+                                            </FormControl>
+                                            <FormControl>
+                                                <InputLabel htmlFor="min_stock">Stock mínimo</InputLabel>
+                                                <Input id="min_stock" type="number" name="min_stock" value={formData.min_stock} />
+                                                {errors.min_stock?.type === 'required' &&
+                                                    <Typography variant="caption" color="red" marginTop={1}>
+                                                        * El stock mínimo es requerido.
+                                                    </Typography>
+                                                }
+                                            </FormControl>
+                                            <FormControl>
+                                                <InputLabel id="supplier-select">Proveedor</InputLabel>
+                                                <Select
+                                                    labelId="supplier-select"
+                                                    id="supplier_id"
+                                                    value={formData.supplier_id}
+                                                    label="Proveedor"
+                                                    name="supplier_id"
+                                                    onChange={handleChange}
+                                                >
+                                                    {suppliers.map(s => (
+                                                        <MenuItem key={s.id} value={s.id}>{s.name}</MenuItem>
+                                                    ))}
+                                                </Select>
+                                                {errors.supplier_id?.type === 'required' &&
+                                                    <Typography variant="caption" color="red" marginTop={1}>
+                                                        * El proveedor es requerido.
+                                                    </Typography>
+                                                }
+                                            </FormControl>
+                                        </Box>
                                     </Box>
-                                    <Box sx={{ display: 'flex', flexDirection: 'column', width: '50%', gap: 3 }}>
-                                        <FormControl>
-                                            <InputLabel htmlFor="details">Detalle</InputLabel>
-                                            <Input id="details" type="text" name="details" value={formData.details} />
-                                            {errors.details?.type === 'maxLength' &&
-                                                <Typography variant="caption" color="red" marginTop={1}>
-                                                    * El detalle es demasiado largo.
-                                                </Typography>
-                                            }
-                                        </FormControl>
-                                        <FormControl>
-                                            <InputLabel htmlFor="min_stock">Stock mínimo</InputLabel>
-                                            <Input id="min_stock" type="number" name="min_stock" value={formData.min_stock} />
-                                            {errors.min_stock?.type === 'required' &&
-                                                <Typography variant="caption" color="red" marginTop={1}>
-                                                    * El stock mínimo es requerido.
-                                                </Typography>
-                                            }
-                                        </FormControl>
-                                        <FormControl>
-                                            <InputLabel id="supplier-select">Proveedor</InputLabel>
-                                            <Select
-                                                labelId="supplier-select"
-                                                id="supplier_id"
-                                                value={formData.supplier_id}
-                                                label="Proveedor"
-                                                name="supplier_id"
-                                                onChange={handleChange}
-                                            >
-                                                {suppliers.map(s => (
-                                                    <MenuItem key={s.id} value={s.id}>{s.name}</MenuItem>
-                                                ))}
-                                            </Select>
-                                            {errors.supplier_id?.type === 'required' &&
-                                                <Typography variant="caption" color="red" marginTop={1}>
-                                                    * El proveedor es requerido.
-                                                </Typography>
-                                            }
-                                        </FormControl>
-                                    </Box>
+                                    <FormControl sx={{
+                                        display: 'flex',
+                                        flexDirection: 'row',
+                                        gap: 1,
+                                        justifyContent: 'center',
+                                        marginTop: 1
+                                    }}>
+                                        <Button type="button" variant="outlined" onClick={() => reset(setOpen)} sx={{
+                                            width: '50%'
+                                        }}>
+                                            Cancelar
+                                        </Button>
+                                        <Button type="submit" variant="contained" disabled={disabled} sx={{
+                                            width: '50%'
+                                        }}>
+                                            Guardar
+                                        </Button>
+                                    </FormControl>
                                 </Box>
-                                <FormControl sx={{
-                                    display: 'flex',
-                                    flexDirection: 'row',
-                                    gap: 1,
-                                    justifyContent: 'center',
-                                    marginTop: 1
-                                }}>
-                                    <Button type="button" variant="outlined" onClick={() => reset(setOpen)} sx={{
-                                        width: '50%'
-                                    }}>
-                                        Cancelar
-                                    </Button>
-                                    <Button type="submit" variant="contained" disabled={disabled} sx={{
-                                        width: '50%'
-                                    }}>
-                                        Guardar
-                                    </Button>
-                                </FormControl>
-                            </Box>
-                        </form>
-                    </ModalComponent>
-                    <ModalComponent open={open === 'MASSIVE-EDIT'} dynamicContent>
-                        <Typography variant="h6" sx={{ marginBottom: 2 }}>
-                            Actualización de precios múltiple
-                        </Typography>
-                        <TableContainer component={Paper} sx={{ marginBottom: 2 }}>
-                            <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                                <TableHead>
-                                    <TableRow>
-                                        <TableCell align="center">Producto</TableCell>
-                                        <TableCell align="center">Código</TableCell>
-                                        <TableCell align="center">Proveedor</TableCell>
-                                        <TableCell align="center">Precio actual</TableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    {massiveEdit.map(me => (
-                                        <TableRow
-                                            key={me.id}
-                                            sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                                        >
-                                            <TableCell align="center">({me.code}) {me.name}</TableCell>
-                                            <TableCell align="center">{me.name}</TableCell>
-                                            <TableCell align="center">{me.supplier.name}</TableCell>
-                                            <TableCell align="center">${me.price.toFixed(2)}</TableCell>
+                            </form>
+                        </ModalComponent>
+                        <ModalComponent open={open === 'MASSIVE-EDIT'} dynamicContent>
+                            <Typography variant="h6" sx={{ marginBottom: 2 }}>
+                                Actualización de precios múltiple
+                            </Typography>
+                            <TableContainer component={Paper} sx={{ marginBottom: 2 }}>
+                                <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                                    <TableHead>
+                                        <TableRow>
+                                            <TableCell align="center">Producto</TableCell>
+                                            <TableCell align="center">Código</TableCell>
+                                            <TableCell align="center">Proveedor</TableCell>
+                                            <TableCell align="center">Precio actual</TableCell>
                                         </TableRow>
-                                    ))}
-                                </TableBody>
-                            </Table>
-                        </TableContainer>
-                        <Box sx={{
-                            display: 'flex',
-                            flexDirection: 'row',
-                            gap: 1,
-                            justifyContent: 'center',
-                            marginTop: 5,
-                            marginBottom: 5
-                        }}>
-                            <Typography variant="h6">
-                                Porcentaje
-                            </Typography>
-                            <Input
-                                type="number"
-                                value={massiveEditPercentage}
-                                onChange={e => setMassiveEditPercentage(e.target.value)}
-                            />
-                            <Typography variant="h6">
-                                %
-                            </Typography>
-                        </Box>
-                        <Box sx={{
-                            display: 'flex',
-                            flexDirection: 'row',
-                            gap: 1,
-                            justifyContent: 'center',
-                            width: '60%',
-                            margin: '0 auto'
-                        }}>
-                            <Button type="button" variant="outlined"
-                                sx={{ width: '50%' }}
-                                onClick={() => {
-                                    reset(setOpen)
-                                    setMassiveEdit([])
-                                    setMassiveEditPercentage(0)
-                                }}
-                            >
-                                Cancelar
-                            </Button>
-                            <Button type="submit" variant="contained"
-                                sx={{ width: '50%' }}
-                                disabled={parseInt(massiveEditPercentage) <= 0}
-                                onClick={handleSubmitMassive}
-                            >
-                                Guardar
-                            </Button>
-                        </Box>
-                    </ModalComponent>
-                </DataGrid>
+                                    </TableHead>
+                                    <TableBody>
+                                        {massiveEdit.map(me => (
+                                            <TableRow
+                                                key={me.id}
+                                                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                            >
+                                                <TableCell align="center">({me.code}) {me.name}</TableCell>
+                                                <TableCell align="center">{me.name}</TableCell>
+                                                <TableCell align="center">{me.supplier.name}</TableCell>
+                                                <TableCell align="center">${me.price.toFixed(2)}</TableCell>
+                                            </TableRow>
+                                        ))}
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
+                            <Box sx={{
+                                display: 'flex',
+                                flexDirection: 'row',
+                                gap: 1,
+                                justifyContent: 'center',
+                                marginTop: 5,
+                                marginBottom: 5
+                            }}>
+                                <Typography variant="h6">
+                                    Porcentaje
+                                </Typography>
+                                <Input
+                                    type="number"
+                                    value={massiveEditPercentage}
+                                    onChange={e => setMassiveEditPercentage(e.target.value)}
+                                />
+                                <Typography variant="h6">
+                                    %
+                                </Typography>
+                            </Box>
+                            <Box sx={{
+                                display: 'flex',
+                                flexDirection: 'row',
+                                gap: 1,
+                                justifyContent: 'center',
+                                width: '60%',
+                                margin: '0 auto'
+                            }}>
+                                <Button type="button" variant="outlined"
+                                    sx={{ width: '50%' }}
+                                    onClick={() => {
+                                        reset(setOpen)
+                                        setMassiveEdit([])
+                                        setMassiveEditPercentage(0)
+                                    }}
+                                >
+                                    Cancelar
+                                </Button>
+                                <Button type="submit" variant="contained"
+                                    sx={{ width: '50%' }}
+                                    disabled={parseInt(massiveEditPercentage) <= 0}
+                                    onClick={handleSubmitMassive}
+                                >
+                                    Guardar
+                                </Button>
+                            </Box>
+                        </ModalComponent>
+                    </DataGrid>
+                </>
             }
         </Layout>
     )
