@@ -164,7 +164,7 @@ export function Layout({ children, title }) {
                             {title}
                         </Typography>
                         <Dropdown>
-                            <MenuButton>¡Hola, {auth?.user.username}!</MenuButton>
+                            <MenuButton>{auth?.user.username}</MenuButton>
                             <Menu slots={{ listbox: Listbox }}>
                                 {auth?.user.role.name === 'ADMINISTRADOR' &&
                                     <MenuItem
