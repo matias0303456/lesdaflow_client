@@ -148,7 +148,7 @@ export function Sales() {
             numeric: false,
             disablePadding: true,
             label: 'Precio unitario',
-            accessor: (row) => row.product.price
+            accessor: (row) => `$${row.product.price}`
         },
         {
             id: 'discount',
@@ -169,7 +169,7 @@ export function Sales() {
             numeric: false,
             disablePadding: true,
             label: 'Total',
-            accessor: (row) => ((row.product.price * row.amount) - (((row.product.price * row.amount) / 100) * row.discount)).toFixed(2)
+            accessor: (row) => `$${((row.product.price * row.amount) - (((row.product.price * row.amount) / 100) * row.discount)).toFixed(2)}`
         },
         {
             id: 'observations',

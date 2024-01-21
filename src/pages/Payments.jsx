@@ -120,7 +120,7 @@ export function Payments() {
             numeric: false,
             disablePadding: true,
             label: 'Monto',
-            accessor: 'amount'
+            accessor: (row) => `$${row.amount}`
         },
         {
             id: 'date',

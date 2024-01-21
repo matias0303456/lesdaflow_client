@@ -121,7 +121,9 @@ function EnhancedTableToolbar({
     data,
     setData,
     workOn,
-    handleDelete
+    handleDelete,
+    allowMassiveEdit,
+    setMassiveEdit
 }) {
     return (
         <Toolbar
@@ -157,22 +159,27 @@ function EnhancedTableToolbar({
                     : numSelected === 1 ? 'Un registro seleccionado.' :
                         `${numSelected} registros seleccionados.`}
             </Typography>
-            {numSelected === 1 &&
-                <Tooltip title="Editar" onClick={() => {
-                    setData(workOn[0])
-                    setOpen('EDIT')
-                }}>
-                    <IconButton>
-                        <EditIcon />
-                    </IconButton>
-                </Tooltip>
-            }
             {numSelected >= 1 &&
                 <Tooltip title="Eliminar" onClick={() => {
                     setOpen('DELETE')
                 }}>
                     <IconButton>
                         <DeleteIcon />
+                    </IconButton>
+                </Tooltip>
+            }
+            {(numSelected === 1 || (numSelected >= 1 && allowMassiveEdit)) &&
+                <Tooltip title="Editar" onClick={() => {
+                    if (allowMassiveEdit && numSelected > 1) {
+                        setMassiveEdit(workOn)
+                        setOpen('MASSIVE-EDIT')
+                    } else {
+                        setData(workOn[0])
+                        setOpen('EDIT')
+                    }
+                }}>
+                    <IconButton>
+                        <EditIcon />
                     </IconButton>
                 </Tooltip>
             }
@@ -215,7 +222,9 @@ export function DataGrid({
     setData,
     handleDelete,
     disableSelection = false,
-    deadlineColor = false
+    deadlineColor = false,
+    allowMassiveEdit = false,
+    setMassiveEdit
 }) {
 
     const [order, setOrder] = React.useState('asc');
@@ -286,7 +295,7 @@ export function DataGrid({
     );
 
     return (
-        <div id='gridContainer'>
+        <div className='gridContainer'>
             <Box sx={{ width: '100%' }}>
                 <Paper sx={{ width: '100%', mb: 2 }}>
                     <EnhancedTableToolbar
@@ -299,6 +308,8 @@ export function DataGrid({
                         setData={setData}
                         workOn={rows.filter(row => selected.includes(row.id))}
                         handleDelete={handleDelete}
+                        allowMassiveEdit={allowMassiveEdit}
+                        setMassiveEdit={setMassiveEdit}
                     />
                     <TableContainer>
                         <Table

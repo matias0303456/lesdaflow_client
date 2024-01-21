@@ -15,15 +15,18 @@ const style = {
     borderRadius: 1
 };
 
-export function ModalComponent({ children, open, onClose }) {
+export function ModalComponent({ children, open, onClose, dynamicContent = false }) {
 
-    const [screenSize, setScreenSize] = useState(window.innerWidth < 600 ? window.innerWidth : window.innerWidth - 200)
+    const [screenWidth, setScreenWidth] = useState(window.innerWidth < 600 ? window.innerWidth : window.innerWidth - 200)
+    const [screenHeight] = useState(dynamicContent ?
+        { height: window.innerHeight - 100, overflowY: 'scroll' } :
+        { height: 'auto' })
 
     window.onresize = () => {
         if (window.innerWidth < 600) {
-            setScreenSize(window.innerWidth)
+            setScreenWidth(window.innerWidth)
         } else {
-            setScreenSize(window.innerWidth - 200)
+            setScreenWidth(window.innerWidth - 200)
         }
     }
 
@@ -42,7 +45,7 @@ export function ModalComponent({ children, open, onClose }) {
             }}
         >
             <Fade in={open}>
-                <Box sx={{ ...style, width: screenSize }}>
+                <Box sx={{ ...style, ...screenHeight, width: screenWidth }}>
                     {children}
                 </Box>
             </Fade>
