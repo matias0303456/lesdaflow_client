@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 
 export function ProductFilter({ products, setProducts, suppliers }) {
 
-    const [backup, setBackup] = useState(products)
+    const [backup] = useState(products)
 
     const [filter, setFilter] = useState({
         name: '',
