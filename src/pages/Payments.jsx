@@ -17,6 +17,7 @@ import { DataGrid } from "../components/DataGrid";
 import { ModalComponent } from "../components/ModalComponent";
 
 import { PAYMENT_URL } from "../utils/urls";
+import { PaymentFilter } from "../components/filters/PaymentFilter";
 
 export function Payments() {
 
@@ -66,6 +67,7 @@ export function Payments() {
                 }
                 setSeverity('success')
                 reset(setOpen)
+                setSelectedClient(null)
             } else {
                 setMessage(data.message)
                 setSeverity('error')
@@ -144,107 +146,113 @@ export function Payments() {
                 <Box sx={{ width: '100%' }}>
                     <LinearProgress />
                 </Box> :
-                <DataGrid
-                    title="Pagos realizados"
-                    headCells={headCells}
-                    rows={payments}
-                    open={open}
-                    setOpen={setOpen}
-                    data={formData}
-                    setData={setFormData}
-                    handleDelete={handleDelete}
-                >
-                    <ModalComponent open={open === 'NEW' || open === 'EDIT'} onClose={() => reset(setOpen)}>
-                        <Typography variant="h6" sx={{ marginBottom: 2 }}>
-                            {open === 'NEW' && 'Nuevo pago'}
-                            {open === 'EDIT' && 'Editar pago'}
-                        </Typography>
-                        <form onChange={handleChange} onSubmit={handleSubmit}>
-                            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-                                <FormControl>
-                                    <InputLabel id="client-select">Cliente</InputLabel>
-                                    <Select
-                                        labelId="client-select"
-                                        id="client_id"
-                                        value={selectedClient?.id ?? ''}
-                                        label="Cliente"
-                                        name="client_id"
-                                        onChange={(e) => setSelectedClient(clients.find(c => c.id === e.target.value))}
-                                    >
-                                        {clients.map(c => (
-                                            <MenuItem key={c.id} value={c.id}>{`${c.code} - ${c.first_name} ${c.last_name}`}</MenuItem>
-                                        ))}
-                                    </Select>
-                                </FormControl>
-                                <FormControl>
-                                    <InputLabel id="sale-select">Venta</InputLabel>
-                                    <Select
-                                        labelId="sale-select"
-                                        id="sale_id"
-                                        value={formData.sale_id}
-                                        label="Venta"
-                                        name="sale_id"
-                                        onChange={handleChange}
-                                        disabled={!selectedClient}
-                                    >
-                                        {selectedClient?.sales.map(s => (
-                                            <MenuItem key={s.id} value={s.id}>{`${format(new Date(s.date), 'dd-MM-yyyy')} / ${s.product.name} (${s.product.code}) de ${s.product.supplier.name}`}</MenuItem>
-                                        ))}
-                                    </Select>
-                                </FormControl>
-                                <FormControl>
-                                    <InputLabel htmlFor="amount">Monto</InputLabel>
-                                    <Input id="amount" type="number" name="amount" value={formData.amount} />
-                                    {errors.amount?.type === 'required' &&
-                                        <Typography variant="caption" color="red" marginTop={1}>
-                                            * La cantidad es requerida.
-                                        </Typography>
-                                    }
-                                </FormControl>
-                                <FormControl>
-                                    <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
-                                        <DatePicker
-                                            label="Fecha"
-                                            value={new Date(formData.date)}
-                                            onChange={value => handleChange({
-                                                target: {
-                                                    name: 'date',
-                                                    value: new Date(value.toISOString())
-                                                }
-                                            })}
-                                        />
-                                    </LocalizationProvider>
-                                    {errors.date?.type === 'required' &&
-                                        <Typography variant="caption" color="red" marginTop={1}>
-                                            * La fecha es requerida.
-                                        </Typography>
-                                    }
-                                </FormControl>
-                                <FormControl sx={{
-                                    display: 'flex',
-                                    flexDirection: 'row',
-                                    gap: 1,
-                                    justifyContent: 'center',
-                                    marginTop: 1
-                                }}>
-                                    <Button type="button" variant="outlined" onClick={() => {
-                                        reset(setOpen)
-                                        setSelectedClient(null)
-                                    }} sx={{
-                                        width: '50%'
+                <>
+                    <PaymentFilter payments={payments} setPayments={setPayments} />
+                    <DataGrid
+                        title="Pagos realizados"
+                        headCells={headCells}
+                        rows={payments}
+                        open={open}
+                        setOpen={setOpen}
+                        data={formData}
+                        setData={setFormData}
+                        handleDelete={handleDelete}
+                    >
+                        <ModalComponent open={open === 'NEW' || open === 'EDIT'} onClose={() => {
+                            reset(setOpen)
+                            setSelectedClient(null)
+                        }}>
+                            <Typography variant="h6" sx={{ marginBottom: 2 }}>
+                                {open === 'NEW' && 'Nuevo pago'}
+                                {open === 'EDIT' && 'Editar pago'}
+                            </Typography>
+                            <form onChange={handleChange} onSubmit={handleSubmit}>
+                                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+                                    <FormControl>
+                                        <InputLabel id="client-select">Cliente</InputLabel>
+                                        <Select
+                                            labelId="client-select"
+                                            id="client_id"
+                                            value={selectedClient?.id ?? ''}
+                                            label="Cliente"
+                                            name="client_id"
+                                            onChange={(e) => setSelectedClient(clients.find(c => c.id === e.target.value))}
+                                        >
+                                            {clients.map(c => (
+                                                <MenuItem key={c.id} value={c.id}>{`${c.code} - ${c.first_name} ${c.last_name}`}</MenuItem>
+                                            ))}
+                                        </Select>
+                                    </FormControl>
+                                    <FormControl>
+                                        <InputLabel id="sale-select">Venta</InputLabel>
+                                        <Select
+                                            labelId="sale-select"
+                                            id="sale_id"
+                                            value={formData.sale_id}
+                                            label="Venta"
+                                            name="sale_id"
+                                            onChange={handleChange}
+                                            disabled={!selectedClient}
+                                        >
+                                            {selectedClient?.sales.map(s => (
+                                                <MenuItem key={s.id} value={s.id}>{`${format(new Date(s.date), 'dd-MM-yyyy')} / ${s.product.name} (${s.product.code}) de ${s.product.supplier.name}`}</MenuItem>
+                                            ))}
+                                        </Select>
+                                    </FormControl>
+                                    <FormControl>
+                                        <InputLabel htmlFor="amount">Monto</InputLabel>
+                                        <Input id="amount" type="number" name="amount" value={formData.amount} />
+                                        {errors.amount?.type === 'required' &&
+                                            <Typography variant="caption" color="red" marginTop={1}>
+                                                * La cantidad es requerida.
+                                            </Typography>
+                                        }
+                                    </FormControl>
+                                    <FormControl>
+                                        <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
+                                            <DatePicker
+                                                label="Fecha"
+                                                value={new Date(formData.date)}
+                                                onChange={value => handleChange({
+                                                    target: {
+                                                        name: 'date',
+                                                        value: new Date(value.toISOString())
+                                                    }
+                                                })}
+                                            />
+                                        </LocalizationProvider>
+                                        {errors.date?.type === 'required' &&
+                                            <Typography variant="caption" color="red" marginTop={1}>
+                                                * La fecha es requerida.
+                                            </Typography>
+                                        }
+                                    </FormControl>
+                                    <FormControl sx={{
+                                        display: 'flex',
+                                        flexDirection: 'row',
+                                        gap: 1,
+                                        justifyContent: 'center',
+                                        marginTop: 1
                                     }}>
-                                        Cancelar
-                                    </Button>
-                                    <Button type="submit" variant="contained" disabled={disabled} sx={{
-                                        width: '50%'
-                                    }}>
-                                        Guardar
-                                    </Button>
-                                </FormControl>
-                            </Box>
-                        </form>
-                    </ModalComponent>
-                </DataGrid>
+                                        <Button type="button" variant="outlined" onClick={() => {
+                                            reset(setOpen)
+                                            setSelectedClient(null)
+                                        }} sx={{
+                                            width: '50%'
+                                        }}>
+                                            Cancelar
+                                        </Button>
+                                        <Button type="submit" variant="contained" disabled={disabled} sx={{
+                                            width: '50%'
+                                        }}>
+                                            Guardar
+                                        </Button>
+                                    </FormControl>
+                                </Box>
+                            </form>
+                        </ModalComponent>
+                    </DataGrid>
+                </>
             }
         </Layout>
     )

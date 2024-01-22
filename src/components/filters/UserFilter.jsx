@@ -19,7 +19,7 @@ export function UserFilter({ users, setUsers }) {
         })
     }
 
-    const handleReset = e => {
+    const handleReset = () => {
         setFilter({
             first_name: '',
             last_name: '',

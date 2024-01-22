@@ -18,7 +18,7 @@ export function ProductFilter({ products, setProducts, suppliers }) {
         })
     }
 
-    const handleReset = e => {
+    const handleReset = () => {
         setFilter({
             name: '',
             code: '',

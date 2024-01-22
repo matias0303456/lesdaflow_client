@@ -14,7 +14,7 @@ export function SupplierFilter({ suppliers, setSuppliers }) {
         })
     }
 
-    const handleReset = e => {
+    const handleReset = () => {
         setFilter({ name: '' })
         setSuppliers(backup)
     }

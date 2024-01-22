@@ -25,7 +25,7 @@ export function ClientFilter({ clients, setClients }) {
         })
     }
 
-    const handleReset = e => {
+    const handleReset = () => {
         setFilter({
             code: '',
             first_name: '',
