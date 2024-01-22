@@ -11,8 +11,8 @@ export function IncomeFilter({ incomes, setIncomes }) {
 
     const [filter, setFilter] = useState({
         product: '',
-        from: new Date(backup[0]?.created_at.split('T')[0] + 'T03:00:00.000Z' ?? Date.now()),
-        to: new Date(backup[backup.length - 1]?.created_at.split('T')[0] + 'T20:59:00.000Z' ?? Date.now())
+        from: new Date(backup[0] ? backup[0].created_at.split('T')[0] + 'T03:00:00.000Z' : Date.now()),
+        to: new Date(backup[backup.length - 1] ? backup[backup.length - 1].created_at.split('T')[0] + 'T20:59:00.000Z' : Date.now())
     })
 
     const handleChange = e => {
@@ -25,8 +25,8 @@ export function IncomeFilter({ incomes, setIncomes }) {
     const handleReset = () => {
         setFilter({
             product: '',
-            from: new Date(backup[0]?.created_at.split('T')[0] + 'T03:00:00.000Z' ?? Date.now()),
-            to: new Date(backup[backup.length - 1]?.created_at.split('T')[0] + 'T20:59:00.000Z' ?? Date.now())
+            from: new Date(backup[0] ? backup[0].created_at.split('T')[0] + 'T03:00:00.000Z' : Date.now()),
+            to: new Date(backup[backup.length - 1] ? backup[backup.length - 1].created_at.split('T')[0] + 'T20:59:00.000Z' : Date.now())
         })
         setIncomes(backup)
     }

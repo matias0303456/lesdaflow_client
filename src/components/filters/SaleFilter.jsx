@@ -1,18 +1,25 @@
-import { Box, Button, FormControl, Input, InputLabel, Typography } from "@mui/material";
-import { useEffect, useState } from "react";
+import { Box, Button, FormControl, Input, InputLabel, MenuItem, Select, Typography } from "@mui/material";
+import { useContext, useEffect, useState } from "react";
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import es from 'date-fns/locale/es';
 
-export function PaymentFilter({ payments, setPayments }) {
+import { AuthContext } from "../../providers/AuthProvider";
 
-    const [backup] = useState(payments.sort((a, b) => new Date(a.date) - new Date(b.date)))
+export function SaleFilter({ sales, setSales }) {
+
+    const { auth } = useContext(AuthContext)
+
+    const [backup] = useState(sales.sort((a, b) => new Date(a.date) - new Date(b.date)))
+    const [users] = useState(Array.from(new Set(sales.map(s => s.client.user.username))))
 
     const [filter, setFilter] = useState({
+        product: '',
         client: '',
         from: new Date(backup[0] ? backup[0].date.split('T')[0] + 'T03:00:00.000Z' : Date.now()),
-        to: new Date(backup[backup.length - 1] ? backup[backup.length - 1].date.split('T')[0] + 'T20:59:00.000Z' : Date.now())
+        to: new Date(backup[backup.length - 1] ? backup[backup.length - 1].date.split('T')[0] + 'T20:59:00.000Z' : Date.now()),
+        user: ''
     })
 
     const handleChange = e => {
@@ -24,22 +31,28 @@ export function PaymentFilter({ payments, setPayments }) {
 
     const handleReset = () => {
         setFilter({
+            product: '',
             client: '',
             from: new Date(backup[0] ? backup[0].date.split('T')[0] + 'T03:00:00.000Z' : Date.now()),
-            to: new Date(backup[backup.length - 1] ? backup[backup.length - 1].date.split('T')[0] + 'T20:59:00.000Z' : Date.now())
+            to: new Date(backup[backup.length - 1] ? backup[backup.length - 1]?.date.split('T')[0] + 'T20:59:00.000Z' : Date.now()),
+            user: ''
         })
-        setPayments(backup)
+        setIncomes(backup)
     }
 
     useEffect(() => {
-        setPayments(backup.filter(item => {
+        setSales(backup.filter(item => {
             return (
-                item.sale.client.code.toLowerCase().includes(filter.client.toLowerCase()) ||
-                item.sale.client.first_name.toLowerCase().includes(filter.client.toLowerCase()) ||
-                item.sale.client.last_name.toLowerCase().includes(filter.client.toLowerCase())
-            ) &&
+                item.product.code.toLowerCase().includes(filter.product.toLowerCase()) ||
+                item.product.name.toLowerCase().includes(filter.product.toLowerCase())
+            ) && (
+                    item.client.code.toLowerCase().includes(filter.client.toLowerCase()) ||
+                    item.client.first_name.toLowerCase().includes(filter.client.toLowerCase()) ||
+                    item.client.last_name.toLowerCase().includes(filter.client.toLowerCase())
+                ) &&
                 new Date(item.date) >= filter.from &&
-                new Date(item.date) <= filter.to
+                new Date(item.date) <= filter.to &&
+                item.client.user.username.toLowerCase().includes(filter.user.toLowerCase())
         }))
     }, [filter])
 
@@ -55,12 +68,17 @@ export function PaymentFilter({ payments, setPayments }) {
             </Typography>
             <Box sx={{
                 display: 'flex',
+                flexWrap: 'wrap',
                 gap: 3,
                 flexDirection: {
                     xs: 'column',
                     md: 'row'
                 }
             }}>
+                <FormControl>
+                    <InputLabel htmlFor="product">Producto</InputLabel>
+                    <Input id="product" type="text" name="product" value={filter.product} onChange={handleChange} />
+                </FormControl>
                 <FormControl>
                     <InputLabel htmlFor="client">Cliente</InputLabel>
                     <Input id="client" type="text" name="client" value={filter.client} onChange={handleChange} />
@@ -93,6 +111,25 @@ export function PaymentFilter({ payments, setPayments }) {
                         />
                     </LocalizationProvider>
                 </FormControl>
+                {auth?.user.role.name === 'ADMINISTRADOR' &&
+                    <FormControl>
+                        <InputLabel id="user-select">Vendedor</InputLabel>
+                        <Select
+                            labelId="user-select"
+                            id="user"
+                            value={filter.user}
+                            label="Vendedor"
+                            name="user"
+                            sx={{ width: { xs: '100%', md: 150 } }}
+                            onChange={handleChange}
+                        >
+                            <MenuItem value="">Seleccione</MenuItem>
+                            {users.map(u => (
+                                <MenuItem key={u} value={u}>{u}</MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+                }
                 <Button variant="outlined" onClick={handleReset}>
                     Reiniciar
                 </Button>
