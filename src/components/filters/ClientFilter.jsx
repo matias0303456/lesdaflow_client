@@ -58,6 +58,7 @@ export function ClientFilter({ clients, setClients }) {
             </Typography>
             <Box sx={{
                 display: 'flex',
+                flexWrap: 'wrap',
                 gap: 3,
                 flexDirection: {
                     xs: 'column',
