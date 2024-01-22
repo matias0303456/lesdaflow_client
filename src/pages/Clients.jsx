@@ -10,9 +10,9 @@ import { useClients } from "../hooks/useClients";
 import { Layout } from "../components/Layout";
 import { DataGrid } from "../components/DataGrid";
 import { ModalComponent } from "../components/ModalComponent";
+import { ClientFilter } from "../components/filters/ClientFilter";
 
 import { CLIENT_URL } from "../utils/urls";
-import { ClientFilter } from "../components/filters/ClientFilter";
 
 export function Clients() {
 

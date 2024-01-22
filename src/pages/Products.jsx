@@ -5,6 +5,7 @@ import { MessageContext } from "../providers/MessageProvider";
 import { useProducts } from '../hooks/useProducts'
 import { useForm } from "../hooks/useForm";
 import { useSuppliers } from "../hooks/useSuppliers";
+import { useApi } from "../hooks/useApi";
 
 import { AuthContext } from "../providers/AuthProvider";
 import { Layout } from "../components/Layout";
@@ -13,7 +14,6 @@ import { ModalComponent } from "../components/ModalComponent";
 import { ProductFilter } from "../components/filters/ProductFilter";
 
 import { PRODUCT_URL } from "../utils/urls";
-import { useApi } from "../hooks/useApi";
 import { getStock } from "../utils/helpers";
 
 export function Products() {

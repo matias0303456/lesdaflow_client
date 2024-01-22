@@ -11,6 +11,7 @@ import { AuthContext } from "../providers/AuthProvider";
 import { Layout } from "../components/Layout";
 import { DataGrid } from "../components/DataGrid";
 import { ModalComponent } from "../components/ModalComponent";
+import { SupplierFilter } from "../components/filters/SupplierFilter";
 
 import { SUPPLIER_URL } from "../utils/urls";
 
@@ -174,190 +175,193 @@ export function Suppliers() {
                 <Box sx={{ width: '100%' }}>
                     <LinearProgress />
                 </Box> :
-                <DataGrid
-                    title="Proveedores de productos"
-                    headCells={headCells}
-                    rows={suppliers}
-                    open={open}
-                    setOpen={setOpen}
-                    data={formData}
-                    setData={setFormData}
-                    handleDelete={handleDelete}
-                    updateBySupplier
-                >
-                    <ModalComponent open={open === 'NEW' || open === 'EDIT'} onClose={() => reset(setOpen)}>
-                        <Typography variant="h6" sx={{ marginBottom: 2 }}>
-                            {open === 'NEW' && 'Nuevo proveedor'}
-                            {open === 'EDIT' && 'Editar proveedor'}
-                        </Typography>
-                        <form onChange={handleChange} onSubmit={handleSubmit}>
-                            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-                                <FormControl>
-                                    <InputLabel htmlFor="name">Nombre</InputLabel>
-                                    <Input id="name" type="text" name="name" value={formData.name} />
-                                    {errors.name?.type === 'required' &&
-                                        <Typography variant="caption" color="red" marginTop={1}>
-                                            * El nombre es requerido.
-                                        </Typography>
-                                    }
-                                    {errors.name?.type === 'maxLength' &&
-                                        <Typography variant="caption" color="red" marginTop={1}>
-                                            * El nombre es demasiado largo.
-                                        </Typography>
-                                    }
-                                </FormControl>
-                                <FormControl>
-                                    <InputLabel htmlFor="address">Dirección</InputLabel>
-                                    <Input id="address" type="text" name="address" value={formData.address} />
-                                    {errors.address?.type === 'required' &&
-                                        <Typography variant="caption" color="red" marginTop={1}>
-                                            * La dirección es requerida.
-                                        </Typography>
-                                    }
-                                    {errors.address?.type === 'maxLength' &&
-                                        <Typography variant="caption" color="red" marginTop={1}>
-                                            * La dirección es demasiado larga.
-                                        </Typography>
-                                    }
-                                </FormControl>
-                                <FormControl>
-                                    <InputLabel htmlFor="city">Ciudad</InputLabel>
-                                    <Input id="city" type="text" name="city" value={formData.city} />
-                                    {errors.city?.type === 'required' &&
-                                        <Typography variant="caption" color="red" marginTop={1}>
-                                            * La ciudad es requerida.
-                                        </Typography>
-                                    }
-                                    {errors.city?.type === 'maxLength' &&
-                                        <Typography variant="caption" color="red" marginTop={1}>
-                                            * La ciudad es demasiado larga.
-                                        </Typography>
-                                    }
-                                </FormControl>
-                                <FormControl>
-                                    <InputLabel htmlFor="province">Provincia / Estado</InputLabel>
-                                    <Input id="province" type="text" name="province" value={formData.province} />
-                                    {errors.province?.type === 'required' &&
-                                        <Typography variant="caption" color="red" marginTop={1}>
-                                            * La provincia es requerida.
-                                        </Typography>
-                                    }
-                                    {errors.province?.type === 'maxLength' &&
-                                        <Typography variant="caption" color="red" marginTop={1}>
-                                            * La provincia es demasiado larga.
-                                        </Typography>
-                                    }
-                                </FormControl>
-                                <FormControl>
-                                    <InputLabel htmlFor="email">Email</InputLabel>
-                                    <Input id="email" type="email" name="email" value={formData.email} />
-                                    {errors.email?.type === 'required' &&
-                                        <Typography variant="caption" color="red" marginTop={1}>
-                                            * El email es requerido.
-                                        </Typography>
-                                    }
-                                    {errors.email?.type === 'maxLength' &&
-                                        <Typography variant="caption" color="red" marginTop={1}>
-                                            * El email es demasiado largo.
-                                        </Typography>
-                                    }
-                                </FormControl>
-                                <FormControl sx={{
-                                    display: 'flex',
-                                    flexDirection: 'row',
-                                    gap: 1,
-                                    justifyContent: 'center',
-                                    marginTop: 1
-                                }}>
-                                    <Button type="button" variant="outlined" onClick={() => reset(setOpen)} sx={{
-                                        width: '50%'
+                <>
+                    <SupplierFilter suppliers={suppliers} setSuppliers={setSuppliers} />
+                    <DataGrid
+                        title="Proveedores de productos"
+                        headCells={headCells}
+                        rows={suppliers}
+                        open={open}
+                        setOpen={setOpen}
+                        data={formData}
+                        setData={setFormData}
+                        handleDelete={handleDelete}
+                        updateBySupplier
+                    >
+                        <ModalComponent open={open === 'NEW' || open === 'EDIT'} onClose={() => reset(setOpen)}>
+                            <Typography variant="h6" sx={{ marginBottom: 2 }}>
+                                {open === 'NEW' && 'Nuevo proveedor'}
+                                {open === 'EDIT' && 'Editar proveedor'}
+                            </Typography>
+                            <form onChange={handleChange} onSubmit={handleSubmit}>
+                                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+                                    <FormControl>
+                                        <InputLabel htmlFor="name">Nombre</InputLabel>
+                                        <Input id="name" type="text" name="name" value={formData.name} />
+                                        {errors.name?.type === 'required' &&
+                                            <Typography variant="caption" color="red" marginTop={1}>
+                                                * El nombre es requerido.
+                                            </Typography>
+                                        }
+                                        {errors.name?.type === 'maxLength' &&
+                                            <Typography variant="caption" color="red" marginTop={1}>
+                                                * El nombre es demasiado largo.
+                                            </Typography>
+                                        }
+                                    </FormControl>
+                                    <FormControl>
+                                        <InputLabel htmlFor="address">Dirección</InputLabel>
+                                        <Input id="address" type="text" name="address" value={formData.address} />
+                                        {errors.address?.type === 'required' &&
+                                            <Typography variant="caption" color="red" marginTop={1}>
+                                                * La dirección es requerida.
+                                            </Typography>
+                                        }
+                                        {errors.address?.type === 'maxLength' &&
+                                            <Typography variant="caption" color="red" marginTop={1}>
+                                                * La dirección es demasiado larga.
+                                            </Typography>
+                                        }
+                                    </FormControl>
+                                    <FormControl>
+                                        <InputLabel htmlFor="city">Ciudad</InputLabel>
+                                        <Input id="city" type="text" name="city" value={formData.city} />
+                                        {errors.city?.type === 'required' &&
+                                            <Typography variant="caption" color="red" marginTop={1}>
+                                                * La ciudad es requerida.
+                                            </Typography>
+                                        }
+                                        {errors.city?.type === 'maxLength' &&
+                                            <Typography variant="caption" color="red" marginTop={1}>
+                                                * La ciudad es demasiado larga.
+                                            </Typography>
+                                        }
+                                    </FormControl>
+                                    <FormControl>
+                                        <InputLabel htmlFor="province">Provincia / Estado</InputLabel>
+                                        <Input id="province" type="text" name="province" value={formData.province} />
+                                        {errors.province?.type === 'required' &&
+                                            <Typography variant="caption" color="red" marginTop={1}>
+                                                * La provincia es requerida.
+                                            </Typography>
+                                        }
+                                        {errors.province?.type === 'maxLength' &&
+                                            <Typography variant="caption" color="red" marginTop={1}>
+                                                * La provincia es demasiado larga.
+                                            </Typography>
+                                        }
+                                    </FormControl>
+                                    <FormControl>
+                                        <InputLabel htmlFor="email">Email</InputLabel>
+                                        <Input id="email" type="email" name="email" value={formData.email} />
+                                        {errors.email?.type === 'required' &&
+                                            <Typography variant="caption" color="red" marginTop={1}>
+                                                * El email es requerido.
+                                            </Typography>
+                                        }
+                                        {errors.email?.type === 'maxLength' &&
+                                            <Typography variant="caption" color="red" marginTop={1}>
+                                                * El email es demasiado largo.
+                                            </Typography>
+                                        }
+                                    </FormControl>
+                                    <FormControl sx={{
+                                        display: 'flex',
+                                        flexDirection: 'row',
+                                        gap: 1,
+                                        justifyContent: 'center',
+                                        marginTop: 1
                                     }}>
-                                        Cancelar
-                                    </Button>
-                                    <Button type="submit" variant="contained" disabled={disabled} sx={{
-                                        width: '50%'
-                                    }}>
-                                        Guardar
-                                    </Button>
-                                </FormControl>
-                            </Box>
-                        </form>
-                    </ModalComponent>
-                    <ModalComponent open={open === 'MASSIVE-EDIT'} dynamicContent>
-                        <Typography variant="h6" sx={{ marginBottom: 2 }}>
-                            Actualización de precios del proveedor {formData.name}
-                        </Typography>
-                        <TableContainer component={Paper} sx={{ marginBottom: 2 }}>
-                            <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                                <TableHead>
-                                    <TableRow>
-                                        <TableCell align="center">Producto</TableCell>
-                                        <TableCell align="center">Código</TableCell>
-                                        <TableCell align="center">Precio actual</TableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    {formData.products.map(p => (
-                                        <TableRow
-                                            key={p.id}
-                                            sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                                        >
-                                            <TableCell align="center">({p.code}) {p.name}</TableCell>
-                                            <TableCell align="center">{p.name}</TableCell>
-                                            <TableCell align="center">${p.price.toFixed(2)}</TableCell>
+                                        <Button type="button" variant="outlined" onClick={() => reset(setOpen)} sx={{
+                                            width: '50%'
+                                        }}>
+                                            Cancelar
+                                        </Button>
+                                        <Button type="submit" variant="contained" disabled={disabled} sx={{
+                                            width: '50%'
+                                        }}>
+                                            Guardar
+                                        </Button>
+                                    </FormControl>
+                                </Box>
+                            </form>
+                        </ModalComponent>
+                        <ModalComponent open={open === 'MASSIVE-EDIT'} dynamicContent>
+                            <Typography variant="h6" sx={{ marginBottom: 2 }}>
+                                Actualización de precios del proveedor {formData.name}
+                            </Typography>
+                            <TableContainer component={Paper} sx={{ marginBottom: 2 }}>
+                                <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                                    <TableHead>
+                                        <TableRow>
+                                            <TableCell align="center">Producto</TableCell>
+                                            <TableCell align="center">Código</TableCell>
+                                            <TableCell align="center">Precio actual</TableCell>
                                         </TableRow>
-                                    ))}
-                                </TableBody>
-                            </Table>
-                        </TableContainer>
-                        <Box sx={{
-                            display: 'flex',
-                            flexDirection: 'row',
-                            gap: 1,
-                            justifyContent: 'center',
-                            marginTop: 5,
-                            marginBottom: 5
-                        }}>
-                            <Typography variant="h6">
-                                Porcentaje
-                            </Typography>
-                            <Input
-                                type="number"
-                                value={massiveEditPercentage}
-                                disabled={formData.products.length === 0}
-                                onChange={e => setMassiveEditPercentage(e.target.value)}
-                            />
-                            <Typography variant="h6">
-                                %
-                            </Typography>
-                        </Box>
-                        <Box sx={{
-                            display: 'flex',
-                            flexDirection: 'row',
-                            gap: 1,
-                            justifyContent: 'center',
-                            width: '60%',
-                            margin: '0 auto'
-                        }}>
-                            <Button type="button" variant="outlined"
-                                sx={{ width: '50%' }}
-                                onClick={() => {
-                                    reset(setOpen)
-                                    setMassiveEditPercentage(0)
-                                }}
-                            >
-                                Cancelar
-                            </Button>
-                            <Button type="submit" variant="contained"
-                                sx={{ width: '50%' }}
-                                disabled={parseInt(massiveEditPercentage) <= 0 || formData.products.length === 0}
-                                onClick={handleSubmitMassive}
-                            >
-                                Guardar
-                            </Button>
-                        </Box>
-                    </ModalComponent>
-                </DataGrid>
+                                    </TableHead>
+                                    <TableBody>
+                                        {formData.products.map(p => (
+                                            <TableRow
+                                                key={p.id}
+                                                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                            >
+                                                <TableCell align="center">({p.code}) {p.name}</TableCell>
+                                                <TableCell align="center">{p.name}</TableCell>
+                                                <TableCell align="center">${p.price.toFixed(2)}</TableCell>
+                                            </TableRow>
+                                        ))}
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
+                            <Box sx={{
+                                display: 'flex',
+                                flexDirection: 'row',
+                                gap: 1,
+                                justifyContent: 'center',
+                                marginTop: 5,
+                                marginBottom: 5
+                            }}>
+                                <Typography variant="h6">
+                                    Porcentaje
+                                </Typography>
+                                <Input
+                                    type="number"
+                                    value={massiveEditPercentage}
+                                    disabled={formData.products.length === 0}
+                                    onChange={e => setMassiveEditPercentage(e.target.value)}
+                                />
+                                <Typography variant="h6">
+                                    %
+                                </Typography>
+                            </Box>
+                            <Box sx={{
+                                display: 'flex',
+                                flexDirection: 'row',
+                                gap: 1,
+                                justifyContent: 'center',
+                                width: '60%',
+                                margin: '0 auto'
+                            }}>
+                                <Button type="button" variant="outlined"
+                                    sx={{ width: '50%' }}
+                                    onClick={() => {
+                                        reset(setOpen)
+                                        setMassiveEditPercentage(0)
+                                    }}
+                                >
+                                    Cancelar
+                                </Button>
+                                <Button type="submit" variant="contained"
+                                    sx={{ width: '50%' }}
+                                    disabled={parseInt(massiveEditPercentage) <= 0 || formData.products.length === 0}
+                                    onClick={handleSubmitMassive}
+                                >
+                                    Guardar
+                                </Button>
+                            </Box>
+                        </ModalComponent>
+                    </DataGrid>
+                </>
             }
         </Layout>
     )
