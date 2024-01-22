@@ -12,6 +12,7 @@ import { useProducts } from "../hooks/useProducts";
 import { Layout } from "../components/Layout";
 import { DataGrid } from "../components/DataGrid";
 import { ModalComponent } from "../components/ModalComponent";
+import { IncomeFilter } from "../components/filters/IncomeFilter";
 
 import { INCOME_URL } from "../utils/urls";
 
@@ -147,83 +148,86 @@ export function Incomes() {
                 <Box sx={{ width: '100%' }}>
                     <LinearProgress />
                 </Box> :
-                <DataGrid
-                    title="Ingresos registrados"
-                    headCells={headCells}
-                    rows={incomes}
-                    open={open}
-                    setOpen={setOpen}
-                    data={formData}
-                    setData={setFormData}
-                    handleDelete={handleDelete}
-                >
-                    <ModalComponent open={open === 'NEW' || open === 'EDIT'} onClose={() => reset(setOpen)}>
-                        <Typography variant="h6" sx={{ marginBottom: 2 }}>
-                            {open === 'NEW' && 'Nuevo ingreso'}
-                            {open === 'EDIT' && 'Editar ingreso'}
-                        </Typography>
-                        <form onChange={handleChange} onSubmit={handleSubmit}>
-                            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                                <FormControl>
-                                    <InputLabel id="product-select">Producto</InputLabel>
-                                    <Select
-                                        labelId="product-select"
-                                        id="product_id"
-                                        value={formData.product_id}
-                                        label="Producto"
-                                        name="product_id"
-                                        onChange={handleChange}
-                                    >
-                                        {products.map(p => (
-                                            <MenuItem key={p.id} value={p.id}>{p.name}</MenuItem>
-                                        ))}
-                                    </Select>
-                                    {errors.product_id?.type === 'required' &&
-                                        <Typography variant="caption" color="red" marginTop={1}>
-                                            * El producto es requerido.
-                                        </Typography>
-                                    }
-                                </FormControl>
-                                <FormControl>
-                                    <InputLabel htmlFor="amount">Cantidad</InputLabel>
-                                    <Input id="amount" type="number" name="amount" value={formData.amount} />
-                                    {errors.amount?.type === 'required' &&
-                                        <Typography variant="caption" color="red" marginTop={1}>
-                                            * La cantidad es requerida.
-                                        </Typography>
-                                    }
-                                </FormControl>
-                                <FormControl>
-                                    <InputLabel htmlFor="observations">Observaciones</InputLabel>
-                                    <Input id="observations" type="text" name="observations" value={formData.observations} />
-                                    {errors.observations?.type === 'maxLength' &&
-                                        <Typography variant="caption" color="red" marginTop={1}>
-                                            * Las observaciones son demasiado largas.
-                                        </Typography>
-                                    }
-                                </FormControl>
-                                <FormControl sx={{
-                                    display: 'flex',
-                                    flexDirection: 'row',
-                                    gap: 1,
-                                    justifyContent: 'center',
-                                    marginTop: 1
-                                }}>
-                                    <Button type="button" variant="outlined" onClick={() => reset(setOpen)} sx={{
-                                        width: '50%'
+                <>
+                    <IncomeFilter incomes={incomes} setIncomes={setIncomes} />
+                    <DataGrid
+                        title="Ingresos registrados"
+                        headCells={headCells}
+                        rows={incomes}
+                        open={open}
+                        setOpen={setOpen}
+                        data={formData}
+                        setData={setFormData}
+                        handleDelete={handleDelete}
+                    >
+                        <ModalComponent open={open === 'NEW' || open === 'EDIT'} onClose={() => reset(setOpen)}>
+                            <Typography variant="h6" sx={{ marginBottom: 2 }}>
+                                {open === 'NEW' && 'Nuevo ingreso'}
+                                {open === 'EDIT' && 'Editar ingreso'}
+                            </Typography>
+                            <form onChange={handleChange} onSubmit={handleSubmit}>
+                                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                                    <FormControl>
+                                        <InputLabel id="product-select">Producto</InputLabel>
+                                        <Select
+                                            labelId="product-select"
+                                            id="product_id"
+                                            value={formData.product_id}
+                                            label="Producto"
+                                            name="product_id"
+                                            onChange={handleChange}
+                                        >
+                                            {products.map(p => (
+                                                <MenuItem key={p.id} value={p.id}>{p.name}</MenuItem>
+                                            ))}
+                                        </Select>
+                                        {errors.product_id?.type === 'required' &&
+                                            <Typography variant="caption" color="red" marginTop={1}>
+                                                * El producto es requerido.
+                                            </Typography>
+                                        }
+                                    </FormControl>
+                                    <FormControl>
+                                        <InputLabel htmlFor="amount">Cantidad</InputLabel>
+                                        <Input id="amount" type="number" name="amount" value={formData.amount} />
+                                        {errors.amount?.type === 'required' &&
+                                            <Typography variant="caption" color="red" marginTop={1}>
+                                                * La cantidad es requerida.
+                                            </Typography>
+                                        }
+                                    </FormControl>
+                                    <FormControl>
+                                        <InputLabel htmlFor="observations">Observaciones</InputLabel>
+                                        <Input id="observations" type="text" name="observations" value={formData.observations} />
+                                        {errors.observations?.type === 'maxLength' &&
+                                            <Typography variant="caption" color="red" marginTop={1}>
+                                                * Las observaciones son demasiado largas.
+                                            </Typography>
+                                        }
+                                    </FormControl>
+                                    <FormControl sx={{
+                                        display: 'flex',
+                                        flexDirection: 'row',
+                                        gap: 1,
+                                        justifyContent: 'center',
+                                        marginTop: 1
                                     }}>
-                                        Cancelar
-                                    </Button>
-                                    <Button type="submit" variant="contained" disabled={disabled} sx={{
-                                        width: '50%'
-                                    }}>
-                                        Guardar
-                                    </Button>
-                                </FormControl>
-                            </Box>
-                        </form>
-                    </ModalComponent>
-                </DataGrid>
+                                        <Button type="button" variant="outlined" onClick={() => reset(setOpen)} sx={{
+                                            width: '50%'
+                                        }}>
+                                            Cancelar
+                                        </Button>
+                                        <Button type="submit" variant="contained" disabled={disabled} sx={{
+                                            width: '50%'
+                                        }}>
+                                            Guardar
+                                        </Button>
+                                    </FormControl>
+                                </Box>
+                            </form>
+                        </ModalComponent>
+                    </DataGrid>
+                </>
             }
         </Layout>
     )

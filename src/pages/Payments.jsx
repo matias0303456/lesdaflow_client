@@ -15,9 +15,9 @@ import { useClients } from "../hooks/useClients"
 import { Layout } from "../components/Layout";
 import { DataGrid } from "../components/DataGrid";
 import { ModalComponent } from "../components/ModalComponent";
+import { PaymentFilter } from "../components/filters/PaymentFilter";
 
 import { PAYMENT_URL } from "../utils/urls";
-import { PaymentFilter } from "../components/filters/PaymentFilter";
 
 export function Payments() {
 
@@ -108,7 +108,7 @@ export function Payments() {
             numeric: false,
             disablePadding: true,
             label: 'Cliente',
-            accessor: (row) => `${row.sale.client.code} - ${row.sale.client.first_name} ${row.sale.client.last_name} `
+            accessor: (row) => `${row.sale.client.first_name} ${row.sale.client.last_name} (${row.sale.client.code})`
         },
         {
             id: 'sale',
