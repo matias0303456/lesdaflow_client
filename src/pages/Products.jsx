@@ -233,6 +233,7 @@ export function Products() {
                         disableAdd={auth?.user.role.name !== 'ADMINISTRADOR'}
                         allowMassiveEdit
                         setMassiveEdit={setMassiveEdit}
+                        deadlineColor="products"
                     >
                         <ModalComponent
                             open={open === 'NEW' || open === 'EDIT'}

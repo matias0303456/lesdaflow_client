@@ -26,7 +26,7 @@ import AttachMoneySharpIcon from '@mui/icons-material/AttachMoneySharp';
 
 import { ModalComponent } from './ModalComponent';
 
-import { deadlineIsPast } from '../utils/helpers';
+import { deadlineIsPast, getStock } from '../utils/helpers';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -374,8 +374,11 @@ export function DataGrid({
                                             }
                                             {headCells.map(cell => cell.accessor).map(accessor => (
                                                 <TableCell key={accessor} align="center" sx={{
-                                                    color: (deadlineColor === 'sales' && deadlineIsPast(row) || (deadlineColor === 'clients' && row.sales.some(s => deadlineIsPast(s))))
-                                                        ? 'red' : ''
+                                                    color: (
+                                                        (deadlineColor === 'sales' && deadlineIsPast(row)) ||
+                                                        (deadlineColor === 'clients' && row.sales.some(s => deadlineIsPast(s))) ||
+                                                        (deadlineColor === 'products' && row.min_stock > getStock(row))
+                                                    ) ? 'red' : ''
                                                 }}>
                                                     {typeof accessor === 'function' ? accessor(row) : row[accessor]}
                                                 </TableCell>
@@ -401,7 +404,7 @@ export function DataGrid({
                         count={rows.length}
                         rowsPerPage={rowsPerPage}
                         labelRowsPerPage="Registros por página"
-                        labelDisplayedRows={({from, to, count}) => `${from}–${to} de ${count}`}
+                        labelDisplayedRows={({ from, to, count }) => `${from}–${to} de ${count}`}
                         page={page}
                         onPageChange={handleChangePage}
                         onRowsPerPageChange={handleChangeRowsPerPage}
