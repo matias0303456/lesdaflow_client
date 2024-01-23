@@ -117,7 +117,7 @@ export function Incomes() {
             numeric: false,
             disablePadding: true,
             label: 'Producto',
-            accessor: (row) => `${row.product.name} (${row.product.code})`
+            accessor: (row) => `${row.product.details} (${row.product.code})`
         },
         {
             id: 'amount',
@@ -178,7 +178,7 @@ export function Incomes() {
                                             onChange={handleChange}
                                         >
                                             {products.map(p => (
-                                                <MenuItem key={p.id} value={p.id}>{p.name}</MenuItem>
+                                                <MenuItem key={p.id} value={p.id}>{p.details}</MenuItem>
                                             ))}
                                         </Select>
                                         {errors.product_id?.type === 'required' &&

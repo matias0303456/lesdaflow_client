@@ -7,6 +7,8 @@ import es from 'date-fns/locale/es';
 
 import { AuthContext } from "../../providers/AuthProvider";
 
+import { setFromDate, setLocalDate, setToDate } from "../../utils/helpers";
+
 export function SaleFilter({ sales, setSales }) {
 
     const { auth } = useContext(AuthContext)
@@ -17,8 +19,8 @@ export function SaleFilter({ sales, setSales }) {
     const [filter, setFilter] = useState({
         product: '',
         client: '',
-        from: new Date(backup[0] ? backup[0].date.split('T')[0] + 'T03:00:00.000Z' : Date.now()),
-        to: new Date(backup[backup.length - 1] ? backup[backup.length - 1].date.split('T')[0] + 'T20:59:00.000Z' : Date.now()),
+        from: new Date(backup[0] ? setLocalDate(backup[0].date) : Date.now()),
+        to: new Date(backup[backup.length - 1] ? setLocalDate(backup[backup.length - 1].date) : Date.now()),
         user: ''
     })
 
@@ -33,8 +35,8 @@ export function SaleFilter({ sales, setSales }) {
         setFilter({
             product: '',
             client: '',
-            from: new Date(backup[0] ? backup[0].date.split('T')[0] + 'T03:00:00.000Z' : Date.now()),
-            to: new Date(backup[backup.length - 1] ? backup[backup.length - 1]?.date.split('T')[0] + 'T20:59:00.000Z' : Date.now()),
+            from: new Date(backup[0] ? setLocalDate(backup[0].date) : Date.now()),
+            to: new Date(backup[backup.length - 1] ? setLocalDate(backup[backup.length - 1].date) : Date.now()),
             user: ''
         })
         setIncomes(backup)
@@ -50,8 +52,8 @@ export function SaleFilter({ sales, setSales }) {
                     item.client.first_name.toLowerCase().includes(filter.client.toLowerCase()) ||
                     item.client.last_name.toLowerCase().includes(filter.client.toLowerCase())
                 ) &&
-                new Date(item.date) >= filter.from &&
-                new Date(item.date) <= filter.to &&
+                setLocalDate(item.date) >= setFromDate(filter.from) &&
+                setLocalDate(item.date) <= setToDate(filter.to) &&
                 item.client.user.username.toLowerCase().includes(filter.user.toLowerCase())
         }))
     }, [filter])

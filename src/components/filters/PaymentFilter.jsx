@@ -5,14 +5,16 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import es from 'date-fns/locale/es';
 
+import { setFromDate, setLocalDate, setToDate } from "../../utils/helpers";
+
 export function PaymentFilter({ payments, setPayments }) {
 
     const [backup] = useState(payments.sort((a, b) => new Date(a.date) - new Date(b.date)))
 
     const [filter, setFilter] = useState({
         client: '',
-        from: new Date(backup[0] ? backup[0].date.split('T')[0] + 'T03:00:00.000Z' : Date.now()),
-        to: new Date(backup[backup.length - 1] ? backup[backup.length - 1].date.split('T')[0] + 'T20:59:00.000Z' : Date.now())
+        from: new Date(backup[0] ? setLocalDate(backup[0].date) : Date.now()),
+        to: new Date(backup[backup.length - 1] ? setLocalDate(backup[backup.length - 1].date) : Date.now())
     })
 
     const handleChange = e => {
@@ -25,8 +27,8 @@ export function PaymentFilter({ payments, setPayments }) {
     const handleReset = () => {
         setFilter({
             client: '',
-            from: new Date(backup[0] ? backup[0].date.split('T')[0] + 'T03:00:00.000Z' : Date.now()),
-            to: new Date(backup[backup.length - 1] ? backup[backup.length - 1].date.split('T')[0] + 'T20:59:00.000Z' : Date.now())
+            from: new Date(backup[0] ? setLocalDate(backup[0].date) : Date.now()),
+            to: new Date(backup[backup.length - 1] ? setLocalDate(backup[backup.length - 1].date) : Date.now())
         })
         setPayments(backup)
     }
@@ -38,8 +40,8 @@ export function PaymentFilter({ payments, setPayments }) {
                 item.sale.client.first_name.toLowerCase().includes(filter.client.toLowerCase()) ||
                 item.sale.client.last_name.toLowerCase().includes(filter.client.toLowerCase())
             ) &&
-                new Date(item.date) >= filter.from &&
-                new Date(item.date) <= filter.to
+                setLocalDate(item.date) >= setFromDate(filter.from) &&
+                setLocalDate(item.date) <= setToDate(filter.to)
         }))
     }, [filter])
 

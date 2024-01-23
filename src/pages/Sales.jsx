@@ -128,7 +128,7 @@ export function Sales() {
             numeric: false,
             disablePadding: true,
             label: 'Producto',
-            accessor: (row) => `${row.product.name} (${row.product.code})`
+            accessor: (row) => `${row.product.details} (${row.product.code})`
         },
         {
             id: 'client',
@@ -149,7 +149,7 @@ export function Sales() {
             numeric: false,
             disablePadding: true,
             label: 'Precio unitario',
-            accessor: (row) => `$${row.product.price.toFixed(2)}`
+            accessor: (row) => `$${row.product.buy_price.toFixed(2)}`
         },
         {
             id: 'discount',
@@ -170,7 +170,7 @@ export function Sales() {
             numeric: false,
             disablePadding: true,
             label: 'Total',
-            accessor: (row) => `$${((row.product.price * row.amount) - (((row.product.price * row.amount) / 100) * row.discount)).toFixed(2)}`
+            accessor: (row) => `$${((row.product.buy_price * row.amount) - (((row.product.buy_price * row.amount) / 100) * row.discount)).toFixed(2)}`
         },
         {
             id: 'observations',
@@ -240,7 +240,7 @@ export function Sales() {
                                                 onChange={handleChange}
                                             >
                                                 {products.map(p => (
-                                                    <MenuItem key={p.id} value={p.id}>{p.name}</MenuItem>
+                                                    <MenuItem key={p.id} value={p.id}>{p.details}</MenuItem>
                                                 ))}
                                             </Select>
                                             {errors.product_id?.type === 'required' &&

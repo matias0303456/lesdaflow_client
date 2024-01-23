@@ -27,32 +27,36 @@ export function Products() {
     const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
         defaultData: {
             id: '',
-            name: '',
             code: '',
-            price: '',
             details: '',
-            supplier_id: '',
-            min_stock: ''
+            buy_price: '',
+            min_stock: '',
+            earn: '',
+            size: '',
+            supplier_id: ''
         },
         rules: {
-            name: {
-                required: true,
-                maxLength: 55
-            },
             code: {
                 required: true,
                 maxLength: 55
             },
-            price: {
-                required: true
-            },
             details: {
+                required: true,
                 maxLength: 55
             },
-            supplier_id: {
+            buy_price: {
                 required: true
             },
             min_stock: {
+                required: true
+            },
+            earn: {
+                required: true
+            },
+            size: {
+                required: true
+            },
+            supplier_id: {
                 required: true
             }
         }
@@ -88,7 +92,7 @@ export function Products() {
     async function handleSubmitMassive() {
         setLoadingProducts(true)
         const body = {
-            products: massiveEdit.map(me => ({ id: me.id, price: me.price })),
+            products: massiveEdit.map(me => ({ id: me.id, buy_price: me.buy_price })),
             percentage: parseInt(massiveEditPercentage)
         }
         const { status, data } = await putMassive(body)
@@ -134,13 +138,6 @@ export function Products() {
             accessor: 'id'
         },
         {
-            id: 'name',
-            numeric: false,
-            disablePadding: true,
-            label: 'Nombre',
-            accessor: 'name'
-        },
-        {
             id: 'code',
             numeric: false,
             disablePadding: true,
@@ -148,18 +145,39 @@ export function Products() {
             accessor: 'code'
         },
         {
-            id: 'price',
-            numeric: false,
-            disablePadding: true,
-            label: 'Precio',
-            accessor: (row) => `$${row.price.toFixed(2)}`
-        },
-        {
             id: 'details',
             numeric: false,
             disablePadding: true,
             label: 'Detalle',
             accessor: 'details'
+        },
+        {
+            id: 'size',
+            numeric: false,
+            disablePadding: true,
+            label: 'Talle',
+            accessor: 'size'
+        },
+        {
+            id: 'buy_price',
+            numeric: false,
+            disablePadding: true,
+            label: 'Precio de compra',
+            accessor: (row) => `$${row.buy_price.toFixed(2)}`
+        },
+        {
+            id: 'earn',
+            numeric: false,
+            disablePadding: true,
+            label: 'Ganancia',
+            accessor: (row) => `${row.earn}%`
+        },
+        {
+            id: 'sale_price',
+            numeric: false,
+            disablePadding: true,
+            label: 'Precio de venta',
+            accessor: (row) => `$${(row.buy_price + ((row.buy_price / 100) * row.earn)).toFixed(2)}`
         },
         {
             id: 'supplier',
@@ -229,20 +247,6 @@ export function Products() {
                                     <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 3 }}>
                                         <Box sx={{ display: 'flex', flexDirection: 'column', width: '50%', gap: 3 }}>
                                             <FormControl>
-                                                <InputLabel htmlFor="name">Nombre</InputLabel>
-                                                <Input id="name" type="text" name="name" value={formData.name} />
-                                                {errors.name?.type === 'required' &&
-                                                    <Typography variant="caption" color="red" marginTop={1}>
-                                                        * El nombre es requerido.
-                                                    </Typography>
-                                                }
-                                                {errors.name?.type === 'maxLength' &&
-                                                    <Typography variant="caption" color="red" marginTop={1}>
-                                                        * El nombre es demasiado largo.
-                                                    </Typography>
-                                                }
-                                            </FormControl>
-                                            <FormControl>
                                                 <InputLabel htmlFor="code">Código</InputLabel>
                                                 <Input id="code" type="text" name="code" value={formData.code} />
                                                 {errors.code?.type === 'required' &&
@@ -257,22 +261,25 @@ export function Products() {
                                                 }
                                             </FormControl>
                                             <FormControl>
-                                                <InputLabel htmlFor="price">Precio</InputLabel>
-                                                <Input id="price" type="number" name="price" value={formData.price} />
-                                                {errors.price?.type === 'required' &&
-                                                    <Typography variant="caption" color="red" marginTop={1}>
-                                                        * El precio es requerido.
-                                                    </Typography>
-                                                }
-                                            </FormControl>
-                                        </Box>
-                                        <Box sx={{ display: 'flex', flexDirection: 'column', width: '50%', gap: 3 }}>
-                                            <FormControl>
                                                 <InputLabel htmlFor="details">Detalle</InputLabel>
                                                 <Input id="details" type="text" name="details" value={formData.details} />
+                                                {errors.details?.type === 'required' &&
+                                                    <Typography variant="caption" color="red" marginTop={1}>
+                                                        * El detalle es requerido.
+                                                    </Typography>
+                                                }
                                                 {errors.details?.type === 'maxLength' &&
                                                     <Typography variant="caption" color="red" marginTop={1}>
                                                         * El detalle es demasiado largo.
+                                                    </Typography>
+                                                }
+                                            </FormControl>
+                                            <FormControl>
+                                                <InputLabel htmlFor="buy_price">Precio de compra</InputLabel>
+                                                <Input id="buy_price" type="number" name="buy_price" value={formData.buy_price} />
+                                                {errors.buy_price?.type === 'required' &&
+                                                    <Typography variant="caption" color="red" marginTop={1}>
+                                                        * El precio de compra es requerido.
                                                     </Typography>
                                                 }
                                             </FormControl>
@@ -282,6 +289,26 @@ export function Products() {
                                                 {errors.min_stock?.type === 'required' &&
                                                     <Typography variant="caption" color="red" marginTop={1}>
                                                         * El stock mínimo es requerido.
+                                                    </Typography>
+                                                }
+                                            </FormControl>
+                                        </Box>
+                                        <Box sx={{ display: 'flex', flexDirection: 'column', width: '50%', gap: 3 }}>
+                                            <FormControl>
+                                                <InputLabel htmlFor="earn">% Ganancia</InputLabel>
+                                                <Input id="earn" type="number" name="earn" value={formData.earn} />
+                                                {errors.earn?.type === 'required' &&
+                                                    <Typography variant="caption" color="red" marginTop={1}>
+                                                        * La ganancia es requerida.
+                                                    </Typography>
+                                                }
+                                            </FormControl>
+                                            <FormControl>
+                                                <InputLabel htmlFor="size">Talle</InputLabel>
+                                                <Input id="size" type="number" name="size" value={formData.size} />
+                                                {errors.size?.type === 'required' &&
+                                                    <Typography variant="caption" color="red" marginTop={1}>
+                                                        * El talle es requerido.
                                                     </Typography>
                                                 }
                                             </FormControl>
@@ -348,10 +375,10 @@ export function Products() {
                                                 key={me.id}
                                                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                                             >
-                                                <TableCell align="center">({me.code}) {me.name}</TableCell>
-                                                <TableCell align="center">{me.name}</TableCell>
+                                                <TableCell align="center">{me.details}</TableCell>
+                                                <TableCell align="center">{me.code}</TableCell>
                                                 <TableCell align="center">{me.supplier.name}</TableCell>
-                                                <TableCell align="center">${me.price.toFixed(2)}</TableCell>
+                                                <TableCell align="center">${me.buy_price.toFixed(2)}</TableCell>
                                             </TableRow>
                                         ))}
                                     </TableBody>

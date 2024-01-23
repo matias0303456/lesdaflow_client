@@ -6,8 +6,9 @@ export function ProductFilter({ products, setProducts, suppliers }) {
     const [backup] = useState(products)
 
     const [filter, setFilter] = useState({
-        name: '',
         code: '',
+        details: '',
+        size: '',
         supplier_id: ''
     })
 
@@ -20,8 +21,9 @@ export function ProductFilter({ products, setProducts, suppliers }) {
 
     const handleReset = () => {
         setFilter({
-            name: '',
             code: '',
+            details: '',
+            size: '',
             supplier_id: ''
         })
         setProducts(backup)
@@ -29,8 +31,9 @@ export function ProductFilter({ products, setProducts, suppliers }) {
 
     useEffect(() => {
         setProducts(backup.filter(item =>
-            item.name.toLowerCase().includes(filter.name.toLowerCase()) &&
             item.code.toLowerCase().includes(filter.code.toLowerCase()) &&
+            item.details.toLowerCase().includes(filter.details.toLowerCase()) &&
+            item.size.toString().toLowerCase().includes(filter.size.toLowerCase()) &&
             (filter.supplier_id.length === 0 || parseInt(item.supplier.id) === parseInt(filter.supplier_id))
         ))
     }, [filter])
@@ -47,6 +50,7 @@ export function ProductFilter({ products, setProducts, suppliers }) {
             </Typography>
             <Box sx={{
                 display: 'flex',
+                flexWrap: 'wrap',
                 gap: 3,
                 flexDirection: {
                     xs: 'column',
@@ -54,12 +58,16 @@ export function ProductFilter({ products, setProducts, suppliers }) {
                 }
             }}>
                 <FormControl>
-                    <InputLabel htmlFor="name">Nombre</InputLabel>
-                    <Input id="name" type="text" name="name" value={filter.name} onChange={handleChange} />
-                </FormControl>
-                <FormControl>
                     <InputLabel htmlFor="code">Código</InputLabel>
                     <Input id="code" type="text" name="code" value={filter.code} onChange={handleChange} />
+                </FormControl>
+                <FormControl>
+                    <InputLabel htmlFor="details">Detalle</InputLabel>
+                    <Input id="details" type="text" name="details" value={filter.details} onChange={handleChange} />
+                </FormControl>
+                <FormControl>
+                    <InputLabel htmlFor="size">Talle</InputLabel>
+                    <Input id="size" type="text" name="size" value={filter.size} onChange={handleChange} />
                 </FormControl>
                 <FormControl>
                     <InputLabel id="supplier-select">Proveedor</InputLabel>

@@ -5,14 +5,16 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import es from 'date-fns/locale/es';
 
+import { setFromDate, setLocalDate, setToDate } from "../../utils/helpers";
+
 export function IncomeFilter({ incomes, setIncomes }) {
 
     const [backup] = useState(incomes.sort((a, b) => new Date(a.created_at) - new Date(b.created_at)))
 
     const [filter, setFilter] = useState({
         product: '',
-        from: new Date(backup[0] ? backup[0].created_at.split('T')[0] + 'T03:00:00.000Z' : Date.now()),
-        to: new Date(backup[backup.length - 1] ? backup[backup.length - 1].created_at.split('T')[0] + 'T20:59:00.000Z' : Date.now())
+        from: new Date(backup[0] ? setLocalDate(backup[0].created_at) : Date.now()),
+        to: new Date(backup[backup.length - 1] ? setLocalDate(backup[backup.length - 1].created_at) : Date.now())
     })
 
     const handleChange = e => {
@@ -25,8 +27,8 @@ export function IncomeFilter({ incomes, setIncomes }) {
     const handleReset = () => {
         setFilter({
             product: '',
-            from: new Date(backup[0] ? backup[0].created_at.split('T')[0] + 'T03:00:00.000Z' : Date.now()),
-            to: new Date(backup[backup.length - 1] ? backup[backup.length - 1].created_at.split('T')[0] + 'T20:59:00.000Z' : Date.now())
+            from: new Date(backup[0] ? setLocalDate(backup[0].created_at) : Date.now()),
+            to: new Date(backup[backup.length - 1] ? setLocalDate(backup[backup.length - 1].created_at) : Date.now())
         })
         setIncomes(backup)
     }
@@ -35,10 +37,10 @@ export function IncomeFilter({ incomes, setIncomes }) {
         setIncomes(backup.filter(item => {
             return (
                 item.product.code.toLowerCase().includes(filter.product.toLowerCase()) ||
-                item.product.name.toLowerCase().includes(filter.product.toLowerCase())
+                item.product.details.toLowerCase().includes(filter.product.toLowerCase())
             ) &&
-                new Date(item.created_at) >= filter.from &&
-                new Date(item.created_at) <= filter.to
+                setLocalDate(item.created_at) >= setFromDate(filter.from) &&
+                setLocalDate(item.created_at) <= setToDate(filter.to)
         }))
     }, [filter])
 

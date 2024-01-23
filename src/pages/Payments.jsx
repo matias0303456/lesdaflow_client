@@ -18,6 +18,7 @@ import { ModalComponent } from "../components/ModalComponent";
 import { PaymentFilter } from "../components/filters/PaymentFilter";
 
 import { PAYMENT_URL } from "../utils/urls";
+import { setLocalDate } from "../utils/helpers";
 
 export function Payments() {
 
@@ -115,7 +116,7 @@ export function Payments() {
             numeric: false,
             disablePadding: true,
             label: 'Venta',
-            accessor: (row) => `${format(new Date(row.sale.date), 'dd-MM-yyyy')} / ${row.sale.product.name} (${row.sale.product.code}) de ${row.sale.product.supplier.name}`
+            accessor: (row) => `${format(new Date(row.sale.date), 'dd-MM-yyyy')} / ${row.sale.product.details} (${row.sale.product.code}) de ${row.sale.product.supplier.name}`
         },
         {
             id: 'amount',
@@ -195,7 +196,7 @@ export function Payments() {
                                             disabled={!selectedClient}
                                         >
                                             {selectedClient?.sales.map(s => (
-                                                <MenuItem key={s.id} value={s.id}>{`${format(new Date(s.date), 'dd-MM-yyyy')} / ${s.product.name} (${s.product.code}) de ${s.product.supplier.name}`}</MenuItem>
+                                                <MenuItem key={s.id} value={s.id}>{`${format(setLocalDate(s.date), 'dd-MM-yyyy')} / ${s.product.details} (${s.product.code}) de ${s.product.supplier.name}`}</MenuItem>
                                             ))}
                                         </Select>
                                     </FormControl>

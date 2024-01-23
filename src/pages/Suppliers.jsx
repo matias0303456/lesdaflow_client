@@ -32,6 +32,7 @@ export function Suppliers() {
             city: '',
             province: '',
             email: '',
+            phone: '',
             products: []
         },
         rules: {
@@ -49,6 +50,9 @@ export function Suppliers() {
                 maxLength: 55
             },
             email: {
+                maxLength: 55
+            },
+            phone: {
                 maxLength: 55
             }
         }
@@ -88,7 +92,7 @@ export function Suppliers() {
         setLoadingSuppliers(true)
         const body = {
             supplier: formData.id,
-            products: formData.products.map(p => ({ id: p.id, price: p.price })),
+            products: formData.products.map(p => ({ id: p.id, buy_price: p.buy_price })),
             percentage: parseInt(massiveEditPercentage)
         }
         const { status, data } = await putMassive(body)
@@ -166,6 +170,13 @@ export function Suppliers() {
             disablePadding: true,
             label: 'Email',
             accessor: 'email'
+        },
+        {
+            id: 'phone',
+            numeric: false,
+            disablePadding: true,
+            label: 'Teléfono',
+            accessor: 'phone'
         }
     ]
 
@@ -212,11 +223,6 @@ export function Suppliers() {
                                     <FormControl>
                                         <InputLabel htmlFor="address">Dirección</InputLabel>
                                         <Input id="address" type="text" name="address" value={formData.address} />
-                                        {errors.address?.type === 'required' &&
-                                            <Typography variant="caption" color="red" marginTop={1}>
-                                                * La dirección es requerida.
-                                            </Typography>
-                                        }
                                         {errors.address?.type === 'maxLength' &&
                                             <Typography variant="caption" color="red" marginTop={1}>
                                                 * La dirección es demasiado larga.
@@ -226,11 +232,6 @@ export function Suppliers() {
                                     <FormControl>
                                         <InputLabel htmlFor="city">Ciudad</InputLabel>
                                         <Input id="city" type="text" name="city" value={formData.city} />
-                                        {errors.city?.type === 'required' &&
-                                            <Typography variant="caption" color="red" marginTop={1}>
-                                                * La ciudad es requerida.
-                                            </Typography>
-                                        }
                                         {errors.city?.type === 'maxLength' &&
                                             <Typography variant="caption" color="red" marginTop={1}>
                                                 * La ciudad es demasiado larga.
@@ -240,11 +241,6 @@ export function Suppliers() {
                                     <FormControl>
                                         <InputLabel htmlFor="province">Provincia / Estado</InputLabel>
                                         <Input id="province" type="text" name="province" value={formData.province} />
-                                        {errors.province?.type === 'required' &&
-                                            <Typography variant="caption" color="red" marginTop={1}>
-                                                * La provincia es requerida.
-                                            </Typography>
-                                        }
                                         {errors.province?.type === 'maxLength' &&
                                             <Typography variant="caption" color="red" marginTop={1}>
                                                 * La provincia es demasiado larga.
@@ -254,14 +250,18 @@ export function Suppliers() {
                                     <FormControl>
                                         <InputLabel htmlFor="email">Email</InputLabel>
                                         <Input id="email" type="email" name="email" value={formData.email} />
-                                        {errors.email?.type === 'required' &&
-                                            <Typography variant="caption" color="red" marginTop={1}>
-                                                * El email es requerido.
-                                            </Typography>
-                                        }
                                         {errors.email?.type === 'maxLength' &&
                                             <Typography variant="caption" color="red" marginTop={1}>
                                                 * El email es demasiado largo.
+                                            </Typography>
+                                        }
+                                    </FormControl>
+                                    <FormControl>
+                                        <InputLabel htmlFor="phone">Teléfono</InputLabel>
+                                        <Input id="phone" type="number" name="phone" value={formData.phone} />
+                                        {errors.phone?.type === 'maxLength' &&
+                                            <Typography variant="caption" color="red" marginTop={1}>
+                                                * El teléfono es demasiado largo.
                                             </Typography>
                                         }
                                     </FormControl>
@@ -305,9 +305,9 @@ export function Suppliers() {
                                                 key={p.id}
                                                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                                             >
-                                                <TableCell align="center">({p.code}) {p.name}</TableCell>
-                                                <TableCell align="center">{p.name}</TableCell>
-                                                <TableCell align="center">${p.price.toFixed(2)}</TableCell>
+                                                <TableCell align="center">{p.code}</TableCell>
+                                                <TableCell align="center">{p.details}</TableCell>
+                                                <TableCell align="center">${p.buy_price.toFixed(2)}</TableCell>
                                             </TableRow>
                                         ))}
                                     </TableBody>
