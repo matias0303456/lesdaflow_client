@@ -210,7 +210,9 @@ export function Incomes() {
                                         flexDirection: 'row',
                                         gap: 1,
                                         justifyContent: 'center',
-                                        marginTop: 1
+                                        margin: '0 auto',
+                                        marginTop: 1,
+                                        width: '50%'
                                     }}>
                                         <Button type="button" variant="outlined" onClick={() => reset(setOpen)} sx={{
                                             width: '50%'

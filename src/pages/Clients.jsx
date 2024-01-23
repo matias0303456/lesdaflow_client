@@ -295,7 +295,9 @@ export function Clients() {
                                     flexDirection: 'row',
                                     gap: 1,
                                     justifyContent: 'center',
-                                    marginTop: 5
+                                    margin: '0 auto',
+                                    marginTop: 5,
+                                    width: '50%'
                                 }}>
                                     <Button type="button" variant="outlined" onClick={() => reset(setOpen)} sx={{
                                         width: '50%'

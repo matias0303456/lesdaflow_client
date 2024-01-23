@@ -17,16 +17,16 @@ const style = {
 
 export function ModalComponent({ children, open, onClose, dynamicContent = false }) {
 
-    const [screenWidth, setScreenWidth] = useState(window.innerWidth < 600 ? window.innerWidth : window.innerWidth - 200)
+    const [screenWidth, setScreenWidth] = useState(window.innerWidth < 700 ? window.innerWidth : window.innerWidth - 300)
     const [screenHeight] = useState(dynamicContent ?
         { height: window.innerHeight - 100, overflowY: 'scroll' } :
-        { height: 'auto' })
+        { height: 'auto', maxHeight: window.innerHeight - 50, overflowY: 'scroll' })
 
     window.onresize = () => {
-        if (window.innerWidth < 600) {
+        if (window.innerWidth < 700) {
             setScreenWidth(window.innerWidth)
         } else {
-            setScreenWidth(window.innerWidth - 200)
+            setScreenWidth(window.innerWidth - 300)
         }
     }
 
