@@ -64,6 +64,7 @@ export function Profile() {
         errors: errorsPwd
     } = useForm({
         defaultData: {
+            id: auth?.user.id,
             email: auth?.user.email,
             current: '',
             newPwd: '',
@@ -115,7 +116,7 @@ export function Profile() {
                 setAuth(null)
                 setMessage('Datos editados correctamente.')
                 setSeverity('success')
-                navigate('/lesdaflow/')
+                navigate('/veroshop/')
             } else {
                 setMessage(data.message)
                 setSeverity('error')
@@ -130,11 +131,11 @@ export function Profile() {
         if (validatePwd() && formDataPwd.newPwd === formDataPwd.repeat) {
             const { status, data } = await putPwd(formDataPwd)
             if (status === 200) {
+                navigate('/veroshop/')
                 localStorage.removeItem('auth')
                 setAuth(null)
-                setMessage('Se cambió la contraseña correctamente.')
                 setSeverity('success')
-                navigate('/lesdaflow/')
+                setMessage('Contraseña editada correctamente.')
             } else {
                 setMessage(data.message)
                 setSeverity('error')

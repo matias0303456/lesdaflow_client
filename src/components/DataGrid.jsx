@@ -23,6 +23,7 @@ import { visuallyHidden } from '@mui/utils';
 import AddCircleSharpIcon from '@mui/icons-material/AddCircleSharp';
 import { Button } from '@mui/material';
 import AttachMoneySharpIcon from '@mui/icons-material/AttachMoneySharp';
+import PasswordSharpIcon from '@mui/icons-material/PasswordSharp';
 
 import { ModalComponent } from './ModalComponent';
 
@@ -125,7 +126,8 @@ function EnhancedTableToolbar({
     handleDelete,
     allowMassiveEdit,
     setMassiveEdit,
-    updateBySupplier
+    updateBySupplier,
+    changePwd
 }) {
     return (
         <Toolbar
@@ -167,6 +169,16 @@ function EnhancedTableToolbar({
                 }}>
                     <IconButton>
                         <DeleteIcon />
+                    </IconButton>
+                </Tooltip>
+            }
+            {numSelected === 1 && changePwd && workOn[0]?.role.name === 'VENDEDOR' &&
+                <Tooltip title="Cambiar contraseña" onClick={() => {
+                    setData(workOn[0])
+                    setOpen('PWD-EDIT')
+                }}>
+                    <IconButton>
+                        <PasswordSharpIcon />
                     </IconButton>
                 </Tooltip>
             }
@@ -237,7 +249,8 @@ export function DataGrid({
     deadlineColor = false,
     allowMassiveEdit = false,
     setMassiveEdit,
-    updateBySupplier = false
+    updateBySupplier = false,
+    changePwd = false
 }) {
 
     const [order, setOrder] = React.useState('asc');
@@ -324,6 +337,7 @@ export function DataGrid({
                         allowMassiveEdit={allowMassiveEdit}
                         setMassiveEdit={setMassiveEdit}
                         updateBySupplier={updateBySupplier}
+                        changePwd={changePwd}
                     />
                     <TableContainer>
                         <Table

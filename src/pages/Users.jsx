@@ -21,7 +21,7 @@ export function Users() {
 
     const navigate = useNavigate()
 
-    const { get: getUsers, post, put, destroy } = useApi(USER_URL)
+    const { get: getUsers, post, put, changeVendorPwd, destroy } = useApi(USER_URL)
     const { get: getRoles } = useApi(ROLE_URL)
     const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
         defaultData: {
@@ -66,6 +66,7 @@ export function Users() {
     const [users, setUsers] = useState([])
     const [roles, setRoles] = useState([])
     const [open, setOpen] = useState(null)
+    const [newPwd, setNewPwd] = useState('')
 
     useEffect(() => {
         if (auth?.user.role.name !== 'ADMINISTRADOR') navigate('/veroshop/productos')
@@ -112,6 +113,23 @@ export function Users() {
             }
             setOpenMessage(true)
         }
+    }
+
+    async function handleSubmitNewPwd(e) {
+        e.preventDefault()
+        setLoadingUsers(true)
+        const { status, data } = await changeVendorPwd(formData.id, { password: newPwd })
+        if (status === 200) {
+            setSeverity('success')
+            reset(setOpen)
+            setNewPwd('')
+        } else {
+            setSeverity('error')
+            setDisabled(false)
+        }
+        setMessage(data.message)
+        setOpenMessage(true)
+        setLoadingUsers(false)
     }
 
     async function handleDelete(elements) {
@@ -193,6 +211,7 @@ export function Users() {
                         data={formData}
                         setData={setFormData}
                         handleDelete={handleDelete}
+                        changePwd
                     >
                         <ModalComponent open={open === 'NEW' || open === 'EDIT'} onClose={() => reset(setOpen)}>
                             <Typography variant="h6" sx={{ marginBottom: 2 }}>
@@ -320,6 +339,45 @@ export function Users() {
                                     </FormControl>
                                 </Box>
                             </form>
+                        </ModalComponent>
+                        <ModalComponent open={open === 'PWD-EDIT'} onClose={() => {
+                            reset(setOpen)
+                            setNewPwd('')
+                        }}>
+                            <Typography variant="h6" sx={{ marginBottom: 2 }}>
+                                {`Cambiar la contraseña del vendedor ${formData.username}`}
+                            </Typography>
+                            <FormControl>
+                                <InputLabel htmlFor="password">Nueva contraseña</InputLabel>
+                                <Input id="password" type="password" name="password"
+                                    value={newPwd} onChange={e => setNewPwd(e.target.value)}
+                                />
+                            </FormControl>
+                            <FormControl sx={{
+                                display: 'flex',
+                                flexDirection: 'row',
+                                gap: 1,
+                                justifyContent: 'center',
+                                margin: '0 auto',
+                                marginTop: 2,
+                                width: '50%'
+                            }}>
+                                <Button type="button" variant="outlined" onClick={() => {
+                                    reset(setOpen)
+                                    setNewPwd('')
+                                }} sx={{
+                                    width: '50%'
+                                }}>
+                                    Cancelar
+                                </Button>
+                                <Button type="submit" variant="contained"
+                                    disabled={newPwd.length < 8}
+                                    sx={{ width: '50%' }}
+                                    onClick={handleSubmitNewPwd}
+                                >
+                                    Guardar
+                                </Button>
+                            </FormControl>
                         </ModalComponent>
                     </DataGrid>
                 </>
