@@ -37,7 +37,7 @@ export function Sales() {
             discount: '',
             installments: '',
             observations: '',
-            date: Date.now()
+            date: new Date(Date.now())
         },
         rules: {
             product_id: {
@@ -107,7 +107,11 @@ export function Sales() {
             setMessage(`${result.length === 1 ? 'Venta eliminada' : 'Ventas eliminadas'} correctamente.`)
             setSeverity('success')
         } else {
-            setMessage('Ocurrió un error. Actualice la página.')
+            if (result.some(r => r.status === 300)) {
+                setMessage('Existen ventas con datos asociados.')
+            } else {
+                setMessage('Ocurrió un error. Actualice la página.')
+            }
             setSeverity('error')
         }
         setOpenMessage(true)

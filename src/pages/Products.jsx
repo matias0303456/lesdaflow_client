@@ -121,7 +121,11 @@ export function Products() {
             setMessage(`${result.length === 1 ? 'Producto eliminado' : 'Productos eliminados'} correctamente.`)
             setSeverity('success')
         } else {
-            setMessage('Ocurrió un error. Actualice la página.')
+            if (result.some(r => r.status === 300)) {
+                setMessage('Existen productos con datos asociados.')
+            } else {
+                setMessage('Ocurrió un error. Actualice la página.')
+            }
             setSeverity('error')
         }
         setOpenMessage(true)

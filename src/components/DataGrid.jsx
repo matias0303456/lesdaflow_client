@@ -24,7 +24,9 @@ import AddCircleSharpIcon from '@mui/icons-material/AddCircleSharp';
 import { Button } from '@mui/material';
 import AttachMoneySharpIcon from '@mui/icons-material/AttachMoneySharp';
 import PasswordSharpIcon from '@mui/icons-material/PasswordSharp';
+import { useLocation } from 'react-router-dom';
 
+import { AuthContext } from '../providers/AuthProvider';
 import { ModalComponent } from './ModalComponent';
 
 import { deadlineIsPast, getStock } from '../utils/helpers';
@@ -129,6 +131,10 @@ function EnhancedTableToolbar({
     updateBySupplier,
     changePwd
 }) {
+
+    const { auth } = React.useContext(AuthContext)
+    const { pathname } = useLocation()
+
     return (
         <Toolbar
             sx={{
@@ -163,7 +169,7 @@ function EnhancedTableToolbar({
                     : numSelected === 1 ? 'Un registro seleccionado.' :
                         `${numSelected} registros seleccionados.`}
             </Typography>
-            {numSelected >= 1 &&
+            {numSelected >= 1 && (pathname !== '/veroshop/pagos' || auth.user.role.name === 'ADMINISTRADOR') &&
                 <Tooltip title="Eliminar" onClick={() => {
                     setOpen('DELETE')
                 }}>
@@ -216,7 +222,9 @@ function EnhancedTableToolbar({
                     flexDirection: 'row',
                     gap: 1,
                     justifyContent: 'center',
-                    marginTop: 1
+                    margin: '0 auto',
+                    marginTop: 1,
+                    width: '50%'
                 }}>
                     <Button variant="outlined" onClick={() => setOpen(null)} sx={{
                         width: '50%'

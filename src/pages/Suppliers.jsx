@@ -120,7 +120,11 @@ export function Suppliers() {
             setMessage(`${result.length === 1 ? 'Proveedor eliminado' : 'Proveedores eliminados'} correctamente.`)
             setSeverity('success')
         } else {
-            setMessage('Ocurrió un error. Actualice la página.')
+            if (result.some(r => r.status === 300)) {
+                setMessage('Existen proveedores con datos asociados.')
+            } else {
+                setMessage('Ocurrió un error. Actualice la página.')
+            }
             setSeverity('error')
         }
         setOpenMessage(true)

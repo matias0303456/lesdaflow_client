@@ -32,7 +32,7 @@ export function Payments() {
             id: '',
             sale_id: '',
             amount: '',
-            date: Date.now()
+            date: new Date(Date.now())
         },
         rules: {
             sale_id: {
