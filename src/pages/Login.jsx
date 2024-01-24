@@ -1,6 +1,6 @@
 import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Box, Button, FormControl, Input, InputLabel, Typography } from "@mui/material";
+import { Box, Button, FormControl, Input, InputLabel, Paper, Typography } from "@mui/material";
 
 import { useForm } from "../hooks/useForm";
 import { AuthContext } from "../providers/AuthProvider";
@@ -8,6 +8,7 @@ import { MessageContext } from "../providers/MessageProvider";
 import { useApi } from "../hooks/useApi";
 
 import { LOGIN_URL } from "../utils/urls";
+import Logo from '../assets/logo.png'
 
 export function Login() {
 
@@ -50,9 +51,9 @@ export function Login() {
     return (
         <Box sx={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <Box sx={{ width: 400 }}>
-                <Typography variant="h3" gutterBottom textAlign="center">
-                    Vero's Shop
-                </Typography>
+                <Box sx={{ textAlign: 'center' }}>
+                    <img src={Logo} alt="" width={150} />
+                </Box>
                 <form onChange={handleChange} onSubmit={handleSubmit}>
                     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
                         <FormControl>

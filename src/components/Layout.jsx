@@ -31,6 +31,8 @@ import PaymentsSharpIcon from '@mui/icons-material/PaymentsSharp';
 
 import { AuthContext } from '../providers/AuthProvider';
 
+import Logo from '../assets/logo.png'
+
 export function Layout({ children, title }) {
 
     const { auth, setAuth } = useContext(AuthContext)
@@ -53,9 +55,9 @@ export function Layout({ children, title }) {
     const drawer = (
         <div>
             <Toolbar sx={{ display: 'flex', justifyContent: 'center' }}>
-                <Typography variant="h5" noWrap component="div">
-                    Vero's Shop
-                </Typography>
+                <Box sx={{ textAlign: 'center' }}>
+                    <img src={Logo} width={80} />
+                </Box>
             </Toolbar>
             <Divider />
             <List>
