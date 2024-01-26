@@ -45,7 +45,6 @@ export function Clients() {
                 maxLength: 55
             },
             email: {
-                required: true,
                 maxLength: 55
             },
             address: {
@@ -54,6 +53,9 @@ export function Clients() {
             },
             phone: {
                 required: true,
+                maxLength: 55
+            },
+            observations: {
                 maxLength: 55
             }
         }
@@ -164,6 +166,13 @@ export function Clients() {
             disablePadding: true,
             label: 'Teléfono',
             accessor: 'phone'
+        },
+        {
+            id: 'observations',
+            numeric: false,
+            disablePadding: true,
+            label: 'Observaciones',
+            accessor: 'observations'
         }
     ]
 
@@ -248,22 +257,17 @@ export function Clients() {
                                                 </Typography>
                                             }
                                         </FormControl>
-                                    </Box>
-                                    <Box sx={{ display: 'flex', flexDirection: 'column', width: '50%', gap: 3 }}>
                                         <FormControl>
                                             <InputLabel htmlFor="email">Email</InputLabel>
                                             <Input id="email" type="email" name="email" value={formData.email} />
-                                            {errors.email?.type === 'required' &&
-                                                <Typography variant="caption" color="red" marginTop={1}>
-                                                    * El email es requerido.
-                                                </Typography>
-                                            }
                                             {errors.email?.type === 'maxLength' &&
                                                 <Typography variant="caption" color="red" marginTop={1}>
                                                     * El email es demasiado largo.
                                                 </Typography>
                                             }
                                         </FormControl>
+                                    </Box>
+                                    <Box sx={{ display: 'flex', flexDirection: 'column', width: '50%', gap: 3 }}>
                                         <FormControl>
                                             <InputLabel htmlFor="address">Dirección</InputLabel>
                                             <Input id="address" type="text" name="address" value={formData.address} />
@@ -289,6 +293,15 @@ export function Clients() {
                                             {errors.phone?.type === 'maxLength' &&
                                                 <Typography variant="caption" color="red" marginTop={1}>
                                                     * El teléfono es demasiado largo.
+                                                </Typography>
+                                            }
+                                        </FormControl>
+                                        <FormControl>
+                                            <InputLabel htmlFor="observations">Observaciones</InputLabel>
+                                            <Input id="observations" type="text" name="observations" value={formData.observations} />
+                                            {errors.observations?.type === 'maxLength' &&
+                                                <Typography variant="caption" color="red" marginTop={1}>
+                                                    * Las observaciones son demasiado largas.
                                                 </Typography>
                                             }
                                         </FormControl>
