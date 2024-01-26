@@ -24,6 +24,7 @@ export function Products() {
     const { post, put, putMassive, destroy } = useApi(PRODUCT_URL)
     const { products, setProducts, loadingProducts, setLoadingProducts } = useProducts()
     const { suppliers, loadingSuppliers } = useSuppliers()
+    const [open, setOpen] = useState(null)
     const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
         defaultData: {
             id: '',
@@ -33,7 +34,9 @@ export function Products() {
             min_stock: '',
             earn: '',
             size: '',
-            supplier_id: ''
+            supplier_id: '',
+            amount: '',
+            observations: ''
         },
         rules: {
             code: {
@@ -58,11 +61,16 @@ export function Products() {
             },
             supplier_id: {
                 required: true
+            },
+            amount: {
+                required: open === 'NEW'
+            },
+            observations: {
+                maxLength: 55
             }
         }
     })
 
-    const [open, setOpen] = useState(null)
     const [massiveEdit, setMassiveEdit] = useState([])
     const [massiveEditPercentage, setMassiveEditPercentage] = useState(0)
 
@@ -337,6 +345,28 @@ export function Products() {
                                                     </Typography>
                                                 }
                                             </FormControl>
+                                            {open === 'NEW' &&
+                                                <>
+                                                    <FormControl>
+                                                        <InputLabel htmlFor="amount">Stock inicial</InputLabel>
+                                                        <Input id="amount" type="number" name="amount" value={formData.amount} />
+                                                        {errors.amount?.type === 'required' &&
+                                                            <Typography variant="caption" color="red" marginTop={1}>
+                                                                * La cantidad es requerida.
+                                                            </Typography>
+                                                        }
+                                                    </FormControl>
+                                                    <FormControl>
+                                                        <InputLabel htmlFor="observations">Observaciones de ingreso</InputLabel>
+                                                        <Input id="observations" type="text" name="observations" value={formData.observations} />
+                                                        {errors.observations?.type === 'maxLength' &&
+                                                            <Typography variant="caption" color="red" marginTop={1}>
+                                                                * Las observaciones son demasiado largas.
+                                                            </Typography>
+                                                        }
+                                                    </FormControl>
+                                                </>
+                                            }
                                         </Box>
                                     </Box>
                                     <FormControl sx={{
