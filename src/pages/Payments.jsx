@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { Box, Button, FormControl, Input, InputLabel, LinearProgress, MenuItem, Select, Typography } from "@mui/material";
+import { Autocomplete, Box, Button, FormControl, Input, InputLabel, LinearProgress, MenuItem, Select, TextField, Typography } from "@mui/material";
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
@@ -170,19 +170,15 @@ export function Payments() {
                             <form onChange={handleChange} onSubmit={handleSubmit}>
                                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
                                     <FormControl>
-                                        <InputLabel id="client-select">Cliente</InputLabel>
-                                        <Select
-                                            labelId="client-select"
-                                            id="client_id"
-                                            value={selectedClient?.id ?? ''}
-                                            label="Cliente"
-                                            name="client_id"
-                                            onChange={(e) => setSelectedClient(clients.find(c => c.id === e.target.value))}
-                                        >
-                                            {clients.map(c => (
-                                                <MenuItem key={c.id} value={c.id}>{`${c.code} - ${c.first_name} ${c.last_name}`}</MenuItem>
-                                            ))}
-                                        </Select>
+                                        <Autocomplete
+                                            disablePortal
+                                            id="client-autocomplete"
+                                            options={clients.map(c => ({ label: `${c.code} - ${c.first_name} ${c.last_name}`, id: c.id }))}
+                                            noOptionsText="No hay clientes registrados."
+                                            onChange={(e, value) => setSelectedClient(clients.find(c => c.id === value?.id ?? ''))}
+                                            renderInput={(params) => <TextField {...params} label="Cliente" />}
+                                            isOptionEqualToValue={(option, value) => option.id === value.id}
+                                        />
                                     </FormControl>
                                     <FormControl>
                                         <InputLabel id="sale-select">Venta</InputLabel>

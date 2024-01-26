@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Box, Button, FormControl, Input, InputLabel, LinearProgress, MenuItem, Select, Typography } from "@mui/material";
+import { Autocomplete, Box, Button, FormControl, Input, InputLabel, LinearProgress, TextField, Typography } from "@mui/material";
 import { format } from 'date-fns'
 
 import { AuthContext } from "../providers/AuthProvider";
@@ -168,19 +168,15 @@ export function Incomes() {
                             <form onChange={handleChange} onSubmit={handleSubmit}>
                                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                                     <FormControl>
-                                        <InputLabel id="product-select">Producto</InputLabel>
-                                        <Select
-                                            labelId="product-select"
-                                            id="product_id"
-                                            value={formData.product_id}
-                                            label="Producto"
-                                            name="product_id"
-                                            onChange={handleChange}
-                                        >
-                                            {products.map(p => (
-                                                <MenuItem key={p.id} value={p.id}>{p.details}</MenuItem>
-                                            ))}
-                                        </Select>
+                                        <Autocomplete
+                                            disablePortal
+                                            id="product-autocomplete"
+                                            options={products.map(p => ({ label: `${p.code} - ${p.details}`, id: p.id }))}
+                                            noOptionsText="No hay productos registrados."
+                                            onChange={(e, value) => handleChange({ target: { name: 'product_id', value: value?.id ?? '' } })}
+                                            renderInput={(params) => <TextField {...params} label="Producto" />}
+                                            isOptionEqualToValue={(option, value) => option.id === value.id}
+                                        />
                                         {errors.product_id?.type === 'required' &&
                                             <Typography variant="caption" color="red" marginTop={1}>
                                                 * El producto es requerido.

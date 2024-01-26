@@ -9,10 +9,12 @@ export function useForm({ defaultData, rules }) {
     function handleChange(e) {
         setErrors(defaultData)
         setDisabled(false)
-        setFormData({
-            ...formData,
-            [e.target.name]: e.target.value
-        })
+        if (e.target.name.length > 0) {
+            setFormData({
+                ...formData,
+                [e.target.name]: e.target.value
+            })
+        }
     }
 
     function validate() {

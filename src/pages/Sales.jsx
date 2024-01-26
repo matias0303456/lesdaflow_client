@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { Box, Button, FormControl, Input, InputLabel, LinearProgress, MenuItem, Select, Typography } from "@mui/material";
+import { Autocomplete, Box, Button, FormControl, Input, InputLabel, LinearProgress, TextField, Typography } from "@mui/material";
 import { format } from "date-fns";
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -234,19 +234,15 @@ export function Sales() {
                                 <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 3 }}>
                                     <Box sx={{ display: 'flex', flexDirection: 'column', width: '50%', gap: 3 }}>
                                         <FormControl>
-                                            <InputLabel id="product-select">Producto</InputLabel>
-                                            <Select
-                                                labelId="product-select"
-                                                id="product_id"
-                                                value={formData.product_id}
-                                                label="Producto"
-                                                name="product_id"
-                                                onChange={handleChange}
-                                            >
-                                                {products.map(p => (
-                                                    <MenuItem key={p.id} value={p.id}>{p.details}</MenuItem>
-                                                ))}
-                                            </Select>
+                                            <Autocomplete
+                                                disablePortal
+                                                id="product-autocomplete"
+                                                options={products.map(p => ({ label: `${p.code} - ${p.details}`, id: p.id }))}
+                                                noOptionsText="No hay productos registrados."
+                                                onChange={(e, value) => handleChange({ target: { name: 'product_id', value: value?.id ?? '' } })}
+                                                renderInput={(params) => <TextField {...params} label="Producto" />}
+                                                isOptionEqualToValue={(option, value) => option.id === value.id}
+                                            />
                                             {errors.product_id?.type === 'required' &&
                                                 <Typography variant="caption" color="red" marginTop={1}>
                                                     * El producto es requerido.
@@ -254,19 +250,15 @@ export function Sales() {
                                             }
                                         </FormControl>
                                         <FormControl>
-                                            <InputLabel id="client-select">Cliente</InputLabel>
-                                            <Select
-                                                labelId="client-select"
-                                                id="client_id"
-                                                value={formData.client_id}
-                                                label="Cliente"
-                                                name="client_id"
-                                                onChange={handleChange}
-                                            >
-                                                {clients.map(c => (
-                                                    <MenuItem key={c.id} value={c.id}>{`${c.code} - ${c.first_name} ${c.last_name}`}</MenuItem>
-                                                ))}
-                                            </Select>
+                                            <Autocomplete
+                                                disablePortal
+                                                id="client-autocomplete"
+                                                options={clients.map(c => ({ label: `${c.code} - ${c.first_name} ${c.last_name}`, id: c.id }))}
+                                                noOptionsText="No hay clientes registrados."
+                                                onChange={(e, value) => handleChange({ target: { name: 'client_id', value: value?.id ?? '' } })}
+                                                renderInput={(params) => <TextField {...params} label="Cliente" />}
+                                                isOptionEqualToValue={(option, value) => option.id === value.id}
+                                            />
                                             {errors.client_id?.type === 'required' &&
                                                 <Typography variant="caption" color="red" marginTop={1}>
                                                     * El cliente es requerido.
