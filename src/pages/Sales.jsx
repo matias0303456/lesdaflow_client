@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { Autocomplete, Box, Button, FormControl, Input, InputLabel, LinearProgress, TextField, Typography } from "@mui/material";
+import { Autocomplete, Box, Button, FormControl, Input, InputLabel, LinearProgress, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from "@mui/material";
 import { format } from "date-fns";
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -16,9 +16,10 @@ import { Layout } from "../components/Layout";
 import { DataGrid } from "../components/DataGrid";
 import { ModalComponent } from "../components/ModalComponent";
 import { SaleFilter } from "../components/filters/SaleFilter";
+import { AddProductsToSale } from "../components/AddProductsToSale";
 
 import { SALE_URL } from "../utils/urls";
-import { getDeadline } from "../utils/helpers";
+import { getDeadline, getSaleTotal } from "../utils/helpers";
 
 export function Sales() {
 
@@ -31,22 +32,14 @@ export function Sales() {
     const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
         defaultData: {
             id: '',
-            product_id: '',
             client_id: '',
-            amount: '',
             discount: '',
             installments: '',
             observations: '',
             date: new Date(Date.now())
         },
         rules: {
-            product_id: {
-                required: true
-            },
             client_id: {
-                required: true
-            },
-            amount: {
                 required: true
             },
             date: {
@@ -64,6 +57,8 @@ export function Sales() {
     const [loadingSales, setLoadingSales] = useState(true)
     const [sales, setSales] = useState([])
     const [open, setOpen] = useState(null)
+    const [saleProducts, setSaleProducts] = useState([])
+    const [productsRequired, setProductsRequired] = useState(false)
 
     useEffect(() => {
         (async () => {
@@ -75,10 +70,20 @@ export function Sales() {
         })()
     }, [])
 
+    useEffect(() => {
+        if (open === 'EDIT') {
+            setSaleProducts(formData.sale_products)
+        }
+    }, [formData])
+
     async function handleSubmit(e) {
         e.preventDefault()
-        if (validate()) {
-            const { status, data } = open === 'NEW' ? await post(formData) : await put(formData)
+        const submitData = {
+            ...formData,
+            sale_products: saleProducts
+        }
+        if (validate() && saleProducts.length > 0) {
+            const { status, data } = open === 'NEW' ? await post(submitData) : await put(submitData)
             if (status === 200) {
                 if (open === 'NEW') {
                     setSales([data, ...sales])
@@ -89,12 +94,16 @@ export function Sales() {
                 }
                 setSeverity('success')
                 reset(setOpen)
+                setSaleProducts([])
+                setProductsRequired(false)
             } else {
                 setMessage(data.message)
                 setSeverity('error')
                 setDisabled(false)
             }
             setOpenMessage(true)
+        } else {
+            setProductsRequired(true)
         }
     }
 
@@ -131,8 +140,29 @@ export function Sales() {
             id: 'product',
             numeric: false,
             disablePadding: true,
-            label: 'Producto',
-            accessor: (row) => `${row.product.details} (${row.product.code})`
+            label: 'Productos',
+            accessor: (row) => (
+                <TableContainer component={Paper}>
+                    <Table aria-label="simple table">
+                        <TableHead>
+                            <TableRow>
+                                <TableCell align="center">Código</TableCell>
+                                <TableCell align="center">Detalle</TableCell>
+                                <TableCell align="center">Cantidad</TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {row.sale_products.map(p => (
+                                <TableRow key={p.id}>
+                                    <TableCell>{p.product.code}</TableCell>
+                                    <TableCell>{p.product.details}</TableCell>
+                                    <TableCell>{p.amount}</TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+            )
         },
         {
             id: 'client',
@@ -140,20 +170,6 @@ export function Sales() {
             disablePadding: true,
             label: 'Cliente',
             accessor: (row) => `${row.client.first_name} ${row.client.last_name} (${row.client.code})`
-        },
-        {
-            id: 'amount',
-            numeric: false,
-            disablePadding: true,
-            label: 'Cantidad',
-            accessor: 'amount'
-        },
-        {
-            id: 'price',
-            numeric: false,
-            disablePadding: true,
-            label: 'Precio unitario',
-            accessor: (row) => `$${row.product.buy_price.toFixed(2)}`
         },
         {
             id: 'discount',
@@ -174,7 +190,7 @@ export function Sales() {
             numeric: false,
             disablePadding: true,
             label: 'Total',
-            accessor: (row) => `$${((row.product.buy_price * row.amount) - (((row.product.buy_price * row.amount) / 100) * row.discount)).toFixed(2)}`
+            accessor: (row) => getSaleTotal(row)
         },
         {
             id: 'observations',
@@ -225,30 +241,25 @@ export function Sales() {
                         handleDelete={handleDelete}
                         deadlineColor="sales"
                     >
-                        <ModalComponent open={open === 'NEW' || open === 'EDIT'} onClose={() => reset(setOpen)}>
+                        <ModalComponent open={open === 'NEW' || open === 'EDIT'} onClose={() => {
+                            setSaleProducts([])
+                            setProductsRequired(false)
+                            reset(setOpen)
+                        }}>
                             <Typography variant="h6" sx={{ marginBottom: 2 }}>
                                 {open === 'NEW' && 'Nueva venta'}
                                 {open === 'EDIT' && 'Editar venta'}
                             </Typography>
                             <form onChange={handleChange} onSubmit={handleSubmit}>
                                 <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 3 }}>
+                                    <AddProductsToSale
+                                        products={products}
+                                        saleProducts={saleProducts}
+                                        setSaleProducts={setSaleProducts}
+                                        productsRequired={productsRequired}
+                                        setProductsRequired={setProductsRequired}
+                                    />
                                     <Box sx={{ display: 'flex', flexDirection: 'column', width: '50%', gap: 3 }}>
-                                        <FormControl>
-                                            <Autocomplete
-                                                disablePortal
-                                                id="product-autocomplete"
-                                                options={products.map(p => ({ label: `${p.code} - ${p.details}`, id: p.id }))}
-                                                noOptionsText="No hay productos registrados."
-                                                onChange={(e, value) => handleChange({ target: { name: 'product_id', value: value?.id ?? '' } })}
-                                                renderInput={(params) => <TextField {...params} label="Producto" />}
-                                                isOptionEqualToValue={(option, value) => option.id === value.id}
-                                            />
-                                            {errors.product_id?.type === 'required' &&
-                                                <Typography variant="caption" color="red" marginTop={1}>
-                                                    * El producto es requerido.
-                                                </Typography>
-                                            }
-                                        </FormControl>
                                         <FormControl>
                                             <Autocomplete
                                                 disablePortal
@@ -265,17 +276,6 @@ export function Sales() {
                                                 </Typography>
                                             }
                                         </FormControl>
-                                        <FormControl>
-                                            <InputLabel htmlFor="amount">Cantidad</InputLabel>
-                                            <Input id="amount" type="number" name="amount" value={formData.amount} />
-                                            {errors.amount?.type === 'required' &&
-                                                <Typography variant="caption" color="red" marginTop={1}>
-                                                    * La cantidad es requerida.
-                                                </Typography>
-                                            }
-                                        </FormControl>
-                                    </Box>
-                                    <Box sx={{ display: 'flex', flexDirection: 'column', width: '50%', gap: 3 }}>
                                         <FormControl>
                                             <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
                                                 <DatePicker
@@ -328,7 +328,11 @@ export function Sales() {
                                     marginTop: 3,
                                     width: '50%'
                                 }}>
-                                    <Button type="button" variant="outlined" onClick={() => reset(setOpen)} sx={{
+                                    <Button type="button" variant="outlined" onClick={() => {
+                                        setSaleProducts([])
+                                        setProductsRequired(false)
+                                        reset(setOpen)
+                                    }} sx={{
                                         width: '50%'
                                     }}>
                                         Cancelar

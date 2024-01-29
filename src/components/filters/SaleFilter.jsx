@@ -45,8 +45,8 @@ export function SaleFilter({ sales, setSales }) {
     useEffect(() => {
         setSales(backup.filter(item => {
             return (
-                item.product.code.toLowerCase().includes(filter.product.toLowerCase()) ||
-                item.product.name.toLowerCase().includes(filter.product.toLowerCase())
+                item.sale_products.some(sp => sp.product.code.toLowerCase().includes(filter.product.toLowerCase()))  ||
+                item.sale_products.some(sp => sp.product.details.toLowerCase().includes(filter.product.toLowerCase())) 
             ) && (
                     item.client.code.toLowerCase().includes(filter.client.toLowerCase()) ||
                     item.client.first_name.toLowerCase().includes(filter.client.toLowerCase()) ||

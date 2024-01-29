@@ -116,7 +116,7 @@ export function Payments() {
             numeric: false,
             disablePadding: true,
             label: 'Venta',
-            accessor: (row) => `${format(new Date(row.sale.date), 'dd-MM-yyyy')} / ${row.sale.product.details} (${row.sale.product.code}) de ${row.sale.product.supplier.name}`
+            accessor: (row) => `${format(new Date(row.sale.date), 'dd-MM-yyyy')} / N° de venta: ${row.sale.id}`
         },
         {
             id: 'amount',
@@ -173,11 +173,12 @@ export function Payments() {
                                         <Autocomplete
                                             disablePortal
                                             id="client-autocomplete"
+                                            value={selectedClient ? `${selectedClient.code} - ${selectedClient.first_name} ${selectedClient.last_name}` : ''}
                                             options={clients.map(c => ({ label: `${c.code} - ${c.first_name} ${c.last_name}`, id: c.id }))}
                                             noOptionsText="No hay clientes registrados."
-                                            onChange={(e, value) => setSelectedClient(clients.find(c => c.id === value?.id ?? ''))}
+                                            onChange={(e, value) => setSelectedClient(clients.find(c => c.id === value?.id))}
                                             renderInput={(params) => <TextField {...params} label="Cliente" />}
-                                            isOptionEqualToValue={(option, value) => option.id === value.id}
+                                            isOptionEqualToValue={(option, value) => option.code === value.code || value.length === 0}
                                         />
                                     </FormControl>
                                     <FormControl>
@@ -192,7 +193,7 @@ export function Payments() {
                                             disabled={!selectedClient}
                                         >
                                             {selectedClient?.sales.map(s => (
-                                                <MenuItem key={s.id} value={s.id}>{`${format(setLocalDate(s.date), 'dd-MM-yyyy')} / ${s.product.details} (${s.product.code}) de ${s.product.supplier.name}`}</MenuItem>
+                                                <MenuItem key={s.id} value={s.id}>{`${format(setLocalDate(s.date), 'dd-MM-yyyy')} / N° de venta: ${s.id}`}</MenuItem>
                                             ))}
                                         </Select>
                                     </FormControl>

@@ -2,9 +2,14 @@ export function getStock(product) {
     if (!product) return
     return product.incomes?.reduce((prev, curr) => {
         return prev + curr.amount
-    }, 0) - product.sales?.reduce((prev, curr) => {
+    }, 0) - product.sale_products?.reduce((prev, curr) => {
         return prev + curr.amount
     }, 0)
+}
+
+export function getSaleTotal(sale){
+    const totalSaleProducts = sale.sale_products.reduce((prev, curr) => prev + (curr.product.buy_price * curr.amount) ,0)
+    return `$${(totalSaleProducts - ((totalSaleProducts / 100) * sale.discount)).toFixed(2)}`
 }
 
 export function getDeadline(date, installments) {
