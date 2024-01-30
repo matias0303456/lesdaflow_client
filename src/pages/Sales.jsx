@@ -264,11 +264,12 @@ export function Sales() {
                                             <Autocomplete
                                                 disablePortal
                                                 id="client-autocomplete"
+                                                value={formData.client_id.toString().length > 0 ? `${clients.find(c => c.id === formData.client_id)?.code} - ${clients.find(c => c.id === formData.client_id)?.first_name} ${clients.find(c => c.id === formData.client_id)?.last_name}` : ''}
                                                 options={clients.map(c => ({ label: `${c.code} - ${c.first_name} ${c.last_name}`, id: c.id }))}
                                                 noOptionsText="No hay clientes registrados."
                                                 onChange={(e, value) => handleChange({ target: { name: 'client_id', value: value?.id ?? '' } })}
                                                 renderInput={(params) => <TextField {...params} label="Cliente" />}
-                                                isOptionEqualToValue={(option, value) => option.id === value.id}
+                                                isOptionEqualToValue={(option, value) => option.code === value.code || value.length === 0}
                                             />
                                             {errors.client_id?.type === 'required' &&
                                                 <Typography variant="caption" color="red" marginTop={1}>

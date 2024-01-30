@@ -23,7 +23,10 @@ export function AddProductsToSale({
         if (data.amount.toString().length > 0) {
             setSaleProducts([
                 ...saleProducts.filter(sp => sp.product_id !== data.product_id),
-                data
+                {
+                    ...saleProducts.find(sp => sp.product_id === data.product_id),
+                    ...data
+                }
             ])
         }
     }
