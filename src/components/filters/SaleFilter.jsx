@@ -49,8 +49,7 @@ export function SaleFilter({ sales, setSales }) {
                 item.sale_products.some(sp => sp.product.details.toLowerCase().includes(filter.product.toLowerCase())) 
             ) && (
                     item.client.code.toLowerCase().includes(filter.client.toLowerCase()) ||
-                    item.client.first_name.toLowerCase().includes(filter.client.toLowerCase()) ||
-                    item.client.last_name.toLowerCase().includes(filter.client.toLowerCase())
+                    item.client.name.toLowerCase().includes(filter.client.toLowerCase())
                 ) &&
                 setLocalDate(item.date) >= setFromDate(filter.from) &&
                 setLocalDate(item.date) <= setToDate(filter.to) &&

@@ -169,14 +169,14 @@ export function Sales() {
             numeric: false,
             disablePadding: true,
             label: 'Cliente',
-            accessor: (row) => `${row.client.first_name} ${row.client.last_name} (${row.client.code})`
+            accessor: (row) => `${row.client.name} (${row.client.code})`
         },
         {
             id: 'discount',
             numeric: false,
             disablePadding: true,
             label: 'Descuento',
-            accessor: (row) => `${row.discount}%`
+            accessor: (row) => `${row.discount ?? 0}%`
         },
         {
             id: 'installments',
@@ -264,8 +264,8 @@ export function Sales() {
                                             <Autocomplete
                                                 disablePortal
                                                 id="client-autocomplete"
-                                                value={formData.client_id.toString().length > 0 ? `${clients.find(c => c.id === formData.client_id)?.code} - ${clients.find(c => c.id === formData.client_id)?.first_name} ${clients.find(c => c.id === formData.client_id)?.last_name}` : ''}
-                                                options={clients.map(c => ({ label: `${c.code} - ${c.first_name} ${c.last_name}`, id: c.id }))}
+                                                value={formData.client_id.toString().length > 0 ? `${clients.find(c => c.id === formData.client_id)?.code} - ${clients.find(c => c.id === formData.client_id)?.name}` : ''}
+                                                options={clients.map(c => ({ label: `${c.code} - ${c.name}`, id: c.id }))}
                                                 noOptionsText="No hay clientes registrados."
                                                 onChange={(e, value) => handleChange({ target: { name: 'client_id', value: value?.id ?? '' } })}
                                                 renderInput={(params) => <TextField {...params} label="Cliente" />}

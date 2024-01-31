@@ -25,8 +25,7 @@ export function Clients() {
         defaultData: {
             id: '',
             code: '',
-            first_name: '',
-            last_name: '',
+            name: '',
             email: '',
             address: '',
             phone: ''
@@ -36,11 +35,7 @@ export function Clients() {
                 required: true,
                 maxLength: 55
             },
-            first_name: {
-                required: true,
-                maxLength: 55
-            },
-            last_name: {
+            name: {
                 required: true,
                 maxLength: 55
             },
@@ -133,18 +128,11 @@ export function Clients() {
             accessor: 'code'
         },
         {
-            id: 'first_name',
+            id: 'name',
             numeric: false,
             disablePadding: true,
-            label: 'Nombre',
-            accessor: 'first_name'
-        },
-        {
-            id: 'last_name',
-            numeric: false,
-            disablePadding: true,
-            label: 'Apellido',
-            accessor: 'last_name'
+            label: 'Nombre y apellido',
+            accessor: 'name'
         },
         {
             id: 'email',
@@ -230,30 +218,16 @@ export function Clients() {
                                             }
                                         </FormControl>
                                         <FormControl>
-                                            <InputLabel htmlFor="first_name">Nombre</InputLabel>
-                                            <Input id="first_name" type="text" name="first_name" value={formData.first_name} />
-                                            {errors.first_name?.type === 'required' &&
+                                            <InputLabel htmlFor="name">Nombre y Apellido</InputLabel>
+                                            <Input id="name" type="text" name="name" value={formData.name} />
+                                            {errors.name?.type === 'required' &&
                                                 <Typography variant="caption" color="red" marginTop={1}>
-                                                    * El nombre es requerido.
+                                                    * El nombre y apellido es requerido.
                                                 </Typography>
                                             }
-                                            {errors.first_name?.type === 'maxLength' &&
+                                            {errors.name?.type === 'maxLength' &&
                                                 <Typography variant="caption" color="red" marginTop={1}>
-                                                    * El nombre es demasiado largo.
-                                                </Typography>
-                                            }
-                                        </FormControl>
-                                        <FormControl>
-                                            <InputLabel htmlFor="last_name">Apellido</InputLabel>
-                                            <Input id="last_name" type="text" name="last_name" value={formData.last_name} />
-                                            {errors.last_name?.type === 'required' &&
-                                                <Typography variant="caption" color="red" marginTop={1}>
-                                                    * El apellido es requerido.
-                                                </Typography>
-                                            }
-                                            {errors.last_name?.type === 'maxLength' &&
-                                                <Typography variant="caption" color="red" marginTop={1}>
-                                                    * El apellido es demasiado largo.
+                                                    * El nombre y apellido es demasiado largo.
                                                 </Typography>
                                             }
                                         </FormControl>

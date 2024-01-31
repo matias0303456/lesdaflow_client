@@ -12,8 +12,7 @@ export function ClientFilter({ clients, setClients }) {
 
     const [filter, setFilter] = useState({
         code: '',
-        first_name: '',
-        last_name: '',
+        name: '',
         email: '',
         username: ''
     })
@@ -28,8 +27,7 @@ export function ClientFilter({ clients, setClients }) {
     const handleReset = () => {
         setFilter({
             code: '',
-            first_name: '',
-            last_name: '',
+            name: '',
             email: '',
             username: ''
         })
@@ -39,8 +37,7 @@ export function ClientFilter({ clients, setClients }) {
     useEffect(() => {
         setClients(backup.filter(item =>
             item.code.toLowerCase().includes(filter.code.toLowerCase()) &&
-            item.first_name.toLowerCase().includes(filter.first_name.toLowerCase()) &&
-            item.last_name.toLowerCase().includes(filter.last_name.toLowerCase()) &&
+            item.name.toLowerCase().includes(filter.name.toLowerCase()) &&
             item.email.toLowerCase().includes(filter.email.toLowerCase()) &&
             item.user.username.toLowerCase().includes(filter.username.toLowerCase())
         ))
@@ -70,12 +67,8 @@ export function ClientFilter({ clients, setClients }) {
                     <Input id="code" type="text" name="code" value={filter.code} onChange={handleChange} />
                 </FormControl>
                 <FormControl>
-                    <InputLabel htmlFor="first_name">Nombre</InputLabel>
-                    <Input id="first_name" type="text" name="first_name" value={filter.first_name} onChange={handleChange} />
-                </FormControl>
-                <FormControl>
-                    <InputLabel htmlFor="last_name">Apellido</InputLabel>
-                    <Input id="last_name" type="text" name="last_name" value={filter.last_name} onChange={handleChange} />
+                    <InputLabel htmlFor="name">Nombre y Apellido</InputLabel>
+                    <Input id="name" type="text" name="name" value={filter.name} onChange={handleChange} />
                 </FormControl>
                 <FormControl>
                     <InputLabel htmlFor="email">Email</InputLabel>

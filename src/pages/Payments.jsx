@@ -109,7 +109,7 @@ export function Payments() {
             numeric: false,
             disablePadding: true,
             label: 'Cliente',
-            accessor: (row) => `${row.sale.client.first_name} ${row.sale.client.last_name} (${row.sale.client.code})`
+            accessor: (row) => `${row.sale.client.name} (${row.sale.client.code})`
         },
         {
             id: 'sale',
@@ -173,8 +173,8 @@ export function Payments() {
                                         <Autocomplete
                                             disablePortal
                                             id="client-autocomplete"
-                                            value={selectedClient ? `${selectedClient.code} - ${selectedClient.first_name} ${selectedClient.last_name}` : ''}
-                                            options={clients.map(c => ({ label: `${c.code} - ${c.first_name} ${c.last_name}`, id: c.id }))}
+                                            value={selectedClient ? `${selectedClient.code} - ${selectedClient.name}` : ''}
+                                            options={clients.map(c => ({ label: `${c.code} - ${c.name}`, id: c.id }))}
                                             noOptionsText="No hay clientes registrados."
                                             onChange={(e, value) => setSelectedClient(clients.find(c => c.id === value?.id))}
                                             renderInput={(params) => <TextField {...params} label="Cliente" />}

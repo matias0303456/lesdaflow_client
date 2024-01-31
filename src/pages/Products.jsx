@@ -57,6 +57,7 @@ export function Products() {
                 required: true
             },
             size: {
+                maxLength: 55,
                 required: true
             },
             supplier_id: {
@@ -73,6 +74,13 @@ export function Products() {
 
     const [massiveEdit, setMassiveEdit] = useState([])
     const [massiveEditPercentage, setMassiveEditPercentage] = useState(0)
+    const [earnPrice, setEarnPrice] = useState(0)
+
+    useEffect(() => {
+        const buy_price = formData.buy_price.toString().length === 0 ? 0 : parseInt(formData.buy_price)
+        const earn = formData.earn.toString().length === 0 ? 0 : parseInt(formData.earn)
+        setEarnPrice(`$${(buy_price + ((buy_price / 100) * earn)).toFixed(2)}`)
+    }, [formData])
 
     async function handleSubmit(e) {
         e.preventDefault()
@@ -297,17 +305,6 @@ export function Products() {
                                                 }
                                             </FormControl>
                                             <FormControl>
-                                                <InputLabel htmlFor="min_stock">Stock mínimo</InputLabel>
-                                                <Input id="min_stock" type="number" name="min_stock" value={formData.min_stock} />
-                                                {errors.min_stock?.type === 'required' &&
-                                                    <Typography variant="caption" color="red" marginTop={1}>
-                                                        * El stock mínimo es requerido.
-                                                    </Typography>
-                                                }
-                                            </FormControl>
-                                        </Box>
-                                        <Box sx={{ display: 'flex', flexDirection: 'column', width: '50%', gap: 3 }}>
-                                            <FormControl>
                                                 <InputLabel htmlFor="earn">% Ganancia</InputLabel>
                                                 <Input id="earn" type="number" name="earn" value={formData.earn} />
                                                 {errors.earn?.type === 'required' &&
@@ -317,11 +314,26 @@ export function Products() {
                                                 }
                                             </FormControl>
                                             <FormControl>
+                                                <InputLabel htmlFor="size">Precio de venta</InputLabel>
+                                                <Input
+                                                    type="text"
+                                                    value={earnPrice}
+                                                    disabled
+                                                />
+                                            </FormControl>
+                                        </Box>
+                                        <Box sx={{ display: 'flex', flexDirection: 'column', width: '50%', gap: 3 }}>
+                                            <FormControl>
                                                 <InputLabel htmlFor="size">Talle</InputLabel>
-                                                <Input id="size" type="number" name="size" value={formData.size} />
+                                                <Input id="size" type="text" name="size" value={formData.size} />
                                                 {errors.size?.type === 'required' &&
                                                     <Typography variant="caption" color="red" marginTop={1}>
                                                         * El talle es requerido.
+                                                    </Typography>
+                                                }
+                                                {errors.size?.type === 'maxLength' &&
+                                                    <Typography variant="caption" color="red" marginTop={1}>
+                                                        * El talle es demasiado largo.
                                                     </Typography>
                                                 }
                                             </FormControl>
@@ -346,26 +358,35 @@ export function Products() {
                                                 }
                                             </FormControl>
                                             {open === 'NEW' &&
-                                                <>
-                                                    <FormControl>
-                                                        <InputLabel htmlFor="amount">Stock inicial</InputLabel>
-                                                        <Input id="amount" type="number" name="amount" value={formData.amount} />
-                                                        {errors.amount?.type === 'required' &&
-                                                            <Typography variant="caption" color="red" marginTop={1}>
-                                                                * La cantidad es requerida.
-                                                            </Typography>
-                                                        }
-                                                    </FormControl>
-                                                    <FormControl>
-                                                        <InputLabel htmlFor="observations">Observaciones de ingreso</InputLabel>
-                                                        <Input id="observations" type="text" name="observations" value={formData.observations} />
-                                                        {errors.observations?.type === 'maxLength' &&
-                                                            <Typography variant="caption" color="red" marginTop={1}>
-                                                                * Las observaciones son demasiado largas.
-                                                            </Typography>
-                                                        }
-                                                    </FormControl>
-                                                </>
+                                                <FormControl>
+                                                    <InputLabel htmlFor="amount">Stock inicial</InputLabel>
+                                                    <Input id="amount" type="number" name="amount" value={formData.amount} />
+                                                    {errors.amount?.type === 'required' &&
+                                                        <Typography variant="caption" color="red" marginTop={1}>
+                                                            * La cantidad es requerida.
+                                                        </Typography>
+                                                    }
+                                                </FormControl>
+                                            }
+                                            <FormControl>
+                                                <InputLabel htmlFor="min_stock">Stock mínimo</InputLabel>
+                                                <Input id="min_stock" type="number" name="min_stock" value={formData.min_stock} />
+                                                {errors.min_stock?.type === 'required' &&
+                                                    <Typography variant="caption" color="red" marginTop={1}>
+                                                        * El stock mínimo es requerido.
+                                                    </Typography>
+                                                }
+                                            </FormControl>
+                                            {open === 'NEW' &&
+                                                <FormControl>
+                                                    <InputLabel htmlFor="observations">Observaciones de ingreso</InputLabel>
+                                                    <Input id="observations" type="text" name="observations" value={formData.observations} />
+                                                    {errors.observations?.type === 'maxLength' &&
+                                                        <Typography variant="caption" color="red" marginTop={1}>
+                                                            * Las observaciones son demasiado largas.
+                                                        </Typography>
+                                                    }
+                                                </FormControl>
                                             }
                                         </Box>
                                     </Box>

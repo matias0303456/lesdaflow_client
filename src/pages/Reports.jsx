@@ -65,7 +65,7 @@ export function Reports() {
                                         onChange={changeAccount}
                                     >
                                         {clients.map(c => (
-                                            <MenuItem key={c.id} value={c.id}>{`${c.code} - ${c.first_name} ${c.last_name}`}</MenuItem>
+                                            <MenuItem key={c.id} value={c.id}>{`${c.code} - ${c.name}`}</MenuItem>
                                         ))}
                                     </Select>
                                 </FormControl>

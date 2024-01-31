@@ -37,8 +37,7 @@ export function PaymentFilter({ payments, setPayments }) {
         setPayments(backup.filter(item => {
             return (
                 item.sale.client.code.toLowerCase().includes(filter.client.toLowerCase()) ||
-                item.sale.client.first_name.toLowerCase().includes(filter.client.toLowerCase()) ||
-                item.sale.client.last_name.toLowerCase().includes(filter.client.toLowerCase())
+                item.sale.client.name.toLowerCase().includes(filter.client.toLowerCase())
             ) &&
                 setLocalDate(item.date) >= setFromDate(filter.from) &&
                 setLocalDate(item.date) <= setToDate(filter.to)
