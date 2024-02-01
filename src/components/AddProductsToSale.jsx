@@ -39,14 +39,14 @@ export function AddProductsToSale({
     }
 
     return (
-        <Box sx={{ display: 'flex', flexDirection: 'column', width: '50%', gap: 3 }}>
+        <>
             <FormControl>
                 <Autocomplete
                     disablePortal
                     id="product-autocomplete"
                     options={products.filter(p =>
                         !saleProducts.map(sp => sp.product_id).includes(p.id))
-                        .map(p => ({ label: `${p.code} - ${p.details}`, id: p.id }))}
+                        .map(p => ({ label: `Código ${p.code} / Detalle ${p.details} / Talle ${p.size} / Proveedor ${p.supplier.name}`, id: p.id }))}
                     noOptionsText="No hay productos disponibles."
                     onChange={(e, value) => handleAdd({ product_id: value?.id ?? '' })}
                     renderInput={(params) => <TextField {...params} label="Producto" />}
@@ -64,6 +64,8 @@ export function AddProductsToSale({
                         <TableRow>
                             <TableCell align="center">Código</TableCell>
                             <TableCell align="center">Detalle</TableCell>
+                            <TableCell align="center">Talle</TableCell>
+                            <TableCell align="center">Proveedor</TableCell>
                             <TableCell align="center">Cantidad</TableCell>
                             <TableCell align="center"></TableCell>
                         </TableRow>
@@ -75,7 +77,7 @@ export function AddProductsToSale({
                                 <TableCell align="center">No hay productos agregados a esta venta.</TableCell>
                                 <TableCell></TableCell>
                             </TableRow> :
-                            saleProducts.map(sp => {
+                            saleProducts.sort((a, b) => a.product_id - b.product_id).map(sp => {
                                 const p = products.find(p => p.id === sp.product_id)
                                 return (
                                     <TableRow
@@ -84,6 +86,8 @@ export function AddProductsToSale({
                                     >
                                         <TableCell align="center">{p.code}</TableCell>
                                         <TableCell align="center">{p.details}</TableCell>
+                                        <TableCell align="center">{p.size}</TableCell>
+                                        <TableCell align="center">{p.supplier.name}</TableCell>
                                         <TableCell align="center">
                                             <Input type="number" value={sp.amount} onChange={e => handleChangeAmount({
                                                 product_id: p.id,
@@ -101,6 +105,6 @@ export function AddProductsToSale({
                     </TableBody>
                 </Table>
             </TableContainer>
-        </Box>
+        </>
     )
 }

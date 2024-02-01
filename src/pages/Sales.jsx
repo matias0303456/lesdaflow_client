@@ -148,6 +148,8 @@ export function Sales() {
                             <TableRow>
                                 <TableCell align="center">Código</TableCell>
                                 <TableCell align="center">Detalle</TableCell>
+                                <TableCell align="center">Talle</TableCell>
+                                <TableCell align="center">Proveedor</TableCell>
                                 <TableCell align="center">Cantidad</TableCell>
                             </TableRow>
                         </TableHead>
@@ -156,6 +158,8 @@ export function Sales() {
                                 <TableRow key={p.id}>
                                     <TableCell>{p.product.code}</TableCell>
                                     <TableCell>{p.product.details}</TableCell>
+                                    <TableCell>{p.product.size}</TableCell>
+                                    <TableCell>{p.product.supplier.name}</TableCell>
                                     <TableCell>{p.amount}</TableCell>
                                 </TableRow>
                             ))}
@@ -252,14 +256,7 @@ export function Sales() {
                             </Typography>
                             <form onChange={handleChange} onSubmit={handleSubmit}>
                                 <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 3 }}>
-                                    <AddProductsToSale
-                                        products={products}
-                                        saleProducts={saleProducts}
-                                        setSaleProducts={setSaleProducts}
-                                        productsRequired={productsRequired}
-                                        setProductsRequired={setProductsRequired}
-                                    />
-                                    <Box sx={{ display: 'flex', flexDirection: 'column', width: '50%', gap: 3 }}>
+                                    <Box sx={{ display: 'flex', flexDirection: 'column', width: '60%', gap: 3 }}>
                                         <FormControl>
                                             <Autocomplete
                                                 disablePortal
@@ -277,6 +274,15 @@ export function Sales() {
                                                 </Typography>
                                             }
                                         </FormControl>
+                                        <AddProductsToSale
+                                            products={products}
+                                            saleProducts={saleProducts}
+                                            setSaleProducts={setSaleProducts}
+                                            productsRequired={productsRequired}
+                                            setProductsRequired={setProductsRequired}
+                                        />
+                                    </Box>
+                                    <Box sx={{ display: 'flex', flexDirection: 'column', width: '40%', gap: 3 }}>
                                         <FormControl>
                                             <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
                                                 <DatePicker
