@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { Autocomplete, Box, Button, FormControl, Input, InputLabel, LinearProgress, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from "@mui/material";
+import { Autocomplete, Box, Button, FormControl, Input, InputLabel, LinearProgress, TextField, Typography } from "@mui/material";
 import { format } from "date-fns";
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -137,36 +137,6 @@ export function Sales() {
             accessor: 'id'
         },
         {
-            id: 'product',
-            numeric: false,
-            disablePadding: true,
-            label: 'Productos',
-            accessor: (row) => (
-                <TableContainer component={Paper}>
-                    <Table aria-label="simple table">
-                        <TableHead>
-                            <TableRow>
-                                <TableCell align="center">Código</TableCell>
-                                <TableCell align="center">Detalle</TableCell>
-                                <TableCell align="center">Talle</TableCell>
-                                <TableCell align="center">Cantidad</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {row.sale_products.map(p => (
-                                <TableRow key={p.id}>
-                                    <TableCell>{p.product.code}</TableCell>
-                                    <TableCell>{p.product.details}</TableCell>
-                                    <TableCell>{p.product.size}</TableCell>
-                                    <TableCell>{p.amount}</TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-            )
-        },
-        {
             id: 'client',
             numeric: false,
             disablePadding: true,
@@ -174,45 +144,24 @@ export function Sales() {
             accessor: (row) => `${row.client.name} (${row.client.code})`
         },
         {
-            id: 'discount',
-            numeric: false,
-            disablePadding: true,
-            label: 'Descuento',
-            accessor: (row) => `${row.discount ?? 0}%`
-        },
-        {
-            id: 'installments',
-            numeric: false,
-            disablePadding: true,
-            label: 'Cuotas',
-            accessor: 'installments'
-        },
-        {
             id: 'total',
             numeric: false,
             disablePadding: true,
-            label: 'Total',
+            label: 'Importe',
             accessor: (row) => getSaleTotal(row)
-        },
-        {
-            id: 'observations',
-            numeric: false,
-            disablePadding: true,
-            label: 'Observaciones',
-            accessor: 'observations'
         },
         {
             id: 'date',
             numeric: false,
             disablePadding: true,
-            label: 'Fecha creación',
+            label: 'Creada',
             accessor: (row) => format(new Date(row.date), 'dd-MM-yyyy')
         },
         {
             id: 'deadline',
             numeric: false,
             disablePadding: true,
-            label: 'Fecha vencimiento',
+            label: 'Vencimiento',
             accessor: (row) => format(new Date(getDeadline(row.date, row.installments)), 'dd-MM-yyyy')
         },
         {
@@ -242,6 +191,7 @@ export function Sales() {
                         setData={setFormData}
                         handleDelete={handleDelete}
                         deadlineColor="sales"
+                        seeAccount
                     >
                         <ModalComponent open={open === 'NEW' || open === 'EDIT'} onClose={() => {
                             setSaleProducts([])

@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { alpha } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Table from '@mui/material/Table';
@@ -24,12 +25,12 @@ import AddCircleSharpIcon from '@mui/icons-material/AddCircleSharp';
 import { Button } from '@mui/material';
 import AttachMoneySharpIcon from '@mui/icons-material/AttachMoneySharp';
 import PasswordSharpIcon from '@mui/icons-material/PasswordSharp';
-import { useLocation } from 'react-router-dom';
 
 import { AuthContext } from '../providers/AuthProvider';
 import { ModalComponent } from './ModalComponent';
 
 import { deadlineIsPast, getStock } from '../utils/helpers';
+import { SearchSharp } from '@mui/icons-material';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -129,11 +130,13 @@ function EnhancedTableToolbar({
     allowMassiveEdit,
     setMassiveEdit,
     updateBySupplier,
-    changePwd
+    changePwd,
+    seeAccount
 }) {
 
     const { auth } = React.useContext(AuthContext)
-    const { pathname } = useLocation()
+
+    const navigate = useNavigate()
 
     return (
         <Toolbar
@@ -213,6 +216,15 @@ function EnhancedTableToolbar({
                     </IconButton>
                 </Tooltip>
             }
+            {numSelected === 1 && seeAccount &&
+                <Tooltip title="Ver detalle" onClick={() => {
+                    navigate(`/veroshop/cuenta/${workOn[0].id}`)
+                }}>
+                    <IconButton>
+                        <SearchSharp />
+                    </IconButton>
+                </Tooltip>
+            }
             <ModalComponent open={open === 'DELETE'} onClose={() => setOpen(null)}>
                 <Typography variant="h6" sx={{ marginBottom: 3, textAlign: 'center' }}>
                     ¿Desea eliminar los elementos seleccionados?
@@ -258,7 +270,8 @@ export function DataGrid({
     allowMassiveEdit = false,
     setMassiveEdit,
     updateBySupplier = false,
-    changePwd = false
+    changePwd = false,
+    seeAccount = false
 }) {
 
     const [order, setOrder] = React.useState('asc');
@@ -346,6 +359,7 @@ export function DataGrid({
                         setMassiveEdit={setMassiveEdit}
                         updateBySupplier={updateBySupplier}
                         changePwd={changePwd}
+                        seeAccount={seeAccount}
                     />
                     <TableContainer>
                         <Table

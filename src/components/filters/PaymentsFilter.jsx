@@ -1,26 +1,20 @@
-import { Box, Button, FormControl, Input, InputLabel, MenuItem, Select, Typography } from "@mui/material";
-import { useContext, useEffect, useState } from "react";
+import { Box, Button, FormControl, Input, InputLabel, Typography } from "@mui/material";
+import { useEffect, useState } from "react";
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import es from 'date-fns/locale/es';
 
-import { AuthContext } from "../../providers/AuthProvider";
-
 import { setFromDate, setLocalDate, setToDate } from "../../utils/helpers";
 
-export function SaleFilter({ sales, setSales }) {
+export function PaymentsFilter({ payments, setPayments }) {
 
-    const { auth } = useContext(AuthContext)
-
-    const [backup] = useState(sales.sort((a, b) => new Date(a.date) - new Date(b.date)))
-    const [users] = useState(Array.from(new Set(sales.map(s => s.client.user.username))))
+    const [backup] = useState(payments.sort((a, b) => new Date(a.date) - new Date(b.date)))
 
     const [filter, setFilter] = useState({
         client: '',
         from: new Date(backup[0] ? setLocalDate(backup[0].date) : Date.now()),
-        to: new Date(backup[backup.length - 1] ? setLocalDate(backup[backup.length - 1].date) : Date.now()),
-        user: ''
+        to: new Date(backup[backup.length - 1] ? setLocalDate(backup[backup.length - 1].date) : Date.now())
     })
 
     const handleChange = e => {
@@ -34,21 +28,19 @@ export function SaleFilter({ sales, setSales }) {
         setFilter({
             client: '',
             from: new Date(backup[0] ? setLocalDate(backup[0].date) : Date.now()),
-            to: new Date(backup[backup.length - 1] ? setLocalDate(backup[backup.length - 1].date) : Date.now()),
-            user: ''
+            to: new Date(backup[backup.length - 1] ? setLocalDate(backup[backup.length - 1].date) : Date.now())
         })
-        setSales(backup)
+        setPayments(backup)
     }
 
     useEffect(() => {
-        setSales(backup.filter(item => {
-           return (
-                item.client.code.toLowerCase().includes(filter.client.toLowerCase()) ||
-                item.client.name.toLowerCase().includes(filter.client.toLowerCase())
+        setPayments(backup.filter(item => {
+            return (
+                item.sale.client.code.toLowerCase().includes(filter.client.toLowerCase()) ||
+                item.sale.client.name.toLowerCase().includes(filter.client.toLowerCase())
             ) &&
                 setLocalDate(item.date) >= setFromDate(filter.from) &&
-                setLocalDate(item.date) <= setToDate(filter.to) &&
-                item.client.user.username.toLowerCase().includes(filter.user.toLowerCase())
+                setLocalDate(item.date) <= setToDate(filter.to)
         }))
     }, [filter])
 
@@ -64,7 +56,6 @@ export function SaleFilter({ sales, setSales }) {
             </Typography>
             <Box sx={{
                 display: 'flex',
-                flexWrap: 'wrap',
                 gap: 3,
                 flexDirection: {
                     xs: 'column',
@@ -103,25 +94,6 @@ export function SaleFilter({ sales, setSales }) {
                         />
                     </LocalizationProvider>
                 </FormControl>
-                {auth?.user.role.name === 'ADMINISTRADOR' &&
-                    <FormControl>
-                        <InputLabel id="user-select">Vendedor</InputLabel>
-                        <Select
-                            labelId="user-select"
-                            id="user"
-                            value={filter.user}
-                            label="Vendedor"
-                            name="user"
-                            sx={{ width: { xs: '100%', md: 150 } }}
-                            onChange={handleChange}
-                        >
-                            <MenuItem value="">Seleccione</MenuItem>
-                            {users.map(u => (
-                                <MenuItem key={u} value={u}>{u}</MenuItem>
-                            ))}
-                        </Select>
-                    </FormControl>
-                }
                 <Button variant="outlined" onClick={handleReset}>
                     Reiniciar
                 </Button>

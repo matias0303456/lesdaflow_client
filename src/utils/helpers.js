@@ -12,6 +12,12 @@ export function getSaleTotal(sale){
     return `$${(totalSaleProducts - ((totalSaleProducts / 100) * sale.discount)).toFixed(2)}`
 }
 
+export function getSaleDifference(sale){
+    const saleTotal = getSaleTotal(sale).replaceAll('$', '')
+    const paymentsTotal = sale.payments.reduce((prev, curr) => prev + curr.amount ,0)
+    return `$${(saleTotal - paymentsTotal).toFixed(2)}`
+}
+
 export function getDeadline(date, installments) {
     const startDate = new Date(date)
     const endDate = new Date(startDate)
