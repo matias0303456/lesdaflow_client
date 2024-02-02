@@ -5,6 +5,7 @@ import { format } from "date-fns";
 
 import { useApi } from "../hooks/useApi";
 import { Layout } from "../components/Layout";
+import { Payments } from "../components/Payments";
 
 import { SALE_URL } from "../utils/urls";
 import { getDeadline, getSaleDifference, getSaleTotal } from "../utils/helpers";
@@ -17,12 +18,14 @@ export function SaleDetails() {
     const { getById } = useApi(SALE_URL)
 
     const [sale, setSale] = useState(null)
+    const [loading, setLoading] = useState(true)
 
     useEffect(() => {
         (async () => {
             const { status, data } = await getById(id)
             if (status === 200) {
                 setSale(data)
+                setLoading(false)
             } else {
                 navigate('/veroshop/ventas')
             }
@@ -31,7 +34,7 @@ export function SaleDetails() {
 
     return (
         <>
-            {!sale ?
+            {!sale || loading ?
                 <Box sx={{ width: '100%' }}>
                     <LinearProgress />
                 </Box> :
@@ -138,6 +141,14 @@ export function SaleDetails() {
                             </TableBody>
                         </Table>
                     </TableContainer>
+                    <Box sx={{ marginTop: 2 }}>
+                        <Payments
+                            sale={sale}
+                            setSale={setSale}
+                            loading={loading}
+                            setLoading={setLoading}
+                        />
+                    </Box>
                 </Layout>
             }
         </>

@@ -1,5 +1,5 @@
-import { Box, Button, FormControl, Input, InputLabel, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
+import { Box, Button, FormControl, Typography } from "@mui/material";
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
@@ -7,8 +7,9 @@ import es from 'date-fns/locale/es';
 
 import { setFromDate, setLocalDate, setToDate } from "../../utils/helpers";
 
-export function PaymentsFilter({ payments, setPayments }) {
+export function PaymentFilter({ sale }) {
 
+    const [payments, setPayments] = useState(sale.payments)
     const [backup] = useState(payments.sort((a, b) => new Date(a.date) - new Date(b.date)))
 
     const [filter, setFilter] = useState({
@@ -35,11 +36,7 @@ export function PaymentsFilter({ payments, setPayments }) {
 
     useEffect(() => {
         setPayments(backup.filter(item => {
-            return (
-                item.sale.client.code.toLowerCase().includes(filter.client.toLowerCase()) ||
-                item.sale.client.name.toLowerCase().includes(filter.client.toLowerCase())
-            ) &&
-                setLocalDate(item.date) >= setFromDate(filter.from) &&
+            return setLocalDate(item.date) >= setFromDate(filter.from) &&
                 setLocalDate(item.date) <= setToDate(filter.to)
         }))
     }, [filter])
@@ -62,10 +59,6 @@ export function PaymentsFilter({ payments, setPayments }) {
                     md: 'row'
                 }
             }}>
-                <FormControl>
-                    <InputLabel htmlFor="client">Cliente</InputLabel>
-                    <Input id="client" type="text" name="client" value={filter.client} onChange={handleChange} />
-                </FormControl>
                 <FormControl>
                     <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
                         <DatePicker
