@@ -10,7 +10,6 @@ import { Products } from './pages/Products'
 import { Incomes } from "./pages/Incomes";
 import { Sales } from "./pages/Sales";
 import { Clients } from './pages/Clients'
-import { Payments } from "./pages/Payments";
 import { Suppliers } from './pages/Suppliers'
 import { Users } from './pages/Users'
 import { Reports } from "./pages/Reports";
@@ -30,7 +29,6 @@ function App() {
             <Route path="/veroshop/ingresos" element={<Incomes />} />
             <Route path="/veroshop/ventas" element={<Sales />} />
             <Route path="/veroshop/clientes" element={<Clients />} />
-            <Route path="/veroshop/pagos" element={<Payments />} />
             <Route path="/veroshop/proveedores" element={<Suppliers />} />
             <Route path="/veroshop/usuarios" element={<Users />} />
             <Route path="/veroshop/reportes" element={<Reports />} />

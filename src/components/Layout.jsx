@@ -95,14 +95,6 @@ export function Layout({ children, title }) {
                         <ListItemText primary="Clientes" />
                     </ListItemButton>
                 </ListItem>
-                <ListItem key={5} disablePadding sx={{ background: pathname === '/veroshop/pagos' ? grey[100] : '#fff' }}>
-                    <ListItemButton onClick={() => navigate('/veroshop/pagos')}>
-                        <ListItemIcon>
-                            <PaymentsSharpIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Pagos" />
-                    </ListItemButton>
-                </ListItem>
                 {auth?.user.role.name === 'ADMINISTRADOR' &&
                     <>
                         <ListItem key={6} disablePadding sx={{ background: pathname === '/veroshop/proveedores' ? grey[100] : '#fff' }}>

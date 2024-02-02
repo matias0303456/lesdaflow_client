@@ -149,7 +149,6 @@ export function Sales() {
                                 <TableCell align="center">Código</TableCell>
                                 <TableCell align="center">Detalle</TableCell>
                                 <TableCell align="center">Talle</TableCell>
-                                <TableCell align="center">Proveedor</TableCell>
                                 <TableCell align="center">Cantidad</TableCell>
                             </TableRow>
                         </TableHead>
@@ -159,7 +158,6 @@ export function Sales() {
                                     <TableCell>{p.product.code}</TableCell>
                                     <TableCell>{p.product.details}</TableCell>
                                     <TableCell>{p.product.size}</TableCell>
-                                    <TableCell>{p.product.supplier.name}</TableCell>
                                     <TableCell>{p.amount}</TableCell>
                                 </TableRow>
                             ))}

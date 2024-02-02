@@ -26,6 +26,24 @@ export function useApi(url) {
         }
     }
 
+    async function getById(id) {
+        try {
+            const res = await fetch(url + `/${id}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': auth.token
+                }
+            })
+            const json = await res.json()
+            return { status: res.status, data: json }
+        } catch (err) {
+            setMessage('Ocurrió un error.')
+            setSeverity('error')
+            setOpenMessage(true)
+        }
+    }
+
     async function post(req, publicUrl = false) {
         let headers = { 'Content-Type': 'application/json' }
         if (!publicUrl) headers = { ...headers, 'Authorization': auth.token }
@@ -119,5 +137,5 @@ export function useApi(url) {
         }
     }
 
-    return { get, post, put, putMassive, changeVendorPwd, destroy }
+    return { get, post, put, putMassive, changeVendorPwd, destroy, getById }
 }

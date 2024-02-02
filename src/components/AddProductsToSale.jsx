@@ -46,7 +46,7 @@ export function AddProductsToSale({
                     id="product-autocomplete"
                     options={products.filter(p =>
                         !saleProducts.map(sp => sp.product_id).includes(p.id))
-                        .map(p => ({ label: `Código ${p.code} / Detalle ${p.details} / Talle ${p.size} / Proveedor ${p.supplier.name}`, id: p.id }))}
+                        .map(p => ({ label: `Código ${p.code} / Detalle ${p.details} / Talle ${p.size}`, id: p.id }))}
                     noOptionsText="No hay productos disponibles."
                     onChange={(e, value) => handleAdd({ product_id: value?.id ?? '' })}
                     renderInput={(params) => <TextField {...params} label="Producto" />}
@@ -65,7 +65,6 @@ export function AddProductsToSale({
                             <TableCell align="center">Código</TableCell>
                             <TableCell align="center">Detalle</TableCell>
                             <TableCell align="center">Talle</TableCell>
-                            <TableCell align="center">Proveedor</TableCell>
                             <TableCell align="center">Cantidad</TableCell>
                             <TableCell align="center"></TableCell>
                         </TableRow>
@@ -74,7 +73,9 @@ export function AddProductsToSale({
                         {saleProducts.length === 0 ?
                             <TableRow>
                                 <TableCell></TableCell>
+                                <TableCell></TableCell>
                                 <TableCell align="center">No hay productos agregados a esta venta.</TableCell>
+                                <TableCell></TableCell>
                                 <TableCell></TableCell>
                             </TableRow> :
                             saleProducts.sort((a, b) => a.product_id - b.product_id).map(sp => {
@@ -87,7 +88,6 @@ export function AddProductsToSale({
                                         <TableCell align="center">{p.code}</TableCell>
                                         <TableCell align="center">{p.details}</TableCell>
                                         <TableCell align="center">{p.size}</TableCell>
-                                        <TableCell align="center">{p.supplier.name}</TableCell>
                                         <TableCell align="center">
                                             <Input type="number" value={sp.amount} onChange={e => handleChangeAmount({
                                                 product_id: p.id,

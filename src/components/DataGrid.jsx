@@ -169,7 +169,7 @@ function EnhancedTableToolbar({
                     : numSelected === 1 ? 'Un registro seleccionado.' :
                         `${numSelected} registros seleccionados.`}
             </Typography>
-            {numSelected >= 1 && (pathname !== '/veroshop/pagos' || auth.user.role.name === 'ADMINISTRADOR') &&
+            {numSelected >= 1 && auth.user.role.name === 'ADMINISTRADOR' &&
                 <Tooltip title="Eliminar" onClick={() => {
                     setOpen('DELETE')
                 }}>
