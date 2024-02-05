@@ -7,7 +7,10 @@ export function AddProductsToSale({
     saleProducts,
     setSaleProducts,
     productsRequired,
-    setProductsRequired
+    setProductsRequired,
+    idsToDelete,
+    setIdsToDelete,
+    open
 }) {
 
     const handleAdd = data => {
@@ -32,11 +35,14 @@ export function AddProductsToSale({
         }
     }
 
-    const handleDeleteProduct = id => {
+    const handleDeleteProduct = (spId, pId) => {
         setProductsRequired(false)
         setSaleProducts([
-            ...saleProducts.filter(sp => sp.product_id !== id),
+            ...saleProducts.filter(sp => sp.product_id !== pId),
         ])
+        if (open === 'EDIT') {
+            setIdsToDelete([...idsToDelete, spId])
+        }
     }
 
     return (
@@ -105,7 +111,7 @@ export function AddProductsToSale({
                                         <TableCell>{getStock(p)}</TableCell>
                                         <TableCell>${currentAmount * p.buy_price}</TableCell>
                                         <TableCell align="center">
-                                            <Button type="button" onClick={() => handleDeleteProduct(p.id)}>
+                                            <Button type="button" onClick={() => handleDeleteProduct(sp.id, p.id)}>
                                                 <CancelSharpIcon />
                                             </Button>
                                         </TableCell>

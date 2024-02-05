@@ -59,6 +59,7 @@ export function Sales() {
     const [open, setOpen] = useState(null)
     const [saleProducts, setSaleProducts] = useState([])
     const [productsRequired, setProductsRequired] = useState(false)
+    const [idsToDelete, setIdsToDelete] = useState([])
 
     useEffect(() => {
         (async () => {
@@ -80,9 +81,10 @@ export function Sales() {
         e.preventDefault()
         const submitData = {
             ...formData,
-            sale_products: saleProducts
+            sale_products: saleProducts,
+            idsToDelete: idsToDelete.length === 0 ? undefined : idsToDelete
         }
-        if (validate() && saleProducts.length > 0) {
+        if (validate() && submitData.sale_products.length > 0) {
             const { status, data } = open === 'NEW' ? await post(submitData) : await put(submitData)
             if (status === 200) {
                 if (open === 'NEW') {
@@ -96,6 +98,7 @@ export function Sales() {
                 reset(setOpen)
                 setSaleProducts([])
                 setProductsRequired(false)
+                setIdsToDelete([])
             } else {
                 setMessage(data.message)
                 setSeverity('error')
@@ -103,7 +106,8 @@ export function Sales() {
             }
             setOpenMessage(true)
         } else {
-            if (saleProducts.length === 0) {
+            if (submitData.sale_products.length === 0) {
+                setDisabled(false)
                 setProductsRequired(true)
             }
         }
@@ -202,6 +206,7 @@ export function Sales() {
                                 setSaleProducts([])
                                 setProductsRequired(false)
                                 reset(setOpen)
+                                setIdsToDelete([])
                             }}>
                             <Typography variant="h6" sx={{ marginBottom: 2 }}>
                                 {open === 'NEW' && 'Nueva venta'}
@@ -233,6 +238,9 @@ export function Sales() {
                                             setSaleProducts={setSaleProducts}
                                             productsRequired={productsRequired}
                                             setProductsRequired={setProductsRequired}
+                                            idsToDelete={idsToDelete}
+                                            setIdsToDelete={setIdsToDelete}
+                                            open={open}
                                         />
                                     </Box>
                                     <Box sx={{ display: 'flex', flexDirection: 'column', width: '40%', gap: 3 }}>
@@ -300,6 +308,7 @@ export function Sales() {
                                         setSaleProducts([])
                                         setProductsRequired(false)
                                         reset(setOpen)
+                                        setIdsToDelete([])
                                     }} sx={{
                                         width: '50%'
                                     }}>

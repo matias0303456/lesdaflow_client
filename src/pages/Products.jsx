@@ -113,7 +113,7 @@ export function Products() {
         }
         const { status, data } = await putMassive(body)
         if (status === 200) {
-            setProducts([...products.filter(p => !data.map(d => d.id).includes(p.id)), ...data])
+            setProducts([...data, ...products.filter(p => !data.map(d => d.id).includes(p.id))])
             setMessage('Precios actualizados correctamente.')
             setSeverity('success')
             reset(setOpen)
