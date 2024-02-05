@@ -9,12 +9,12 @@ import { setFromDate, setLocalDate, setToDate } from "../../utils/helpers";
 
 export function IncomeFilter({ incomes, setIncomes }) {
 
-    const [backup] = useState(incomes.sort((a, b) => new Date(a.created_at) - new Date(b.created_at)))
+    const [backup] = useState(incomes)
 
     const [filter, setFilter] = useState({
         product: '',
-        from: new Date(backup[0] ? setLocalDate(backup[0].created_at) : Date.now()),
-        to: new Date(backup[backup.length - 1] ? setLocalDate(backup[backup.length - 1].created_at) : Date.now())
+        from: new Date(backup[backup.length - 1] ? setLocalDate(backup[backup.length - 1].created_at) : Date.now()),
+        to: new Date(backup[0] ? setLocalDate(backup[0].created_at) : Date.now())
     })
 
     const handleChange = e => {
@@ -27,8 +27,8 @@ export function IncomeFilter({ incomes, setIncomes }) {
     const handleReset = () => {
         setFilter({
             product: '',
-            from: new Date(backup[0] ? setLocalDate(backup[0].created_at) : Date.now()),
-            to: new Date(backup[backup.length - 1] ? setLocalDate(backup[backup.length - 1].created_at) : Date.now())
+            from: new Date(backup[backup.length - 1] ? setLocalDate(backup[backup.length - 1].created_at) : Date.now()),
+            to: new Date(backup[0] ? setLocalDate(backup[0].created_at) : Date.now())
         })
         setIncomes(backup)
     }

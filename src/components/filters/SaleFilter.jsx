@@ -13,13 +13,13 @@ export function SaleFilter({ sales, setSales }) {
 
     const { auth } = useContext(AuthContext)
 
-    const [backup] = useState(sales.sort((a, b) => new Date(a.date) - new Date(b.date)))
+    const [backup] = useState(sales)
     const [users] = useState(Array.from(new Set(sales.map(s => s.client.user.username))))
 
     const [filter, setFilter] = useState({
         client: '',
-        from: new Date(backup[0] ? setLocalDate(backup[0].date) : Date.now()),
-        to: new Date(backup[backup.length - 1] ? setLocalDate(backup[backup.length - 1].date) : Date.now()),
+        from: new Date(backup[backup.length - 1] ? setLocalDate(backup[backup.length - 1].date) : Date.now()),
+        to: new Date(backup[0] ? setLocalDate(backup[0].date) : Date.now()),
         user: ''
     })
 
@@ -33,8 +33,8 @@ export function SaleFilter({ sales, setSales }) {
     const handleReset = () => {
         setFilter({
             client: '',
-            from: new Date(backup[0] ? setLocalDate(backup[0].date) : Date.now()),
-            to: new Date(backup[backup.length - 1] ? setLocalDate(backup[backup.length - 1].date) : Date.now()),
+            from: new Date(backup[backup.length - 1] ? setLocalDate(backup[backup.length - 1].date) : Date.now()),
+            to: new Date(backup[0] ? setLocalDate(backup[0].date) : Date.now()),
             user: ''
         })
         setSales(backup)
@@ -42,7 +42,7 @@ export function SaleFilter({ sales, setSales }) {
 
     useEffect(() => {
         setSales(backup.filter(item => {
-           return (
+            return (
                 item.client.code.toLowerCase().includes(filter.client.toLowerCase()) ||
                 item.client.name.toLowerCase().includes(filter.client.toLowerCase())
             ) &&
