@@ -225,7 +225,7 @@ function EnhancedTableToolbar({
                     </IconButton>
                 </Tooltip>
             }
-            <ModalComponent open={open === 'DELETE'} onClose={() => setOpen(null)}>
+            <ModalComponent reduceWidth={500} open={open === 'DELETE'} onClose={() => setOpen(null)}>
                 <Typography variant="h6" sx={{ marginBottom: 3, textAlign: 'center' }}>
                     ¿Desea eliminar los elementos seleccionados?
                 </Typography>

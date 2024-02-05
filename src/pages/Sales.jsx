@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { Autocomplete, Box, Button, FormControl, Input, InputLabel, LinearProgress, TextField, Typography } from "@mui/material";
+import { Autocomplete, Box, Button, FormControl, Input, InputLabel, LinearProgress, TableContainer, TextField, Typography } from "@mui/material";
 import { format } from "date-fns";
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -19,7 +19,7 @@ import { SaleFilter } from "../components/filters/SaleFilter";
 import { AddProductsToSale } from "../components/AddProductsToSale";
 
 import { SALE_URL } from "../utils/urls";
-import { getDeadline, getSaleTotal } from "../utils/helpers";
+import { getCurrentSubtotal, getCurrentTotal, getDeadline, getSaleTotal } from "../utils/helpers";
 
 export function Sales() {
 
@@ -103,7 +103,9 @@ export function Sales() {
             }
             setOpenMessage(true)
         } else {
-            setProductsRequired(true)
+            if (saleProducts.length === 0) {
+                setProductsRequired(true)
+            }
         }
     }
 
@@ -193,11 +195,14 @@ export function Sales() {
                         deadlineColor="sales"
                         seeAccount
                     >
-                        <ModalComponent open={open === 'NEW' || open === 'EDIT'} onClose={() => {
-                            setSaleProducts([])
-                            setProductsRequired(false)
-                            reset(setOpen)
-                        }}>
+                        <ModalComponent
+                            reduceWidth={50}
+                            open={open === 'NEW' || open === 'EDIT'}
+                            onClose={() => {
+                                setSaleProducts([])
+                                setProductsRequired(false)
+                                reset(setOpen)
+                            }}>
                             <Typography variant="h6" sx={{ marginBottom: 2 }}>
                                 {open === 'NEW' && 'Nueva venta'}
                                 {open === 'EDIT' && 'Editar venta'}
@@ -251,8 +256,16 @@ export function Sales() {
                                             }
                                         </FormControl>
                                         <FormControl>
-                                            <InputLabel htmlFor="discount">Descuento</InputLabel>
+                                            <InputLabel htmlFor="subtotal">Subtotal</InputLabel>
+                                            <Input value={getCurrentSubtotal(saleProducts, products)} id="subtotal" type="number" name="subtotal" disabled />
+                                        </FormControl>
+                                        <FormControl>
+                                            <InputLabel htmlFor="discount">% Descuento</InputLabel>
                                             <Input id="discount" type="number" name="discount" value={formData.discount} />
+                                        </FormControl>
+                                        <FormControl>
+                                            <InputLabel htmlFor="total">Total</InputLabel>
+                                            <Input value={getCurrentTotal(formData, saleProducts, products)} id="total" type="number" name="total" disabled />
                                         </FormControl>
                                         <FormControl>
                                             <InputLabel htmlFor="installments">Cantidad Cuotas</InputLabel>

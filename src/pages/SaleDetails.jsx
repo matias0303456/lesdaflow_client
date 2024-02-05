@@ -38,7 +38,7 @@ export function SaleDetails() {
                 <Box sx={{ width: '100%' }}>
                     <LinearProgress />
                 </Box> :
-                <Layout title={'Detalle de la venta N° ' + sale.id}>
+                <Layout title={'Cuenta corriente N° ' + sale.id}>
                     <TableContainer component={Paper}>
                         <Table>
                             <TableBody>
@@ -50,12 +50,18 @@ export function SaleDetails() {
                                                 <TableRow>
                                                     <TableCell align="center">Código</TableCell>
                                                     <TableCell align="center">Nombre</TableCell>
+                                                    <TableCell align="center">Dirección</TableCell>
+                                                    <TableCell align="center">Teléfono</TableCell>
+                                                    <TableCell align="center">Email</TableCell>
                                                 </TableRow>
                                             </TableHead>
                                             <TableBody>
                                                 <TableRow>
                                                     <TableCell align="center">{sale.client.code}</TableCell>
                                                     <TableCell align="center">{sale.client.name}</TableCell>
+                                                    <TableCell align="center">{sale.client.address}</TableCell>
+                                                    <TableCell align="center">{sale.client.phone}</TableCell>
+                                                    <TableCell align="center">{sale.client.email}</TableCell>
                                                 </TableRow>
                                             </TableBody>
                                         </Table>

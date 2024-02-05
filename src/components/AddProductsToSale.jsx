@@ -1,5 +1,6 @@
 import { Autocomplete, Box, Button, FormControl, Input, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from "@mui/material";
 import CancelSharpIcon from '@mui/icons-material/CancelSharp';
+import { getStock } from "../utils/helpers";
 
 export function AddProductsToSale({
     products,
@@ -66,6 +67,9 @@ export function AddProductsToSale({
                             <TableCell align="center">Detalle</TableCell>
                             <TableCell align="center">Talle</TableCell>
                             <TableCell align="center">Cantidad</TableCell>
+                            <TableCell align="center">Precio</TableCell>
+                            <TableCell align="center">Stock</TableCell>
+                            <TableCell align="center">Total det.</TableCell>
                             <TableCell align="center"></TableCell>
                         </TableRow>
                     </TableHead>
@@ -74,12 +78,15 @@ export function AddProductsToSale({
                             <TableRow>
                                 <TableCell></TableCell>
                                 <TableCell></TableCell>
+                                <TableCell></TableCell>
                                 <TableCell align="center">No hay productos agregados a esta venta.</TableCell>
+                                <TableCell></TableCell>
                                 <TableCell></TableCell>
                                 <TableCell></TableCell>
                             </TableRow> :
                             saleProducts.sort((a, b) => a.product_id - b.product_id).map(sp => {
                                 const p = products.find(p => p.id === sp.product_id)
+                                const currentAmount = isNaN(parseInt(sp.amount)) ? 0 : parseInt(sp.amount)
                                 return (
                                     <TableRow
                                         key={sp.product_id}
@@ -94,6 +101,9 @@ export function AddProductsToSale({
                                                 amount: e.target.value
                                             })} />
                                         </TableCell>
+                                        <TableCell>${p.buy_price}</TableCell>
+                                        <TableCell>{getStock(p)}</TableCell>
+                                        <TableCell>${currentAmount * p.buy_price}</TableCell>
                                         <TableCell align="center">
                                             <Button type="button" onClick={() => handleDeleteProduct(p.id)}>
                                                 <CancelSharpIcon />

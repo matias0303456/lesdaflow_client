@@ -7,14 +7,31 @@ export function getStock(product) {
     }, 0)
 }
 
-export function getSaleTotal(sale){
-    const totalSaleProducts = sale.sale_products.reduce((prev, curr) => prev + (curr.product.buy_price * curr.amount) ,0)
+export function getCurrentSubtotal(saleProducts, products) {
+    const total = saleProducts.reduce((prev, curr) => {
+        const p = products.find(item => item.id === curr.product_id)
+        return prev + (p.buy_price * (isNaN(parseInt(curr.amount)) ? 0 : parseInt(curr.amount)))
+    }, 0)
+    return total.toFixed(2)
+}
+
+export function getCurrentTotal(formData, saleProducts, products) {
+    const total = saleProducts.reduce((prev, curr) => {
+        const p = products.find(item => item.id === curr.product_id)
+        return prev + (p.buy_price * (isNaN(parseInt(curr.amount)) ? 0 : parseInt(curr.amount)))
+    }, 0)
+    const discount = formData.discount.length === 0 ? 0 : parseInt(formData.discount)
+    return (total - ((total / 100) * discount)).toFixed(2) 
+}
+
+export function getSaleTotal(sale) {
+    const totalSaleProducts = sale.sale_products.reduce((prev, curr) => prev + (curr.product.buy_price * curr.amount), 0)
     return `$${(totalSaleProducts - ((totalSaleProducts / 100) * sale.discount)).toFixed(2)}`
 }
 
-export function getSaleDifference(sale){
+export function getSaleDifference(sale) {
     const saleTotal = getSaleTotal(sale).replaceAll('$', '')
-    const paymentsTotal = sale.payments.reduce((prev, curr) => prev + curr.amount ,0)
+    const paymentsTotal = sale.payments.reduce((prev, curr) => prev + curr.amount, 0)
     return `$${(saleTotal - paymentsTotal).toFixed(2)}`
 }
 

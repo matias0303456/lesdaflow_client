@@ -15,9 +15,9 @@ const style = {
     borderRadius: 1
 };
 
-export function ModalComponent({ children, open, onClose, dynamicContent = false }) {
+export function ModalComponent({ children, open, onClose, dynamicContent = false, reduceWidth = 300 }) {
 
-    const [screenWidth, setScreenWidth] = useState(window.innerWidth < 700 ? window.innerWidth : window.innerWidth - 300)
+    const [screenWidth, setScreenWidth] = useState(window.innerWidth < 700 ? window.innerWidth : window.innerWidth - reduceWidth)
     const [screenHeight] = useState(dynamicContent ?
         { height: window.innerHeight - 100, overflowY: 'scroll' } :
         { height: 'auto', maxHeight: window.innerHeight - 50, overflowY: 'scroll' })
