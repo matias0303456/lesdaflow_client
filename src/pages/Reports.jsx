@@ -17,7 +17,7 @@ export function Reports() {
 
     const { clients, loadingClients } = useClients()
     const { products, loadingProducts } = useProducts()
-    const { formData: accountData, handleChange: changeAccount } = useForm({
+    const { formData: clientData, handleChange: changeClient } = useForm({
         defaultData: { client_id: '' },
         rules: { client_id: { required: true } }
     })
@@ -26,12 +26,12 @@ export function Reports() {
         rules: { product_id: { required: true } }
     })
 
-    const [canDownloadAccountReport, setCanDownloadAccountReport] = useState(false)
+    const [canDownloadClientReport, setCanDownloadClientReport] = useState(false)
     const [canDownloadProductReport, setCanDownloadProductReport] = useState(false)
 
     useEffect(() => {
-        setCanDownloadAccountReport(accountData.client_id.toString().length > 0)
-    }, [accountData])
+        setCanDownloadClientReport(clientData.client_id.toString().length > 0)
+    }, [clientData])
 
     useEffect(() => {
         setCanDownloadProductReport(productHistoryData.product_id.toString().length > 0)
@@ -46,23 +46,22 @@ export function Reports() {
                 <Box>
                     <Box>
                         <Typography variant="h6" sx={{ marginTop: { xs: 3, sm: 0 } }}>
-                            Estado de cuenta
+                            Detalle de cliente
                         </Typography>
                         <Typography variant="caption" color="gray">
-                            En este reporte se detallan las ventas, los pagos y el
-                            estado de la cuenta vinculada al cliente seleccionado.
+                            En este reporte se detallan las ventas y los pagos y del cliente seleccionado.
                         </Typography>
-                        <form onChange={changeAccount} style={{ marginTop: 10 }}>
+                        <form onChange={changeClient} style={{ marginTop: 10 }}>
                             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'start', gap: 3 }}>
                                 <FormControl sx={{ width: '50%' }} >
                                     <InputLabel id="client-select">Cliente</InputLabel>
                                     <Select
                                         labelId="client-select"
                                         id="category_id"
-                                        value={accountData.client_id}
+                                        value={clientData.client_id}
                                         label="Cliente"
                                         name="client_id"
-                                        onChange={changeAccount}
+                                        onChange={changeClient}
                                     >
                                         {clients.map(c => (
                                             <MenuItem key={c.id} value={c.id}>{`${c.code} - ${c.name}`}</MenuItem>
@@ -70,11 +69,11 @@ export function Reports() {
                                     </Select>
                                 </FormControl>
                                 <Link
-                                    to={canDownloadAccountReport ? `${REPORT_URL}/account-status/${auth.token}/${accountData.client_id}` : '#'}
-                                    target={canDownloadAccountReport ? "_blank" : '_self'}
-                                    style={{ width: { xs: '30%', lg: '50%' }, cursor: canDownloadAccountReport ? 'pointer' : 'auto' }}
+                                    to={canDownloadClientReport ? `${REPORT_URL}/client-details/${auth.token}/${clientData.client_id}` : '#'}
+                                    target={canDownloadClientReport ? "_blank" : '_self'}
+                                    style={{ width: { xs: '30%', lg: '50%' }, cursor: canDownloadClientReport ? 'pointer' : 'auto' }}
                                 >
-                                    <Button type="button" variant="contained" disabled={!canDownloadAccountReport}>
+                                    <Button type="button" variant="contained" disabled={!canDownloadClientReport}>
                                         Descargar PDF
                                     </Button>
                                 </Link>

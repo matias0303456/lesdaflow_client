@@ -1,16 +1,20 @@
-import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { Box, LinearProgress, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
+import { useContext, useEffect, useState } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { Box, Button, LinearProgress, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
 import { format } from "date-fns";
+import PrintSharpIcon from '@mui/icons-material/PrintSharp';
 
 import { useApi } from "../hooks/useApi";
 import { Layout } from "../components/Layout";
 import { Payments } from "../components/Payments";
 
-import { SALE_URL } from "../utils/urls";
+import { REPORT_URL, SALE_URL } from "../utils/urls";
 import { getDeadline, getSaleDifference, getSaleTotal } from "../utils/helpers";
+import { AuthContext } from "../providers/AuthProvider";
 
 export function SaleDetails() {
+
+    const { auth } = useContext(AuthContext)
 
     const { id } = useParams()
     const navigate = useNavigate()
@@ -39,6 +43,16 @@ export function SaleDetails() {
                     <LinearProgress />
                 </Box> :
                 <Layout title={'Cuenta corriente N° ' + sale.id}>
+                    <Link
+                        to={`${REPORT_URL}/account-details/${auth.token}/${sale.id}`}
+                        target="_blank"
+                    >
+                        <Box sx={{ display: 'flex', justifyContent: 'end' }}>
+                            <Button>
+                                <PrintSharpIcon />
+                            </Button>
+                        </Box>
+                    </Link>
                     <TableContainer component={Paper}>
                         <Table>
                             <TableBody>
