@@ -292,6 +292,13 @@ export function Sales() {
                                             }
                                         </FormControl>
                                         <FormControl>
+                                            <InputLabel htmlFor="inst_amount">Monto por cuota</InputLabel>
+                                            <Input
+                                                id="inst_amount" type="number" name="total" disabled
+                                                value={(getCurrentTotal(formData, saleProducts, products) / parseInt(formData.installments)).toFixed(2)}
+                                            />
+                                        </FormControl>
+                                        <FormControl>
                                             <InputLabel htmlFor="observations">Observaciones</InputLabel>
                                             <Input id="observations" type="text" name="observations" value={formData.observations} />
                                             {errors.observations?.type === 'maxLength' &&

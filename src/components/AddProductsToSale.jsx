@@ -107,9 +107,9 @@ export function AddProductsToSale({
                                                 amount: e.target.value
                                             })} />
                                         </TableCell>
-                                        <TableCell>${p.buy_price}</TableCell>
+                                        <TableCell>${p.buy_price.toFixed(2)}</TableCell>
                                         <TableCell>{getStock(p)}</TableCell>
-                                        <TableCell>${currentAmount * p.buy_price}</TableCell>
+                                        <TableCell>${(currentAmount * p.buy_price).toFixed(2)}</TableCell>
                                         <TableCell align="center">
                                             <Button type="button" onClick={() => handleDeleteProduct(sp.id, p.id)}>
                                                 <CancelSharpIcon />
