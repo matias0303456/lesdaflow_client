@@ -21,7 +21,7 @@ export function getCurrentTotal(formData, saleProducts, products) {
         return prev + (p.buy_price * (isNaN(parseInt(curr.amount)) ? 0 : parseInt(curr.amount)))
     }, 0)
     const discount = formData.discount.length === 0 ? 0 : parseInt(formData.discount)
-    return (total - ((total / 100) * discount)).toFixed(2) 
+    return (total - ((total / 100) * discount)).toFixed(2)
 }
 
 export function getSaleTotal(sale) {
@@ -64,4 +64,10 @@ export function setToDate(date) {
     const newDate = new Date(date)
     newDate.setHours(23, 59, 59, 999)
     return newDate
+}
+
+export function getNewPrice(product, percentage) {
+    const price = parseFloat(product.buy_price)
+    const perc = percentage.toString().length === 0 ? 0 : parseInt(percentage)
+    return (price + ((price / 100) * perc)).toFixed(2)
 }

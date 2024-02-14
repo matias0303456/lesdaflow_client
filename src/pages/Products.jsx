@@ -14,7 +14,7 @@ import { ModalComponent } from "../components/ModalComponent";
 import { ProductFilter } from "../components/filters/ProductFilter";
 
 import { PRODUCT_URL } from "../utils/urls";
-import { getStock } from "../utils/helpers";
+import { getNewPrice, getStock } from "../utils/helpers";
 
 export function Products() {
 
@@ -252,6 +252,7 @@ export function Products() {
                         disableSelection={auth?.user.role.name !== 'ADMINISTRADOR'}
                         disableAdd={auth?.user.role.name !== 'ADMINISTRADOR'}
                         allowMassiveEdit
+                        updateByPercentage
                         setMassiveEdit={setMassiveEdit}
                         deadlineColor="products"
                     >
@@ -415,7 +416,7 @@ export function Products() {
                         </ModalComponent>
                         <ModalComponent open={open === 'MASSIVE-EDIT'} dynamicContent>
                             <Typography variant="h6" sx={{ marginBottom: 2 }}>
-                                Actualización de precios múltiple
+                                Actualización de precio/s por porcentaje
                             </Typography>
                             <TableContainer component={Paper} sx={{ marginBottom: 2 }}>
                                 <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -425,6 +426,7 @@ export function Products() {
                                             <TableCell align="center">Código</TableCell>
                                             <TableCell align="center">Proveedor</TableCell>
                                             <TableCell align="center">Precio actual</TableCell>
+                                            <TableCell align="center">Precio nuevo</TableCell>
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
@@ -437,6 +439,7 @@ export function Products() {
                                                 <TableCell align="center">{me.code}</TableCell>
                                                 <TableCell align="center">{me.supplier.name}</TableCell>
                                                 <TableCell align="center">${me.buy_price.toFixed(2)}</TableCell>
+                                                <TableCell align="center">${getNewPrice(me, massiveEditPercentage)}</TableCell>
                                             </TableRow>
                                         ))}
                                     </TableBody>
@@ -482,7 +485,6 @@ export function Products() {
                                 </Button>
                                 <Button type="submit" variant="contained"
                                     sx={{ width: '50%' }}
-                                    disabled={parseInt(massiveEditPercentage) <= 0}
                                     onClick={handleSubmitMassive}
                                 >
                                     Guardar

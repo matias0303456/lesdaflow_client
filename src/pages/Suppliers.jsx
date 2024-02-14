@@ -14,6 +14,7 @@ import { ModalComponent } from "../components/ModalComponent";
 import { SupplierFilter } from "../components/filters/SupplierFilter";
 
 import { SUPPLIER_URL } from "../utils/urls";
+import { getNewPrice } from "../utils/helpers";
 
 export function Suppliers() {
 
@@ -201,7 +202,7 @@ export function Suppliers() {
                         data={formData}
                         setData={setFormData}
                         handleDelete={handleDelete}
-                        updateBySupplier
+                        updateByPercentage
                     >
                         <ModalComponent open={open === 'NEW' || open === 'EDIT'} onClose={() => reset(setOpen)}>
                             <Typography variant="h6" sx={{ marginBottom: 2 }}>
@@ -303,6 +304,7 @@ export function Suppliers() {
                                             <TableCell align="center">Producto</TableCell>
                                             <TableCell align="center">Código</TableCell>
                                             <TableCell align="center">Precio actual</TableCell>
+                                            <TableCell align="center">Precio nuevo</TableCell>
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
@@ -314,6 +316,7 @@ export function Suppliers() {
                                                 <TableCell align="center">{p.code}</TableCell>
                                                 <TableCell align="center">{p.details}</TableCell>
                                                 <TableCell align="center">${p.buy_price.toFixed(2)}</TableCell>
+                                                <TableCell align="center">${getNewPrice(p, massiveEditPercentage)}</TableCell>
                                             </TableRow>
                                         ))}
                                     </TableBody>
@@ -359,7 +362,7 @@ export function Suppliers() {
                                 </Button>
                                 <Button type="submit" variant="contained"
                                     sx={{ width: '50%' }}
-                                    disabled={parseInt(massiveEditPercentage) <= 0 || formData.products.length === 0}
+                                    disabled={formData.products.length === 0}
                                     onClick={handleSubmitMassive}
                                 >
                                     Guardar

@@ -129,7 +129,7 @@ function EnhancedTableToolbar({
     handleDelete,
     allowMassiveEdit,
     setMassiveEdit,
-    updateBySupplier,
+    updateByPercentage,
     changePwd,
     seeAccount
 }) {
@@ -191,9 +191,10 @@ function EnhancedTableToolbar({
                     </IconButton>
                 </Tooltip>
             }
-            {numSelected === 1 && updateBySupplier &&
-                <Tooltip title="Editar precios" onClick={() => {
+            {numSelected === 1 && updateByPercentage &&
+                <Tooltip title="Actualizar precio/s por porcentaje" onClick={() => {
                     setData(workOn[0])
+                    if (setMassiveEdit) setMassiveEdit(workOn)
                     setOpen('MASSIVE-EDIT')
                 }}>
                     <IconButton>
@@ -202,17 +203,23 @@ function EnhancedTableToolbar({
                 </Tooltip>
             }
             {(numSelected === 1 || (numSelected >= 1 && allowMassiveEdit)) &&
-                <Tooltip title="Editar" onClick={() => {
-                    if (allowMassiveEdit && numSelected > 1) {
-                        setMassiveEdit(workOn)
-                        setOpen('MASSIVE-EDIT')
-                    } else {
-                        setData(workOn[0])
-                        setOpen('EDIT')
-                    }
-                }}>
+                <Tooltip title={allowMassiveEdit && numSelected > 1 ?
+                    "Actualizar precio/s por porcentaje" :
+                    "Editar"} onClick={() => {
+                        if (allowMassiveEdit && numSelected > 1) {
+                            setMassiveEdit(workOn)
+                            setOpen('MASSIVE-EDIT')
+                        } else {
+                            setData(workOn[0])
+                            setOpen('EDIT')
+                        }
+                    }}>
                     <IconButton>
-                        <EditIcon />
+                        {
+                            allowMassiveEdit && numSelected > 1 ?
+                                <AttachMoneySharpIcon /> :
+                                <EditIcon />
+                        }
                     </IconButton>
                 </Tooltip>
             }
@@ -269,7 +276,7 @@ export function DataGrid({
     deadlineColor = false,
     allowMassiveEdit = false,
     setMassiveEdit,
-    updateBySupplier = false,
+    updateByPercentage = false,
     changePwd = false,
     seeAccount = false
 }) {
@@ -357,7 +364,7 @@ export function DataGrid({
                         handleDelete={handleDelete}
                         allowMassiveEdit={allowMassiveEdit}
                         setMassiveEdit={setMassiveEdit}
-                        updateBySupplier={updateBySupplier}
+                        updateByPercentage={updateByPercentage}
                         changePwd={changePwd}
                         seeAccount={seeAccount}
                     />
