@@ -6,8 +6,8 @@ export function AddProductsToSale({
     products,
     saleProducts,
     setSaleProducts,
-    productsRequired,
-    setProductsRequired,
+    missing,
+    setMissing,
     idsToDelete,
     setIdsToDelete,
     open
@@ -15,7 +15,7 @@ export function AddProductsToSale({
 
     const handleAdd = data => {
         if (data.product_id.toString().length > 0) {
-            setProductsRequired(false)
+            setMissing(false)
             setSaleProducts([
                 ...saleProducts.filter(sp => sp.product_id !== data.product_id),
                 data
@@ -31,12 +31,12 @@ export function AddProductsToSale({
                     ...saleProducts.find(sp => sp.product_id === data.product_id),
                     ...data
                 }
-            ])
+            ].sort((a, b) => open === 'NEW' ? a.idx - b.idx : a.id - b.id))
         }
     }
 
     const handleDeleteProduct = (spId, pId) => {
-        setProductsRequired(false)
+        setMissing(false)
         setSaleProducts([
             ...saleProducts.filter(sp => sp.product_id !== pId),
         ])
@@ -55,14 +55,14 @@ export function AddProductsToSale({
                         !saleProducts.map(sp => sp.product_id).includes(p.id))
                         .map(p => ({ label: `Código ${p.code} / Detalle ${p.details} / Talle ${p.size}`, id: p.id }))}
                     noOptionsText="No hay productos disponibles."
-                    onChange={(e, value) => handleAdd({ product_id: value?.id ?? '' })}
+                    onChange={(e, value) => handleAdd({ idx: saleProducts.length, product_id: value?.id ?? '' })}
                     renderInput={(params) => <TextField {...params} label="Producto" />}
                     isOptionEqualToValue={(option, value) => option.code === value.code || value.length === 0}
                 />
             </FormControl>
-            {productsRequired &&
+            {missing &&
                 <Typography variant="caption" color="red" marginTop={1}>
-                    * Los productos son requeridos.
+                    * Los productos y las cantidades son requeridos y las cantidades deben ser mayores a 0.
                 </Typography>
             }
             <TableContainer component={Paper}>
@@ -90,7 +90,7 @@ export function AddProductsToSale({
                                 <TableCell></TableCell>
                                 <TableCell></TableCell>
                             </TableRow> :
-                            saleProducts.sort((a, b) => a.product_id - b.product_id).map(sp => {
+                            saleProducts.map(sp => {
                                 const p = products.find(p => p.id === sp.product_id)
                                 const currentAmount = isNaN(parseInt(sp.amount)) ? 0 : parseInt(sp.amount)
                                 return (

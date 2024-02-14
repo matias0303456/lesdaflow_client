@@ -19,7 +19,7 @@ import { SaleFilter } from "../components/filters/SaleFilter";
 import { AddProductsToSale } from "../components/AddProductsToSale";
 
 import { SALE_URL } from "../utils/urls";
-import { getCurrentSubtotal, getCurrentTotal, getDeadline, getSaleTotal } from "../utils/helpers";
+import { getCurrentSubtotal, getCurrentTotal, getDeadline, getInstallmentsAmount, getSaleTotal } from "../utils/helpers";
 
 export function Sales() {
 
@@ -58,7 +58,7 @@ export function Sales() {
     const [sales, setSales] = useState([])
     const [open, setOpen] = useState(null)
     const [saleProducts, setSaleProducts] = useState([])
-    const [productsRequired, setProductsRequired] = useState(false)
+    const [missing, setMissing] = useState(false)
     const [idsToDelete, setIdsToDelete] = useState([])
 
     useEffect(() => {
@@ -84,7 +84,8 @@ export function Sales() {
             sale_products: saleProducts,
             idsToDelete: idsToDelete.length === 0 ? undefined : idsToDelete
         }
-        if (validate() && submitData.sale_products.length > 0) {
+        const spMissing = submitData.sale_products.length === 0 || submitData.sale_products.some(sp => !sp.amount || parseInt(sp.amount) <= 0)
+        if (validate() && !spMissing) {
             const { status, data } = open === 'NEW' ? await post(submitData) : await put(submitData)
             if (status === 200) {
                 if (open === 'NEW') {
@@ -97,7 +98,7 @@ export function Sales() {
                 setSeverity('success')
                 reset(setOpen)
                 setSaleProducts([])
-                setProductsRequired(false)
+                setMissing(false)
                 setIdsToDelete([])
             } else {
                 setMessage(data.message)
@@ -106,9 +107,9 @@ export function Sales() {
             }
             setOpenMessage(true)
         } else {
-            if (submitData.sale_products.length === 0) {
+            if (spMissing) {
                 setDisabled(false)
-                setProductsRequired(true)
+                setMissing(true)
             }
         }
     }
@@ -211,7 +212,7 @@ export function Sales() {
                             open={open === 'NEW' || open === 'EDIT'}
                             onClose={() => {
                                 setSaleProducts([])
-                                setProductsRequired(false)
+                                setMissing(false)
                                 reset(setOpen)
                                 setIdsToDelete([])
                             }}>
@@ -220,92 +221,96 @@ export function Sales() {
                                 {open === 'EDIT' && 'Editar venta'}
                             </Typography>
                             <form onChange={handleChange} onSubmit={handleSubmit}>
-                                <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 3 }}>
-                                    <Box sx={{ display: 'flex', flexDirection: 'column', width: '60%', gap: 3 }}>
-                                        <FormControl>
-                                            <Autocomplete
-                                                disablePortal
-                                                id="client-autocomplete"
-                                                value={formData.client_id.toString().length > 0 ? `${clients.find(c => c.id === formData.client_id)?.code} - ${clients.find(c => c.id === formData.client_id)?.name}` : ''}
-                                                options={clients.map(c => ({ label: `${c.code} - ${c.name}`, id: c.id }))}
-                                                noOptionsText="No hay clientes registrados."
-                                                onChange={(e, value) => handleChange({ target: { name: 'client_id', value: value?.id ?? '' } })}
-                                                renderInput={(params) => <TextField {...params} label="Cliente" />}
-                                                isOptionEqualToValue={(option, value) => option.code === value.code || value.length === 0}
-                                            />
-                                            {errors.client_id?.type === 'required' &&
-                                                <Typography variant="caption" color="red" marginTop={1}>
-                                                    * El cliente es requerido.
-                                                </Typography>
-                                            }
-                                        </FormControl>
-                                        <AddProductsToSale
-                                            products={products}
-                                            saleProducts={saleProducts}
-                                            setSaleProducts={setSaleProducts}
-                                            productsRequired={productsRequired}
-                                            setProductsRequired={setProductsRequired}
-                                            idsToDelete={idsToDelete}
-                                            setIdsToDelete={setIdsToDelete}
-                                            open={open}
-                                        />
-                                    </Box>
-                                    <Box sx={{ display: 'flex', flexDirection: 'column', width: '40%', gap: 3 }}>
-                                        <FormControl>
-                                            <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
-                                                <DatePicker
-                                                    label="Fecha"
-                                                    value={new Date(formData.date)}
-                                                    onChange={value => handleChange({
-                                                        target: {
-                                                            name: 'date',
-                                                            value: new Date(value.toISOString())
-                                                        }
-                                                    })}
+                                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
+                                    <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 3 }}>
+                                        <Box sx={{ display: 'flex', flexDirection: 'column', width: '60%', gap: 3 }}>
+                                            <FormControl>
+                                                <Autocomplete
+                                                    disablePortal
+                                                    id="client-autocomplete"
+                                                    value={formData.client_id.toString().length > 0 ? `${clients.find(c => c.id === formData.client_id)?.code} - ${clients.find(c => c.id === formData.client_id)?.name}` : ''}
+                                                    options={clients.map(c => ({ label: `${c.code} - ${c.name}`, id: c.id }))}
+                                                    noOptionsText="No hay clientes registrados."
+                                                    onChange={(e, value) => handleChange({ target: { name: 'client_id', value: value?.id ?? '' } })}
+                                                    renderInput={(params) => <TextField {...params} label="Cliente" />}
+                                                    isOptionEqualToValue={(option, value) => option.code === value.code || value.length === 0}
                                                 />
-                                            </LocalizationProvider>
-                                            {errors.date?.type === 'required' &&
-                                                <Typography variant="caption" color="red" marginTop={1}>
-                                                    * La fecha es requerida.
-                                                </Typography>
-                                            }
-                                        </FormControl>
+                                                {errors.client_id?.type === 'required' &&
+                                                    <Typography variant="caption" color="red" marginTop={1}>
+                                                        * El cliente es requerido.
+                                                    </Typography>
+                                                }
+                                            </FormControl>
+                                            <AddProductsToSale
+                                                products={products}
+                                                saleProducts={saleProducts}
+                                                setSaleProducts={setSaleProducts}
+                                                missing={missing}
+                                                setMissing={setMissing}
+                                                idsToDelete={idsToDelete}
+                                                setIdsToDelete={setIdsToDelete}
+                                                open={open}
+                                            />
+                                        </Box>
+                                        <Box sx={{ display: 'flex', flexDirection: 'column', width: '40%', gap: 3 }}>
+                                            <FormControl>
+                                                <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
+                                                    <DatePicker
+                                                        label="Fecha"
+                                                        value={new Date(formData.date)}
+                                                        onChange={value => handleChange({
+                                                            target: {
+                                                                name: 'date',
+                                                                value: new Date(value.toISOString())
+                                                            }
+                                                        })}
+                                                    />
+                                                </LocalizationProvider>
+                                                {errors.date?.type === 'required' &&
+                                                    <Typography variant="caption" color="red" marginTop={1}>
+                                                        * La fecha es requerida.
+                                                    </Typography>
+                                                }
+                                            </FormControl>
+                                            <FormControl>
+                                                <InputLabel htmlFor="discount">% Descuento</InputLabel>
+                                                <Input id="discount" type="number" name="discount" value={formData.discount} />
+                                            </FormControl>
+                                            <FormControl>
+                                                <InputLabel htmlFor="installments">Cantidad Cuotas</InputLabel>
+                                                <Input id="installments" type="number" name="installments" value={formData.installments} />
+                                                {errors.installments?.type === 'required' &&
+                                                    <Typography variant="caption" color="red" marginTop={1}>
+                                                        * Las cuotas son requeridas.
+                                                    </Typography>
+                                                }
+                                            </FormControl>
+                                            <FormControl>
+                                                <InputLabel htmlFor="observations">Observaciones</InputLabel>
+                                                <Input id="observations" type="text" name="observations" value={formData.observations} />
+                                                {errors.observations?.type === 'maxLength' &&
+                                                    <Typography variant="caption" color="red" marginTop={1}>
+                                                        * Las observaciones son demasiado largas.
+                                                    </Typography>
+                                                }
+                                            </FormControl>
+                                        </Box>
+                                    </Box>
+                                    <Box sx={{ display: 'flex', justifyContent: 'end' }}>
                                         <FormControl>
                                             <InputLabel htmlFor="subtotal">Subtotal</InputLabel>
                                             <Input value={getCurrentSubtotal(saleProducts, products)} id="subtotal" type="number" name="subtotal" disabled />
-                                        </FormControl>
-                                        <FormControl>
-                                            <InputLabel htmlFor="discount">% Descuento</InputLabel>
-                                            <Input id="discount" type="number" name="discount" value={formData.discount} />
                                         </FormControl>
                                         <FormControl>
                                             <InputLabel htmlFor="total">Total</InputLabel>
                                             <Input value={getCurrentTotal(formData, saleProducts, products)} id="total" type="number" name="total" disabled />
                                         </FormControl>
                                         <FormControl>
-                                            <InputLabel htmlFor="installments">Cantidad Cuotas</InputLabel>
-                                            <Input id="installments" type="number" name="installments" value={formData.installments} />
-                                            {errors.installments?.type === 'required' &&
-                                                <Typography variant="caption" color="red" marginTop={1}>
-                                                    * Las cuotas son requeridas.
-                                                </Typography>
-                                            }
-                                        </FormControl>
-                                        <FormControl>
                                             <InputLabel htmlFor="inst_amount">Monto por cuota</InputLabel>
                                             <Input
                                                 id="inst_amount" type="number" name="total" disabled
-                                                value={(getCurrentTotal(formData, saleProducts, products) / parseInt(formData.installments)).toFixed(2)}
+                                                value={getInstallmentsAmount(getCurrentTotal(formData, saleProducts, products), formData.installments)}
                                             />
-                                        </FormControl>
-                                        <FormControl>
-                                            <InputLabel htmlFor="observations">Observaciones</InputLabel>
-                                            <Input id="observations" type="text" name="observations" value={formData.observations} />
-                                            {errors.observations?.type === 'maxLength' &&
-                                                <Typography variant="caption" color="red" marginTop={1}>
-                                                    * Las observaciones son demasiado largas.
-                                                </Typography>
-                                            }
                                         </FormControl>
                                     </Box>
                                 </Box>
@@ -320,7 +325,7 @@ export function Sales() {
                                 }}>
                                     <Button type="button" variant="outlined" onClick={() => {
                                         setSaleProducts([])
-                                        setProductsRequired(false)
+                                        setMissing(false)
                                         reset(setOpen)
                                         setIdsToDelete([])
                                     }} sx={{

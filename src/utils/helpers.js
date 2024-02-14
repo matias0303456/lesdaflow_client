@@ -71,3 +71,8 @@ export function getNewPrice(product, percentage) {
     const perc = percentage.toString().length === 0 ? 0 : parseInt(percentage)
     return (price + ((price / 100) * perc)).toFixed(2)
 }
+
+export function getInstallmentsAmount(total, installments) {
+    const inst = installments.toString().length === 0 ? 1 : parseInt(installments)
+    return (total / inst).toFixed(2)
+}
