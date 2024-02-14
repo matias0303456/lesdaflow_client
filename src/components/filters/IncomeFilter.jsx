@@ -37,7 +37,8 @@ export function IncomeFilter({ incomes, setIncomes }) {
         setIncomes(backup.filter(item => {
             return (
                 item.product.code.toLowerCase().includes(filter.product.toLowerCase()) ||
-                item.product.details.toLowerCase().includes(filter.product.toLowerCase())
+                item.product.details.toLowerCase().includes(filter.product.toLowerCase()) ||
+                item.product.size.toLowerCase().includes(filter.product.toLowerCase()) 
             ) &&
                 setLocalDate(item.created_at) >= setFromDate(filter.from) &&
                 setLocalDate(item.created_at) <= setToDate(filter.to)

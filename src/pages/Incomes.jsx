@@ -113,11 +113,25 @@ export function Incomes() {
             accessor: 'id'
         },
         {
-            id: 'product',
+            id: 'product_code',
             numeric: false,
             disablePadding: true,
-            label: 'Producto',
-            accessor: (row) => `${row.product.details} (${row.product.code})`
+            label: 'Cód. Producto',
+            accessor: (row) => row.product.code
+        },
+        {
+            id: 'product_details',
+            numeric: false,
+            disablePadding: true,
+            label: 'Det. Producto',
+            accessor: (row) => row.product.details
+        },
+        {
+            id: 'product_size',
+            numeric: false,
+            disablePadding: true,
+            label: 'Talle Producto',
+            accessor: (row) => row.product.size
         },
         {
             id: 'amount',

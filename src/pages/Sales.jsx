@@ -143,11 +143,18 @@ export function Sales() {
             accessor: 'id'
         },
         {
-            id: 'client',
+            id: 'client_code',
             numeric: false,
             disablePadding: true,
-            label: 'Cliente',
-            accessor: (row) => `${row.client.name} (${row.client.code})`
+            label: 'Cód. Cliente',
+            accessor: (row) => row.client.code
+        },
+        {
+            id: 'client_name',
+            numeric: false,
+            disablePadding: true,
+            label: 'NyA Cliente',
+            accessor: (row) => row.client.name
         },
         {
             id: 'total',
