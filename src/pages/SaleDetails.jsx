@@ -5,12 +5,13 @@ import { format } from "date-fns";
 import PrintSharpIcon from '@mui/icons-material/PrintSharp';
 
 import { useApi } from "../hooks/useApi";
+import { useProducts } from "../hooks/useProducts";
+import { AuthContext } from "../providers/AuthProvider";
 import { Layout } from "../components/Layout";
 import { Payments } from "../components/Payments";
 
 import { REPORT_URL, SALE_URL } from "../utils/urls";
-import { getDeadline, getSaleDifference, getSaleTotal } from "../utils/helpers";
-import { AuthContext } from "../providers/AuthProvider";
+import { getCurrentSubtotal, getDeadline, getSaleDifference, getSaleTotal } from "../utils/helpers";
 
 export function SaleDetails() {
 
@@ -19,6 +20,7 @@ export function SaleDetails() {
     const { id } = useParams()
     const navigate = useNavigate()
 
+    const { products } = useProducts()
     const { getById } = useApi(SALE_URL)
 
     const [sale, setSale] = useState(null)
@@ -111,6 +113,12 @@ export function SaleDetails() {
                                     </TableCell>
                                 </TableRow>
                                 <TableRow>
+                                    <TableCell align="center" sx={{ fontWeight: 'bold' }}>Subtotal</TableCell>
+                                    <TableCell align="center">
+                                        {getCurrentSubtotal(sale.sale_products, products)}
+                                    </TableCell>
+                                </TableRow>
+                                <TableRow>
                                     <TableCell align="center" sx={{ fontWeight: 'bold' }}>Descuento</TableCell>
                                     <TableCell align="center">
                                         {sale.discount}%
@@ -120,6 +128,24 @@ export function SaleDetails() {
                                     <TableCell align="center" sx={{ fontWeight: 'bold' }}>Cuotas</TableCell>
                                     <TableCell align="center">
                                         {sale.installments}
+                                    </TableCell>
+                                </TableRow>
+                                <TableRow>
+                                    <TableCell align="center" sx={{ fontWeight: 'bold' }}>Monto por cuota</TableCell>
+                                    <TableCell align="center">
+                                        ${(getSaleTotal(sale).replace('$', '') / sale.installments).toFixed(2)}
+                                    </TableCell>
+                                </TableRow>
+                                <TableRow>
+                                    <TableCell align="center" sx={{ fontWeight: 'bold' }}>Importe</TableCell>
+                                    <TableCell align="center">
+                                        {getSaleTotal(sale)}
+                                    </TableCell>
+                                </TableRow>
+                                <TableRow>
+                                    <TableCell align="center" sx={{ fontWeight: 'bold' }}>Saldo</TableCell>
+                                    <TableCell align="center">
+                                        {getSaleDifference(sale)}
                                     </TableCell>
                                 </TableRow>
                                 <TableRow>
@@ -144,18 +170,6 @@ export function SaleDetails() {
                                     <TableCell align="center" sx={{ fontWeight: 'bold' }}>Observaciones</TableCell>
                                     <TableCell align="center">
                                         {sale.observations}
-                                    </TableCell>
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell align="center" sx={{ fontWeight: 'bold' }}>Importe</TableCell>
-                                    <TableCell align="center">
-                                        {getSaleTotal(sale)}
-                                    </TableCell>
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell align="center" sx={{ fontWeight: 'bold' }}>Saldo</TableCell>
-                                    <TableCell align="center">
-                                        {getSaleDifference(sale)}
                                     </TableCell>
                                 </TableRow>
                             </TableBody>
