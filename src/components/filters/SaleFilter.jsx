@@ -1,4 +1,4 @@
-import { Box, Button, FormControl, Input, InputLabel, MenuItem, Select, Typography } from "@mui/material";
+import { Box, Button, Checkbox, FormControl, FormControlLabel, Input, InputLabel, MenuItem, Select, Typography } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -18,6 +18,7 @@ export function SaleFilter({ sales, setSales }) {
 
     const [filter, setFilter] = useState({
         client: '',
+        type: 'ALL',
         from: new Date(backup[backup.length - 1] ? setLocalDate(backup[backup.length - 1].date) : Date.now()),
         to: new Date(backup[0] ? setLocalDate(backup[0].date) : Date.now()),
         user: ''
@@ -33,6 +34,7 @@ export function SaleFilter({ sales, setSales }) {
     const handleReset = () => {
         setFilter({
             client: '',
+            type: 'ALL',
             from: new Date(backup[backup.length - 1] ? setLocalDate(backup[backup.length - 1].date) : Date.now()),
             to: new Date(backup[0] ? setLocalDate(backup[0].date) : Date.now()),
             user: ''
@@ -48,7 +50,8 @@ export function SaleFilter({ sales, setSales }) {
             ) &&
                 setLocalDate(item.date) >= setFromDate(filter.from) &&
                 setLocalDate(item.date) <= setToDate(filter.to) &&
-                item.client.user.username.toLowerCase().includes(filter.user.toLowerCase())
+                item.client.user.username.toLowerCase().includes(filter.user.toLowerCase()) &&
+                (filter.type === 'ALL' || item.type === filter.type)
         }))
     }, [filter])
 
@@ -122,6 +125,51 @@ export function SaleFilter({ sales, setSales }) {
                         </Select>
                     </FormControl>
                 }
+                <FormControlLabel
+                    control={<Checkbox />}
+                    label="Todas"
+                    checked={filter.type === 'ALL'}
+                    onChange={e => {
+                        if (e.target.checked) {
+                            handleChange({
+                                target: {
+                                    name: 'type',
+                                    value: 'ALL'
+                                }
+                            })
+                        }
+                    }}
+                />
+                <FormControlLabel
+                    control={<Checkbox />}
+                    label="Cuenta Corriente"
+                    checked={filter.type === 'CUENTA_CORRIENTE'}
+                    onChange={e => {
+                        if (e.target.checked) {
+                            handleChange({
+                                target: {
+                                    name: 'type',
+                                    value: 'CUENTA_CORRIENTE'
+                                }
+                            })
+                        }
+                    }}
+                />
+                <FormControlLabel
+                    control={<Checkbox />}
+                    label="Contado"
+                    checked={filter.type === 'CONTADO'}
+                    onChange={e => {
+                        if (e.target.checked) {
+                            handleChange({
+                                target: {
+                                    name: 'type',
+                                    value: 'CONTADO'
+                                }
+                            })
+                        }
+                    }}
+                />
                 <Button variant="outlined" onClick={handleReset}>
                     Reiniciar
                 </Button>

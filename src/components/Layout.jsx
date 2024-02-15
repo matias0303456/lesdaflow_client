@@ -80,7 +80,7 @@ export function Layout({ children, title }) {
                                 <ListItemText primary="Ingresos" />
                             </ListItemButton>
                         </ListItem>
-                        <ListItem key={2} disablePadding sx={{ background: pathname === '/veroshop/egresos' ? grey[100] : '#fff' }}>
+                        <ListItem key={3} disablePadding sx={{ background: pathname === '/veroshop/egresos' ? grey[100] : '#fff' }}>
                             <ListItemButton onClick={() => navigate('/veroshop/egresos')}>
                                 <ListItemIcon>
                                     <OutputSharpIcon />
@@ -90,7 +90,7 @@ export function Layout({ children, title }) {
                         </ListItem>
                     </>
                 }
-                <ListItem key={3} disablePadding sx={{ background: pathname === '/veroshop/ventas' ? grey[100] : '#fff' }}>
+                <ListItem key={4} disablePadding sx={{ background: pathname === '/veroshop/ventas' ? grey[100] : '#fff' }}>
                     <ListItemButton onClick={() => navigate('/veroshop/ventas')}>
                         <ListItemIcon>
                             <MonetizationOnSharpIcon />
@@ -98,7 +98,7 @@ export function Layout({ children, title }) {
                         <ListItemText primary="Ventas" />
                     </ListItemButton>
                 </ListItem>
-                <ListItem key={4} disablePadding sx={{ background: pathname === '/veroshop/clientes' ? grey[100] : '#fff' }}>
+                <ListItem key={5} disablePadding sx={{ background: pathname === '/veroshop/clientes' ? grey[100] : '#fff' }}>
                     <ListItemButton onClick={() => navigate('/veroshop/clientes')}>
                         <ListItemIcon>
                             <Person2SharpIcon />

@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { Autocomplete, Box, Button, FormControl, Input, InputLabel, LinearProgress, TableContainer, TextField, Typography } from "@mui/material";
+import { Autocomplete, Box, Button, Checkbox, FormControl, FormControlLabel, FormGroup, Input, InputLabel, LinearProgress, TableContainer, TextField, Typography } from "@mui/material";
 import { format } from "date-fns";
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -36,6 +36,7 @@ export function Sales() {
             discount: '',
             installments: '',
             observations: '',
+            type: 'CUENTA_CORRIENTE',
             date: new Date(Date.now())
         },
         rules: {
@@ -274,11 +275,23 @@ export function Sales() {
                                             </FormControl>
                                             <FormControl>
                                                 <InputLabel htmlFor="discount">% Descuento</InputLabel>
-                                                <Input id="discount" type="number" name="discount" value={formData.discount} />
+                                                <Input
+                                                    id="discount"
+                                                    type="number"
+                                                    name="discount"
+                                                    value={formData.discount}
+                                                    disabled={formData.type === 'CUENTA_CORRIENTE'}
+                                                />
                                             </FormControl>
                                             <FormControl>
                                                 <InputLabel htmlFor="installments">Cantidad Cuotas</InputLabel>
-                                                <Input id="installments" type="number" name="installments" value={formData.installments} />
+                                                <Input
+                                                    id="installments"
+                                                    type="number"
+                                                    name="installments"
+                                                    value={formData.installments}
+                                                    disabled={formData.type === 'CONTADO'}
+                                                />
                                                 {errors.installments?.type === 'required' &&
                                                     <Typography variant="caption" color="red" marginTop={1}>
                                                         * Las cuotas son requeridas.
@@ -294,6 +307,36 @@ export function Sales() {
                                                     </Typography>
                                                 }
                                             </FormControl>
+                                            <Box sx={{ display: 'flex', justifyContent: 'space-around' }}>
+                                                <FormControlLabel
+                                                    control={<Checkbox />}
+                                                    label="Cuenta Corriente"
+                                                    checked={formData.type === 'CUENTA_CORRIENTE'}
+                                                    onChange={e => {
+                                                        if (e.target.checked) {
+                                                            setFormData({
+                                                                ...formData,
+                                                                type: 'CUENTA_CORRIENTE',
+                                                                discount: 0
+                                                            })
+                                                        }
+                                                    }}
+                                                />
+                                                <FormControlLabel
+                                                    control={<Checkbox />}
+                                                    label="Contado"
+                                                    checked={formData.type === 'CONTADO'}
+                                                    onChange={e => {
+                                                        if (e.target.checked) {
+                                                            setFormData({
+                                                                ...formData,
+                                                                type: 'CONTADO',
+                                                                installments: 1
+                                                            })
+                                                        }
+                                                    }}
+                                                />
+                                            </Box>
                                         </Box>
                                     </Box>
                                     <Box sx={{ display: 'flex', justifyContent: 'end' }}>

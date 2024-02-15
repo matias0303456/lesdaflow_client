@@ -44,7 +44,7 @@ export function SaleDetails() {
                 <Box sx={{ width: '100%' }}>
                     <LinearProgress />
                 </Box> :
-                <Layout title={'Cuenta corriente N° ' + sale.id}>
+                <Layout title={`${sale.type === 'CUENTA_CORRIENTE' ? 'Cuenta corriente ' : 'Venta al contado'} N° ${sale.id}`}>
                     <Link
                         to={`${REPORT_URL}/account-details/${auth.token}/${sale.id}`}
                         target="_blank"
