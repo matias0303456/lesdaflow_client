@@ -7,9 +7,9 @@ import es from 'date-fns/locale/es';
 
 import { setFromDate, setLocalDate, setToDate } from "../../utils/helpers";
 
-export function IncomeFilter({ incomes, setIncomes }) {
+export function MovementFilter({ registers, setRegisters }) {
 
-    const [backup] = useState(incomes)
+    const [backup] = useState(registers)
 
     const [filter, setFilter] = useState({
         product: '',
@@ -30,11 +30,11 @@ export function IncomeFilter({ incomes, setIncomes }) {
             from: new Date(backup[backup.length - 1] ? setLocalDate(backup[backup.length - 1].created_at) : Date.now()),
             to: new Date(backup[0] ? setLocalDate(backup[0].created_at) : Date.now())
         })
-        setIncomes(backup)
+        setRegisters(backup)
     }
 
     useEffect(() => {
-        setIncomes(backup.filter(item => {
+        setRegisters(backup.filter(item => {
             return (
                 item.product.code.toLowerCase().includes(filter.product.toLowerCase()) ||
                 item.product.details.toLowerCase().includes(filter.product.toLowerCase()) ||

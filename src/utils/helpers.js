@@ -4,6 +4,8 @@ export function getStock(product) {
         return prev + curr.amount
     }, 0) - product.sale_products?.reduce((prev, curr) => {
         return prev + curr.amount
+    }, 0) - product.outcomes?.reduce((prev, curr) => {
+        return prev + curr.amount
     }, 0)
 }
 

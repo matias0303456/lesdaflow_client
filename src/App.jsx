@@ -8,6 +8,7 @@ import { AuthProvider } from "./providers/AuthProvider";
 import { Login } from "./pages/Login";
 import { Products } from './pages/Products'
 import { Incomes } from "./pages/Incomes";
+import { Outcomes } from "./pages/Outcomes";
 import { Sales } from "./pages/Sales";
 import { SaleDetails } from "./pages/SaleDetails";
 import { Clients } from './pages/Clients'
@@ -28,6 +29,7 @@ function App() {
             <Route path="/veroshop/productos" element={<Products />} />
             <Route path="/veroshop/login" element={<Login />} />
             <Route path="/veroshop/ingresos" element={<Incomes />} />
+            <Route path="/veroshop/egresos" element={<Outcomes />} />
             <Route path="/veroshop/ventas" element={<Sales />} />
             <Route path="/veroshop/cuenta/:id" element={<SaleDetails />} />
             <Route path="/veroshop/clientes" element={<Clients />} />

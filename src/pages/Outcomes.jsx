@@ -14,16 +14,16 @@ import { DataGrid } from "../components/DataGrid";
 import { ModalComponent } from "../components/ModalComponent";
 import { MovementFilter } from "../components/filters/MovementFilter";
 
-import { INCOME_URL } from "../utils/urls";
+import { OUTCOME_URL } from "../utils/urls";
 
-export function Incomes() {
+export function Outcomes(){
 
     const { auth } = useContext(AuthContext)
     const { setMessage, setOpenMessage, setSeverity } = useContext(MessageContext)
 
     const navigate = useNavigate()
 
-    const { get, post, put, destroy } = useApi(INCOME_URL)
+    const { get, post, put, destroy } = useApi(OUTCOME_URL)
 
     const { products, loadingProducts } = useProducts()
     const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
@@ -46,8 +46,8 @@ export function Incomes() {
         }
     })
 
-    const [loadingIncomes, setLoadingIncomes] = useState(true)
-    const [incomes, setIncomes] = useState([])
+    const [loadingOutcomes, setLoadingOutcomes] = useState(true)
+    const [outcomes, setOutcomes] = useState([])
     const [open, setOpen] = useState(null)
 
     useEffect(() => {
@@ -58,8 +58,8 @@ export function Incomes() {
         (async () => {
             const { status, data } = await get()
             if (status === 200) {
-                setIncomes(data)
-                setLoadingIncomes(false)
+                setOutcomes(data)
+                setLoadingOutcomes(false)
             }
         })()
     }, [])
@@ -70,10 +70,10 @@ export function Incomes() {
             const { status, data } = open === 'NEW' ? await post(formData) : await put(formData)
             if (status === 200) {
                 if (open === 'NEW') {
-                    setIncomes([data, ...incomes])
+                    setOutcomes([data, ...outcomes])
                     setMessage('Ingreso creado correctamente.')
                 } else {
-                    setIncomes([data, ...incomes.filter(inc => inc.id !== formData.id)])
+                    setOutcomes([data, ...outcomes.filter(out => out.id !== formData.id)])
                     setMessage('Ingreso editado correctamente.')
                 }
                 setSeverity('success')
@@ -88,19 +88,19 @@ export function Incomes() {
     }
 
     async function handleDelete(elements) {
-        setLoadingIncomes(true)
+        setLoadingOutcomes(true)
         const result = await Promise.all(elements.map(e => destroy(e)))
         if (result.every(r => r.status === 200)) {
             const ids = result.map(r => r.data.id)
-            setIncomes([...incomes.filter(inc => !ids.includes(inc.id))])
-            setMessage(`${result.length === 1 ? 'Ingreso eliminado' : 'Ingresos eliminados'} correctamente.`)
+            setOutcomes([...outcomes.filter(out => !ids.includes(out.id))])
+            setMessage(`${result.length === 1 ? 'Egreso eliminado' : 'Egresos eliminados'} correctamente.`)
             setSeverity('success')
         } else {
             setMessage('Ocurrió un error. Actualice la página.')
             setSeverity('error')
         }
         setOpenMessage(true)
-        setLoadingIncomes(false)
+        setLoadingOutcomes(false)
         setOpen(null)
     }
 
@@ -157,17 +157,17 @@ export function Incomes() {
     ]
 
     return (
-        <Layout title="Ingresos">
-            {loadingIncomes || loadingProducts || disabled ?
+        <Layout title="Egresos">
+            {loadingOutcomes || loadingProducts || disabled ?
                 <Box sx={{ width: '100%' }}>
                     <LinearProgress />
                 </Box> :
                 <>
-                    <MovementFilter registers={incomes} setRegisters={setIncomes} />
+                    <MovementFilter registers={outcomes} setRegisters={setOutcomes} />
                     <DataGrid
-                        title="Ingresos registrados"
+                        title="Egresos registrados"
                         headCells={headCells}
-                        rows={incomes}
+                        rows={outcomes}
                         open={open}
                         setOpen={setOpen}
                         data={formData}
@@ -176,8 +176,8 @@ export function Incomes() {
                     >
                         <ModalComponent open={open === 'NEW' || open === 'EDIT'} onClose={() => reset(setOpen)}>
                             <Typography variant="h6" sx={{ marginBottom: 2 }}>
-                                {open === 'NEW' && 'Nuevo ingreso'}
-                                {open === 'EDIT' && 'Editar ingreso'}
+                                {open === 'NEW' && 'Nuevo egreso'}
+                                {open === 'EDIT' && 'Editar egreso'}
                             </Typography>
                             <form onChange={handleChange} onSubmit={handleSubmit}>
                                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>

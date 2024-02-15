@@ -19,6 +19,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import InputSharpIcon from '@mui/icons-material/InputSharp';
+import OutputSharpIcon from '@mui/icons-material/OutputSharp';
 import MonetizationOnSharpIcon from '@mui/icons-material/MonetizationOnSharp';
 import ProductionQuantityLimitsSharpIcon from '@mui/icons-material/ProductionQuantityLimitsSharp';
 import Person2SharpIcon from '@mui/icons-material/Person2Sharp';
@@ -70,14 +71,24 @@ export function Layout({ children, title }) {
                     </ListItemButton>
                 </ListItem>
                 {auth?.user.role.name === 'ADMINISTRADOR' &&
-                    <ListItem key={2} disablePadding sx={{ background: pathname === '/veroshop/ingresos' ? grey[100] : '#fff' }}>
-                        <ListItemButton onClick={() => navigate('/veroshop/ingresos')}>
-                            <ListItemIcon>
-                                <InputSharpIcon />
-                            </ListItemIcon>
-                            <ListItemText primary="Ingresos" />
-                        </ListItemButton>
-                    </ListItem>
+                    <>
+                        <ListItem key={2} disablePadding sx={{ background: pathname === '/veroshop/ingresos' ? grey[100] : '#fff' }}>
+                            <ListItemButton onClick={() => navigate('/veroshop/ingresos')}>
+                                <ListItemIcon>
+                                    <InputSharpIcon />
+                                </ListItemIcon>
+                                <ListItemText primary="Ingresos" />
+                            </ListItemButton>
+                        </ListItem>
+                        <ListItem key={2} disablePadding sx={{ background: pathname === '/veroshop/egresos' ? grey[100] : '#fff' }}>
+                            <ListItemButton onClick={() => navigate('/veroshop/egresos')}>
+                                <ListItemIcon>
+                                    <OutputSharpIcon />
+                                </ListItemIcon>
+                                <ListItemText primary="Egresos" />
+                            </ListItemButton>
+                        </ListItem>
+                    </>
                 }
                 <ListItem key={3} disablePadding sx={{ background: pathname === '/veroshop/ventas' ? grey[100] : '#fff' }}>
                     <ListItemButton onClick={() => navigate('/veroshop/ventas')}>
