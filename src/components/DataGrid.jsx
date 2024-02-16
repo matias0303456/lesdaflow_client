@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { alpha } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Table from '@mui/material/Table';
@@ -25,12 +25,14 @@ import AddCircleSharpIcon from '@mui/icons-material/AddCircleSharp';
 import { Button } from '@mui/material';
 import AttachMoneySharpIcon from '@mui/icons-material/AttachMoneySharp';
 import PasswordSharpIcon from '@mui/icons-material/PasswordSharp';
+import PrintSharpIcon from '@mui/icons-material/PrintSharp';
+import { SearchSharp } from '@mui/icons-material';
 
 import { AuthContext } from '../providers/AuthProvider';
 import { ModalComponent } from './ModalComponent';
 
 import { deadlineIsPast, getStock } from '../utils/helpers';
-import { SearchSharp } from '@mui/icons-material';
+import { REPORT_URL } from '../utils/urls';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -131,7 +133,9 @@ function EnhancedTableToolbar({
     setMassiveEdit,
     updateByPercentage,
     changePwd,
-    seeAccount
+    seeAccount,
+    handlePrint,
+    selected
 }) {
 
     const { auth } = React.useContext(AuthContext)
@@ -173,13 +177,27 @@ function EnhancedTableToolbar({
                         `${numSelected} registros seleccionados.`}
             </Typography>
             {numSelected >= 1 && auth.user.role.name === 'ADMINISTRADOR' &&
-                <Tooltip title="Eliminar" onClick={() => {
-                    setOpen('DELETE')
-                }}>
-                    <IconButton>
-                        <DeleteIcon />
-                    </IconButton>
-                </Tooltip>
+                <>
+                    <Tooltip title="Eliminar" onClick={() => {
+                        setOpen('DELETE')
+                    }}>
+                        <IconButton>
+                            <DeleteIcon />
+                        </IconButton>
+                    </Tooltip>
+                    {handlePrint &&
+                        <Tooltip title="Imprimir PDF">
+                            <Link
+                                to={`${REPORT_URL}/sales?token=${auth.token}&ids=${selected.join(',')}`}
+                                target="_blank"
+                            >
+                                <IconButton>
+                                    <PrintSharpIcon />
+                                </IconButton>
+                            </Link>
+                        </Tooltip>
+                    }
+                </>
             }
             {numSelected === 1 && changePwd && workOn[0]?.role.name === 'VENDEDOR' &&
                 <Tooltip title="Cambiar contraseña" onClick={() => {
@@ -278,7 +296,8 @@ export function DataGrid({
     setMassiveEdit,
     updateByPercentage = false,
     changePwd = false,
-    seeAccount = false
+    seeAccount = false,
+    handlePrint = false
 }) {
 
     const [order, setOrder] = React.useState('asc');
@@ -367,6 +386,8 @@ export function DataGrid({
                         updateByPercentage={updateByPercentage}
                         changePwd={changePwd}
                         seeAccount={seeAccount}
+                        handlePrint={handlePrint}
+                        selected={selected}
                     />
                     <TableContainer>
                         <Table

@@ -207,6 +207,7 @@ export function Sales() {
                         handleDelete={handleDelete}
                         deadlineColor="sales"
                         seeAccount
+                        handlePrint
                     >
                         <ModalComponent
                             reduceWidth={50}
