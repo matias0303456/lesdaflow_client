@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react"
 import { Link, useNavigate, useParams } from "react-router-dom"
-import { Box, Button, LinearProgress, Paper, Tab, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tabs } from "@mui/material"
+import { Box, Button, LinearProgress, Paper, Tab, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tabs, Typography } from "@mui/material"
 import { format } from "date-fns"
 import PrintSharpIcon from '@mui/icons-material/PrintSharp'
 
@@ -92,119 +92,112 @@ export function SaleDetails() {
                         </Link>
                     </Box>
                     <CustomTabPanel value={value} index={0}>
+                        <Typography variant="h6" sx={{ color: '#8B4992', marginTop: 1 }}>Cliente</Typography>
                         <TableContainer component={Paper}>
                             <Table>
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell align="center" sx={{ color: '#8B4992' }}>Código</TableCell>
+                                        <TableCell align="center" sx={{ color: '#8B4992' }}>Nombre</TableCell>
+                                        <TableCell align="center" sx={{ color: '#8B4992' }}>Dirección</TableCell>
+                                        <TableCell align="center" sx={{ color: '#8B4992' }}>Teléfono</TableCell>
+                                        <TableCell align="center" sx={{ color: '#8B4992' }}>Email</TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    <TableCell align="center">{sale.client.code}</TableCell>
+                                    <TableCell align="center">{sale.client.name}</TableCell>
+                                    <TableCell align="center">{sale.client.address}</TableCell>
+                                    <TableCell align="center">{sale.client.phone}</TableCell>
+                                    <TableCell align="center">{sale.client.email}</TableCell>
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
+                        <Typography variant="h6" sx={{ color: '#8B4992', marginTop: 3 }}>Productos</Typography>
+                        <TableContainer component={Paper} sx={{ marginBottom: 3 }}>
+                            <Table>
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell align="center" sx={{ color: '#8B4992' }}>Código</TableCell>
+                                        <TableCell align="center" sx={{ color: '#8B4992' }}>Detalle</TableCell>
+                                        <TableCell align="center" sx={{ color: '#8B4992' }}>Talle</TableCell>
+                                        <TableCell align="center" sx={{ color: '#8B4992' }}>P. compra</TableCell>
+                                        <TableCell align="center" sx={{ color: '#8B4992' }}>Cantidad</TableCell>
+                                        <TableCell align="center" sx={{ color: '#8B4992' }}>Proveedor</TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {sale.sale_products.map(sp => (
+                                        <TableRow key={sp.id}>
+                                            <TableCell align="center">{sp.product.code}</TableCell>
+                                            <TableCell align="center">{sp.product.details}</TableCell>
+                                            <TableCell align="center">{sp.product.size}</TableCell>
+                                            <TableCell align="center">${sp.product.buy_price.toFixed(2)}</TableCell>
+                                            <TableCell align="center">{sp.amount}</TableCell>
+                                            <TableCell align="center">{sp.product.supplier.name}</TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
+                        <Typography variant="h6" sx={{ color: '#8B4992' }}>Detalle venta</Typography>
+                        <TableContainer component={Paper} sx={{ marginBottom: 2 }}>
+                            <Table>
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell align="center" sx={{ color: '#8B4992' }}>Fecha</TableCell>
+                                        <TableCell align="center" sx={{ color: '#8B4992' }}>Vencimiento</TableCell>
+                                        <TableCell align="center" sx={{ color: '#8B4992' }}>Vendedor</TableCell>
+                                        <TableCell align="center" sx={{ color: '#8B4992' }}>Cuotas</TableCell>
+                                        <TableCell align="center" sx={{ color: '#8B4992' }}>Monto por cuota</TableCell>
+                                    </TableRow>
+                                </TableHead>
                                 <TableBody>
                                     <TableRow>
-                                        <TableCell align="center" sx={{ fontWeight: 'bold' }}>Cliente</TableCell>
                                         <TableCell align="center">
-                                            <Table>
-                                                <TableHead>
-                                                    <TableRow>
-                                                        <TableCell align="center">Código</TableCell>
-                                                        <TableCell align="center">Nombre</TableCell>
-                                                        <TableCell align="center">Dirección</TableCell>
-                                                        <TableCell align="center">Teléfono</TableCell>
-                                                        <TableCell align="center">Email</TableCell>
-                                                    </TableRow>
-                                                </TableHead>
-                                                <TableBody>
-                                                    <TableRow>
-                                                        <TableCell align="center">{sale.client.code}</TableCell>
-                                                        <TableCell align="center">{sale.client.name}</TableCell>
-                                                        <TableCell align="center">{sale.client.address}</TableCell>
-                                                        <TableCell align="center">{sale.client.phone}</TableCell>
-                                                        <TableCell align="center">{sale.client.email}</TableCell>
-                                                    </TableRow>
-                                                </TableBody>
-                                            </Table>
+                                            {format(new Date(sale.date), 'dd-MM-yyyy')}
                                         </TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell align="center" sx={{ fontWeight: 'bold' }}>Productos</TableCell>
                                         <TableCell align="center">
-                                            <Table>
-                                                <TableHead>
-                                                    <TableRow>
-                                                        <TableCell align="center">Código</TableCell>
-                                                        <TableCell align="center">Detalle</TableCell>
-                                                        <TableCell align="center">Talle</TableCell>
-                                                        <TableCell align="center">P. compra</TableCell>
-                                                        <TableCell align="center">Cantidad</TableCell>
-                                                        <TableCell align="center">Proveedor</TableCell>
-                                                    </TableRow>
-                                                </TableHead>
-                                                <TableBody>
-                                                    {sale.sale_products.map(sp => (
-                                                        <TableRow key={sp.id}>
-                                                            <TableCell align="center">{sp.product.code}</TableCell>
-                                                            <TableCell align="center">{sp.product.details}</TableCell>
-                                                            <TableCell align="center">{sp.product.size}</TableCell>
-                                                            <TableCell align="center">${sp.product.buy_price}</TableCell>
-                                                            <TableCell align="center">{sp.amount}</TableCell>
-                                                            <TableCell align="center">{sp.product.supplier.name}</TableCell>
-                                                        </TableRow>
-                                                    ))}
-                                                </TableBody>
-                                            </Table>
+                                            {format(new Date(getDeadline(sale.date, sale.installments)), 'dd-MM-yyyy')}
                                         </TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell align="center" sx={{ fontWeight: 'bold' }}>Subtotal</TableCell>
                                         <TableCell align="center">
-                                            {getCurrentSubtotal(sale.sale_products, products)}
+                                            {sale.client.user.username}
                                         </TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell align="center" sx={{ fontWeight: 'bold' }}>Descuento</TableCell>
-                                        <TableCell align="center">
-                                            {sale.discount}%
-                                        </TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell align="center" sx={{ fontWeight: 'bold' }}>Cuotas</TableCell>
                                         <TableCell align="center">
                                             {sale.installments}
                                         </TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell align="center" sx={{ fontWeight: 'bold' }}>Monto por cuota</TableCell>
                                         <TableCell align="center">
                                             ${(getSaleTotal(sale).replace('$', '') / sale.installments).toFixed(2)}
                                         </TableCell>
                                     </TableRow>
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
+                        <TableContainer component={Paper}>
+                            <Table>
+                                <TableHead>
                                     <TableRow>
-                                        <TableCell align="center" sx={{ fontWeight: 'bold' }}>Importe</TableCell>
+                                        <TableCell align="center" sx={{ color: '#8B4992' }}>Subtotal</TableCell>
+                                        <TableCell align="center" sx={{ color: '#8B4992' }}>Descuento</TableCell>
+                                        <TableCell align="center" sx={{ color: '#8B4992' }}>Importe</TableCell>
+                                        <TableCell align="center" sx={{ color: '#8B4992' }}>Saldo</TableCell>
+                                        <TableCell align="center" sx={{ color: '#8B4992' }}>Observaciones</TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    <TableRow>
+                                        <TableCell align="center">
+                                            {getCurrentSubtotal(sale.sale_products, products)}
+                                        </TableCell>
+                                        <TableCell align="center">
+                                            {sale.discount}%
+                                        </TableCell>
                                         <TableCell align="center">
                                             {getSaleTotal(sale)}
                                         </TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell align="center" sx={{ fontWeight: 'bold' }}>Saldo</TableCell>
                                         <TableCell align="center">
                                             {getSaleDifference(sale)}
                                         </TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell align="center" sx={{ fontWeight: 'bold' }}>Fecha</TableCell>
-                                        <TableCell align="center">
-                                            {format(new Date(sale.date), 'dd-MM-yyyy')}
-                                        </TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell align="center" sx={{ fontWeight: 'bold' }}>Vencimiento</TableCell>
-                                        <TableCell align="center">
-                                            {format(new Date(getDeadline(sale.date, sale.installments)), 'dd-MM-yyyy')}
-                                        </TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell align="center" sx={{ fontWeight: 'bold' }}>Vendedor</TableCell>
-                                        <TableCell align="center">
-                                            {sale.client.user.username}
-                                        </TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell align="center" sx={{ fontWeight: 'bold' }}>Observaciones</TableCell>
                                         <TableCell align="center">
                                             {sale.observations}
                                         </TableCell>
