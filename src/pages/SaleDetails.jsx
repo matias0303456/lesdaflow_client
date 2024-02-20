@@ -105,11 +105,13 @@ export function SaleDetails() {
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                    <TableCell align="center">{sale.client.code}</TableCell>
-                                    <TableCell align="center">{sale.client.name}</TableCell>
-                                    <TableCell align="center">{sale.client.address}</TableCell>
-                                    <TableCell align="center">{sale.client.phone}</TableCell>
-                                    <TableCell align="center">{sale.client.email}</TableCell>
+                                    <TableRow>
+                                        <TableCell align="center">{sale.client.code}</TableCell>
+                                        <TableCell align="center">{sale.client.name}</TableCell>
+                                        <TableCell align="center">{sale.client.address}</TableCell>
+                                        <TableCell align="center">{sale.client.phone}</TableCell>
+                                        <TableCell align="center">{sale.client.email}</TableCell>
+                                    </TableRow>
                                 </TableBody>
                             </Table>
                         </TableContainer>

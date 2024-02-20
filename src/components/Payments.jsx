@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { Box, Button, FormControl, Input, InputLabel, LinearProgress, Typography } from "@mui/material";
+import { Box, Button, FormControl, Input, InputLabel, LinearProgress, MenuItem, Select, Typography } from "@mui/material";
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
@@ -25,6 +25,8 @@ export function Payments({ sale, setSale, loading, setLoading }) {
         defaultData: {
             id: '',
             amount: '',
+            type: 'EFECTIVO',
+            observations: '',
             sale_id: sale.id,
             date: new Date(Date.now())
         },
@@ -34,6 +36,12 @@ export function Payments({ sale, setSale, loading, setLoading }) {
             },
             date: {
                 required: true
+            },
+            type: {
+                required: true
+            },
+            observations: {
+                maxLength: 55
             }
         }
     })
@@ -98,6 +106,20 @@ export function Payments({ sale, setSale, loading, setLoading }) {
             accessor: (row) => `$${row.amount}`
         },
         {
+            id: 'type',
+            numeric: false,
+            disablePadding: true,
+            label: 'Tipo',
+            accessor: 'type'
+        },
+        {
+            id: 'observations',
+            numeric: false,
+            disablePadding: true,
+            label: 'Observaciones',
+            accessor: 'observations'
+        },
+        {
             id: 'date',
             numeric: false,
             disablePadding: true,
@@ -156,6 +178,29 @@ export function Payments({ sale, setSale, loading, setLoading }) {
                                         {errors.date?.type === 'required' &&
                                             <Typography variant="caption" color="red" marginTop={1}>
                                                 * La fecha es requerida.
+                                            </Typography>
+                                        }
+                                    </FormControl>
+                                    <FormControl>
+                                        <InputLabel id="type-select">Tipo</InputLabel>
+                                        <Select
+                                            labelId="type-select"
+                                            id="type"
+                                            value={formData.type}
+                                            label="Tipo"
+                                            name="type"
+                                            onChange={handleChange}
+                                        >
+                                            <MenuItem value="EFECTIVO">EFECTIVO</MenuItem>
+                                            <MenuItem value="TRANSFERENCIA">TRANSFERENCIA</MenuItem>
+                                        </Select>
+                                    </FormControl>
+                                    <FormControl>
+                                        <InputLabel htmlFor="observations">Observaciones</InputLabel>
+                                        <Input id="observations" type="text" name="observations" value={formData.observations} />
+                                        {errors.observations?.type === 'maxLength' &&
+                                            <Typography variant="caption" color="red" marginTop={1}>
+                                                * Las observaciones son demasiado largas.
                                             </Typography>
                                         }
                                     </FormControl>
