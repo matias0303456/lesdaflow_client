@@ -11,6 +11,7 @@ import { Products } from './pages/Products'
 import { Incomes } from "./pages/Incomes";
 import { Outcomes } from "./pages/Outcomes";
 import { Sales } from "./pages/Sales";
+import { Registers } from "./pages/Registers";
 import { SaleDetails } from "./pages/SaleDetails";
 import { Clients } from './pages/Clients'
 import { Suppliers } from './pages/Suppliers'
@@ -42,6 +43,7 @@ function App() {
               <Route path="/veroshop/ingresos" element={<Incomes />} />
               <Route path="/veroshop/egresos" element={<Outcomes />} />
               <Route path="/veroshop/ventas" element={<Sales />} />
+              <Route path="/veroshop/cajas" element={<Registers />} />
               <Route path="/veroshop/cuenta/:id" element={<SaleDetails />} />
               <Route path="/veroshop/clientes" element={<Clients />} />
               <Route path="/veroshop/proveedores" element={<Suppliers />} />

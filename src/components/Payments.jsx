@@ -6,6 +6,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { format } from "date-fns";
 import es from 'date-fns/locale/es';
 
+import { AuthContext } from "../providers/AuthProvider";
 import { MessageContext } from "../providers/MessageProvider";
 import { useApi } from "../hooks/useApi";
 import { useForm } from "../hooks/useForm";
@@ -18,6 +19,7 @@ import { PAYMENT_URL } from "../utils/urls";
 
 export function Payments({ sale, setSale, loading, setLoading }) {
 
+    const { auth } = useContext(AuthContext)
     const { setMessage, setOpenMessage, setSeverity } = useContext(MessageContext)
 
     const { post, put, destroy } = useApi(PAYMENT_URL)
@@ -52,7 +54,8 @@ export function Payments({ sale, setSale, loading, setLoading }) {
         e.preventDefault()
         if (validate()) {
             setLoading(true)
-            const { status, data } = open === 'NEW' ? await post(formData) : await put(formData)
+            const submitData = { ...formData, sale_id: sale.id }
+            const { status, data } = open === 'NEW' ? await post(submitData) : await put(submitData)
             if (status === 200) {
                 if (open === 'NEW') {
                     setSale({ ...sale, payments: [data, ...sale.payments] })
@@ -155,7 +158,13 @@ export function Payments({ sale, setSale, loading, setLoading }) {
                                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
                                     <FormControl>
                                         <InputLabel htmlFor="amount">Monto</InputLabel>
-                                        <Input id="amount" type="number" name="amount" value={formData.amount} />
+                                        <Input
+                                            id="amount"
+                                            type="number"
+                                            name="amount"
+                                            value={formData.amount}
+                                            disabled={auth.user.role.name !== 'ADMINISTRADOR' && open === 'EDIT'}
+                                        />
                                         {errors.amount?.type === 'required' &&
                                             <Typography variant="caption" color="red" marginTop={1}>
                                                 * La cantidad es requerida.
@@ -173,6 +182,7 @@ export function Payments({ sale, setSale, loading, setLoading }) {
                                                         value: new Date(value.toISOString())
                                                     }
                                                 })}
+                                                disabled={auth.user.role.name !== 'ADMINISTRADOR' && open === 'EDIT'}
                                             />
                                         </LocalizationProvider>
                                         {errors.date?.type === 'required' &&

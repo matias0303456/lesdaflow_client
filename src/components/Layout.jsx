@@ -28,7 +28,7 @@ import ManageAccountsSharpIcon from '@mui/icons-material/ManageAccountsSharp';
 import PermContactCalendarSharpIcon from '@mui/icons-material/PermContactCalendarSharp';
 import LogoutSharpIcon from '@mui/icons-material/LogoutSharp';
 import AssessmentSharpIcon from '@mui/icons-material/AssessmentSharp';
-import PaymentsSharpIcon from '@mui/icons-material/PaymentsSharp';
+import AccountBalanceWalletSharpIcon from '@mui/icons-material/AccountBalanceWalletSharp';
 
 import { AuthContext } from '../providers/AuthProvider';
 
@@ -98,7 +98,15 @@ export function Layout({ children, title }) {
                         <ListItemText primary="Ventas" />
                     </ListItemButton>
                 </ListItem>
-                <ListItem key={5} disablePadding sx={{ background: pathname === '/veroshop/clientes' ? grey[100] : '#fff' }}>
+                <ListItem key={5} disablePadding sx={{ background: pathname === '/veroshop/cajas' ? grey[100] : '#fff' }}>
+                    <ListItemButton onClick={() => navigate('/veroshop/cajas')}>
+                        <ListItemIcon>
+                            <AccountBalanceWalletSharpIcon />
+                        </ListItemIcon>
+                        <ListItemText primary="Cajas" />
+                    </ListItemButton>
+                </ListItem>
+                <ListItem key={6} disablePadding sx={{ background: pathname === '/veroshop/clientes' ? grey[100] : '#fff' }}>
                     <ListItemButton onClick={() => navigate('/veroshop/clientes')}>
                         <ListItemIcon>
                             <Person2SharpIcon />
@@ -108,7 +116,7 @@ export function Layout({ children, title }) {
                 </ListItem>
                 {auth?.user.role.name === 'ADMINISTRADOR' &&
                     <>
-                        <ListItem key={6} disablePadding sx={{ background: pathname === '/veroshop/proveedores' ? grey[100] : '#fff' }}>
+                        <ListItem key={7} disablePadding sx={{ background: pathname === '/veroshop/proveedores' ? grey[100] : '#fff' }}>
                             <ListItemButton onClick={() => navigate('/veroshop/proveedores')}>
                                 <ListItemIcon>
                                     <LocalShippingSharpIcon />
@@ -116,7 +124,7 @@ export function Layout({ children, title }) {
                                 <ListItemText primary="Proveedores" />
                             </ListItemButton>
                         </ListItem>
-                        <ListItem key={7} disablePadding sx={{ background: pathname === '/veroshop/usuarios' ? grey[100] : '#fff' }}>
+                        <ListItem key={8} disablePadding sx={{ background: pathname === '/veroshop/usuarios' ? grey[100] : '#fff' }}>
                             <ListItemButton onClick={() => navigate('/veroshop/usuarios')}>
                                 <ListItemIcon>
                                     <PermContactCalendarSharpIcon />
@@ -126,7 +134,7 @@ export function Layout({ children, title }) {
                         </ListItem>
                     </>
                 }
-                <ListItem key={8} disablePadding sx={{ background: pathname === '/veroshop/reportes' ? grey[100] : '#fff' }}>
+                <ListItem key={9} disablePadding sx={{ background: pathname === '/veroshop/reportes' ? grey[100] : '#fff' }}>
                     <ListItemButton onClick={() => navigate('/veroshop/reportes')}>
                         <ListItemIcon>
                             <AssessmentSharpIcon />
