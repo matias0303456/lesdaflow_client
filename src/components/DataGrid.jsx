@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { alpha } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Table from '@mui/material/Table';
@@ -141,6 +141,7 @@ function EnhancedTableToolbar({
     const { auth } = React.useContext(AuthContext)
 
     const navigate = useNavigate()
+    const { pathname } = useLocation()
 
     return (
         <Toolbar
@@ -186,9 +187,15 @@ function EnhancedTableToolbar({
                         </IconButton>
                     </Tooltip>
                     {handlePrint &&
+                        ((pathname === '/veroshop/ventas' && numSelected > 1) ||
+                            (pathname === '/veroshop/cajas' && numSelected === 1)) &&
                         <Tooltip title="Imprimir PDF">
                             <Link
-                                to={`${REPORT_URL}/sales?token=${auth.token}&ids=${selected.join(',')}`}
+                                to={
+                                    pathname === '/veroshop/ventas' ?
+                                        `${REPORT_URL}/sales?token=${auth.token}&ids=${selected.join(',')}` :
+                                        `${REPORT_URL}/payments/${auth.token}/${selected[0]}`
+                                }
                                 target="_blank"
                             >
                                 <IconButton>

@@ -1,6 +1,5 @@
-import { useContext, useEffect, useState } from "react";
-import { Box, Button, FormControl, Input, InputLabel, LinearProgress, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { useContext, useState } from "react";
+import { Box, Button, FormControl, LinearProgress, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
 import { format } from "date-fns";
 
 import { AuthContext } from "../providers/AuthProvider";
@@ -13,17 +12,14 @@ import { useRegisters } from "../hooks/useRegisters";
 import { Layout } from "../components/Layout";
 import { DataGrid } from "../components/DataGrid";
 import { ModalComponent } from "../components/ModalComponent";
-import { SupplierFilter } from "../components/filters/SupplierFilter";
 
 import { REGISTER_URL } from "../utils/urls";
-import { getNewPrice, getRegisterTotal, setLocalDate } from "../utils/helpers";
+import { getRegisterTotal, setLocalDate } from "../utils/helpers";
 
 export function Registers() {
 
     const { auth } = useContext(AuthContext)
     const { setMessage, setOpenMessage, setSeverity } = useContext(MessageContext)
-
-    const navigate = useNavigate()
 
     const { post, put, destroy } = useApi(REGISTER_URL)
     const { registers, setRegisters, loadingRegisters, setLoadingRegisters } = useRegisters()
@@ -135,6 +131,7 @@ export function Registers() {
                     data={formData}
                     setData={setFormData}
                     handleDelete={handleDelete}
+                    handlePrint
                 >
                     <ModalComponent open={open === 'NEW' || open === 'EDIT'} onClose={() => reset(setOpen)}>
                         <Typography variant="h6" sx={{ marginBottom: 2 }}>
