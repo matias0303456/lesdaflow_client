@@ -78,3 +78,13 @@ export function getInstallmentsAmount(total, installments) {
     const inst = installments.toString().length === 0 ? 1 : parseInt(installments)
     return (total / inst).toFixed(2)
 }
+
+export function getAccountStatus(sale) {
+    if (sale.type === 'CONTADO') return ''
+    const diff = getSaleDifference(sale).replaceAll('$', '')
+    if (diff > 0) {
+        return 'Pendiente'
+    } else {
+        return 'Finalizada'
+    }
+}

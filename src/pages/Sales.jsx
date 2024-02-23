@@ -19,7 +19,7 @@ import { SaleFilter } from "../components/filters/SaleFilter";
 import { AddProductsToSale } from "../components/AddProductsToSale";
 
 import { SALE_URL } from "../utils/urls";
-import { getCurrentSubtotal, getCurrentTotal, getDeadline, getInstallmentsAmount, getSaleTotal } from "../utils/helpers";
+import { getAccountStatus, getCurrentSubtotal, getCurrentTotal, getDeadline, getInstallmentsAmount, getSaleTotal } from "../utils/helpers";
 
 export function Sales() {
 
@@ -185,6 +185,20 @@ export function Sales() {
             disablePadding: true,
             label: 'Vendedor',
             accessor: (row) => row.client.user.username
+        },
+        {
+            id: 'type',
+            numeric: false,
+            disablePadding: true,
+            label: 'Tipo',
+            accessor: (row) => row.type.replace('CUENTA_CORRIENTE', 'CTA CTE')
+        },
+        {
+            id: 'status',
+            numeric: false,
+            disablePadding: true,
+            label: 'Estado',
+            accessor: (row) => getAccountStatus(row)
         }
     ]
 
