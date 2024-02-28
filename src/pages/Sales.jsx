@@ -169,7 +169,7 @@ export function Sales() {
             id: 'date',
             numeric: false,
             disablePadding: true,
-            label: 'Creada',
+            label: 'Fecha',
             accessor: (row) => format(new Date(row.date), 'dd-MM-yyyy')
         },
         {

@@ -13,7 +13,7 @@ export function SaleFilter({ sales, setSales }) {
 
     const { auth } = useContext(AuthContext)
 
-    const [backup] = useState(sales)
+    const [backup] = useState(sales.sort((a, b) => new Date(b.date) - new Date(a.date)))
     const [users] = useState(Array.from(new Set(sales.map(s => s.client.user.username))))
 
     const [filter, setFilter] = useState({

@@ -136,7 +136,9 @@ function EnhancedTableToolbar({
     seeAccount,
     handlePrint,
     selected,
-    rows
+    rows,
+    orderBy,
+    order
 }) {
 
     const { auth } = React.useContext(AuthContext)
@@ -207,7 +209,7 @@ function EnhancedTableToolbar({
                 rows.length > 0 &&
                 <Tooltip title="Imprimir PDF">
                     <Link
-                        to={`${REPORT_URL}/sales?token=${auth.token}&ids=${rows.map(row => row.id).join(',')}`}
+                        to={`${REPORT_URL}/sales?token=${auth.token}&ids=${rows.map(row => row.id).join(',')}${orderBy === 'id' || orderBy === 'client_code' ? `&orderBy=${orderBy}&order=${order}` : ''}`}
                         target="_blank"
                     >
                         <IconButton>
@@ -406,6 +408,8 @@ export function DataGrid({
                         handlePrint={handlePrint}
                         selected={selected}
                         rows={rows}
+                        orderBy={orderBy}
+                        order={order}
                     />
                     <TableContainer>
                         <Table
