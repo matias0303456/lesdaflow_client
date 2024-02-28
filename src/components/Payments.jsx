@@ -16,6 +16,7 @@ import { ModalComponent } from "./ModalComponent";
 import { PaymentFilter } from "../components/filters/PaymentFilter";
 
 import { PAYMENT_URL } from "../utils/urls";
+import { getSaleDifference } from "../utils/helpers";
 
 export function Payments({ sale, setSale, loading, setLoading }) {
 
@@ -50,8 +51,18 @@ export function Payments({ sale, setSale, loading, setLoading }) {
 
     const [open, setOpen] = useState(null)
 
+    const checkDifference = () => {
+        const diff = getSaleDifference(sale).replace('$', '')
+        if (parseFloat(diff) >= parseFloat(formData.amount)) return true
+        setMessage(`El monto debe ser menor al saldo. Saldo actual: $${diff}`)
+        setSeverity('error')
+        setOpenMessage(true)
+        return false
+    }
+
     async function handleSubmit(e) {
         e.preventDefault()
+        if (!checkDifference()) return
         if (validate()) {
             setLoading(true)
             const submitData = { ...formData, sale_id: sale.id }
