@@ -135,7 +135,8 @@ function EnhancedTableToolbar({
     changePwd,
     seeAccount,
     handlePrint,
-    selected
+    selected,
+    rows
 }) {
 
     const { auth } = React.useContext(AuthContext)
@@ -186,16 +187,10 @@ function EnhancedTableToolbar({
                             <DeleteIcon />
                         </IconButton>
                     </Tooltip>
-                    {handlePrint &&
-                        ((pathname === '/veroshop/ventas' && numSelected > 1) ||
-                            (pathname === '/veroshop/cajas' && numSelected === 1)) &&
+                    {handlePrint && pathname === '/veroshop/cajas' && numSelected === 1 &&
                         <Tooltip title="Imprimir PDF">
                             <Link
-                                to={
-                                    pathname === '/veroshop/ventas' ?
-                                        `${REPORT_URL}/sales?token=${auth.token}&ids=${selected.join(',')}` :
-                                        `${REPORT_URL}/payments/${auth.token}/${selected[0]}`
-                                }
+                                to={`${REPORT_URL}/payments/${auth.token}/${selected[0]}`}
                                 target="_blank"
                             >
                                 <IconButton>
@@ -205,6 +200,21 @@ function EnhancedTableToolbar({
                         </Tooltip>
                     }
                 </>
+            }
+            {auth.user.role.name === 'ADMINISTRADOR' &&
+                handlePrint &&
+                pathname === '/veroshop/ventas' &&
+                rows.length > 0 &&
+                <Tooltip title="Imprimir PDF">
+                    <Link
+                        to={`${REPORT_URL}/sales?token=${auth.token}&ids=${rows.map(row => row.id).join(',')}`}
+                        target="_blank"
+                    >
+                        <IconButton>
+                            <PrintSharpIcon />
+                        </IconButton>
+                    </Link>
+                </Tooltip>
             }
             {numSelected === 1 && changePwd && workOn[0]?.role.name === 'VENDEDOR' &&
                 <Tooltip title="Cambiar contraseña" onClick={() => {
@@ -395,6 +405,7 @@ export function DataGrid({
                         seeAccount={seeAccount}
                         handlePrint={handlePrint}
                         selected={selected}
+                        rows={rows}
                     />
                     <TableContainer>
                         <Table
