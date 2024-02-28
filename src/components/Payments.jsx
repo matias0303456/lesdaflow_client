@@ -127,7 +127,7 @@ export function Payments({ sale, setSale, loading, setLoading }) {
             numeric: false,
             disablePadding: true,
             label: 'Fecha',
-            accessor: (row) => format(new Date(row.date), 'dd-MM-yyyy')
+            accessor: (row) => format(new Date(row.date), 'dd/MM/yy')
         }
     ]
 

@@ -19,7 +19,7 @@ import { SaleFilter } from "../components/filters/SaleFilter";
 import { AddProductsToSale } from "../components/AddProductsToSale";
 
 import { SALE_URL } from "../utils/urls";
-import { getAccountStatus, getCurrentSubtotal, getCurrentTotal, getDeadline, getInstallmentsAmount, getSaleTotal } from "../utils/helpers";
+import { getAccountStatus, getCurrentSubtotal, getCurrentTotal, getDeadline, getInstallmentsAmount, getSaleDifference, getSaleTotal } from "../utils/helpers";
 
 export function Sales() {
 
@@ -148,21 +148,21 @@ export function Sales() {
             id: 'client_code',
             numeric: false,
             disablePadding: true,
-            label: 'Cód. Cliente',
+            label: 'Cód.',
             accessor: (row) => row.client.code
         },
         {
             id: 'client_name',
             numeric: false,
             disablePadding: true,
-            label: 'NyA Cliente',
+            label: 'NyA',
             accessor: (row) => row.client.name
         },
         {
             id: 'total',
             numeric: false,
             disablePadding: true,
-            label: 'Importe',
+            label: 'Total',
             accessor: (row) => getSaleTotal(row)
         },
         {
@@ -170,14 +170,14 @@ export function Sales() {
             numeric: false,
             disablePadding: true,
             label: 'Fecha',
-            accessor: (row) => format(new Date(row.date), 'dd-MM-yyyy')
+            accessor: (row) => format(new Date(row.date), 'dd/MM/yy')
         },
         {
             id: 'deadline',
             numeric: false,
             disablePadding: true,
             label: 'Vencimiento',
-            accessor: (row) => format(new Date(getDeadline(row.date, row.installments)), 'dd-MM-yyyy')
+            accessor: (row) => format(new Date(getDeadline(row.date, row.installments)), 'dd/MM/yy')
         },
         {
             id: 'seller',
@@ -192,6 +192,13 @@ export function Sales() {
             disablePadding: true,
             label: 'Tipo',
             accessor: (row) => row.type.replace('CUENTA_CORRIENTE', 'CTA CTE')
+        },
+        {
+            id: 'difference',
+            numeric: false,
+            disablePadding: true,
+            label: 'Saldo',
+            accessor: (row) => getSaleDifference(row)
         },
         {
             id: 'status',

@@ -84,7 +84,7 @@ export function Registers() {
             numeric: false,
             disablePadding: true,
             label: 'Fecha y hora Apertura',
-            accessor: (row) => format(setLocalDate(row.created_at), 'dd-MM-yyyy HH:mm:ss')
+            accessor: (row) => format(setLocalDate(row.created_at), 'dd/MM/yy HH:mm:ss')
         },
         {
             id: 'open_amount',
@@ -98,7 +98,7 @@ export function Registers() {
             numeric: false,
             disablePadding: true,
             label: 'Fecha y hora Cierre',
-            accessor: (row) => row.created_at === row.updated_at ? '-' : format(setLocalDate(row.updated_at), 'dd-MM-yyyy HH:mm:ss')
+            accessor: (row) => row.created_at === row.updated_at ? '-' : format(setLocalDate(row.updated_at), 'dd/MM/yy HH:mm:ss')
         },
         {
             id: 'close_amount',

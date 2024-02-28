@@ -152,7 +152,7 @@ export function Incomes() {
             numeric: false,
             disablePadding: true,
             label: 'Fecha',
-            accessor: (row) => format(new Date(row.created_at), 'dd-MM-yyyy')
+            accessor: (row) => format(new Date(row.created_at), 'dd/MM/yy')
         }
     ]
 
