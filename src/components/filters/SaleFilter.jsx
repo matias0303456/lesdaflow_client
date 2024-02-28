@@ -17,6 +17,7 @@ export function SaleFilter({ sales, setSales }) {
     const [users] = useState(Array.from(new Set(sales.map(s => s.client.user.username))))
 
     const [filter, setFilter] = useState({
+        id: '',
         client: '',
         type: 'ALL',
         from: new Date(backup[backup.length - 1] ? setLocalDate(backup[backup.length - 1].date) : Date.now()),
@@ -33,6 +34,7 @@ export function SaleFilter({ sales, setSales }) {
 
     const handleReset = () => {
         setFilter({
+            id: '',
             client: '',
             type: 'ALL',
             from: new Date(backup[backup.length - 1] ? setLocalDate(backup[backup.length - 1].date) : Date.now()),
@@ -51,7 +53,8 @@ export function SaleFilter({ sales, setSales }) {
                 setLocalDate(item.date) >= setFromDate(filter.from) &&
                 setLocalDate(item.date) <= setToDate(filter.to) &&
                 item.client.user.username.toLowerCase().includes(filter.user.toLowerCase()) &&
-                (filter.type === 'ALL' || item.type === filter.type)
+                (filter.type === 'ALL' || item.type === filter.type) &&
+                (filter.id.length === 0 || Math.abs(parseInt(filter.id)) === item.id)
         }))
     }, [filter])
 
@@ -68,111 +71,124 @@ export function SaleFilter({ sales, setSales }) {
             <Box sx={{
                 display: 'flex',
                 flexWrap: 'wrap',
+                justifyContent: 'start',
                 gap: 3,
                 flexDirection: {
                     xs: 'column',
                     md: 'row'
                 }
             }}>
-                <FormControl>
-                    <InputLabel htmlFor="client">Cliente</InputLabel>
-                    <Input id="client" type="text" name="client" value={filter.client} onChange={handleChange} />
-                </FormControl>
-                <FormControl>
-                    <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
-                        <DatePicker
-                            label="Desde"
-                            value={new Date(filter.from)}
-                            onChange={value => handleChange({
-                                target: {
-                                    name: 'from',
-                                    value: new Date(value.toISOString())
-                                }
-                            })}
-                        />
-                    </LocalizationProvider>
-                </FormControl>
-                <FormControl>
-                    <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
-                        <DatePicker
-                            label="Hasta"
-                            value={new Date(filter.to)}
-                            onChange={value => handleChange({
-                                target: {
-                                    name: 'to',
-                                    value: new Date(value.toISOString())
-                                }
-                            })}
-                        />
-                    </LocalizationProvider>
-                </FormControl>
-                {auth?.user.role.name === 'ADMINISTRADOR' &&
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
                     <FormControl>
-                        <InputLabel id="user-select">Vendedor</InputLabel>
-                        <Select
-                            labelId="user-select"
-                            id="user"
-                            value={filter.user}
-                            label="Vendedor"
-                            name="user"
-                            sx={{ width: { xs: '100%', md: 150 } }}
-                            onChange={handleChange}
-                        >
-                            <MenuItem value="">Seleccione</MenuItem>
-                            {users.map(u => (
-                                <MenuItem key={u} value={u}>{u}</MenuItem>
-                            ))}
-                        </Select>
+                        <InputLabel htmlFor="id">N° venta</InputLabel>
+                        <Input id="id" type="number" name="id" value={filter.id} onChange={handleChange} />
                     </FormControl>
-                }
-                <FormControlLabel
-                    control={<Checkbox />}
-                    label="Todas"
-                    checked={filter.type === 'ALL'}
-                    onChange={e => {
-                        if (e.target.checked) {
-                            handleChange({
-                                target: {
-                                    name: 'type',
-                                    value: 'ALL'
-                                }
-                            })
-                        }
-                    }}
-                />
-                <FormControlLabel
-                    control={<Checkbox />}
-                    label="Cuenta Corriente"
-                    checked={filter.type === 'CUENTA_CORRIENTE'}
-                    onChange={e => {
-                        if (e.target.checked) {
-                            handleChange({
-                                target: {
-                                    name: 'type',
-                                    value: 'CUENTA_CORRIENTE'
-                                }
-                            })
-                        }
-                    }}
-                />
-                <FormControlLabel
-                    control={<Checkbox />}
-                    label="Contado"
-                    checked={filter.type === 'CONTADO'}
-                    onChange={e => {
-                        if (e.target.checked) {
-                            handleChange({
-                                target: {
-                                    name: 'type',
-                                    value: 'CONTADO'
-                                }
-                            })
-                        }
-                    }}
-                />
-                <Button variant="outlined" onClick={handleReset}>
-                    Reiniciar
-                </Button>
+                    <FormControl>
+                        <InputLabel htmlFor="client">Cliente</InputLabel>
+                        <Input id="client" type="text" name="client" value={filter.client} onChange={handleChange} />
+                    </FormControl>
+                </Box>
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+                    <FormControl>
+                        <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
+                            <DatePicker
+                                label="Desde"
+                                value={new Date(filter.from)}
+                                onChange={value => handleChange({
+                                    target: {
+                                        name: 'from',
+                                        value: new Date(value.toISOString())
+                                    }
+                                })}
+                            />
+                        </LocalizationProvider>
+                    </FormControl>
+                    <FormControl>
+                        <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
+                            <DatePicker
+                                label="Hasta"
+                                value={new Date(filter.to)}
+                                onChange={value => handleChange({
+                                    target: {
+                                        name: 'to',
+                                        value: new Date(value.toISOString())
+                                    }
+                                })}
+                            />
+                        </LocalizationProvider>
+                    </FormControl>
+                </Box>
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                    <FormControlLabel
+                        control={<Checkbox />}
+                        label="Todas"
+                        checked={filter.type === 'ALL'}
+                        onChange={e => {
+                            if (e.target.checked) {
+                                handleChange({
+                                    target: {
+                                        name: 'type',
+                                        value: 'ALL'
+                                    }
+                                })
+                            }
+                        }}
+                    />
+                    <FormControlLabel
+                        control={<Checkbox />}
+                        label="Cuenta Corriente"
+                        checked={filter.type === 'CUENTA_CORRIENTE'}
+                        onChange={e => {
+                            if (e.target.checked) {
+                                handleChange({
+                                    target: {
+                                        name: 'type',
+                                        value: 'CUENTA_CORRIENTE'
+                                    }
+                                })
+                            }
+                        }}
+                    />
+                    <FormControlLabel
+                        control={<Checkbox />}
+                        label="Contado"
+                        checked={filter.type === 'CONTADO'}
+                        onChange={e => {
+                            if (e.target.checked) {
+                                handleChange({
+                                    target: {
+                                        name: 'type',
+                                        value: 'CONTADO'
+                                    }
+                                })
+                            }
+                        }}
+                    />
+                </Box>
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+                    {auth?.user.role.name === 'ADMINISTRADOR' &&
+                        <FormControl>
+                            <InputLabel id="user-select">Vendedor</InputLabel>
+                            <Select
+                                labelId="user-select"
+                                id="user"
+                                value={filter.user}
+                                label="Vendedor"
+                                name="user"
+                                sx={{ width: { xs: '100%', md: 150 } }}
+                                onChange={handleChange}
+                            >
+                                <MenuItem value="">Seleccione</MenuItem>
+                                {users.map(u => (
+                                    <MenuItem key={u} value={u}>{u}</MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    }
+                    <Button variant="outlined" onClick={handleReset}>
+                        Reiniciar
+                    </Button>
+                </Box>
             </Box>
         </Box>
     )
