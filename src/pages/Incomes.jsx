@@ -165,7 +165,7 @@ export function Incomes() {
                 <>
                     <MovementFilter registers={incomes} setRegisters={setIncomes} />
                     <DataGrid
-                        title="Ingresos registrados"
+                        title=""
                         headCells={headCells}
                         rows={incomes}
                         open={open}

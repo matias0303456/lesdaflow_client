@@ -164,7 +164,7 @@ function EnhancedTableToolbar({
                 component="div"
             >
                 {numSelected === 0 ?
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <Box sx={{ display: 'flex', justifyContent: title.length > 0 ? 'space-between' : 'end' }}>
                         {title}
                         {!disableAdd &&
                             <Tooltip title="Nuevo">
@@ -466,7 +466,7 @@ export function DataGrid({
                                                         (deadlineColor === 'products' && row.min_stock > getStock(row))
                                                     ) ? 'red' : ''
                                                 }}>
-                                                    {typeof accessor === 'function' ? accessor(row) : row[accessor]}
+                                                    {typeof accessor === 'function' ? accessor(row, index) : row[accessor]}
                                                 </TableCell>
                                             ))}
                                         </TableRow>

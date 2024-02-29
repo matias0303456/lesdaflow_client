@@ -194,7 +194,7 @@ export function Suppliers() {
                 <>
                     <SupplierFilter suppliers={suppliers} setSuppliers={setSuppliers} />
                     <DataGrid
-                        title="Proveedores de productos"
+                        title=""
                         headCells={headCells}
                         rows={suppliers}
                         open={open}

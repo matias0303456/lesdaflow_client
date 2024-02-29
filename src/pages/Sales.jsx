@@ -218,7 +218,7 @@ export function Sales() {
                 <>
                     <SaleFilter sales={sales} setSales={setSales} />
                     <DataGrid
-                        title="Ventas registradas"
+                        title=""
                         headCells={headCells}
                         rows={sales}
                         open={open}

@@ -7,10 +7,9 @@ import es from 'date-fns/locale/es';
 
 import { setFromDate, setLocalDate, setToDate } from "../../utils/helpers";
 
-export function PaymentFilter({ sale }) {
+export function PaymentFilter({ sale, setSale }) {
 
-    const [payments, setPayments] = useState(sale.payments)
-    const [backup] = useState(payments.sort((a, b) => new Date(a.date) - new Date(b.date)))
+    const [backup] = useState(sale.payments.sort((a, b) => new Date(a.date) - new Date(b.date)))
 
     const [filter, setFilter] = useState({
         client: '',
@@ -31,14 +30,17 @@ export function PaymentFilter({ sale }) {
             from: new Date(backup[0] ? setLocalDate(backup[0].date) : Date.now()),
             to: new Date(backup[backup.length - 1] ? setLocalDate(backup[backup.length - 1].date) : Date.now())
         })
-        setPayments(backup)
+        setSale({ ...sale, payments: backup })
     }
 
     useEffect(() => {
-        setPayments(backup.filter(item => {
-            return setLocalDate(item.date) >= setFromDate(filter.from) &&
-                setLocalDate(item.date) <= setToDate(filter.to)
-        }))
+        setSale({
+            ...sale,
+            payments: backup.filter(item => {
+                return setLocalDate(item.date) >= setFromDate(filter.from) &&
+                    setLocalDate(item.date) <= setToDate(filter.to)
+            })
+        })
     }, [filter])
 
     return (
@@ -48,8 +50,8 @@ export function PaymentFilter({ sale }) {
             padding: 1,
             borderRadius: 1
         }}>
-            <Typography variant="h6" sx={{ marginBottom: 1 }}>
-                Filtrar
+            <Typography variant="h6" sx={{ marginBottom: 1, color: '#8B4992' }}>
+                DETALLE DE PAGOS
             </Typography>
             <Box sx={{
                 display: 'flex',
@@ -88,7 +90,7 @@ export function PaymentFilter({ sale }) {
                     </LocalizationProvider>
                 </FormControl>
                 <Button variant="outlined" onClick={handleReset}>
-                    Reiniciar
+                    Reiniciar Filtro
                 </Button>
             </Box>
         </Box>

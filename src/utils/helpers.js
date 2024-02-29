@@ -26,6 +26,11 @@ export function getCurrentTotal(formData, saleProducts, products) {
     return (total - ((total / 100) * discount)).toFixed(2)
 }
 
+export function getSaleSubtotal(sale) {
+    const total = sale.sale_products.reduce((prev, curr) => prev + (curr.product.buy_price * curr.amount), 0)
+    return `$${total.toFixed(2)}`
+}
+
 export function getSaleTotal(sale) {
     const totalSaleProducts = sale.sale_products.reduce((prev, curr) => prev + (curr.product.buy_price * curr.amount), 0)
     return `$${(totalSaleProducts - ((totalSaleProducts / 100) * sale.discount)).toFixed(2)}`
@@ -97,4 +102,8 @@ export function getRegisterTotal(register, payments, close = false) {
             new Date(p.date).getTime() < (close ? Date.now() : new Date(register.updated_at).getTime())
     }).reduce((prev, curr) => prev + curr.amount, 0)
     return `$${total}`
+}
+
+export function getAmountByInstallment(sale) {
+    return `$${(getSaleTotal(sale).replaceAll('$', '') / sale.installments).toFixed(2)}`
 }

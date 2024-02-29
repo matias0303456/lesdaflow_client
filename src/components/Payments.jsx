@@ -110,7 +110,7 @@ export function Payments({ sale, setSale, loading, setLoading }) {
             numeric: true,
             disablePadding: false,
             label: 'N°',
-            accessor: 'id'
+            accessor: (row, index) => index + 1
         },
         {
             id: 'amount',
@@ -149,9 +149,9 @@ export function Payments({ sale, setSale, loading, setLoading }) {
                     <LinearProgress />
                 </Box> :
                 <>
-                    <PaymentFilter sale={sale} />
+                    <PaymentFilter sale={sale} setSale={setSale} />
                     <DataGrid
-                        title="Pagos realizados"
+                        title=""
                         headCells={headCells}
                         rows={sale.payments}
                         open={open}

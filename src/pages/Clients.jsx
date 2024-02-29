@@ -173,7 +173,7 @@ export function Clients() {
                 <>
                     <ClientFilter clients={clients} setClients={setClients} />
                     <DataGrid
-                        title="Clientes registrados"
+                        title=""
                         headCells={auth.user.role.name !== 'ADMINISTRADOR' ?
                             headCells :
                             [

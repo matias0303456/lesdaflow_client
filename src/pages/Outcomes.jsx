@@ -165,7 +165,7 @@ export function Outcomes(){
                 <>
                     <MovementFilter registers={outcomes} setRegisters={setOutcomes} />
                     <DataGrid
-                        title="Egresos registrados"
+                        title=""
                         headCells={headCells}
                         rows={outcomes}
                         open={open}

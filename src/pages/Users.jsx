@@ -207,7 +207,7 @@ export function Users() {
                 <>
                     <UserFilter users={users} setUsers={setUsers} />
                     <DataGrid
-                        title="Usuarios del sistema"
+                        title=""
                         headCells={headCells}
                         rows={users.filter(u => u.id !== auth.user.id)}
                         open={open}
