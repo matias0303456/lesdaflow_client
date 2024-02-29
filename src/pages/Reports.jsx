@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Box, Button, FormControl, InputLabel, LinearProgress, MenuItem, Select, Typography } from "@mui/material";
+import { Autocomplete, Box, Button, FormControl, LinearProgress, TextField, Typography } from "@mui/material";
 
 import { AuthContext } from "../providers/AuthProvider";
 import { useForm } from '../hooks/useForm'
@@ -51,22 +51,19 @@ export function Reports() {
                         <Typography variant="caption" color="gray">
                             En este reporte se detallan las ventas y los pagos y del cliente seleccionado.
                         </Typography>
-                        <form onChange={changeClient} style={{ marginTop: 10 }}>
+                        <form style={{ marginTop: 10 }}>
                             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'start', gap: 3 }}>
                                 <FormControl sx={{ width: '50%' }} >
-                                    <InputLabel id="client-select">Cliente</InputLabel>
-                                    <Select
-                                        labelId="client-select"
-                                        id="category_id"
-                                        value={clientData.client_id}
-                                        label="Cliente"
-                                        name="client_id"
-                                        onChange={changeClient}
-                                    >
-                                        {clients.map(c => (
-                                            <MenuItem key={c.id} value={c.id}>{`${c.code} - ${c.name}`}</MenuItem>
-                                        ))}
-                                    </Select>
+                                    <Autocomplete
+                                        disablePortal
+                                        id="client-autocomplete"
+                                        value={clientData.client_id.toString().length > 0 ? `${clients.find(c => c.id === clientData.client_id)?.code} - ${clients.find(c => c.id === clientData.client_id)?.name}` : ''}
+                                        options={clients.map(c => ({ label: `${c.code} - ${c.name}`, id: c.id }))}
+                                        noOptionsText="No hay clientes registrados."
+                                        onChange={(e, value) => changeClient({ target: { name: 'client_id', value: value?.id ?? '' } })}
+                                        renderInput={(params) => <TextField {...params} label="Cliente" />}
+                                        isOptionEqualToValue={(option, value) => option.code === value.code || value.length === 0}
+                                    />
                                 </FormControl>
                                 <Link
                                     to={canDownloadClientReport ? `${REPORT_URL}/client-details/${auth.token}/${clientData.client_id}` : '#'}
@@ -88,22 +85,18 @@ export function Reports() {
                             En este reporte se detallan los ingresos, las ventas
                             y los pagos del producto seleccionado.
                         </Typography>
-                        <form onChange={changeProduct} style={{ marginTop: 10 }}>
+                        <form style={{ marginTop: 10 }}>
                             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'start', gap: 3 }}>
                                 <FormControl sx={{ width: '50%' }} >
-                                    <InputLabel id="product-select">Producto</InputLabel>
-                                    <Select
-                                        labelId="product-select"
-                                        id="product_id"
-                                        value={productHistoryData.product_id}
-                                        label="Producto"
-                                        name="product_id"
-                                        onChange={changeProduct}
-                                    >
-                                        {products.map(p => (
-                                            <MenuItem key={p.id} value={p.id}>{`${p.code} - ${p.details}`}</MenuItem>
-                                        ))}
-                                    </Select>
+                                    <Autocomplete
+                                        disablePortal
+                                        id="product-autocomplete"
+                                        options={products.map(p => ({ label: `Código ${p.code} / Detalle ${p.details} / Talle ${p.size}`, id: p.id }))}
+                                        noOptionsText="No hay productos disponibles."
+                                        onChange={(e, value) => changeProduct({ target: { name: 'product_id', value: value?.id ?? '' } })}
+                                        renderInput={(params) => <TextField {...params} label="Producto" />}
+                                        isOptionEqualToValue={(option, value) => option.code === value.code || value.length === 0}
+                                    />
                                 </FormControl>
                                 <Link
                                     to={canDownloadProductReport ? `${REPORT_URL}/product-history/${auth.token}/${productHistoryData.product_id}` : '#'}
