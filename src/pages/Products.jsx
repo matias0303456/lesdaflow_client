@@ -176,6 +176,7 @@ export function Products() {
             numeric: false,
             disablePadding: true,
             label: 'Talle',
+            sorter: (row) => row.size.toLowerCase(),
             accessor: 'size'
         },
         {
@@ -197,6 +198,7 @@ export function Products() {
             numeric: false,
             disablePadding: true,
             label: 'Precio de venta',
+            sorter: (row) => parseFloat((row.buy_price + ((row.buy_price / 100) * row.earn)).toFixed(2)),
             accessor: (row) => `$${(row.buy_price + ((row.buy_price / 100) * row.earn)).toFixed(2)}`
         },
         {
@@ -204,6 +206,7 @@ export function Products() {
             numeric: false,
             disablePadding: true,
             label: 'Proveedor',
+            sorter: (row) => row.supplier.name.toLowerCase(),
             accessor: (row) => row.supplier.name
         }
     ]
@@ -239,6 +242,7 @@ export function Products() {
                                         numeric: false,
                                         disablePadding: true,
                                         label: 'Stock actual',
+                                        sorter: (row) => getStock(row),
                                         accessor: (row) => getStock(row)
                                     }
                                 ]

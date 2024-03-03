@@ -190,7 +190,7 @@ export function Users() {
             accessor: 'email'
         },
         {
-            id: 'role',
+            id: 'role_id',
             numeric: false,
             disablePadding: true,
             label: 'Rol',

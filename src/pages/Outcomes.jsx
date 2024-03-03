@@ -16,7 +16,7 @@ import { MovementFilter } from "../components/filters/MovementFilter";
 
 import { OUTCOME_URL } from "../utils/urls";
 
-export function Outcomes(){
+export function Outcomes() {
 
     const { auth } = useContext(AuthContext)
     const { setMessage, setOpenMessage, setSeverity } = useContext(MessageContext)
@@ -117,6 +117,7 @@ export function Outcomes(){
             numeric: false,
             disablePadding: true,
             label: 'Cód. Producto',
+            sorter: (row) => row.product.code,
             accessor: (row) => row.product.code
         },
         {
@@ -124,6 +125,7 @@ export function Outcomes(){
             numeric: false,
             disablePadding: true,
             label: 'Det. Producto',
+            sorter: (row) => row.product.details.toLowerCase(),
             accessor: (row) => row.product.details
         },
         {
@@ -131,6 +133,7 @@ export function Outcomes(){
             numeric: false,
             disablePadding: true,
             label: 'Talle Producto',
+            sorter: (row) => row.product.size.toLowerCase(),
             accessor: (row) => row.product.size
         },
         {
@@ -145,6 +148,7 @@ export function Outcomes(){
             numeric: false,
             disablePadding: true,
             label: 'Observaciones',
+            sorter: (row) => row.observations ?? '',
             accessor: 'observations'
         },
         {

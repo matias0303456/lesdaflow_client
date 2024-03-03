@@ -149,6 +149,7 @@ export function Sales() {
             numeric: false,
             disablePadding: true,
             label: 'Cód.',
+            sorter: (row) => row.client.code,
             accessor: (row) => row.client.code
         },
         {
@@ -156,6 +157,7 @@ export function Sales() {
             numeric: false,
             disablePadding: true,
             label: 'NyA',
+            sorter: (row) => row.client.name,
             accessor: (row) => row.client.name
         },
         {
@@ -163,6 +165,7 @@ export function Sales() {
             numeric: false,
             disablePadding: true,
             label: 'Total',
+            sorter: (row) => parseFloat(getSaleTotal(row).replace('$', '')),
             accessor: (row) => getSaleTotal(row)
         },
         {
@@ -177,14 +180,15 @@ export function Sales() {
             numeric: false,
             disablePadding: true,
             label: 'Vencimiento',
+            sorter: (row) => format(new Date(getDeadline(row.date, row.installments)), 'dd/MM/yy'),
             accessor: (row) => format(new Date(getDeadline(row.date, row.installments)), 'dd/MM/yy')
         },
         {
-            id: 'seller',
+            id: 'created_by',
             numeric: false,
             disablePadding: true,
             label: 'Vendedor',
-            accessor: (row) => row.client.user.username
+            accessor: 'created_by'
         },
         {
             id: 'type',
@@ -198,6 +202,7 @@ export function Sales() {
             numeric: false,
             disablePadding: true,
             label: 'Saldo',
+            sorter: (row) => parseFloat(getSaleDifference(row).replace('$', '')),
             accessor: (row) => getSaleDifference(row)
         },
         {
@@ -205,6 +210,7 @@ export function Sales() {
             numeric: false,
             disablePadding: true,
             label: 'Estado',
+            sorter: (row) => getAccountStatus(row),
             accessor: (row) => getAccountStatus(row)
         }
     ]

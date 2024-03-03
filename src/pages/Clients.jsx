@@ -139,6 +139,7 @@ export function Clients() {
             numeric: false,
             disablePadding: true,
             label: 'Email',
+            sorter: (row) => row.email,
             accessor: 'email'
         },
         {
@@ -160,6 +161,7 @@ export function Clients() {
             numeric: false,
             disablePadding: true,
             label: 'Observaciones',
+            sorter: (row) => row.observations ?? '',
             accessor: 'observations'
         }
     ]
@@ -183,6 +185,7 @@ export function Clients() {
                                     numeric: false,
                                     disablePadding: true,
                                     label: 'Vendedor',
+                                    sorter: (row) => row.user.username.toLowerCase(),
                                     accessor: (row) => row.user.username
                                 }
                             ]

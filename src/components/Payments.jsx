@@ -174,6 +174,8 @@ export function Payments({ sale, setSale, loading, setLoading }) {
                         data={formData}
                         setData={setFormData}
                         handleDelete={handleDelete}
+                        defaultOrder="asc"
+                        disableSorting
                     >
                         <ModalComponent open={open === 'NEW' || open === 'EDIT'} onClose={() => reset(setOpen)}>
                             <Typography variant="h6" sx={{ marginBottom: 2 }}>

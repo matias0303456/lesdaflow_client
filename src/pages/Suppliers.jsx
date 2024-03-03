@@ -153,6 +153,7 @@ export function Suppliers() {
             numeric: false,
             disablePadding: true,
             label: 'Dirección',
+            sorter: (row) => row.address ?? '',
             accessor: 'address'
         },
         {
@@ -160,6 +161,7 @@ export function Suppliers() {
             numeric: false,
             disablePadding: true,
             label: 'Ciudad',
+            sorter: (row) => row.city ?? '',
             accessor: 'city'
         },
         {
@@ -167,6 +169,7 @@ export function Suppliers() {
             numeric: false,
             disablePadding: true,
             label: 'Provincia',
+            sorter: (row) => row.province ?? '',
             accessor: 'province'
         },
         {
@@ -174,6 +177,7 @@ export function Suppliers() {
             numeric: false,
             disablePadding: true,
             label: 'Email',
+            sorter: (row) => row.email ?? '',
             accessor: 'email'
         },
         {
@@ -181,6 +185,7 @@ export function Suppliers() {
             numeric: false,
             disablePadding: true,
             label: 'Teléfono',
+            sorter: (row) => row.phone ?? '',
             accessor: 'phone'
         }
     ]

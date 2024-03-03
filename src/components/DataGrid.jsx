@@ -34,20 +34,20 @@ import { ModalComponent } from './ModalComponent';
 import { deadlineIsPast, getStock } from '../utils/helpers';
 import { REPORT_URL } from '../utils/urls';
 
-function descendingComparator(a, b, orderBy) {
-    if (b[orderBy] < a[orderBy]) {
+function descendingComparator(a, b, orderBy, sorter) {
+    if ((b[orderBy] ? b[orderBy] : sorter(b)) < (a[orderBy] ? a[orderBy] : sorter(a))) {
         return -1;
     }
-    if (b[orderBy] > a[orderBy]) {
+    if ((b[orderBy] ? b[orderBy] : sorter(b)) > (a[orderBy] ? a[orderBy] : sorter(a))) {
         return 1;
     }
     return 0;
 }
 
-function getComparator(order, orderBy) {
+function getComparator(order, orderBy, sorter) {
     return order === 'desc'
-        ? (a, b) => descendingComparator(a, b, orderBy)
-        : (a, b) => -descendingComparator(a, b, orderBy);
+        ? (a, b) => descendingComparator(a, b, orderBy, sorter)
+        : (a, b) => -descendingComparator(a, b, orderBy, sorter);
 }
 
 function stableSort(array, comparator) {
@@ -70,7 +70,8 @@ function EnhancedTableHead({
     numSelected,
     rowCount,
     onRequestSort,
-    disableSelection
+    disableSelection,
+    disableSorting
 }) {
 
     const createSortHandler = (property) => (event) => {
@@ -100,18 +101,20 @@ function EnhancedTableHead({
                         padding={headCell.disablePadding ? 'none' : 'normal'}
                         sortDirection={orderBy === headCell.id ? order : false}
                     >
-                        <TableSortLabel
-                            active={orderBy === headCell.id}
-                            direction={orderBy === headCell.id ? order : 'asc'}
-                            onClick={createSortHandler(headCell.id)}
-                        >
-                            {headCell.label}
-                            {orderBy === headCell.id ? (
-                                <Box component="span" sx={visuallyHidden}>
-                                    {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                                </Box>
-                            ) : null}
-                        </TableSortLabel>
+                        {disableSorting ? headCell.label :
+                            <TableSortLabel
+                                active={orderBy === headCell.id}
+                                direction={orderBy === headCell.id ? order : 'asc'}
+                                onClick={createSortHandler(headCell.id)}
+                            >
+                                {headCell.label}
+                                {orderBy === headCell.id ? (
+                                    <Box component="span" sx={visuallyHidden}>
+                                        {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
+                                    </Box>
+                                ) : null}
+                            </TableSortLabel>
+                        }
                     </TableCell>
                 ))}
             </TableRow>
@@ -316,17 +319,21 @@ export function DataGrid({
     updateByPercentage = false,
     changePwd = false,
     seeAccount = false,
-    handlePrint = false
+    handlePrint = false,
+    disableSorting = false,
+    defaultOrder = 'desc',
+    defaultOrderBy = 'id'
 }) {
 
-    const [order, setOrder] = React.useState('desc');
-    const [orderBy, setOrderBy] = React.useState('id');
+    const [order, setOrder] = React.useState(defaultOrder);
+    const [orderBy, setOrderBy] = React.useState(defaultOrderBy);
     const [selected, setSelected] = React.useState([]);
     const [page, setPage] = React.useState(0);
     const [dense, setDense] = React.useState(true);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
     const handleRequestSort = (event, property) => {
+        if (disableSorting) return
         const isAsc = orderBy === property && order === 'asc';
         setOrder(isAsc ? 'desc' : 'asc');
         setOrderBy(property);
@@ -379,7 +386,7 @@ export function DataGrid({
 
     const visibleRows = React.useMemo(
         () =>
-            stableSort(rows, getComparator(order, orderBy)).slice(
+            stableSort(rows, getComparator(order, orderBy, headCells.find(hc => hc.id === orderBy)?.sorter)).slice(
                 page * rowsPerPage,
                 page * rowsPerPage + rowsPerPage,
             ),
@@ -426,6 +433,7 @@ export function DataGrid({
                                 onRequestSort={handleRequestSort}
                                 rowCount={rows.length}
                                 disableSelection={disableSelection}
+                                disableSorting={disableSorting}
                             />
                             <TableBody>
                                 {visibleRows.map((row, index) => {

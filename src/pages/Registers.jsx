@@ -80,7 +80,7 @@ export function Registers() {
             accessor: 'id'
         },
         {
-            id: 'open_date',
+            id: 'created_at',
             numeric: false,
             disablePadding: true,
             label: 'Fecha y hora Apertura',
@@ -91,6 +91,7 @@ export function Registers() {
             numeric: false,
             disablePadding: true,
             label: 'Saldo Apertura',
+            sorter: (row) => 0.00,
             accessor: () => '$0.00'
         },
         {
@@ -98,6 +99,7 @@ export function Registers() {
             numeric: false,
             disablePadding: true,
             label: 'Fecha y hora Cierre',
+            sorter: (row) => row.created_at === row.updated_at ? '-' : row.updated_at,
             accessor: (row) => row.created_at === row.updated_at ? '-' : format(setLocalDate(row.updated_at), 'dd/MM/yy HH:mm:ss')
         },
         {
@@ -105,6 +107,7 @@ export function Registers() {
             numeric: false,
             disablePadding: true,
             label: 'Saldo Cierre',
+            sorter: (row) => parseFloat(getRegisterTotal(row, payments).replace('$', '')),
             accessor: (row) => getRegisterTotal(row, payments)
         },
         {
@@ -112,6 +115,7 @@ export function Registers() {
             numeric: false,
             disablePadding: true,
             label: 'Vendedor',
+            sorter: (row) => row.user.username.toLowerCase(),
             accessor: (row) => row.user.username
         }
     ]
