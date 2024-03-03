@@ -107,3 +107,10 @@ export function getRegisterTotal(register, payments, close = false) {
 export function getAmountByInstallment(sale) {
     return `$${(getSaleTotal(sale).replaceAll('$', '') / sale.installments).toFixed(2)}`
 }
+
+export function getSaleDifferenceByPayment(sale, idx) {
+    const total = getSaleTotal(sale).replace('$', '')
+    const payments = sale.payments.sort((a, b) => a.id - b.id)
+    const totalTillPayment = payments.filter((_, index) => index !== idx).reduce((prev, curr) => prev + curr.amount, 0)
+    return `$${(total - totalTillPayment).toFixed(2)}`
+}

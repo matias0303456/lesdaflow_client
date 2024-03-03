@@ -16,7 +16,7 @@ import { ModalComponent } from "./ModalComponent";
 import { PaymentFilter } from "../components/filters/PaymentFilter";
 
 import { PAYMENT_URL } from "../utils/urls";
-import { getSaleDifference } from "../utils/helpers";
+import { getSaleDifference, getSaleDifferenceByPayment } from "../utils/helpers";
 
 export function Payments({ sale, setSale, loading, setLoading }) {
 
@@ -54,7 +54,7 @@ export function Payments({ sale, setSale, loading, setLoading }) {
     const checkDifference = () => {
         const diff = getSaleDifference(sale).replace('$', '')
         if (parseFloat(diff) >= parseFloat(formData.amount)) return true
-        setMessage(`El monto debe ser menor al saldo. Saldo actual: $${diff}`)
+        setMessage(`El importe debe ser menor al saldo. Saldo actual: $${diff}`)
         setSeverity('error')
         setOpenMessage(true)
         return false
@@ -113,11 +113,25 @@ export function Payments({ sale, setSale, loading, setLoading }) {
             accessor: (row, index) => index + 1
         },
         {
+            id: 'date',
+            numeric: false,
+            disablePadding: true,
+            label: 'Fecha y hora',
+            accessor: (row) => format(new Date(row.date), 'dd/MM/yy HH:mm:ss')
+        },
+        {
             id: 'amount',
             numeric: false,
             disablePadding: true,
-            label: 'Monto',
+            label: 'Importe',
             accessor: (row) => `$${row.amount}`
+        },
+        {
+            id: 'seller',
+            numeric: false,
+            disablePadding: true,
+            label: 'Vendedor',
+            accessor: (row) => row.created_by
         },
         {
             id: 'type',
@@ -134,12 +148,13 @@ export function Payments({ sale, setSale, loading, setLoading }) {
             accessor: 'observations'
         },
         {
-            id: 'date',
+            id: 'difference',
             numeric: false,
             disablePadding: true,
-            label: 'Fecha',
-            accessor: (row) => format(new Date(row.date), 'dd/MM/yy')
-        }
+            label: 'Saldo',
+            accessor: (row, idx) => getSaleDifferenceByPayment(sale, idx)
+        },
+
     ]
 
     return (
