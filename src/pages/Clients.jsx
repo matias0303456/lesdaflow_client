@@ -28,7 +28,9 @@ export function Clients() {
             name: '',
             email: '',
             address: '',
-            phone: ''
+            phone: '',
+            work_place: '',
+            observations: ''
         },
         rules: {
             code: {
@@ -48,6 +50,9 @@ export function Clients() {
             },
             phone: {
                 required: true,
+                maxLength: 55
+            },
+            work_place: {
                 maxLength: 55
             },
             observations: {
@@ -157,6 +162,14 @@ export function Clients() {
             accessor: 'phone'
         },
         {
+            id: 'work_place',
+            numeric: false,
+            disablePadding: true,
+            label: 'Lug. trabajo',
+            sorter: (row) => row.work_place ?? '',
+            accessor: 'work_place'
+        },
+        {
             id: 'observations',
             numeric: false,
             disablePadding: true,
@@ -243,8 +256,6 @@ export function Clients() {
                                                 </Typography>
                                             }
                                         </FormControl>
-                                    </Box>
-                                    <Box sx={{ display: 'flex', flexDirection: 'column', width: '50%', gap: 3 }}>
                                         <FormControl>
                                             <InputLabel htmlFor="address">Dirección</InputLabel>
                                             <Input id="address" type="text" name="address" value={formData.address} />
@@ -259,6 +270,8 @@ export function Clients() {
                                                 </Typography>
                                             }
                                         </FormControl>
+                                    </Box>
+                                    <Box sx={{ display: 'flex', flexDirection: 'column', width: '50%', gap: 3 }}>
                                         <FormControl>
                                             <InputLabel htmlFor="phone">Teléfono</InputLabel>
                                             <Input id="phone" type="number" name="phone" value={formData.phone} />
@@ -270,6 +283,15 @@ export function Clients() {
                                             {errors.phone?.type === 'maxLength' &&
                                                 <Typography variant="caption" color="red" marginTop={1}>
                                                     * El teléfono es demasiado largo.
+                                                </Typography>
+                                            }
+                                        </FormControl>
+                                        <FormControl>
+                                            <InputLabel htmlFor="work_place">Lugar de trabajo</InputLabel>
+                                            <Input id="work_place" type="text" name="work_place" value={formData.work_place} />
+                                            {errors.work_place?.type === 'maxLength' &&
+                                                <Typography variant="caption" color="red" marginTop={1}>
+                                                    * El lugar de trabajo es demasiado largo.
                                                 </Typography>
                                             }
                                         </FormControl>
