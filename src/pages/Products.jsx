@@ -259,6 +259,7 @@ export function Products() {
                         updateByPercentage
                         setMassiveEdit={setMassiveEdit}
                         deadlineColor="products"
+                        handlePrint
                     >
                         <ModalComponent
                             open={open === 'NEW' || open === 'EDIT'}

@@ -208,11 +208,15 @@ function EnhancedTableToolbar({
             }
             {auth.user.role.name === 'ADMINISTRADOR' &&
                 handlePrint &&
-                pathname === '/veroshop/ventas' &&
+                (pathname === '/veroshop/ventas' || pathname === '/veroshop/productos') &&
                 rows.length > 0 &&
                 <Tooltip title="Imprimir PDF">
                     <Link
-                        to={`${REPORT_URL}/sales?token=${auth.token}&ids=${rows.map(row => row.id).join(',')}${orderBy === 'id' || orderBy === 'client_code' ? `&orderBy=${orderBy}&order=${order}` : ''}`}
+                        to={
+                            pathname === '/veroshop/ventas' ?
+                                `${REPORT_URL}/sales?token=${auth.token}${selected.length > 0 ? `&ids=${selected.join(',')}` : ''}${orderBy === 'id' || orderBy === 'client_code' ? `&orderBy=${orderBy}&order=${order}` : ''}` :
+                                `${REPORT_URL}/products?token=${auth.token}${selected.length > 0 ? `&ids=${selected.join(',')}` : ''}`
+                        }
                         target="_blank"
                     >
                         <IconButton>
