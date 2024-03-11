@@ -208,6 +208,21 @@ export function Products() {
             label: 'Proveedor',
             sorter: (row) => row.supplier.name.toLowerCase(),
             accessor: (row) => row.supplier.name
+        },
+        {
+            id: 'min_stock',
+            numeric: false,
+            disablePadding: true,
+            label: 'Stock mínimo',
+            accessor: 'min_stock'
+        },
+        {
+            id: 'stock',
+            numeric: false,
+            disablePadding: true,
+            label: 'Stock actual',
+            sorter: (row) => getStock(row),
+            accessor: (row) => getStock(row)
         }
     ]
 
@@ -225,28 +240,7 @@ export function Products() {
                     />
                     <DataGrid
                         title="Inventario"
-                        headCells={
-                            auth?.user.role.name !== 'ADMINISTRADOR' ?
-                                headCells :
-                                [
-                                    ...headCells,
-                                    {
-                                        id: 'min_stock',
-                                        numeric: false,
-                                        disablePadding: true,
-                                        label: 'Stock mínimo',
-                                        accessor: 'min_stock'
-                                    },
-                                    {
-                                        id: 'stock',
-                                        numeric: false,
-                                        disablePadding: true,
-                                        label: 'Stock actual',
-                                        sorter: (row) => getStock(row),
-                                        accessor: (row) => getStock(row)
-                                    }
-                                ]
-                        }
+                        headCells={headCells}
                         rows={products}
                         open={open}
                         setOpen={setOpen}
