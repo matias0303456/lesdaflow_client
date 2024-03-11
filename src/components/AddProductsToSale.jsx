@@ -1,5 +1,7 @@
-import { Autocomplete, Box, Button, FormControl, Input, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from "@mui/material";
+import { useState } from "react";
+import { Autocomplete, Button, FormControl, Input, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from "@mui/material";
 import CancelSharpIcon from '@mui/icons-material/CancelSharp';
+
 import { getStock } from "../utils/helpers";
 
 export function AddProductsToSale({
@@ -13,6 +15,8 @@ export function AddProductsToSale({
     open
 }) {
 
+    const [value, setValue] = useState('')
+
     const handleAdd = data => {
         if (data.product_id.toString().length > 0) {
             setMissing(false)
@@ -20,6 +24,9 @@ export function AddProductsToSale({
                 ...saleProducts.filter(sp => sp.product_id !== data.product_id),
                 data
             ])
+            setTimeout(() => {
+                setValue('')
+            }, 1000)
         }
     }
 
@@ -58,6 +65,9 @@ export function AddProductsToSale({
                     onChange={(e, value) => handleAdd({ idx: saleProducts.length, product_id: value?.id ?? '' })}
                     renderInput={(params) => <TextField {...params} label="Producto" />}
                     isOptionEqualToValue={(option, value) => option.code === value.code || value.length === 0}
+                    onInputChange={(e, value) => setValue(value)}
+                    value={value}
+                    onBlur={() => setValue('')}
                 />
             </FormControl>
             {missing &&
