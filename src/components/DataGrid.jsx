@@ -210,7 +210,7 @@ function EnhancedTableToolbar({
                 handlePrint &&
                 (pathname === '/veroshop/ventas' || pathname === '/veroshop/productos') &&
                 rows.length > 0 &&
-                <Tooltip title="Imprimir PDF">
+                <Tooltip title={`Imprimir ${pathname === '/veroshop/productos' ? 'Excel' : 'PDF'}`}>
                     <Link
                         to={
                             pathname === '/veroshop/ventas' ?
