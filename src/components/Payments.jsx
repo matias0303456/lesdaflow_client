@@ -177,28 +177,33 @@ export function Payments({ sale, setSale, loading, setLoading }) {
                         defaultOrder="asc"
                         disableSorting
                     >
-                        <ModalComponent open={open === 'NEW' || open === 'EDIT'} onClose={() => reset(setOpen)}>
+                        <ModalComponent open={open === 'NEW' || open === 'EDIT'} onClose={() => reset(setOpen)} reduceWidth={600}>
                             <Typography variant="h6" sx={{ marginBottom: 2 }}>
                                 {open === 'NEW' && 'Nuevo pago'}
                                 {open === 'EDIT' && 'Editar pago'}
                             </Typography>
                             <form onChange={handleChange} onSubmit={handleSubmit}>
                                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-                                    <FormControl>
-                                        <InputLabel htmlFor="amount">Monto</InputLabel>
-                                        <Input
-                                            id="amount"
-                                            type="number"
-                                            name="amount"
-                                            value={formData.amount}
-                                            disabled={auth.user.role.name !== 'ADMINISTRADOR' && open === 'EDIT'}
-                                        />
-                                        {errors.amount?.type === 'required' &&
-                                            <Typography variant="caption" color="red" marginTop={1}>
-                                                * La cantidad es requerida.
-                                            </Typography>
-                                        }
-                                    </FormControl>
+                                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 3 }}>
+                                        <FormControl sx={{ width: '70%' }}>
+                                            <InputLabel htmlFor="amount">Monto</InputLabel>
+                                            <Input
+                                                id="amount"
+                                                type="number"
+                                                name="amount"
+                                                value={formData.amount}
+                                                disabled={auth.user.role.name !== 'ADMINISTRADOR' && open === 'EDIT'}
+                                            />
+                                            {errors.amount?.type === 'required' &&
+                                                <Typography variant="caption" color="red" marginTop={1}>
+                                                    * La cantidad es requerida.
+                                                </Typography>
+                                            }
+                                        </FormControl>
+                                        <Typography sx={{ width: '30%' }}>
+                                            Saldo: {getSaleDifference(sale)}
+                                        </Typography>
+                                    </Box>
                                     <FormControl>
                                         <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
                                             <DatePicker
