@@ -7,7 +7,7 @@ import es from 'date-fns/locale/es';
 
 import { AuthContext } from "../../providers/AuthProvider";
 
-import { setFromDate, setLocalDate, setToDate } from "../../utils/helpers";
+import { getAccountStatus, setFromDate, setLocalDate, setToDate } from "../../utils/helpers";
 
 export function SaleFilter({ sales, setSales }) {
 
@@ -20,6 +20,7 @@ export function SaleFilter({ sales, setSales }) {
         id: '',
         client: '',
         type: 'ALL',
+        pending: true,
         from: new Date(backup[backup.length - 1] ? setLocalDate(backup[backup.length - 1].date) : Date.now()),
         to: new Date(backup[0] ? setLocalDate(backup[0].date) : Date.now()),
         user: ''
@@ -37,6 +38,7 @@ export function SaleFilter({ sales, setSales }) {
             id: '',
             client: '',
             type: 'ALL',
+            pending: true,
             from: new Date(backup[backup.length - 1] ? setLocalDate(backup[backup.length - 1].date) : Date.now()),
             to: new Date(backup[0] ? setLocalDate(backup[0].date) : Date.now()),
             user: ''
@@ -54,18 +56,18 @@ export function SaleFilter({ sales, setSales }) {
                 setLocalDate(item.date) <= setToDate(filter.to) &&
                 item.client.user.username.toLowerCase().includes(filter.user.toLowerCase()) &&
                 (filter.type === 'ALL' || item.type === filter.type) &&
-                (filter.id.length === 0 || Math.abs(parseInt(filter.id)) === item.id)
+                (filter.id.length === 0 || Math.abs(parseInt(filter.id)) === item.id) &&
+                (!filter.pending || getAccountStatus(item) === 'Pendiente')
         }))
-    }, [filter])
+    }, [backup, filter])
 
     return (
         <Box sx={{
-            marginBottom: 1,
             marginTop: { xs: 3, sm: 0 },
             padding: 1,
             borderRadius: 1
         }}>
-            <Typography variant="h6" sx={{ marginBottom: 1 }}>
+            <Typography variant="h6">
                 Filtrar
             </Typography>
             <Box sx={{
@@ -78,7 +80,7 @@ export function SaleFilter({ sales, setSales }) {
                     md: 'row'
                 }
             }}>
-                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, justifyContent: 'center' }}>
                     <FormControl>
                         <InputLabel htmlFor="id">N° venta</InputLabel>
                         <Input id="id" type="number" name="id" value={filter.id} onChange={handleChange} />
@@ -88,7 +90,7 @@ export function SaleFilter({ sales, setSales }) {
                         <Input id="client" type="text" name="client" value={filter.client} onChange={handleChange} />
                     </FormControl>
                 </Box>
-                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, justifyContent: 'center' }}>
                     <FormControl>
                         <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
                             <DatePicker
@@ -118,7 +120,7 @@ export function SaleFilter({ sales, setSales }) {
                         </LocalizationProvider>
                     </FormControl>
                 </Box>
-                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
                     <FormControlLabel
                         control={<Checkbox />}
                         label="Todas"
@@ -164,8 +166,21 @@ export function SaleFilter({ sales, setSales }) {
                             }
                         }}
                     />
+                    <FormControlLabel
+                        control={<Checkbox />}
+                        label="Pendientes"
+                        checked={filter.pending}
+                        onChange={e => {
+                            handleChange({
+                                target: {
+                                    name: 'pending',
+                                    value: e.target.checked
+                                }
+                            })
+                        }}
+                    />
                 </Box>
-                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, justifyContent: 'center' }}>
                     {auth?.user.role.name === 'ADMINISTRADOR' &&
                         <FormControl>
                             <InputLabel id="user-select">Vendedor</InputLabel>
