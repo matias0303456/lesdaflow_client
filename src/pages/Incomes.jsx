@@ -15,6 +15,7 @@ import { ModalComponent } from "../components/ModalComponent";
 import { MovementFilter } from "../components/filters/MovementFilter";
 
 import { INCOME_URL } from "../utils/urls";
+import { getStock } from "../utils/helpers";
 
 export function Incomes() {
 
@@ -49,6 +50,7 @@ export function Incomes() {
     const [loadingIncomes, setLoadingIncomes] = useState(true)
     const [incomes, setIncomes] = useState([])
     const [open, setOpen] = useState(null)
+    const [oldFormDataAmount, setOldFormDataAmount] = useState(0)
 
     useEffect(() => {
         if (auth?.user.role.name !== 'ADMINISTRADOR') navigate('/veroshop/productos')
@@ -160,6 +162,11 @@ export function Incomes() {
         }
     ]
 
+    useEffect(() => {
+        if (open === 'NEW') setOldFormDataAmount(0)
+        if (open === 'EDIT') setOldFormDataAmount(parseInt(formData.amount))
+    }, [open])
+
     return (
         <Layout title="Ingresos">
             {loadingIncomes || loadingProducts || disabled ?
@@ -178,7 +185,7 @@ export function Incomes() {
                         setData={setFormData}
                         handleDelete={handleDelete}
                     >
-                        <ModalComponent open={open === 'NEW' || open === 'EDIT'} onClose={() => reset(setOpen)}>
+                        <ModalComponent open={open === 'NEW' || open === 'EDIT'} onClose={() => reset(setOpen)} reduceWidth={600}>
                             <Typography variant="h6" sx={{ marginBottom: 2 }}>
                                 {open === 'NEW' && 'Nuevo ingreso'}
                                 {open === 'EDIT' && 'Editar ingreso'}
@@ -202,15 +209,23 @@ export function Incomes() {
                                             </Typography>
                                         }
                                     </FormControl>
-                                    <FormControl>
-                                        <InputLabel htmlFor="amount">Cantidad</InputLabel>
-                                        <Input id="amount" type="number" name="amount" value={formData.amount} />
-                                        {errors.amount?.type === 'required' &&
-                                            <Typography variant="caption" color="red" marginTop={1}>
-                                                * La cantidad es requerida.
-                                            </Typography>
-                                        }
-                                    </FormControl>
+                                    <Box sx={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center' }}>
+                                        <Typography sx={{ fontWeight: 'bold' }}>
+                                            Stock actual: {formData.product_id.toString().length > 0 ? getStock(products.find(p => p.id === formData.product_id)) : 0}
+                                        </Typography>
+                                        <FormControl>
+                                            <InputLabel htmlFor="amount">Cantidad</InputLabel>
+                                            <Input id="amount" type="number" name="amount" value={formData.amount} />
+                                            {errors.amount?.type === 'required' &&
+                                                <Typography variant="caption" color="red" marginTop={1}>
+                                                    * La cantidad es requerida.
+                                                </Typography>
+                                            }
+                                        </FormControl>
+                                        <Typography sx={{ fontWeight: 'bold' }}>
+                                            Nuevo stock: {formData.product_id.toString().length > 0 ? getStock(products.find(p => p.id === formData.product_id)) + Math.abs(parseInt(formData.amount.toString().length > 0 ? formData.amount : 0)) - oldFormDataAmount : 0}
+                                        </Typography>
+                                    </Box>
                                     <FormControl>
                                         <InputLabel htmlFor="observations">Observaciones</InputLabel>
                                         <Input id="observations" type="text" name="observations" value={formData.observations} />

@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { Box, Button, FormControl, Input, InputLabel, LinearProgress, MenuItem, Select, Typography } from "@mui/material";
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -200,7 +200,7 @@ export function Payments({ sale, setSale, loading, setLoading }) {
                                                 </Typography>
                                             }
                                         </FormControl>
-                                        <Typography sx={{ width: '30%' }}>
+                                        <Typography sx={{ width: '30%', fontWeight: 'bold' }}>
                                             Saldo: {getSaleDifference(sale)}
                                         </Typography>
                                     </Box>
