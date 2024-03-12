@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Autocomplete, Box, Button, FormControl, Input, InputLabel, LinearProgress, TextField, Typography } from "@mui/material";
+import { Autocomplete, Box, Button, FormControl, Input, InputLabel, LinearProgress, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from "@mui/material";
 import { format } from 'date-fns'
 
 import { AuthContext } from "../providers/AuthProvider";
@@ -139,11 +139,27 @@ export function Incomes() {
             accessor: (row) => row.product.size
         },
         {
+            id: 'old_stock',
+            numeric: false,
+            disablePadding: true,
+            label: 'Stock anterior',
+            sorter: (row) => '',
+            accessor: (row) => ''
+        },
+        {
             id: 'amount',
             numeric: false,
             disablePadding: true,
             label: 'Cantidad',
             accessor: 'amount'
+        },
+        {
+            id: 'new_stock',
+            numeric: false,
+            disablePadding: true,
+            label: 'Stock posterior',
+            sorter: (row) => '',
+            accessor: (row) => ''
         },
         {
             id: 'observations',
@@ -210,21 +226,43 @@ export function Incomes() {
                                         }
                                     </FormControl>
                                     <Box sx={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center' }}>
-                                        <Typography sx={{ fontWeight: 'bold' }}>
-                                            Stock actual: {formData.product_id.toString().length > 0 ? getStock(products.find(p => p.id === formData.product_id)) : 0}
-                                        </Typography>
-                                        <FormControl>
-                                            <InputLabel htmlFor="amount">Cantidad</InputLabel>
-                                            <Input id="amount" type="number" name="amount" value={formData.amount} />
-                                            {errors.amount?.type === 'required' &&
-                                                <Typography variant="caption" color="red" marginTop={1}>
-                                                    * La cantidad es requerida.
-                                                </Typography>
-                                            }
-                                        </FormControl>
-                                        <Typography sx={{ fontWeight: 'bold' }}>
-                                            Nuevo stock: {formData.product_id.toString().length > 0 ? getStock(products.find(p => p.id === formData.product_id)) + Math.abs(parseInt(formData.amount.toString().length > 0 ? formData.amount : 0)) - oldFormDataAmount : 0}
-                                        </Typography>
+                                        <TableContainer component={Paper}>
+                                            <Table>
+                                                <TableHead>
+                                                    <TableRow>
+                                                        <TableCell align="center">
+                                                            Stock actual
+                                                        </TableCell>
+                                                        <TableCell align="center">
+                                                            Cantidad
+                                                        </TableCell>
+                                                        <TableCell align="center">
+                                                            Nuevo stock
+                                                        </TableCell>
+                                                    </TableRow>
+                                                </TableHead>
+                                                <TableBody>
+                                                    <TableRow>
+                                                        <TableCell align="center">
+                                                            {formData.product_id.toString().length > 0 ? getStock(products.find(p => p.id === formData.product_id)) : 0}
+                                                        </TableCell>
+                                                        <TableCell align="center">
+                                                            <FormControl>
+                                                                <Input id="amount" type="number" name="amount" value={formData.amount} />
+                                                                {errors.amount?.type === 'required' &&
+                                                                    <Typography variant="caption" color="red" marginTop={1}>
+                                                                        * La cantidad es requerida.
+                                                                    </Typography>
+                                                                }
+                                                            </FormControl>
+                                                        </TableCell>
+                                                        <TableCell align="center">
+                                                            {formData.product_id.toString().length > 0 ? getStock(products.find(p => p.id === formData.product_id)) + Math.abs(parseInt(formData.amount.toString().length > 0 ? formData.amount : 0)) - oldFormDataAmount : 0}
+                                                        </TableCell>
+                                                    </TableRow>
+                                                </TableBody>
+                                            </Table>
+                                        </TableContainer>
                                     </Box>
                                     <FormControl>
                                         <InputLabel htmlFor="observations">Observaciones</InputLabel>
