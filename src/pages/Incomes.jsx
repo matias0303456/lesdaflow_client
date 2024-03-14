@@ -15,7 +15,7 @@ import { ModalComponent } from "../components/ModalComponent";
 import { MovementFilter } from "../components/filters/MovementFilter";
 
 import { INCOME_URL } from "../utils/urls";
-import { getStock } from "../utils/helpers";
+import { getStock, getStockTillDate } from "../utils/helpers";
 
 export function Incomes() {
 
@@ -143,8 +143,8 @@ export function Incomes() {
             numeric: false,
             disablePadding: true,
             label: 'Stock anterior',
-            sorter: (row) => '',
-            accessor: (row) => ''
+            sorter: (row) => getStockTillDate(products.find(p => p.id === row.product_id), row.created_at),
+            accessor: (row) => getStockTillDate(products.find(p => p.id === row.product_id), row.created_at)
         },
         {
             id: 'amount',
@@ -158,8 +158,8 @@ export function Incomes() {
             numeric: false,
             disablePadding: true,
             label: 'Stock posterior',
-            sorter: (row) => '',
-            accessor: (row) => ''
+            sorter: (row) => getStockTillDate(products.find(p => p.id === row.product_id), row.created_at) + row.amount,
+            accessor: (row) => getStockTillDate(products.find(p => p.id === row.product_id), row.created_at) + row.amount
         },
         {
             id: 'observations',
