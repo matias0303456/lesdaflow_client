@@ -326,7 +326,8 @@ export function DataGrid({
     handlePrint = false,
     disableSorting = false,
     defaultOrder = 'desc',
-    defaultOrderBy = 'id'
+    defaultOrderBy = 'id',
+    stopPointerEvents = false
 }) {
 
     const [order, setOrder] = React.useState(defaultOrder);
@@ -448,7 +449,7 @@ export function DataGrid({
                                         <TableRow
                                             hover
                                             onClick={(event) => {
-                                                if (!disableSelection) {
+                                                if (!disableSelection && !stopPointerEvents) {
                                                     handleClick(event, row.id)
                                                 }
                                             }}

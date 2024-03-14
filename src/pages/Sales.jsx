@@ -5,6 +5,7 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import es from 'date-fns/locale/es';
+import PrintSharpIcon from '@mui/icons-material/PrintSharp';
 
 import { AuthContext } from "../providers/AuthProvider";
 import { MessageContext } from "../providers/MessageProvider";
@@ -62,6 +63,8 @@ export function Sales() {
     const [saleProducts, setSaleProducts] = useState([])
     const [missing, setMissing] = useState(false)
     const [idsToDelete, setIdsToDelete] = useState([])
+    const [stopPointerEvents, setStopPointerEvents] = useState(false)
+    const [saleSaved, setSaleSaved] = useState(null)
 
     useEffect(() => {
         (async () => {
@@ -92,13 +95,13 @@ export function Sales() {
             if (status === 200) {
                 if (open === 'NEW') {
                     setSales([data, ...sales])
-                    setMessage('Venta creada correctamente.')
-                    window.open(`${REPORT_URL}/account-details/${auth.token}/${data.id}`, '_blank')
+                    setSaleSaved(data.id)
                 } else {
+                    setSeverity('success')
                     setSales([data, ...sales.filter(out => out.id !== formData.id)])
                     setMessage('Venta editada correctamente.')
+                    setOpenMessage(true)
                 }
-                setSeverity('success')
                 reset(setOpen)
                 setSaleProducts([])
                 setMissing(false)
@@ -107,8 +110,8 @@ export function Sales() {
                 setMessage(data.message)
                 setSeverity('error')
                 setDisabled(false)
+                setOpenMessage(true)
             }
-            setOpenMessage(true)
         } else {
             if (spMissing) {
                 setDisabled(false)
@@ -145,6 +148,29 @@ export function Sales() {
             disablePadding: false,
             label: 'N°',
             accessor: 'id'
+        },
+        {
+            id: 'print',
+            numeric: false,
+            disablePadding: true,
+            label: 'Detalle',
+            sorter: (row) => row.id,
+            accessor: (row) => (
+                <PrintSharpIcon
+                    sx={{
+                        color: '#8B4992',
+                        transition: '100ms all',
+                        ":hover": {
+                            transform: 'scale(1.1)'
+                        }
+                    }}
+                    onMouseEnter={() => setStopPointerEvents(true)}
+                    onMouseLeave={() => setStopPointerEvents(false)}
+                    onClick={() => {
+                        window.open(`${REPORT_URL}/account-details/${auth.token}/${row.id}`, '_blank')
+                    }}
+                />
+            )
         },
         {
             id: 'client_code',
@@ -237,6 +263,7 @@ export function Sales() {
                         deadlineColor="sales"
                         seeAccount
                         handlePrint
+                        stopPointerEvents={stopPointerEvents}
                     >
                         <ModalComponent
                             reduceWidth={50}
@@ -246,7 +273,8 @@ export function Sales() {
                                 setMissing(false)
                                 reset(setOpen)
                                 setIdsToDelete([])
-                            }}>
+                            }}
+                        >
                             <Typography variant="h6" sx={{ marginBottom: 2 }}>
                                 {open === 'NEW' && 'Nueva venta'}
                                 {open === 'EDIT' && 'Editar venta'}
@@ -415,6 +443,28 @@ export function Sales() {
                             </form>
                         </ModalComponent>
                     </DataGrid>
+                    <ModalComponent
+                        reduceWidth={800}
+                        open={saleSaved !== null}
+                        onClose={() => setSaleSaved(null)}
+                    >
+                        <Typography variant="h6" sx={{ textAlign: 'center', marginBottom: 2 }}>
+                            Venta creada correctamente
+                        </Typography>
+                        <Button type="submit" variant="contained"
+                            sx={{
+                                width: '50%',
+                                display: 'block',
+                                margin: '0 auto'
+                            }}
+                            onClick={() => {
+                                window.open(`${REPORT_URL}/account-details/${auth.token}/${saleSaved}`, '_blank')
+                                setSaleSaved(null)
+                            }}
+                        >
+                            Compartir comprobante
+                        </Button>
+                    </ModalComponent>
                 </>
             }
         </Layout>

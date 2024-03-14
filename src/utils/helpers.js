@@ -117,7 +117,6 @@ export function getSaleDifferenceByPayment(sale, idx) {
 
 export function getStockTillDate(product, date) {
     if (!product) return
-    console.log(product)
     return product.incomes?.filter(inc => inc.created_at < date)
         .reduce((prev, curr) => {
             return prev + curr.amount
