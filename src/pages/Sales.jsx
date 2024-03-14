@@ -6,6 +6,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import es from 'date-fns/locale/es';
 
+import { AuthContext } from "../providers/AuthProvider";
 import { MessageContext } from "../providers/MessageProvider";
 import { useApi } from "../hooks/useApi";
 import { useProducts } from "../hooks/useProducts";
@@ -18,15 +19,15 @@ import { ModalComponent } from "../components/ModalComponent";
 import { SaleFilter } from "../components/filters/SaleFilter";
 import { AddProductsToSale } from "../components/AddProductsToSale";
 
-import { SALE_URL } from "../utils/urls";
+import { REPORT_URL, SALE_URL } from "../utils/urls";
 import { getAccountStatus, getCurrentSubtotal, getCurrentTotal, getDeadline, getInstallmentsAmount, getSaleDifference, getSaleTotal } from "../utils/helpers";
 
 export function Sales() {
 
-    const { get, post, put, destroy } = useApi(SALE_URL)
-
+    const { auth } = useContext(AuthContext)
     const { setMessage, setOpenMessage, setSeverity } = useContext(MessageContext)
 
+    const { get, post, put, destroy } = useApi(SALE_URL)
     const { products, loadingProducts } = useProducts(true)
     const { clients, loadingClients } = useClients()
     const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
@@ -92,6 +93,7 @@ export function Sales() {
                 if (open === 'NEW') {
                     setSales([data, ...sales])
                     setMessage('Venta creada correctamente.')
+                    window.open(`${REPORT_URL}/account-details/${auth.token}/${data.id}`, '_blank')
                 } else {
                     setSales([data, ...sales.filter(out => out.id !== formData.id)])
                     setMessage('Venta editada correctamente.')
