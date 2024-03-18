@@ -150,6 +150,13 @@ export function Sales() {
             accessor: 'id'
         },
         {
+            id: 'date',
+            numeric: false,
+            disablePadding: true,
+            label: 'Fecha',
+            accessor: (row) => format(new Date(row.date), 'dd/MM/yy')
+        },
+        {
             id: 'print',
             numeric: false,
             disablePadding: true,
@@ -195,13 +202,6 @@ export function Sales() {
             label: 'Total',
             sorter: (row) => parseFloat(getSaleTotal(row).replace('$', '')),
             accessor: (row) => getSaleTotal(row)
-        },
-        {
-            id: 'date',
-            numeric: false,
-            disablePadding: true,
-            label: 'Fecha',
-            accessor: (row) => format(new Date(row.date), 'dd/MM/yy')
         },
         {
             id: 'deadline',
