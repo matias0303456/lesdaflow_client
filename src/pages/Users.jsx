@@ -268,7 +268,7 @@ export function Users() {
                                     </FormControl>
                                     <FormControl>
                                         <InputLabel htmlFor="email">Email</InputLabel>
-                                        <Input id="email" type="email" name="email" value={formData.email} />
+                                        <Input id="email" type="text" name="email" value={formData.email} />
                                         {errors.email?.type === 'required' &&
                                             <Typography variant="caption" color="red" marginTop={1}>
                                                 * El email es requerido.

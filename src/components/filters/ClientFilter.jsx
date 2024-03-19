@@ -72,7 +72,7 @@ export function ClientFilter({ clients, setClients }) {
                 </FormControl>
                 <FormControl>
                     <InputLabel htmlFor="email">Email</InputLabel>
-                    <Input id="email" type="email" name="email" value={filter.email} onChange={handleChange} />
+                    <Input id="email" type="text" name="email" value={filter.email} onChange={handleChange} />
                 </FormControl>
                 {auth?.user.role.name === 'ADMINISTRADOR' &&
                     <FormControl>

@@ -71,7 +71,7 @@ export function UserFilter({ users, setUsers }) {
                 </FormControl>
                 <FormControl>
                     <InputLabel htmlFor="email">Email</InputLabel>
-                    <Input id="email" type="email" name="email" value={filter.email} onChange={handleChange} />
+                    <Input id="email" type="text" name="email" value={filter.email} onChange={handleChange} />
                 </FormControl>
                 <Button variant="outlined" onClick={handleReset}>
                     Reiniciar

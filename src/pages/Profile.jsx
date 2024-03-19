@@ -199,7 +199,7 @@ export function Profile() {
                     </FormControl>
                     <FormControl>
                         <InputLabel htmlFor="email">Email</InputLabel>
-                        <Input id="email" type="email" name="email" value={formDataUser.email} />
+                        <Input id="email" type="text" name="email" value={formDataUser.email} />
                         {errorsUser.email?.type === 'required' &&
                             <Typography variant="caption" color="red" marginTop={1}>
                                 * El email es requerido.
