@@ -32,7 +32,7 @@ import AccountBalanceWalletSharpIcon from '@mui/icons-material/AccountBalanceWal
 
 import { AuthContext } from '../providers/AuthProvider';
 
-import Logo from '../assets/logo.png'
+import Logo from '../assets/logo.jpeg'
 
 export function Layout({ children, title }) {
 

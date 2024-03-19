@@ -25,7 +25,7 @@ function App() {
   const theme = createTheme({
     palette: {
       primary: {
-        main: '#8B4992',
+        main: '#078BCD',
       }
     },
   })
@@ -35,21 +35,21 @@ function App() {
       <MessageProvider>
         <AuthProvider>
           <CssBaseline />
-          <BrowserRouter>
+          <BrowserRouter basename="distribuidora-mga">
             <Routes>
-              <Route path="/veroshop/" element={<Login />} />
-              <Route path="/veroshop/productos" element={<Products />} />
-              <Route path="/veroshop/login" element={<Login />} />
-              <Route path="/veroshop/ingresos" element={<Incomes />} />
-              <Route path="/veroshop/egresos" element={<Outcomes />} />
-              <Route path="/veroshop/ventas" element={<Sales />} />
-              <Route path="/veroshop/cajas" element={<Registers />} />
-              <Route path="/veroshop/cuenta/:id" element={<SaleDetails />} />
-              <Route path="/veroshop/clientes" element={<Clients />} />
-              <Route path="/veroshop/proveedores" element={<Suppliers />} />
-              <Route path="/veroshop/usuarios" element={<Users />} />
-              <Route path="/veroshop/reportes" element={<Reports />} />
-              <Route path="/veroshop/perfil" element={<Profile />} />
+              <Route path="/" element={<Login />} />
+              <Route path="/productos" element={<Products />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/ingresos" element={<Incomes />} />
+              <Route path="/egresos" element={<Outcomes />} />
+              <Route path="/ventas" element={<Sales />} />
+              <Route path="/cajas" element={<Registers />} />
+              <Route path="/cuenta/:id" element={<SaleDetails />} />
+              <Route path="/clientes" element={<Clients />} />
+              <Route path="/proveedores" element={<Suppliers />} />
+              <Route path="/usuarios" element={<Users />} />
+              <Route path="/reportes" element={<Reports />} />
+              <Route path="/perfil" element={<Profile />} />
               <Route path="*" element={<Error />} />
             </Routes>
           </BrowserRouter>

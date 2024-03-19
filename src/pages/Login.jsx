@@ -8,7 +8,7 @@ import { MessageContext } from "../providers/MessageProvider";
 import { useApi } from "../hooks/useApi";
 
 import { LOGIN_URL } from "../utils/urls";
-import Logo from '../assets/logo.png'
+import Logo from '../assets/logo.jpeg'
 
 export function Login() {
 
@@ -50,11 +50,19 @@ export function Login() {
 
     return (
         <Box sx={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <Box sx={{ width: 400 }}>
-                <Box sx={{ textAlign: 'center' }}>
-                    <img src={Logo} alt="" width={150} />
+            <Box sx={{ width: 300 }}>
+                <Box sx={{ textAlign: 'center', marginBottom: 1 }}>
+                    <img src={Logo} alt="" width={300} />
                 </Box>
-                <form onChange={handleChange} onSubmit={handleSubmit}>
+                <form onChange={handleChange} onSubmit={handleSubmit} style={{
+                    boxShadow: '0 0 10px #808080',
+                    padding: 25,
+                    borderRadius: 5,
+                    backgroundColor: '#fff'
+                }}>
+                    <Typography variant="h6" color="#808080" textAlign="center">
+                        INGRESO
+                    </Typography>
                     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
                         <FormControl>
                             <InputLabel htmlFor="username">Usuario</InputLabel>
@@ -91,11 +99,11 @@ export function Login() {
                         </FormControl>
                         <FormControl>
                             <Button type="submit" variant="contained" sx={{
-                                width: '50%',
+                                width: '100%',
                                 margin: '0 auto',
                                 marginTop: 1
                             }} disabled={disabled}>
-                                Ingresar
+                                INICIAR SESIÓN
                             </Button>
                         </FormControl>
                     </Box>

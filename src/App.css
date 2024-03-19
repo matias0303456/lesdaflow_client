@@ -1,3 +1,7 @@
+body {
+    background-color: #eee !important;
+}
+
 @media (max-width: 599px) {
     .gridContainer {
         width: 100vw;
