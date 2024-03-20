@@ -31,7 +31,7 @@ export function SaleDetails() {
                 setSale(data)
                 setLoading(false)
             } else {
-                navigate('/veroshop/ventas')
+                navigate('/ventas')
             }
         })()
     }, [])

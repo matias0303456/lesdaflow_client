@@ -92,7 +92,7 @@ export function Profile() {
     const [dataHasChanged, setDataHasChanged] = useState(false)
 
     useEffect(() => {
-        if (auth?.user.role.name !== 'ADMINISTRADOR') navigate('/veroshop/productos')
+        if (auth?.user.role.name !== 'ADMINISTRADOR') navigate('/productos')
     }, [])
 
     useEffect(() => {
@@ -116,7 +116,7 @@ export function Profile() {
                 setAuth(null)
                 setMessage('Datos editados correctamente.')
                 setSeverity('success')
-                navigate('/veroshop/')
+                navigate('/')
             } else {
                 setMessage(data.message)
                 setSeverity('error')
@@ -131,7 +131,7 @@ export function Profile() {
         if (validatePwd() && formDataPwd.newPwd === formDataPwd.repeat) {
             const { status, data } = await putPwd(formDataPwd)
             if (status === 200) {
-                navigate('/veroshop/')
+                navigate('/')
                 localStorage.removeItem('auth')
                 setAuth(null)
                 setSeverity('success')

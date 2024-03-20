@@ -192,7 +192,7 @@ function EnhancedTableToolbar({
                             <DeleteIcon />
                         </IconButton>
                     </Tooltip>
-                    {handlePrint && pathname === '/veroshop/cajas' && numSelected === 1 &&
+                    {handlePrint && pathname === '/cajas' && numSelected === 1 &&
                         <Tooltip title="Imprimir PDF">
                             <Link
                                 to={`${REPORT_URL}/payments/${auth.token}/${selected[0]}`}
@@ -208,12 +208,12 @@ function EnhancedTableToolbar({
             }
             {auth.user.role.name === 'ADMINISTRADOR' &&
                 handlePrint &&
-                (pathname === '/veroshop/ventas' || pathname === '/veroshop/productos') &&
+                (pathname === '/ventas' || pathname === '/productos') &&
                 rows.length > 0 &&
-                <Tooltip title={`Imprimir ${pathname === '/veroshop/productos' ? 'Excel' : 'PDF'}`}>
+                <Tooltip title={`Imprimir ${pathname === '/productos' ? 'Excel' : 'PDF'}`}>
                     <Link
                         to={
-                            pathname === '/veroshop/ventas' ?
+                            pathname === '/ventas' ?
                                 `${REPORT_URL}/sales?token=${auth.token}${selected.length > 0 ? `&ids=${selected.join(',')}` : ''}${orderBy === 'id' || orderBy === 'client_code' ? `&orderBy=${orderBy}&order=${order}` : ''}` :
                                 `${REPORT_URL}/products?token=${auth.token}${selected.length > 0 ? `&ids=${selected.join(',')}` : ''}`
                         }
@@ -269,7 +269,7 @@ function EnhancedTableToolbar({
             }
             {numSelected === 1 && seeAccount &&
                 <Tooltip title="Ver detalle" onClick={() => {
-                    navigate(`/veroshop/cuenta/${workOn[0].id}`)
+                    navigate(`/cuenta/${workOn[0].id}`)
                 }}>
                     <IconButton>
                         <SearchSharp />

@@ -53,7 +53,7 @@ export function Incomes() {
     const [oldFormDataAmount, setOldFormDataAmount] = useState(0)
 
     useEffect(() => {
-        if (auth?.user.role.name !== 'ADMINISTRADOR') navigate('/veroshop/productos')
+        if (auth?.user.role.name !== 'ADMINISTRADOR') navigate('/productos')
     }, [])
 
     useEffect(() => {

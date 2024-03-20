@@ -63,7 +63,7 @@ export function Suppliers() {
     const [massiveEditPercentage, setMassiveEditPercentage] = useState(0)
 
     useEffect(() => {
-        if (auth?.user.role.name !== 'ADMINISTRADOR') navigate('/veroshop/productos')
+        if (auth?.user.role.name !== 'ADMINISTRADOR') navigate('/productos')
     }, [])
 
     async function handleSubmit(e) {

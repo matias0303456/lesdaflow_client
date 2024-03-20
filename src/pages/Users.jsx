@@ -69,7 +69,7 @@ export function Users() {
     const [newPwd, setNewPwd] = useState('')
 
     useEffect(() => {
-        if (auth?.user.role.name !== 'ADMINISTRADOR') navigate('/veroshop/productos')
+        if (auth?.user.role.name !== 'ADMINISTRADOR') navigate('/productos')
     }, [])
 
     useEffect(() => {
