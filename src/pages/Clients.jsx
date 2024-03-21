@@ -210,6 +210,7 @@ export function Clients() {
                         setData={setFormData}
                         handleDelete={handleDelete}
                         deadlineColor="clients"
+                        pageKey="clients"
                     >
                         <ModalComponent open={open === 'NEW' || open === 'EDIT'} onClose={() => reset(setOpen)}>
                             <Typography variant="h6" sx={{ marginBottom: 2 }}>

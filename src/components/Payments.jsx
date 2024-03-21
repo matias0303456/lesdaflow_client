@@ -176,6 +176,7 @@ export function Payments({ sale, setSale, loading, setLoading }) {
                         handleDelete={handleDelete}
                         defaultOrder="asc"
                         disableSorting
+                        pageKey="payments"
                     >
                         <ModalComponent open={open === 'NEW' || open === 'EDIT'} onClose={() => reset(setOpen)} reduceWidth={600}>
                             <Typography variant="h6" sx={{ marginBottom: 2 }}>

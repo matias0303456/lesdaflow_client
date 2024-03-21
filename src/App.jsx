@@ -5,6 +5,7 @@ import { createTheme, ThemeProvider } from "@mui/material";
 
 import { MessageProvider } from "./providers/MessageProvider";
 import { AuthProvider } from "./providers/AuthProvider";
+import { PageProvider } from "./providers/PageProvider";
 
 import { Login } from "./pages/Login";
 import { Products } from './pages/Products'
@@ -34,25 +35,27 @@ function App() {
     <ThemeProvider theme={theme}>
       <MessageProvider>
         <AuthProvider>
-          <CssBaseline />
-          <BrowserRouter>
-            <Routes>
-              <Route path="/veroshop/" element={<Login />} />
-              <Route path="/veroshop/productos" element={<Products />} />
-              <Route path="/veroshop/login" element={<Login />} />
-              <Route path="/veroshop/ingresos" element={<Incomes />} />
-              <Route path="/veroshop/egresos" element={<Outcomes />} />
-              <Route path="/veroshop/ventas" element={<Sales />} />
-              <Route path="/veroshop/cajas" element={<Registers />} />
-              <Route path="/veroshop/cuenta/:id" element={<SaleDetails />} />
-              <Route path="/veroshop/clientes" element={<Clients />} />
-              <Route path="/veroshop/proveedores" element={<Suppliers />} />
-              <Route path="/veroshop/usuarios" element={<Users />} />
-              <Route path="/veroshop/reportes" element={<Reports />} />
-              <Route path="/veroshop/perfil" element={<Profile />} />
-              <Route path="*" element={<Error />} />
-            </Routes>
-          </BrowserRouter>
+          <PageProvider>
+            <CssBaseline />
+            <BrowserRouter>
+              <Routes>
+                <Route path="/veroshop/" element={<Login />} />
+                <Route path="/veroshop/productos" element={<Products />} />
+                <Route path="/veroshop/login" element={<Login />} />
+                <Route path="/veroshop/ingresos" element={<Incomes />} />
+                <Route path="/veroshop/egresos" element={<Outcomes />} />
+                <Route path="/veroshop/ventas" element={<Sales />} />
+                <Route path="/veroshop/cajas" element={<Registers />} />
+                <Route path="/veroshop/cuenta/:id" element={<SaleDetails />} />
+                <Route path="/veroshop/clientes" element={<Clients />} />
+                <Route path="/veroshop/proveedores" element={<Suppliers />} />
+                <Route path="/veroshop/usuarios" element={<Users />} />
+                <Route path="/veroshop/reportes" element={<Reports />} />
+                <Route path="/veroshop/perfil" element={<Profile />} />
+                <Route path="*" element={<Error />} />
+              </Routes>
+            </BrowserRouter>
+          </PageProvider>
         </AuthProvider>
       </MessageProvider>
     </ThemeProvider>

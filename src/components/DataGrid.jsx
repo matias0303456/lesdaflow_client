@@ -29,6 +29,8 @@ import PrintSharpIcon from '@mui/icons-material/PrintSharp';
 import { SearchSharp } from '@mui/icons-material';
 
 import { AuthContext } from '../providers/AuthProvider';
+import { PageContext } from '../providers/PageProvider';
+
 import { ModalComponent } from './ModalComponent';
 
 import { deadlineIsPast, getStock } from '../utils/helpers';
@@ -327,15 +329,16 @@ export function DataGrid({
     disableSorting = false,
     defaultOrder = 'desc',
     defaultOrderBy = 'id',
-    stopPointerEvents = false
+    stopPointerEvents = false,
+    pageKey
 }) {
+
+    const { page, setPage, rowsPerPage, setRowsPerPage } = React.useContext(PageContext)
 
     const [order, setOrder] = React.useState(defaultOrder);
     const [orderBy, setOrderBy] = React.useState(defaultOrderBy);
     const [selected, setSelected] = React.useState([]);
-    const [page, setPage] = React.useState(0);
     const [dense, setDense] = React.useState(true);
-    const [rowsPerPage, setRowsPerPage] = React.useState(25);
 
     const handleRequestSort = (event, property) => {
         if (disableSorting) return
@@ -373,12 +376,12 @@ export function DataGrid({
     };
 
     const handleChangePage = (event, newPage) => {
-        setPage(newPage);
+        setPage({ ...page, [pageKey]: newPage });
     };
 
     const handleChangeRowsPerPage = (event) => {
-        setRowsPerPage(parseInt(event.target.value, 10));
-        setPage(0);
+        setRowsPerPage({ ...rowsPerPage, [pageKey]: parseInt(event.target.value, 10) });
+        setPage({ ...page, [pageKey]: 0 });
     };
 
     const handleChangeDense = (event) => {
@@ -387,13 +390,13 @@ export function DataGrid({
 
     const isSelected = (id) => selected.indexOf(id) !== -1;
 
-    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
+    const emptyRows = page[pageKey] > 0 ? Math.max(0, (1 + page[pageKey]) * rowsPerPage[pageKey] - rows.length) : 0;
 
     const visibleRows = React.useMemo(
         () =>
             stableSort(rows, getComparator(order, orderBy, headCells.find(hc => hc.id === orderBy)?.sorter)).slice(
-                page * rowsPerPage,
-                page * rowsPerPage + rowsPerPage,
+                page[pageKey] * rowsPerPage[pageKey],
+                page[pageKey] * rowsPerPage[pageKey] + rowsPerPage[pageKey],
             ),
         [order, orderBy, page, rowsPerPage, rows],
     );
@@ -501,10 +504,10 @@ export function DataGrid({
                         rowsPerPageOptions={[5, 10, 25]}
                         component="div"
                         count={rows.length}
-                        rowsPerPage={rowsPerPage}
+                        rowsPerPage={rowsPerPage[pageKey]}
                         labelRowsPerPage="Registros por página"
                         labelDisplayedRows={({ from, to, count }) => `${from}–${to} de ${count}`}
-                        page={page}
+                        page={page[pageKey]}
                         onPageChange={handleChangePage}
                         onRowsPerPageChange={handleChangeRowsPerPage}
                     />

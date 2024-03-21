@@ -200,6 +200,7 @@ export function Incomes() {
                         data={formData}
                         setData={setFormData}
                         handleDelete={handleDelete}
+                        pageKey="incomes"
                     >
                         <ModalComponent open={open === 'NEW' || open === 'EDIT'} onClose={() => reset(setOpen)} reduceWidth={600}>
                             <Typography variant="h6" sx={{ marginBottom: 2 }}>

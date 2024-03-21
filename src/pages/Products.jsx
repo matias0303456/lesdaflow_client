@@ -254,6 +254,7 @@ export function Products() {
                         setMassiveEdit={setMassiveEdit}
                         deadlineColor="products"
                         handlePrint
+                        pageKey="products"
                     >
                         <ModalComponent
                             open={open === 'NEW' || open === 'EDIT'}

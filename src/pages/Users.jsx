@@ -216,6 +216,7 @@ export function Users() {
                         setData={setFormData}
                         handleDelete={handleDelete}
                         changePwd
+                        pageKey="users"
                     >
                         <ModalComponent open={open === 'NEW' || open === 'EDIT'} onClose={() => reset(setOpen)}>
                             <Typography variant="h6" sx={{ marginBottom: 2 }}>

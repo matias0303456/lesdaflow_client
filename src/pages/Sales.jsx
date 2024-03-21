@@ -264,6 +264,7 @@ export function Sales() {
                         seeAccount
                         handlePrint
                         stopPointerEvents={stopPointerEvents}
+                        pageKey="sales"
                     >
                         <ModalComponent
                             reduceWidth={50}

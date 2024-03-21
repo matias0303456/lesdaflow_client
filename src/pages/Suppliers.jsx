@@ -208,6 +208,7 @@ export function Suppliers() {
                         setData={setFormData}
                         handleDelete={handleDelete}
                         updateByPercentage
+                        pageKey="suppliers"
                     >
                         <ModalComponent open={open === 'NEW' || open === 'EDIT'} onClose={() => reset(setOpen)}>
                             <Typography variant="h6" sx={{ marginBottom: 2 }}>

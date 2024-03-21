@@ -136,6 +136,7 @@ export function Registers() {
                     setData={setFormData}
                     handleDelete={handleDelete}
                     handlePrint
+                    pageKey="registers"
                 >
                     <ModalComponent open={open === 'NEW' || open === 'EDIT'} onClose={() => reset(setOpen)}>
                         <Typography variant="h6" sx={{ marginBottom: 2 }}>

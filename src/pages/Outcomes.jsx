@@ -200,6 +200,7 @@ export function Outcomes() {
                         data={formData}
                         setData={setFormData}
                         handleDelete={handleDelete}
+                        pageKey="outcomes"
                     >
                         <ModalComponent open={open === 'NEW' || open === 'EDIT'} onClose={() => reset(setOpen)}>
                             <Typography variant="h6" sx={{ marginBottom: 2 }}>
