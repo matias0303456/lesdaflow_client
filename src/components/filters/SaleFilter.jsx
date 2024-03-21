@@ -64,7 +64,6 @@ export function SaleFilter({ sales, setSales }) {
     return (
         <Box sx={{
             marginTop: { xs: 3, sm: 0 },
-            padding: 1,
             borderRadius: 1
         }}>
             <Typography variant="h6">

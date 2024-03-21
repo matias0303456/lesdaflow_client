@@ -45,12 +45,10 @@ export function ClientFilter({ clients, setClients }) {
 
     return (
         <Box sx={{
-            marginBottom: 1,
             marginTop: { xs: 3, sm: 0 },
-            padding: 1,
             borderRadius: 1
         }}>
-            <Typography variant="h6" sx={{ marginBottom: 1 }}>
+            <Typography variant="h6">
                 Filtrar
             </Typography>
             <Box sx={{

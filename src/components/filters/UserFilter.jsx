@@ -40,12 +40,10 @@ export function UserFilter({ users, setUsers }) {
 
     return (
         <Box sx={{
-            marginBottom: 1,
             marginTop: { xs: 3, sm: 0 },
-            padding: 1,
             borderRadius: 1
         }}>
-            <Typography variant="h6" sx={{ marginBottom: 1 }}>
+            <Typography variant="h6">
                 Filtrar
             </Typography>
             <Box sx={{
