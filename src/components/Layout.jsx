@@ -11,12 +11,12 @@ import { AuthContext } from '../providers/AuthProvider';
 import Logo from '../assets/logo.jpeg'
 
 export function Layout({ children, title }) {
+
     const { auth, setAuth } = useContext(AuthContext)
     const navigate = useNavigate()
     const { pathname } = useLocation()
     const [mobileOpen, setMobileOpen] = useState(false)
     const [submenu, setSubmenu] = useState(null)
-
     const drawerWidth = 240
 
     useEffect(() => {
@@ -26,6 +26,82 @@ export function Layout({ children, title }) {
     const handleDrawerToggle = () => {
         setMobileOpen(!mobileOpen)
     }
+
+    const navMenu = (
+        <Box sx={{ width: '70%', display: 'flex', gap: 3 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', width: '10%' }}>
+                <img src={Logo} width={80} />
+            </Box>
+            <Box sx={{ display: 'flex', justifyContent: 'start', width: '70%' }}>
+                <Box className="sections" sx={{ display: 'flex', alignItems: 'center', cursor: 'pointer', padding: 2, paddingLeft: 1, paddingRight: 1 }} onMouseEnter={() => setSubmenu('clients')} onMouseLeave={() => setSubmenu(null)}>
+                    <Typography variant='p' color="#fff" sx={{ position: 'relative', whiteSpace: 'nowrap' }}>
+                        Clientes <span style={{ fontSize: '.7rem' }}>▼</span>
+                        <Box sx={{ boxShadow: '0 0 10px gray', position: 'absolute', top: '168%', left: '-7px', width: '220px', display: submenu === 'clients' ? 'block' : 'none', background: '#fff', zIndex: 2 }}>
+                            <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>
+                                <li style={{ color: '#078BCD', marginBottom: 1, padding: 5, paddingLeft: 15, paddingRight: 15 }} className='menuOption'>ABM Clientes</li>
+                                <li style={{ color: '#078BCD', marginBottom: 1, padding: 5, paddingLeft: 15, paddingRight: 15 }} className='menuOption'>Visitas</li>
+                                <li style={{ color: '#078BCD', marginBottom: 1, padding: 5, paddingLeft: 15, paddingRight: 15 }} className='menuOption'>Cuentas Corrientes</li>
+                                <li style={{ color: '#078BCD', padding: 5, paddingLeft: 15, paddingRight: 15 }} className='menuOption'>Reporte Cuenta Corriente</li>
+                            </ul>
+                        </Box>
+                    </Typography>
+                </Box>
+                <Box className="sections" sx={{ display: 'flex', alignItems: 'center', cursor: 'pointer', paddingLeft: 1, paddingRight: 1 }} onMouseEnter={() => setSubmenu('seller')} onMouseLeave={() => setSubmenu(null)}>
+                    <Typography variant='p' color="#fff" sx={{ position: 'relative', whiteSpace: 'nowrap' }}>
+                        Vendedor <span style={{ fontSize: '.7rem' }}>▼</span>
+                        <Box sx={{ boxShadow: '0 0 10px gray', position: 'absolute', top: '168%', left: '-7px', width: '220px', display: submenu === 'seller' ? 'block' : 'none', background: '#fff', zIndex: 2 }}>
+                            <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>
+                                <li style={{ color: '#078BCD', marginBottom: 1, padding: 5, paddingLeft: 15, paddingRight: 15 }} className='menuOption'>ABM Vendedor</li>
+                            </ul>
+                        </Box>
+                    </Typography>
+                </Box>
+                <Box className="sections" sx={{ display: 'flex', alignItems: 'center', cursor: 'pointer', paddingLeft: 1, paddingRight: 1 }} onMouseEnter={() => setSubmenu('sales')} onMouseLeave={() => setSubmenu(null)}>
+                    <Typography variant='p' color="#fff" sx={{ position: 'relative', whiteSpace: 'nowrap' }}>
+                        Ventas <span style={{ fontSize: '.7rem' }}>▼</span>
+                        <Box sx={{ boxShadow: '0 0 10px gray', position: 'absolute', top: '168%', left: '-7px', width: '220px', display: submenu === 'sales' ? 'block' : 'none', background: '#fff', zIndex: 2 }}>
+                            <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>
+                                <li style={{ color: '#078BCD', marginBottom: 1, padding: 5, paddingLeft: 15, paddingRight: 15 }} className='menuOption'>ABM Ventas</li>
+                                <li style={{ color: '#078BCD', marginBottom: 1, padding: 5, paddingLeft: 15, paddingRight: 15 }} className='menuOption'>Búsqueda de Ventas</li>
+                                <li style={{ color: '#078BCD', marginBottom: 1, padding: 5, paddingLeft: 15, paddingRight: 15 }} className='menuOption'>Reporte de Ventas</li>
+                            </ul>
+                        </Box>
+                    </Typography>
+                </Box>
+                <Box className="sections" sx={{ display: 'flex', alignItems: 'center', cursor: 'pointer', paddingLeft: 1, paddingRight: 1 }} onMouseEnter={() => setSubmenu('products')} onMouseLeave={() => setSubmenu(null)}>
+                    <Typography variant='p' color="#fff" sx={{ position: 'relative', whiteSpace: 'nowrap' }}>
+                        Productos <span style={{ fontSize: '.7rem' }}>▼</span>
+                        <Box sx={{ boxShadow: '0 0 10px gray', position: 'absolute', top: '168%', left: '-7px', width: '220px', display: submenu === 'products' ? 'block' : 'none', background: '#fff', zIndex: 2 }}>
+                            <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>
+                                <li style={{ color: '#078BCD', marginBottom: 1, padding: 5, paddingLeft: 15, paddingRight: 15 }} className='menuOption'>Lista de Precios</li>
+                                <li style={{ color: '#078BCD', marginBottom: 1, padding: 5, paddingLeft: 15, paddingRight: 15 }} className='menuOption'>Reporte de Productos</li>
+                            </ul>
+                        </Box>
+                    </Typography>
+                </Box>
+                <Box className="sections" sx={{ display: 'flex', alignItems: 'center', cursor: 'pointer', paddingLeft: 1, paddingRight: 1 }} onMouseEnter={() => setSubmenu('budgets')} onMouseLeave={() => setSubmenu(null)}>
+                    <Typography variant='p' color="#fff" sx={{ position: 'relative', whiteSpace: 'nowrap' }}>
+                        Presupuestos <span style={{ fontSize: '.7rem' }}>▼</span>
+                        <Box sx={{ boxShadow: '0 0 10px gray', position: 'absolute', top: '168%', left: '-7px', width: '220px', display: submenu === 'budgets' ? 'block' : 'none', background: '#fff', zIndex: 2 }}>
+                            <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>
+                                <li style={{ color: '#078BCD', marginBottom: 1, padding: 5, paddingLeft: 15, paddingRight: 15 }} className='menuOption'>ABM Presupuesto</li>
+                            </ul>
+                        </Box>
+                    </Typography>
+                </Box>
+                <Box className="sections" sx={{ display: 'flex', alignItems: 'center', cursor: 'pointer', paddingLeft: 1, paddingRight: 1 }} onMouseEnter={() => setSubmenu('registers')} onMouseLeave={() => setSubmenu(null)}>
+                    <Typography variant='p' color="#fff" sx={{ position: 'relative', whiteSpace: 'nowrap' }}>
+                        Cajas <span style={{ fontSize: '.7rem' }}>▼</span>
+                        <Box sx={{ boxShadow: '0 0 10px gray', position: 'absolute', top: '168%', left: '-7px', width: '220px', display: submenu === 'registers' ? 'block' : 'none', background: '#fff', zIndex: 2 }}>
+                            <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>
+                                <li style={{ color: '#078BCD', marginBottom: 1, padding: 5, paddingLeft: 15, paddingRight: 15 }} className='menuOption'>Movimientos de Cajas</li>
+                            </ul>
+                        </Box>
+                    </Typography>
+                </Box>
+            </Box>
+        </Box>
+    )
 
     return (
         <Box sx={{
@@ -50,83 +126,11 @@ export function Layout({ children, title }) {
                 >
                     <MenuIcon />
                 </IconButton>
-                <Box sx={{ width: '70%', display: 'flex', gap: 3 }}>
-                    <Box sx={{ display: 'flex', alignItems: 'center', width: '10%' }}>
-                        <img src={Logo} width={80} />
-                    </Box>
-                    <Box sx={{ display: { xs: 'none', md: 'flex' }, justifyContent: 'start', width: '70%' }}>
-                        <Box className="sections" sx={{ display: 'flex', alignItems: 'center', cursor: 'pointer', padding: 2, paddingLeft: 2, paddingRight: 2 }} onMouseEnter={() => setSubmenu('clients')} onMouseLeave={() => setSubmenu(null)}>
-                            <Typography variant='p' color="#fff" sx={{ position: 'relative' }}>
-                                Clientes <span style={{ fontSize: '.7rem' }}>▼</span>
-                                <Box sx={{ boxShadow: '0 0 10px gray', position: 'absolute', top: '168%', left: '-15px', width: '220px', display: submenu === 'clients' ? 'block' : 'none', background: '#fff', zIndex: 2 }}>
-                                    <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>
-                                        <li style={{ color: '#078BCD', marginBottom: 1, padding: 5, paddingLeft: 15, paddingRight: 15 }} className='menuOption'>ABM Clientes</li>
-                                        <li style={{ color: '#078BCD', marginBottom: 1, padding: 5, paddingLeft: 15, paddingRight: 15 }} className='menuOption'>Visitas</li>
-                                        <li style={{ color: '#078BCD', marginBottom: 1, padding: 5, paddingLeft: 15, paddingRight: 15 }} className='menuOption'>Cuentas Corrientes</li>
-                                        <li style={{ color: '#078BCD', padding: 5, paddingLeft: 15, paddingRight: 15 }} className='menuOption'>Reporte Cuenta Corriente</li>
-                                    </ul>
-                                </Box>
-                            </Typography>
-                        </Box>
-                        <Box className="sections" sx={{ display: 'flex', alignItems: 'center', cursor: 'pointer', paddingLeft: 2, paddingRight: 2 }} onMouseEnter={() => setSubmenu('seller')} onMouseLeave={() => setSubmenu(null)}>
-                            <Typography variant='p' color="#fff" sx={{ position: 'relative' }}>
-                                Vendedor <span style={{ fontSize: '.7rem' }}>▼</span>
-                                <Box sx={{ boxShadow: '0 0 10px gray', position: 'absolute', top: '168%', left: '-15px', width: '220px', display: submenu === 'seller' ? 'block' : 'none', background: '#fff', zIndex: 2 }}>
-                                    <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>
-                                        <li style={{ color: '#078BCD', marginBottom: 1, padding: 5, paddingLeft: 15, paddingRight: 15 }} className='menuOption'>ABM Vendedor</li>
-                                    </ul>
-                                </Box>
-                            </Typography>
-                        </Box>
-                        <Box className="sections" sx={{ display: 'flex', alignItems: 'center', cursor: 'pointer', paddingLeft: 2, paddingRight: 2 }} onMouseEnter={() => setSubmenu('sales')} onMouseLeave={() => setSubmenu(null)}>
-                            <Typography variant='p' color="#fff" sx={{ position: 'relative' }}>
-                                Ventas <span style={{ fontSize: '.7rem' }}>▼</span>
-                                <Box sx={{ boxShadow: '0 0 10px gray', position: 'absolute', top: '168%', left: '-15px', width: '220px', display: submenu === 'sales' ? 'block' : 'none', background: '#fff', zIndex: 2 }}>
-                                    <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>
-                                        <li style={{ color: '#078BCD', marginBottom: 1, padding: 5, paddingLeft: 15, paddingRight: 15 }} className='menuOption'>ABM Ventas</li>
-                                        <li style={{ color: '#078BCD', marginBottom: 1, padding: 5, paddingLeft: 15, paddingRight: 15 }} className='menuOption'>Búsqueda de Ventas</li>
-                                        <li style={{ color: '#078BCD', marginBottom: 1, padding: 5, paddingLeft: 15, paddingRight: 15 }} className='menuOption'>Reporte de Ventas</li>
-                                    </ul>
-                                </Box>
-                            </Typography>
-                        </Box>
-                        <Box className="sections" sx={{ display: 'flex', alignItems: 'center', cursor: 'pointer', paddingLeft: 2, paddingRight: 2 }} onMouseEnter={() => setSubmenu('products')} onMouseLeave={() => setSubmenu(null)}>
-                            <Typography variant='p' color="#fff" sx={{ position: 'relative' }}>
-                                Productos <span style={{ fontSize: '.7rem' }}>▼</span>
-                                <Box sx={{ boxShadow: '0 0 10px gray', position: 'absolute', top: '168%', left: '-15px', width: '220px', display: submenu === 'products' ? 'block' : 'none', background: '#fff', zIndex: 2 }}>
-                                    <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>
-                                        <li style={{ color: '#078BCD', marginBottom: 1, padding: 5, paddingLeft: 15, paddingRight: 15 }} className='menuOption'>Lista de Precios</li>
-                                        <li style={{ color: '#078BCD', marginBottom: 1, padding: 5, paddingLeft: 15, paddingRight: 15 }} className='menuOption'>Reporte de Productos</li>
-                                    </ul>
-                                </Box>
-                            </Typography>
-                        </Box>
-                        <Box className="sections" sx={{ display: 'flex', alignItems: 'center', cursor: 'pointer', paddingLeft: 2, paddingRight: 2 }} onMouseEnter={() => setSubmenu('budgets')} onMouseLeave={() => setSubmenu(null)}>
-                            <Typography variant='p' color="#fff" sx={{ position: 'relative' }}>
-                                Presupuestos <span style={{ fontSize: '.7rem' }}>▼</span>
-                                <Box sx={{ boxShadow: '0 0 10px gray', position: 'absolute', top: '168%', left: '-15px', width: '220px', display: submenu === 'budgets' ? 'block' : 'none', background: '#fff', zIndex: 2 }}>
-                                    <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>
-                                        <li style={{ color: '#078BCD', marginBottom: 1, padding: 5, paddingLeft: 15, paddingRight: 15 }} className='menuOption'>ABM Presupuesto</li>
-                                    </ul>
-                                </Box>
-                            </Typography>
-                        </Box>
-                        <Box className="sections" sx={{ display: 'flex', alignItems: 'center', cursor: 'pointer', paddingLeft: 2, paddingRight: 2 }} onMouseEnter={() => setSubmenu('registers')} onMouseLeave={() => setSubmenu(null)}>
-                            <Typography variant='p' color="#fff" sx={{ position: 'relative' }}>
-                                Cajas <span style={{ fontSize: '.7rem' }}>▼</span>
-                                <Box sx={{ boxShadow: '0 0 10px gray', position: 'absolute', top: '168%', left: '-15px', width: '220px', display: submenu === 'registers' ? 'block' : 'none', background: '#fff', zIndex: 2 }}>
-                                    <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>
-                                        <li style={{ color: '#078BCD', marginBottom: 1, padding: 5, paddingLeft: 15, paddingRight: 15 }} className='menuOption'>Movimientos de Cajas</li>
-                                    </ul>
-                                </Box>
-                            </Typography>
-                        </Box>
-                    </Box>
-                </Box>
-                <Box className="sections" sx={{ display: 'flex', alignItems: 'center', cursor: 'pointer', padding: 2, paddingLeft: 2, paddingRight: 2 }} onMouseEnter={() => setSubmenu('user')} onMouseLeave={() => setSubmenu(null)}>
-                    <Typography variant='p' color="#fff" sx={{ position: 'relative' }}>
+                {navMenu}
+                <Box className="sections" sx={{ display: 'flex', alignItems: 'center', cursor: 'pointer', padding: 2, paddingLeft: 1, paddingRight: 1 }} onMouseEnter={() => setSubmenu('user')} onMouseLeave={() => setSubmenu(null)}>
+                    <Typography variant='p' color="#fff" sx={{ position: 'relative', whiteSpace: 'nowrap' }}>
                         {auth.user.username} <span style={{ fontSize: '.7rem' }}>▼</span>
-                        <Box sx={{ boxShadow: '0 0 10px gray', position: 'absolute', top: '168%', left: '-15px', display: submenu === 'user' ? 'block' : 'none', background: '#fff', zIndex: 2 }}>
+                        <Box sx={{ boxShadow: '0 0 10px gray', position: 'absolute', top: '168%', left: '-40px', display: submenu === 'user' ? 'block' : 'none', background: '#fff', zIndex: 2 }}>
                             <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>
                                 <li style={{ color: '#078BCD', marginBottom: 1, padding: 5, paddingLeft: 15, paddingRight: 15 }} className='menuOption'>Cambiar contraseña</li>
                             </ul>
@@ -147,12 +151,9 @@ export function Layout({ children, title }) {
                     },
                 }}
             >
-                <div>
-                    {/* Your drawer content here */}
-                </div>
+                {navMenu}
             </Drawer>
             <Box sx={{ flex: 1, overflow: 'auto' }}>
-                {/* Main content */}
                 {children}
             </Box>
         </Box>
