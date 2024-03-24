@@ -2,13 +2,15 @@ body {
     background-color: #eee !important;
 }
 
-.sections:hover{
-    background-color: #0372aa !important;
-}
+@media (min-width: 900px) {
+    .sections:hover {
+        background-color: #0372aa !important;
+    }
 
-.menuOption:hover {
-    background-color: #0372aa;
-    color: #fff !important;
+    .menuOption:hover {
+        background-color: #0372aa;
+        color: #fff !important;
+    }
 }
 
 @media (max-width: 599px) {
