@@ -27,13 +27,13 @@ export function getCurrentTotal(formData, saleProducts, products) {
 }
 
 export function getSaleSubtotal(sale) {
-    const total = sale.sale_products.reduce((prev, curr) => prev + (curr.product.buy_price * curr.amount), 0)
-    return `$${total.toFixed(2)}`
+    const result = sale.sale_products.reduce((prev, curr) => prev + ((curr.product.buy_price + ((curr.product.buy_price / 100) * curr.product.earn)) * curr.amount), 0)
+    return `$${result.toFixed(2)}`
 }
 
 export function getSaleTotal(sale) {
-    const totalSaleProducts = sale.sale_products.reduce((prev, curr) => prev + (curr.product.buy_price * curr.amount), 0)
-    return `$${(totalSaleProducts - ((totalSaleProducts / 100) * sale.discount)).toFixed(2)}`
+    const subtotal = getSaleSubtotal(sale).replace('$', '')
+    return `$${(subtotal - ((subtotal / 100) * sale.discount)).toFixed(2)}`
 }
 
 export function getSaleDifference(sale) {

@@ -87,7 +87,7 @@ export function SaleDetails() {
                                             <TableCell align="center">{sp.product.code}</TableCell>
                                             <TableCell align="center">{sp.product.details}</TableCell>
                                             <TableCell align="center">${sp.product.buy_price.toFixed(2)}</TableCell>
-                                            <TableCell align="center">${(sp.product.buy_price * sp.amount).toFixed(2)}</TableCell>
+                                            <TableCell align="center">${((sp.product.buy_price + ((sp.product.buy_price / 100) * sp.product.earn)) * sp.amount).toFixed(2)}</TableCell>
                                         </TableRow>
                                     ))}
                                 </TableBody>
