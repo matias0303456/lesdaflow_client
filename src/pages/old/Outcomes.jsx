@@ -3,19 +3,19 @@ import { useNavigate } from "react-router-dom";
 import { Autocomplete, Box, Button, FormControl, Input, InputLabel, LinearProgress, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from "@mui/material";
 import { format } from 'date-fns'
 
-import { AuthContext } from "../providers/AuthProvider";
-import { MessageContext } from "../providers/MessageProvider";
-import { useApi } from "../hooks/useApi";
-import { useForm } from "../hooks/useForm";
-import { useProducts } from "../hooks/useProducts";
+import { AuthContext } from "../../providers/AuthProvider";
+import { MessageContext } from "../../providers/MessageProvider";
+import { useApi } from "../../hooks/useApi";
+import { useForm } from "../../hooks/useForm";
+import { useProducts } from "../../hooks/useProducts";
 
-import { Layout } from "../components/Layout";
-import { DataGrid } from "../components/DataGrid";
-import { ModalComponent } from "../components/ModalComponent";
-import { MovementFilter } from "../components/filters/MovementFilter";
+import { Layout } from "../../components/Layout";
+import { DataGrid } from "../../components/DataGrid";
+import { ModalComponent } from "../../components/ModalComponent";
+import { MovementFilter } from "../../components/filters/MovementFilter";
 
-import { OUTCOME_URL } from "../utils/urls";
-import { getStock, getStockTillDate } from "../utils/helpers";
+import { OUTCOME_URL } from "../../utils/urls";
+import { getStock, getStockTillDate } from "../../utils/helpers";
 
 export function Outcomes() {
 

@@ -7,18 +7,18 @@ import { MessageProvider } from "./providers/MessageProvider";
 import { AuthProvider } from "./providers/AuthProvider";
 
 import { Login } from "./pages/Login";
-import { Products } from './pages/Products'
-import { Incomes } from "./pages/Incomes";
-import { Outcomes } from "./pages/Outcomes";
-import { Sales } from "./pages/Sales";
-import { Registers } from "./pages/Registers";
-import { SaleDetails } from "./pages/SaleDetails";
 import { Clients } from './pages/Clients'
-import { Suppliers } from './pages/Suppliers'
+import { Visits } from "./pages/Visits";
+import { AccountsReport } from "./pages/AccountsReport";
 import { Users } from './pages/Users'
-import { Reports } from "./pages/Reports";
+import { Sales } from "./pages/Sales";
+import { SalesReport } from "./pages/SalesReport";
+import { Products } from './pages/Products'
+import { ProductsReport } from './pages/ProductsReport'
+import { Budgets } from "./pages/Budgets";
+import { Registers } from "./pages/Registers";
+import { Profile } from "./pages/Profile";
 import { Error } from './pages/Error'
-import { Profile } from './pages/Profile'
 
 function App() {
 
@@ -38,18 +38,18 @@ function App() {
           <BrowserRouter basename="distribuidora-mga">
             <Routes>
               <Route path="/" element={<Login />} />
-              <Route path="/productos" element={<Products />} />
               <Route path="/login" element={<Login />} />
-              <Route path="/ingresos" element={<Incomes />} />
-              <Route path="/egresos" element={<Outcomes />} />
-              <Route path="/ventas" element={<Sales />} />
-              <Route path="/cajas" element={<Registers />} />
-              <Route path="/cuenta/:id" element={<SaleDetails />} />
               <Route path="/clientes" element={<Clients />} />
-              <Route path="/proveedores" element={<Suppliers />} />
-              <Route path="/usuarios" element={<Users />} />
-              <Route path="/reportes" element={<Reports />} />
-              <Route path="/perfil" element={<Profile />} />
+              <Route path="/visitas" element={<Visits />} />
+              <Route path="/reporte-cta-cte" element={<AccountsReport />} />
+              <Route path="/vendedor" element={<Users />} />
+              <Route path="/ventas" element={<Sales />} />
+              <Route path="/reporte-ventas" element={<SalesReport />} />
+              <Route path="/productos" element={<Products />} />
+              <Route path="/reporte-productos" element={<ProductsReport />} />
+              <Route path="/presupuestos" element={<Budgets />} />
+              <Route path="/cajas" element={<Registers />} />
+              <Route path="/cambiar-contraseña" element={<Profile />} />
               <Route path="*" element={<Error />} />
             </Routes>
           </BrowserRouter>

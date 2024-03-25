@@ -27,6 +27,12 @@ export function Layout({ children, title }) {
         setMobileOpen(!mobileOpen)
     }
 
+    const handleLogout = () => {
+        setAuth(null)
+        localStorage.clear()
+        navigate('/login')
+    }
+
     return (
         <Box sx={{
             display: 'flex',
@@ -60,10 +66,10 @@ export function Layout({ children, title }) {
                                 Clientes <span style={{ fontSize: '.7rem' }}>▼</span>
                                 <Box sx={{ boxShadow: '0 0 10px gray', position: 'absolute', top: '168%', left: '-7px', width: '220px', display: submenu === 'clients' ? 'block' : 'none', background: '#fff', zIndex: 2 }}>
                                     <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>
-                                        <li style={{ color: '#078BCD', marginBottom: 1, padding: 5, paddingLeft: 15, paddingRight: 15 }} className='menuOption'>ABM Clientes</li>
-                                        <li style={{ color: '#078BCD', marginBottom: 1, padding: 5, paddingLeft: 15, paddingRight: 15 }} className='menuOption'>Visitas</li>
-                                        <li style={{ color: '#078BCD', marginBottom: 1, padding: 5, paddingLeft: 15, paddingRight: 15 }} className='menuOption'>Cuentas Corrientes</li>
-                                        <li style={{ color: '#078BCD', padding: 5, paddingLeft: 15, paddingRight: 15 }} className='menuOption'>Reporte Cuenta Corriente</li>
+                                        <li style={{ color: '#078BCD', marginBottom: 1, padding: 5, paddingLeft: 15, paddingRight: 15 }} className='menuOption' onClick={() => navigate('/clientes')}>ABM Clientes</li>
+                                        <li style={{ color: '#078BCD', marginBottom: 1, padding: 5, paddingLeft: 15, paddingRight: 15 }} className='menuOption' onClick={() => navigate('/visitas')}>Visitas</li>
+                                        {/* <li style={{ color: '#078BCD', marginBottom: 1, padding: 5, paddingLeft: 15, paddingRight: 15 }} className='menuOption'>Cuentas Corrientes</li> */}
+                                        <li style={{ color: '#078BCD', padding: 5, paddingLeft: 15, paddingRight: 15 }} className='menuOption' onClick={() => navigate('/reporte-cta-cte')}>Reporte Cuenta Corriente</li>
                                     </ul>
                                 </Box>
                             </Typography>
@@ -73,7 +79,7 @@ export function Layout({ children, title }) {
                                 Vendedor <span style={{ fontSize: '.7rem' }}>▼</span>
                                 <Box sx={{ boxShadow: '0 0 10px gray', position: 'absolute', top: '168%', left: '-7px', width: '220px', display: submenu === 'seller' ? 'block' : 'none', background: '#fff', zIndex: 2 }}>
                                     <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>
-                                        <li style={{ color: '#078BCD', marginBottom: 1, padding: 5, paddingLeft: 15, paddingRight: 15 }} className='menuOption'>ABM Vendedor</li>
+                                        <li style={{ color: '#078BCD', marginBottom: 1, padding: 5, paddingLeft: 15, paddingRight: 15 }} className='menuOption' onClick={() => navigate('/vendedor')}>ABM Vendedor</li>
                                     </ul>
                                 </Box>
                             </Typography>
@@ -83,9 +89,9 @@ export function Layout({ children, title }) {
                                 Ventas <span style={{ fontSize: '.7rem' }}>▼</span>
                                 <Box sx={{ boxShadow: '0 0 10px gray', position: 'absolute', top: '168%', left: '-7px', width: '220px', display: submenu === 'sales' ? 'block' : 'none', background: '#fff', zIndex: 2 }}>
                                     <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>
-                                        <li style={{ color: '#078BCD', marginBottom: 1, padding: 5, paddingLeft: 15, paddingRight: 15 }} className='menuOption'>ABM Ventas</li>
-                                        <li style={{ color: '#078BCD', marginBottom: 1, padding: 5, paddingLeft: 15, paddingRight: 15 }} className='menuOption'>Búsqueda de Ventas</li>
-                                        <li style={{ color: '#078BCD', marginBottom: 1, padding: 5, paddingLeft: 15, paddingRight: 15 }} className='menuOption'>Reporte de Ventas</li>
+                                        <li style={{ color: '#078BCD', marginBottom: 1, padding: 5, paddingLeft: 15, paddingRight: 15 }} className='menuOption' onClick={() => navigate('/ventas')}>ABM Ventas</li>
+                                        {/* <li style={{ color: '#078BCD', marginBottom: 1, padding: 5, paddingLeft: 15, paddingRight: 15 }} className='menuOption'>Búsqueda de Ventas</li> */}
+                                        <li style={{ color: '#078BCD', marginBottom: 1, padding: 5, paddingLeft: 15, paddingRight: 15 }} className='menuOption' onClick={() => navigate('/reporte-ventas')}>Reporte de Ventas</li>
                                     </ul>
                                 </Box>
                             </Typography>
@@ -95,8 +101,8 @@ export function Layout({ children, title }) {
                                 Productos <span style={{ fontSize: '.7rem' }}>▼</span>
                                 <Box sx={{ boxShadow: '0 0 10px gray', position: 'absolute', top: '168%', left: '-7px', width: '220px', display: submenu === 'products' ? 'block' : 'none', background: '#fff', zIndex: 2 }}>
                                     <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>
-                                        <li style={{ color: '#078BCD', marginBottom: 1, padding: 5, paddingLeft: 15, paddingRight: 15 }} className='menuOption'>Lista de Precios</li>
-                                        <li style={{ color: '#078BCD', marginBottom: 1, padding: 5, paddingLeft: 15, paddingRight: 15 }} className='menuOption'>Reporte de Productos</li>
+                                        <li style={{ color: '#078BCD', marginBottom: 1, padding: 5, paddingLeft: 15, paddingRight: 15 }} className='menuOption' onClick={() => navigate('/productos')}>Lista de Precios</li>
+                                        <li style={{ color: '#078BCD', marginBottom: 1, padding: 5, paddingLeft: 15, paddingRight: 15 }} className='menuOption' onClick={() => navigate('/reporte-productos')}>Reporte de Productos</li>
                                     </ul>
                                 </Box>
                             </Typography>
@@ -106,7 +112,7 @@ export function Layout({ children, title }) {
                                 Presupuestos <span style={{ fontSize: '.7rem' }}>▼</span>
                                 <Box sx={{ boxShadow: '0 0 10px gray', position: 'absolute', top: '168%', left: '-7px', width: '220px', display: submenu === 'budgets' ? 'block' : 'none', background: '#fff', zIndex: 2 }}>
                                     <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>
-                                        <li style={{ color: '#078BCD', marginBottom: 1, padding: 5, paddingLeft: 15, paddingRight: 15 }} className='menuOption'>ABM Presupuesto</li>
+                                        <li style={{ color: '#078BCD', marginBottom: 1, padding: 5, paddingLeft: 15, paddingRight: 15 }} className='menuOption' onClick={() => navigate('/presupuestos')}>ABM Presupuesto</li>
                                     </ul>
                                 </Box>
                             </Typography>
@@ -116,7 +122,7 @@ export function Layout({ children, title }) {
                                 Cajas <span style={{ fontSize: '.7rem' }}>▼</span>
                                 <Box sx={{ boxShadow: '0 0 10px gray', position: 'absolute', top: '168%', left: '-7px', width: '220px', display: submenu === 'registers' ? 'block' : 'none', background: '#fff', zIndex: 2 }}>
                                     <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>
-                                        <li style={{ color: '#078BCD', marginBottom: 1, padding: 5, paddingLeft: 15, paddingRight: 15 }} className='menuOption'>Movimientos de Cajas</li>
+                                        <li style={{ color: '#078BCD', marginBottom: 1, padding: 5, paddingLeft: 15, paddingRight: 15 }} className='menuOption' onClick={() => navigate('/cajas')}>Movimientos de Cajas</li>
                                     </ul>
                                 </Box>
                             </Typography>
@@ -128,8 +134,8 @@ export function Layout({ children, title }) {
                         {auth.user.username} <span style={{ fontSize: '.7rem' }}>▼</span>
                         <Box sx={{ boxShadow: '0 0 10px gray', position: 'absolute', top: '168%', left: '-40px', display: submenu === 'user' ? 'block' : 'none', background: '#fff', zIndex: 2 }}>
                             <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>
-                                <li style={{ color: '#078BCD', marginBottom: 1, padding: 5, paddingLeft: 15, paddingRight: 15 }} className='menuOption'>Cambiar contraseña</li>
-                                <li style={{ color: '#078BCD', marginBottom: 1, padding: 5, paddingLeft: 15, paddingRight: 15 }} className='menuOption'>Salir</li>
+                                <li style={{ color: '#078BCD', marginBottom: 1, padding: 5, paddingLeft: 15, paddingRight: 15 }} className='menuOption' onClick={() => navigate('/cambiar-contraseña')}>Cambiar contraseña</li>
+                                <li style={{ color: '#078BCD', marginBottom: 1, padding: 5, paddingLeft: 15, paddingRight: 15 }} className='menuOption' onClick={handleLogout}>Salir</li>
                             </ul>
                         </Box>
                     </Typography>
@@ -154,10 +160,10 @@ export function Layout({ children, title }) {
                             Clientes <span style={{ fontSize: '.7rem' }}>▼</span>
                             <Box sx={{ boxShadow: '0 0 10px gray', position: 'absolute', top: '168%', left: '-15px', width: '240px', display: submenu === 'clients' ? 'block' : 'none', background: '#fff', zIndex: 2 }}>
                                 <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>
-                                    <li style={{ color: '#078BCD', marginBottom: 1, padding: 5, paddingLeft: 15, paddingRight: 15 }} className='menuOption'>ABM Clientes</li>
-                                    <li style={{ color: '#078BCD', marginBottom: 1, padding: 5, paddingLeft: 15, paddingRight: 15 }} className='menuOption'>Visitas</li>
-                                    <li style={{ color: '#078BCD', marginBottom: 1, padding: 5, paddingLeft: 15, paddingRight: 15 }} className='menuOption'>Cuentas Corrientes</li>
-                                    <li style={{ color: '#078BCD', padding: 5, paddingLeft: 15, paddingRight: 15 }} className='menuOption'>Reporte Cuenta Corriente</li>
+                                    <li style={{ color: '#078BCD', marginBottom: 1, padding: 5, paddingLeft: 15, paddingRight: 15 }} className='menuOption' onClick={() => navigate('/clientes')}>ABM Clientes</li>
+                                    <li style={{ color: '#078BCD', marginBottom: 1, padding: 5, paddingLeft: 15, paddingRight: 15 }} className='menuOption' onClick={() => navigate('/visitas')}>Visitas</li>
+                                    {/* <li style={{ color: '#078BCD', marginBottom: 1, padding: 5, paddingLeft: 15, paddingRight: 15 }} className='menuOption'>Cuentas Corrientes</li> */}
+                                    <li style={{ color: '#078BCD', padding: 5, paddingLeft: 15, paddingRight: 15 }} className='menuOption' onClick={() => navigate('/reporte-cta-cte')}>Reporte Cuenta Corriente</li>
                                 </ul>
                             </Box>
                         </Typography>
@@ -167,7 +173,7 @@ export function Layout({ children, title }) {
                             Vendedor <span style={{ fontSize: '.7rem' }}>▼</span>
                             <Box sx={{ boxShadow: '0 0 10px gray', position: 'absolute', top: '168%', left: '-15px', width: '240px', display: submenu === 'seller' ? 'block' : 'none', background: '#fff', zIndex: 2 }}>
                                 <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>
-                                    <li style={{ color: '#078BCD', marginBottom: 1, padding: 5, paddingLeft: 15, paddingRight: 15 }} className='menuOption'>ABM Vendedor</li>
+                                    <li style={{ color: '#078BCD', marginBottom: 1, padding: 5, paddingLeft: 15, paddingRight: 15 }} className='menuOption' onClick={() => navigate('/vendedor')}>ABM Vendedor</li>
                                 </ul>
                             </Box>
                         </Typography>
@@ -177,9 +183,9 @@ export function Layout({ children, title }) {
                             Ventas <span style={{ fontSize: '.7rem' }}>▼</span>
                             <Box sx={{ boxShadow: '0 0 10px gray', position: 'absolute', top: '168%', left: '-15px', width: '240px', display: submenu === 'sales' ? 'block' : 'none', background: '#fff', zIndex: 2 }}>
                                 <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>
-                                    <li style={{ color: '#078BCD', marginBottom: 1, padding: 5, paddingLeft: 15, paddingRight: 15 }} className='menuOption'>ABM Ventas</li>
-                                    <li style={{ color: '#078BCD', marginBottom: 1, padding: 5, paddingLeft: 15, paddingRight: 15 }} className='menuOption'>Búsqueda de Ventas</li>
-                                    <li style={{ color: '#078BCD', marginBottom: 1, padding: 5, paddingLeft: 15, paddingRight: 15 }} className='menuOption'>Reporte de Ventas</li>
+                                    <li style={{ color: '#078BCD', marginBottom: 1, padding: 5, paddingLeft: 15, paddingRight: 15 }} className='menuOption' onClick={() => navigate('/ventas')}>ABM Ventas</li>
+                                    {/* <li style={{ color: '#078BCD', marginBottom: 1, padding: 5, paddingLeft: 15, paddingRight: 15 }} className='menuOption'>Búsqueda de Ventas</li> */}
+                                    <li style={{ color: '#078BCD', marginBottom: 1, padding: 5, paddingLeft: 15, paddingRight: 15 }} className='menuOption' onClick={() => navigate('/reporte-ventas')}>Reporte de Ventas</li>
                                 </ul>
                             </Box>
                         </Typography>
@@ -189,8 +195,8 @@ export function Layout({ children, title }) {
                             Productos <span style={{ fontSize: '.7rem' }}>▼</span>
                             <Box sx={{ boxShadow: '0 0 10px gray', position: 'absolute', top: '168%', left: '-15px', width: '240px', display: submenu === 'products' ? 'block' : 'none', background: '#fff', zIndex: 2 }}>
                                 <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>
-                                    <li style={{ color: '#078BCD', marginBottom: 1, padding: 5, paddingLeft: 15, paddingRight: 15 }} className='menuOption'>Lista de Precios</li>
-                                    <li style={{ color: '#078BCD', marginBottom: 1, padding: 5, paddingLeft: 15, paddingRight: 15 }} className='menuOption'>Reporte de Productos</li>
+                                    <li style={{ color: '#078BCD', marginBottom: 1, padding: 5, paddingLeft: 15, paddingRight: 15 }} className='menuOption' onClick={() => navigate('/productos')}>Lista de Precios</li>
+                                    <li style={{ color: '#078BCD', marginBottom: 1, padding: 5, paddingLeft: 15, paddingRight: 15 }} className='menuOption' onClick={() => navigate('/reporte-productos')}>Reporte de Productos</li>
                                 </ul>
                             </Box>
                         </Typography>
@@ -200,7 +206,7 @@ export function Layout({ children, title }) {
                             Presupuestos <span style={{ fontSize: '.7rem' }}>▼</span>
                             <Box sx={{ boxShadow: '0 0 10px gray', position: 'absolute', top: '168%', left: '-15px', width: '240px', display: submenu === 'budgets' ? 'block' : 'none', background: '#fff', zIndex: 2 }}>
                                 <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>
-                                    <li style={{ color: '#078BCD', marginBottom: 1, padding: 5, paddingLeft: 15, paddingRight: 15 }} className='menuOption'>ABM Presupuesto</li>
+                                    <li style={{ color: '#078BCD', marginBottom: 1, padding: 5, paddingLeft: 15, paddingRight: 15 }} className='menuOption' onClick={() => navigate('/presupuestos')}>ABM Presupuesto</li>
                                 </ul>
                             </Box>
                         </Typography>
@@ -210,7 +216,7 @@ export function Layout({ children, title }) {
                             Cajas <span style={{ fontSize: '.7rem' }}>▼</span>
                             <Box sx={{ boxShadow: '0 0 10px gray', position: 'absolute', top: '168%', left: '-15px', width: '240px', display: submenu === 'registers' ? 'block' : 'none', background: '#fff', zIndex: 2 }}>
                                 <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>
-                                    <li style={{ color: '#078BCD', marginBottom: 1, padding: 5, paddingLeft: 15, paddingRight: 15 }} className='menuOption'>Movimientos de Cajas</li>
+                                    <li style={{ color: '#078BCD', marginBottom: 1, padding: 5, paddingLeft: 15, paddingRight: 15 }} className='menuOption' onClick={() => navigate('/cajas')}>Movimientos de Cajas</li>
                                 </ul>
                             </Box>
                         </Typography>

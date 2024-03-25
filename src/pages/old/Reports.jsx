@@ -2,14 +2,14 @@ import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Autocomplete, Box, Button, FormControl, LinearProgress, TextField, Typography } from "@mui/material";
 
-import { AuthContext } from "../providers/AuthProvider";
-import { useForm } from '../hooks/useForm'
-import { useClients } from "../hooks/useClients";
-import { useProducts } from '../hooks/useProducts'
+import { AuthContext } from "../../providers/AuthProvider";
+import { useForm } from '../../hooks/useForm'
+import { useClients } from "../../hooks/useClients";
+import { useProducts } from '../../hooks/useProducts'
 
-import { Layout } from "../components/Layout";
+import { Layout } from "../../components/Layout";
 
-import { REPORT_URL } from "../utils/urls";
+import { REPORT_URL } from "../../utils/urls";
 
 export function Reports() {
 

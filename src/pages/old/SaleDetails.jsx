@@ -4,13 +4,13 @@ import { Box, Button, LinearProgress, Paper, Table, TableBody, TableCell, TableC
 import { format } from "date-fns"
 import PrintSharpIcon from '@mui/icons-material/PrintSharp'
 
-import { useApi } from "../hooks/useApi"
-import { AuthContext } from "../providers/AuthProvider"
-import { Layout } from "../components/Layout"
-import { Payments } from "../components/Payments"
+import { useApi } from "../../hooks/useApi"
+import { AuthContext } from "../../providers/AuthProvider"
+import { Layout } from "../../components/Layout"
+import { Payments } from "../../components/Payments"
 
-import { REPORT_URL, SALE_URL } from "../utils/urls"
-import { getAmountByInstallment, getDeadline, getSaleSubtotal, setLocalDate } from "../utils/helpers"
+import { REPORT_URL, SALE_URL } from "../../utils/urls"
+import { getAmountByInstallment, getDeadline, getSaleSubtotal, setLocalDate } from "../../utils/helpers"
 
 export function SaleDetails() {
 

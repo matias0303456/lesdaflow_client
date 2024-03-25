@@ -1,20 +1,20 @@
 import { useContext, useEffect, useState } from "react";
 import { Box, Button, FormControl, Input, InputLabel, LinearProgress, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
 
-import { AuthContext } from "../providers/AuthProvider";
-import { MessageContext } from "../providers/MessageProvider";
-import { useApi } from "../hooks/useApi";
-import { useForm } from "../hooks/useForm";
-import { useSuppliers } from "../hooks/useSuppliers";
+import { AuthContext } from "../../providers/AuthProvider";
+import { MessageContext } from "../../providers/MessageProvider";
+import { useApi } from "../../hooks/useApi";
+import { useForm } from "../../hooks/useForm";
+import { useSuppliers } from "../../hooks/useSuppliers";
 import { useNavigate } from "react-router-dom";
 
-import { Layout } from "../components/Layout";
-import { DataGrid } from "../components/DataGrid";
-import { ModalComponent } from "../components/ModalComponent";
-import { SupplierFilter } from "../components/filters/SupplierFilter";
+import { Layout } from "../../components/Layout";
+import { DataGrid } from "../../components/DataGrid";
+import { ModalComponent } from "../../components/ModalComponent";
+import { SupplierFilter } from "../../components/filters/SupplierFilter";
 
-import { SUPPLIER_URL } from "../utils/urls";
-import { getNewPrice } from "../utils/helpers";
+import { SUPPLIER_URL } from "../../utils/urls";
+import { getNewPrice } from "../../utils/helpers";
 
 export function Suppliers() {
 
