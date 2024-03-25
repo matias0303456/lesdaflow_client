@@ -27,7 +27,7 @@ export function Registers() {
     const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
         defaultData: {
             id: '',
-            user_id: auth.user.id
+            user_id: auth?.user.id
         }
     })
 
