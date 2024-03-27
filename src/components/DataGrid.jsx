@@ -81,19 +81,7 @@ function EnhancedTableHead({
     return (
         <TableHead>
             <TableRow>
-                {!disableSelection &&
-                    <TableCell padding="checkbox">
-                        <Checkbox
-                            color="primary"
-                            indeterminate={numSelected > 0 && numSelected < rowCount}
-                            checked={rowCount > 0 && numSelected === rowCount}
-                            onChange={onSelectAllClick}
-                            inputProps={{
-                                'aria-label': 'select all desserts',
-                            }}
-                        />
-                    </TableCell>
-                }
+                <TableCell />
                 {headCells.map((headCell) => (
                     <TableCell
                         key={headCell.id}
@@ -327,7 +315,9 @@ export function DataGrid({
     disableSorting = false,
     defaultOrder = 'desc',
     defaultOrderBy = 'id',
-    stopPointerEvents = false
+    stopPointerEvents = false,
+    actions,
+    filter
 }) {
 
     const [order, setOrder] = React.useState(defaultOrder);
@@ -400,29 +390,19 @@ export function DataGrid({
 
     return (
         <div className='gridContainer'>
-            <Box sx={{ width: '100%' }}>
+            <Box sx={{ width: '100%', backgroundColor: '#fff', padding: 1 }}>
+                <Box sx={{ display: 'flex', alignItems: 'start' }}>
+                    <Box sx={{ display: 'flex', gap: 1 }}>
+                        <Button variant="outlined" onClick={() => setOpen('NEW')}>
+                            Agregar
+                        </Button>
+                        <Button variant="outlined" color='error'>
+                            PDF
+                        </Button>
+                    </Box>
+                    {filter}
+                </Box>
                 <Paper sx={{ width: '100%', mb: 2 }}>
-                    <EnhancedTableToolbar
-                        numSelected={selected.length}
-                        title={title}
-                        disableAdd={disableAdd}
-                        open={open}
-                        setOpen={setOpen}
-                        data={data}
-                        setData={setData}
-                        workOn={rows.filter(row => selected.includes(row.id))}
-                        handleDelete={handleDelete}
-                        allowMassiveEdit={allowMassiveEdit}
-                        setMassiveEdit={setMassiveEdit}
-                        updateByPercentage={updateByPercentage}
-                        changePwd={changePwd}
-                        seeAccount={seeAccount}
-                        handlePrint={handlePrint}
-                        selected={selected}
-                        rows={rows}
-                        orderBy={orderBy}
-                        order={order}
-                    />
                     <TableContainer>
                         <Table
                             sx={{ minWidth: 750 }}
@@ -442,35 +422,15 @@ export function DataGrid({
                             />
                             <TableBody>
                                 {visibleRows.map((row, index) => {
-                                    const isItemSelected = isSelected(row.id);
-                                    const labelId = `enhanced-table-checkbox-${index}`;
-
                                     return (
                                         <TableRow
-                                            hover
-                                            onClick={(event) => {
-                                                if (!disableSelection && !stopPointerEvents) {
-                                                    handleClick(event, row.id)
-                                                }
-                                            }}
                                             role="checkbox"
-                                            aria-checked={isItemSelected}
                                             tabIndex={-1}
                                             key={row.id}
-                                            selected={isItemSelected}
-                                            sx={{ cursor: !disableSelection ? 'pointer' : 'auto' }}
                                         >
-                                            {!disableSelection &&
-                                                <TableCell padding="checkbox">
-                                                    <Checkbox
-                                                        color="primary"
-                                                        checked={isItemSelected}
-                                                        inputProps={{
-                                                            'aria-labelledby': labelId,
-                                                        }}
-                                                    />
-                                                </TableCell>
-                                            }
+                                            <TableCell >
+                                                {actions}
+                                            </TableCell>
                                             {headCells.map(cell => cell.accessor).map(accessor => (
                                                 <TableCell key={accessor} align="center" sx={{
                                                     color: (

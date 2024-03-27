@@ -223,7 +223,7 @@ export function Layout({ children, title }) {
                     </Box>
                 </Box>
             </Drawer>
-            <Box sx={{ flex: 1, overflow: 'auto' }}>
+            <Box sx={{ flex: 1, overflow: 'auto', padding: 2 }}>
                 {children}
             </Box>
         </Box>

@@ -44,37 +44,17 @@ export function ClientFilter({ clients, setClients }) {
     }, [filter])
 
     return (
-        <Box sx={{
-            marginBottom: 1,
-            marginTop: { xs: 3, sm: 0 },
-            padding: 1,
-            borderRadius: 1
-        }}>
-            <Typography variant="h6" sx={{ marginBottom: 1 }}>
-                Filtrar
-            </Typography>
+        <Box>
             <Box sx={{
                 display: 'flex',
                 flexWrap: 'wrap',
-                gap: 3,
-                flexDirection: {
-                    xs: 'column',
-                    md: 'row'
-                }
+                flexDirection: 'column'
             }}>
-                <FormControl>
-                    <InputLabel htmlFor="code">Código</InputLabel>
-                    <Input id="code" type="text" name="code" value={filter.code} onChange={handleChange} />
-                </FormControl>
                 <FormControl>
                     <InputLabel htmlFor="name">Nombre y Apellido</InputLabel>
                     <Input id="name" type="text" name="name" value={filter.name} onChange={handleChange} />
                 </FormControl>
-                <FormControl>
-                    <InputLabel htmlFor="email">Email</InputLabel>
-                    <Input id="email" type="email" name="email" value={filter.email} onChange={handleChange} />
-                </FormControl>
-                {auth?.user.role.name === 'ADMINISTRADOR' &&
+                {/* {auth?.user.role.name === 'ADMINISTRADOR' &&
                     <FormControl>
                         <InputLabel id="user-select">Vendedor</InputLabel>
                         <Select
@@ -92,7 +72,7 @@ export function ClientFilter({ clients, setClients }) {
                             ))}
                         </Select>
                     </FormControl>
-                }
+                } */}
                 <Button variant="outlined" onClick={handleReset}>
                     Reiniciar
                 </Button>
