@@ -381,13 +381,13 @@ export function DataGrid({
     };
 
     const handleChangeRowsPerPage = (event) => {
-        setOffset({ ...offset, [pageKey]: parseInt(event.target.value, 10) });
+        setOffset({ ...offset, [pageKey]: event.target.value });
         setPage({ ...page, [pageKey]: 0 });
     };
 
     React.useEffect(() => {
         (async () => {
-            if (getter) getter({ page, offset })
+            if (getter) getter()
         })()
     }, [page, offset])
 
@@ -396,8 +396,6 @@ export function DataGrid({
     };
 
     const isSelected = (id) => selected.indexOf(id) !== -1;
-
-    const emptyRows = page[pageKey] > 0 ? Math.max(0, (1 + page[pageKey]) * offset[pageKey] - rows.length) : 0;
 
     const visibleRows = React.useMemo(
         () => stableSort(rows, getComparator(order, orderBy, headCells.find(hc => hc.id === orderBy)?.sorter)),
@@ -491,15 +489,6 @@ export function DataGrid({
                                         </TableRow>
                                     );
                                 })}
-                                {emptyRows > 0 && (
-                                    <TableRow
-                                        style={{
-                                            height: (dense ? 33 : 53) * emptyRows,
-                                        }}
-                                    >
-                                        <TableCell colSpan={6} />
-                                    </TableRow>
-                                )}
                             </TableBody>
                         </Table>
                     </TableContainer>
