@@ -340,7 +340,6 @@ export function DataGrid({
     const [orderBy, setOrderBy] = React.useState(defaultOrderBy);
     const [selected, setSelected] = React.useState([]);
     const [dense, setDense] = React.useState(true);
-    const [toPage, setToPage] = React.useState(0);
 
     const handleRequestSort = (event, property) => {
         if (disableSorting) return
@@ -400,6 +399,11 @@ export function DataGrid({
 
     const emptyRows = page[pageKey] > 0 ? Math.max(0, (1 + page[pageKey]) * offset[pageKey] - rows.length) : 0;
 
+    const visibleRows = React.useMemo(
+        () => stableSort(rows, getComparator(order, orderBy)),
+        [order, orderBy, page, offset, rows],
+    );
+
     return (
         <div className='gridContainer'>
             <Box sx={{ width: '100%' }}>
@@ -443,7 +447,7 @@ export function DataGrid({
                                 disableSorting={disableSorting}
                             />
                             <TableBody>
-                                {rows.map((row, index) => {
+                                {visibleRows.map((row, index) => {
                                     const isItemSelected = isSelected(row.id);
                                     const labelId = `enhanced-table-checkbox-${index}`;
 
