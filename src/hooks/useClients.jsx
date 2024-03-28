@@ -8,7 +8,7 @@ import { CLIENT_URL } from "../utils/urls"
 
 export function useClients() {
 
-    const { page, offset, count, setCount } = useContext(PageContext)
+    const { page, offset, count, setCount, search } = useContext(PageContext)
     const { setMessage, setOpenMessage, setSeverity } = useContext(MessageContext)
 
     const [loadingClients, setLoadingClients] = useState(true)
@@ -23,7 +23,7 @@ export function useClients() {
     }, [])
 
     async function getClients() {
-        const { status, data } = await get(page['clients'], offset['clients'])
+        const { status, data } = await get(page['clients'], offset['clients'], search)
         if (status === 200) {
             setClients(data[0])
             setCount({ ...count, 'clients': data[1] })

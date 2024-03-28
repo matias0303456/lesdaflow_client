@@ -1,13 +1,14 @@
-import { Box, Button, FormControl, Input, InputLabel, MenuItem, Select, Typography } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
+import { Box, Button, FormControl, Input, InputLabel, MenuItem, Select, Typography } from "@mui/material";
 
 import { AuthContext } from "../../providers/AuthProvider";
+import { PageContext } from "../../providers/PageProvider";
 
-export function ClientFilter({ clients, setClients }) {
+export function ClientFilter({ clients, getter }) {
 
     const { auth } = useContext(AuthContext)
+    const { page, setPage, offset, setOffset, search, setSearch } = useContext(PageContext)
 
-    const [backup] = useState(clients)
     const [users] = useState(Array.from(new Set(clients.map(c => c.user?.username))))
 
     const [filter, setFilter] = useState({
@@ -31,17 +32,26 @@ export function ClientFilter({ clients, setClients }) {
             email: '',
             username: ''
         })
-        setClients(backup)
+        setPage({ ...page, 'clients': 0 })
+        setOffset({ ...offset, 'clients': 25 })
     }
 
     useEffect(() => {
-        setClients(backup.filter(item =>
-            item.code?.toLowerCase().includes(filter.code?.toLowerCase()) &&
-            item.name?.toLowerCase().includes(filter.name?.toLowerCase()) &&
-            item.email?.toLowerCase().includes(filter.email?.toLowerCase()) &&
-            item.user.username?.toLowerCase().includes(filter.username?.toLowerCase())
-        ))
+        (async () => {
+            let params = ''
+            if (filter.code.length > 0) params += `&code=${filter.code}`
+            if (filter.name.length > 0) params += `&name=${filter.name}`
+            if (filter.email.length > 0) params += `&email=${filter.email}`
+            if (filter.username.length > 0) params += `&username=${filter.username}`
+            setSearch(params)
+        })()
     }, [filter])
+
+    useEffect(() => {
+        (async () => {
+            await getter()
+        })()
+    }, [search])
 
     return (
         <Box sx={{

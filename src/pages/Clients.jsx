@@ -187,7 +187,7 @@ export function Clients() {
                     <LinearProgress />
                 </Box> :
                 <>
-                    <ClientFilter clients={clients} setClients={setClients} />
+                    <ClientFilter clients={clients} getter={getClients} />
                     <DataGrid
                         title=""
                         headCells={auth.user.role.name !== 'ADMINISTRADOR' ?

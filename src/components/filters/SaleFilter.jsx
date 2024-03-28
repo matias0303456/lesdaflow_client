@@ -1,5 +1,5 @@
-import { Box, Button, Checkbox, FormControl, FormControlLabel, Input, InputLabel, MenuItem, Select, Typography } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
+import { Box, Button, Checkbox, FormControl, FormControlLabel, Input, InputLabel, MenuItem, Select, Typography } from "@mui/material";
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
@@ -61,18 +61,6 @@ export function SaleFilter({ sales, getter }) {
             if (filter.user.length > 0) params += `&user=${filter.user}`
             setSearch(params)
         })()
-        // setSales(backup.filter(item => {
-        //     return (
-        //         item.client.code.toLowerCase().includes(filter.client.toLowerCase()) ||
-        //         item.client.name.toLowerCase().includes(filter.client.toLowerCase())
-        //     ) &&
-        //         setLocalDate(item.date) >= setFromDate(filter.from) &&
-        //         setLocalDate(item.date) <= setToDate(filter.to) &&
-        //         item.client.user.username.toLowerCase().includes(filter.user.toLowerCase()) &&
-        //         (filter.type === 'ALL' || item.type === filter.type) &&
-        //         (filter.id.length === 0 || Math.abs(parseInt(filter.id)) === item.id) &&
-        //         (!filter.pending || getAccountStatus(item) === 'Pendiente')
-        // }))
     }, [filter])
 
     useEffect(() => {
