@@ -1,9 +1,11 @@
+import { useContext, useEffect, useState } from "react";
 import { Box, Button, FormControl, Input, InputLabel, Typography } from "@mui/material";
-import { useEffect, useState } from "react";
 
-export function UserFilter({ users, setUsers }) {
+import { PageContext } from "../../providers/PageProvider";
 
-    const [backup] = useState(users)
+export function UserFilter({ getter }) {
+
+    const { page, setPage, offset, setOffset, search, setSearch } = useContext(PageContext)
 
     const [filter, setFilter] = useState({
         first_name: '',
@@ -26,17 +28,26 @@ export function UserFilter({ users, setUsers }) {
             username: '',
             email: ''
         })
-        setUsers(backup)
+        setPage({ ...page, 'users': 0 })
+        setOffset({ ...offset, 'users': 25 })
     }
 
     useEffect(() => {
-        setUsers(backup.filter(item =>
-            item.first_name.toLowerCase().includes(filter.first_name.toLowerCase()) &&
-            item.last_name.toLowerCase().includes(filter.last_name.toLowerCase()) &&
-            item.username.toLowerCase().includes(filter.username.toLowerCase()) &&
-            item.email.toLowerCase().includes(filter.email.toLowerCase())
-        ))
+        (async () => {
+            let params = ''
+            if (filter.first_name.length > 0) params += `&first_name=${filter.first_name}`
+            if (filter.last_name.length > 0) params += `&last_name=${filter.last_name}`
+            if (filter.username.length > 0) params += `&username=${filter.username}`
+            if (filter.email.length > 0) params += `&email=${filter.email}`
+            setSearch(params)
+        })()
     }, [filter])
+
+    useEffect(() => {
+        (async () => {
+            await getter()
+        })()
+    }, [search])
 
     return (
         <Box sx={{

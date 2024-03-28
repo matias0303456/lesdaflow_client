@@ -17,7 +17,7 @@ import { ROLE_URL, USER_URL } from "../utils/urls";
 
 export function Users() {
 
-    const { page, offset, count, setCount } = useContext(PageContext)
+    const { page, offset, count, setCount, search } = useContext(PageContext)
     const { setMessage, setOpenMessage, setSeverity } = useContext(MessageContext)
     const { auth } = useContext(AuthContext)
 
@@ -75,13 +75,13 @@ export function Users() {
     }, [])
 
     const getData = useCallback(async () => {
-        const { status, data } = await getUsers(page['users'], offset['users'])
+        const { status, data } = await getUsers(page['users'], offset['users'], search)
         if (status === 200) {
             setUsers(data[0])
             setCount({ ...count, 'users': data[1] })
             setLoadingUsers(false)
         }
-    }, [page, offset])
+    }, [page, offset, search])
 
     useEffect(() => {
         (async () => {
@@ -212,7 +212,7 @@ export function Users() {
                     <LinearProgress />
                 </Box> :
                 <>
-                    <UserFilter users={users} setUsers={setUsers} />
+                    <UserFilter getter={getData} />
                     <DataGrid
                         title=""
                         headCells={headCells}
