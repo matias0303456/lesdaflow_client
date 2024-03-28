@@ -12,18 +12,15 @@ export function getStock(product) {
 export function getCurrentSubtotal(saleProducts, products) {
     const total = saleProducts.reduce((prev, curr) => {
         const p = products.find(item => item.id === curr.product_id)
-        return prev + ((p.buy_price + ((p.buy_price / 100) * p.earn)) * (isNaN(parseInt(curr.amount)) ? 0 : parseInt(curr.amount)))
+        return prev + (((curr.buy_price ?? p.buy_price) + (((curr.buy_price ?? p.buy_price) / 100) * (curr.earn ?? p.earn))) * (isNaN(parseInt(curr.amount)) ? 0 : parseInt(curr.amount)))
     }, 0)
     return total.toFixed(2)
 }
 
 export function getCurrentTotal(formData, saleProducts, products) {
-    const total = saleProducts.reduce((prev, curr) => {
-        const p = products.find(item => item.id === curr.product_id)
-        return prev + ((p.buy_price + ((p.buy_price / 100) * p.earn)) * (isNaN(parseInt(curr.amount)) ? 0 : parseInt(curr.amount)))
-    }, 0)
+    const subtotal = getCurrentSubtotal(saleProducts, products)
     const discount = formData.discount.length === 0 ? 0 : parseInt(formData.discount)
-    return (total - ((total / 100) * discount)).toFixed(2)
+    return (subtotal - ((subtotal / 100) * discount)).toFixed(2)
 }
 
 export function getSaleSubtotal(sale) {
@@ -81,7 +78,7 @@ export function getNewPrice(product, percentage) {
 
 export function getInstallmentsAmount(total, installments) {
     const inst = installments.toString().length === 0 ? 1 : parseInt(installments)
-    return (total / inst).toFixed(2)
+    return (total.replace('$', '') / inst).toFixed(2)
 }
 
 export function getAccountStatus(sale) {

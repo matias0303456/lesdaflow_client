@@ -103,7 +103,6 @@ export function AddProductsToSale({
                             saleProducts.map(sp => {
                                 const p = products.find(p => p.id === sp.product_id)
                                 const currentAmount = isNaN(parseInt(sp.amount)) ? 0 : parseInt(sp.amount)
-                                const src = open === 'NEW' ? p : sp
                                 return (
                                     <TableRow
                                         key={sp.product_id}
@@ -118,9 +117,9 @@ export function AddProductsToSale({
                                                 amount: e.target.value
                                             })} />
                                         </TableCell>
-                                        <TableCell>${(src.buy_price + ((src.buy_price / 100) * src.earn)).toFixed(2)}</TableCell>
+                                        <TableCell>${((sp.buy_price ?? p.buy_price) + (((sp.buy_price ?? p.buy_price) / 100) * (sp.earn ?? p.earn))).toFixed(2)}</TableCell>
                                         <TableCell>{getStock(p)}</TableCell>
-                                        <TableCell>${(currentAmount * (src.buy_price + ((src.buy_price / 100) * src.earn))).toFixed(2)}</TableCell>
+                                        <TableCell>${(currentAmount * ((sp.buy_price ?? p.buy_price) + (((sp.buy_price ?? p.buy_price) / 100) * (sp.earn ?? p.earn)))).toFixed(2)}</TableCell>
                                         <TableCell align="center">
                                             <Button type="button" onClick={() => handleDeleteProduct(sp.id, p.id)}>
                                                 <CancelSharpIcon />
