@@ -1,12 +1,14 @@
 import { useContext, useEffect, useState } from "react"
 
-import { useApi } from "./useApi"
 import { MessageContext } from "../providers/MessageProvider"
+import { PageContext } from "../providers/PageProvider"
+import { useApi } from "./useApi"
 
 import { SUPPLIER_URL } from "../utils/urls"
 
 export function useSuppliers() {
 
+    const { page, offset, count, setCount } = useContext(PageContext)
     const { setMessage, setOpenMessage, setSeverity } = useContext(MessageContext)
 
     const [loadingSuppliers, setLoadingSuppliers] = useState(true)
@@ -16,17 +18,22 @@ export function useSuppliers() {
 
     useEffect(() => {
         (async () => {
-            const { status, data } = await get()
-            if (status === 200) {
-                setSuppliers(data)
-                setLoadingSuppliers(false)
-            } else {
-                setMessage(data.message)
-                setSeverity('error')
-                setOpenMessage(true)
-            }
+            await getSuppliers()
         })()
     }, [])
 
-    return { suppliers, setSuppliers, loadingSuppliers, setLoadingSuppliers }
+    async function getSuppliers() {
+        const { status, data } = await get(page['suppliers'], offset['suppliers'])
+        if (status === 200) {
+            setSuppliers(data[0])
+            setCount({ ...count, 'suppliers': data[1] })
+            setLoadingSuppliers(false)
+        } else {
+            setMessage(data.message)
+            setSeverity('error')
+            setOpenMessage(true)
+        }
+    }
+
+    return { suppliers, setSuppliers, loadingSuppliers, setLoadingSuppliers, getSuppliers }
 }

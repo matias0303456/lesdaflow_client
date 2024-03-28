@@ -22,9 +22,9 @@ export function Registers() {
     const { setMessage, setOpenMessage, setSeverity } = useContext(MessageContext)
 
     const { post, put, destroy } = useApi(REGISTER_URL)
-    const { registers, setRegisters, loadingRegisters, setLoadingRegisters } = useRegisters()
+    const { registers, setRegisters, loadingRegisters, setLoadingRegisters, getRegisters } = useRegisters()
     const { payments, loadingPayments } = usePayments()
-    const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
+    const { formData, setFormData, handleChange, disabled, setDisabled, reset } = useForm({
         defaultData: {
             id: '',
             user_id: auth?.user.id
@@ -137,6 +137,7 @@ export function Registers() {
                     handleDelete={handleDelete}
                     handlePrint
                     pageKey="registers"
+                    getter={getRegisters}
                 >
                     <ModalComponent open={open === 'NEW' || open === 'EDIT'} onClose={() => reset(setOpen)}>
                         <Typography variant="h6" sx={{ marginBottom: 2 }}>

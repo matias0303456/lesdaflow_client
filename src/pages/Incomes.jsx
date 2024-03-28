@@ -1,10 +1,11 @@
-import { useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Autocomplete, Box, Button, FormControl, Input, InputLabel, LinearProgress, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from "@mui/material";
 import { format } from 'date-fns'
 
 import { AuthContext } from "../providers/AuthProvider";
 import { MessageContext } from "../providers/MessageProvider";
+import { PageContext } from "../providers/PageProvider";
 import { useApi } from "../hooks/useApi";
 import { useForm } from "../hooks/useForm";
 import { useProducts } from "../hooks/useProducts";
@@ -19,6 +20,7 @@ import { getStock, getStockTillDate } from "../utils/helpers";
 
 export function Incomes() {
 
+    const { page, offset, count, setCount } = useContext(PageContext)
     const { auth } = useContext(AuthContext)
     const { setMessage, setOpenMessage, setSeverity } = useContext(MessageContext)
 
@@ -56,13 +58,18 @@ export function Incomes() {
         if (auth?.user.role.name !== 'ADMINISTRADOR') navigate('/veroshop/productos')
     }, [])
 
+    const getIncomes = useCallback(async () => {
+        const { status, data } = await get(page['incomes'], offset['incomes'])
+        if (status === 200) {
+            setIncomes(data[0])
+            setCount({ ...count, 'incomes': data[1] })
+            setLoadingIncomes(false)
+        }
+    }, [page, offset])
+
     useEffect(() => {
         (async () => {
-            const { status, data } = await get()
-            if (status === 200) {
-                setIncomes(data)
-                setLoadingIncomes(false)
-            }
+            await getIncomes()
         })()
     }, [])
 
@@ -201,6 +208,7 @@ export function Incomes() {
                         setData={setFormData}
                         handleDelete={handleDelete}
                         pageKey="incomes"
+                        getter={getIncomes}
                     >
                         <ModalComponent open={open === 'NEW' || open === 'EDIT'} onClose={() => reset(setOpen)} reduceWidth={600}>
                             <Typography variant="h6" sx={{ marginBottom: 2 }}>

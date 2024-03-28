@@ -330,15 +330,17 @@ export function DataGrid({
     defaultOrder = 'desc',
     defaultOrderBy = 'id',
     stopPointerEvents = false,
-    pageKey
+    pageKey,
+    getter = undefined
 }) {
 
-    const { page, setPage, rowsPerPage, setRowsPerPage } = React.useContext(PageContext)
+    const { page, setPage, offset, setOffset, count } = React.useContext(PageContext)
 
     const [order, setOrder] = React.useState(defaultOrder);
     const [orderBy, setOrderBy] = React.useState(defaultOrderBy);
     const [selected, setSelected] = React.useState([]);
     const [dense, setDense] = React.useState(true);
+    const [toPage, setToPage] = React.useState(0);
 
     const handleRequestSort = (event, property) => {
         if (disableSorting) return
@@ -380,9 +382,15 @@ export function DataGrid({
     };
 
     const handleChangeRowsPerPage = (event) => {
-        setRowsPerPage({ ...rowsPerPage, [pageKey]: parseInt(event.target.value, 10) });
+        setOffset({ ...offset, [pageKey]: parseInt(event.target.value, 10) });
         setPage({ ...page, [pageKey]: 0 });
     };
+
+    React.useEffect(() => {
+        (async () => {
+            if (getter) getter({ page, offset })
+        })()
+    }, [page, offset])
 
     const handleChangeDense = (event) => {
         setDense(event.target.checked);
@@ -390,16 +398,7 @@ export function DataGrid({
 
     const isSelected = (id) => selected.indexOf(id) !== -1;
 
-    const emptyRows = page[pageKey] > 0 ? Math.max(0, (1 + page[pageKey]) * rowsPerPage[pageKey] - rows.length) : 0;
-
-    const visibleRows = React.useMemo(
-        () =>
-            stableSort(rows, getComparator(order, orderBy, headCells.find(hc => hc.id === orderBy)?.sorter)).slice(
-                page[pageKey] * rowsPerPage[pageKey],
-                page[pageKey] * rowsPerPage[pageKey] + rowsPerPage[pageKey],
-            ),
-        [order, orderBy, page, rowsPerPage, rows],
-    );
+    const emptyRows = page[pageKey] > 0 ? Math.max(0, (1 + page[pageKey]) * offset[pageKey] - rows.length) : 0;
 
     return (
         <div className='gridContainer'>
@@ -444,7 +443,7 @@ export function DataGrid({
                                 disableSorting={disableSorting}
                             />
                             <TableBody>
-                                {visibleRows.map((row, index) => {
+                                {rows.map((row, index) => {
                                     const isItemSelected = isSelected(row.id);
                                     const labelId = `enhanced-table-checkbox-${index}`;
 
@@ -478,7 +477,7 @@ export function DataGrid({
                                                 <TableCell key={accessor} align="center" sx={{
                                                     color: (
                                                         (deadlineColor === 'sales' && deadlineIsPast(row)) ||
-                                                        (deadlineColor === 'clients' && row.sales.some(s => deadlineIsPast(s))) ||
+                                                        (deadlineColor === 'clients' && row.sales?.some(s => deadlineIsPast(s))) ||
                                                         (deadlineColor === 'products' && row.min_stock > getStock(row))
                                                     ) ? 'red' : ''
                                                 }}>
@@ -503,13 +502,23 @@ export function DataGrid({
                     <TablePagination
                         rowsPerPageOptions={[5, 10, 25]}
                         component="div"
-                        count={rows.length}
-                        rowsPerPage={rowsPerPage[pageKey]}
+                        count={-1}
+                        rowsPerPage={offset[pageKey]}
                         labelRowsPerPage="Registros por página"
-                        labelDisplayedRows={({ from, to, count }) => `${from}–${to} de ${count}`}
+                        labelDisplayedRows={({ from, to }) => {
+                            setToPage(to)
+                            return `${from}–${to} de ${count[pageKey]}`
+                        }}
                         page={page[pageKey]}
                         onPageChange={handleChangePage}
                         onRowsPerPageChange={handleChangeRowsPerPage}
+                        slotProps={{
+                            actions: {
+                                nextButton: {
+                                    disabled: toPage >= count[pageKey]
+                            }
+                            }
+                        }}
                     />
                 </Paper>
                 {children}

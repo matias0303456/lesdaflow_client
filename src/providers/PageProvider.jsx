@@ -3,8 +3,10 @@ import { createContext, useState } from "react";
 export const PageContext = createContext({
     page: null,
     setPage: () => { },
-    rowsPerPage: null,
-    setRowsPerPage: () => { }
+    offset: null,
+    setOffset: () => { },
+    count: null,
+    setCount: () => { }
 })
 
 export function PageProvider({ children }) {
@@ -20,7 +22,7 @@ export function PageProvider({ children }) {
         'suppliers': 0,
         'users': 0
     })
-    const [rowsPerPage, setRowsPerPage] = useState({
+    const [offset, setOffset] = useState({
         'products': 25,
         'payments': 25,
         'incomes': 25,
@@ -31,9 +33,20 @@ export function PageProvider({ children }) {
         'suppliers': 25,
         'users': 25
     });
+    const [count, setCount] = useState({
+        'products': 0,
+        'payments': 0,
+        'incomes': 0,
+        'outcomes': 0,
+        'sales': 0,
+        'registers': 0,
+        'clients': 0,
+        'suppliers': 0,
+        'users': 0
+    })
 
     return (
-        <PageContext.Provider value={{ page, setPage, rowsPerPage, setRowsPerPage }}>
+        <PageContext.Provider value={{ page, setPage, offset, setOffset, count, setCount }}>
             {children}
         </PageContext.Provider>
     )

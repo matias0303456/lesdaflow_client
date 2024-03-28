@@ -22,7 +22,7 @@ export function Products() {
     const { setMessage, setOpenMessage, setSeverity } = useContext(MessageContext)
 
     const { post, put, putMassive, destroy } = useApi(PRODUCT_URL)
-    const { products, setProducts, loadingProducts, setLoadingProducts } = useProducts()
+    const { products, setProducts, loadingProducts, setLoadingProducts, getProducts } = useProducts()
     const { suppliers, loadingSuppliers } = useSuppliers()
     const [open, setOpen] = useState(null)
     const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
@@ -255,6 +255,7 @@ export function Products() {
                         deadlineColor="products"
                         handlePrint
                         pageKey="products"
+                        getter={getProducts}
                     >
                         <ModalComponent
                             open={open === 'NEW' || open === 'EDIT'}

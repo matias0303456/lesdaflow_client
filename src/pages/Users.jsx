@@ -1,8 +1,9 @@
-import { useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Box, Button, FormControl, Input, InputLabel, LinearProgress, MenuItem, Select, Typography } from "@mui/material";
 
 import { AuthContext } from "../providers/AuthProvider";
+import { PageContext } from "../providers/PageProvider";
 import { MessageContext } from "../providers/MessageProvider";
 import { useApi } from "../hooks/useApi";
 import { useForm } from "../hooks/useForm";
@@ -16,6 +17,7 @@ import { ROLE_URL, USER_URL } from "../utils/urls";
 
 export function Users() {
 
+    const { page, offset, count, setCount } = useContext(PageContext)
     const { setMessage, setOpenMessage, setSeverity } = useContext(MessageContext)
     const { auth } = useContext(AuthContext)
 
@@ -72,13 +74,18 @@ export function Users() {
         if (auth?.user.role.name !== 'ADMINISTRADOR') navigate('/veroshop/productos')
     }, [])
 
+    const getData = useCallback(async () => {
+        const { status, data } = await getUsers(page['users'], offset['users'])
+        if (status === 200) {
+            setUsers(data[0])
+            setCount({ ...count, 'users': data[1] })
+            setLoadingUsers(false)
+        }
+    }, [page, offset])
+
     useEffect(() => {
         (async () => {
-            const { status, data } = await getUsers()
-            if (status === 200) {
-                setUsers(data)
-                setLoadingUsers(false)
-            }
+            await getData()
         })()
     }, [])
 
@@ -217,6 +224,7 @@ export function Users() {
                         handleDelete={handleDelete}
                         changePwd
                         pageKey="users"
+                        getter={getData}
                     >
                         <ModalComponent open={open === 'NEW' || open === 'EDIT'} onClose={() => reset(setOpen)}>
                             <Typography variant="h6" sx={{ marginBottom: 2 }}>

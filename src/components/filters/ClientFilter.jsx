@@ -8,7 +8,7 @@ export function ClientFilter({ clients, setClients }) {
     const { auth } = useContext(AuthContext)
 
     const [backup] = useState(clients)
-    const [users] = useState(Array.from(new Set(clients.map(c => c.user.username))))
+    const [users] = useState(Array.from(new Set(clients.map(c => c.user?.username))))
 
     const [filter, setFilter] = useState({
         code: '',
@@ -36,10 +36,10 @@ export function ClientFilter({ clients, setClients }) {
 
     useEffect(() => {
         setClients(backup.filter(item =>
-            item.code.toLowerCase().includes(filter.code.toLowerCase()) &&
-            item.name.toLowerCase().includes(filter.name.toLowerCase()) &&
-            item.email.toLowerCase().includes(filter.email.toLowerCase()) &&
-            item.user.username.toLowerCase().includes(filter.username.toLowerCase())
+            item.code?.toLowerCase().includes(filter.code?.toLowerCase()) &&
+            item.name?.toLowerCase().includes(filter.name?.toLowerCase()) &&
+            item.email?.toLowerCase().includes(filter.email?.toLowerCase()) &&
+            item.user.username?.toLowerCase().includes(filter.username?.toLowerCase())
         ))
     }, [filter])
 

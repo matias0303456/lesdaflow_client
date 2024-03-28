@@ -20,7 +20,7 @@ export function Clients() {
     const { setMessage, setOpenMessage, setSeverity } = useContext(MessageContext)
 
     const { get, post, put, destroy } = useApi(CLIENT_URL)
-    const { clients, setClients, loadingClients, setLoadingClients } = useClients()
+    const { clients, setClients, loadingClients, setLoadingClients, getClients } = useClients()
     const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
         defaultData: {
             id: '',
@@ -198,8 +198,8 @@ export function Clients() {
                                     numeric: false,
                                     disablePadding: true,
                                     label: 'Vendedor',
-                                    sorter: (row) => row.user.username.toLowerCase(),
-                                    accessor: (row) => row.user.username
+                                    sorter: (row) => row.user?.username.toLowerCase(),
+                                    accessor: (row) => row.user?.username
                                 }
                             ]
                         }
@@ -211,6 +211,7 @@ export function Clients() {
                         handleDelete={handleDelete}
                         deadlineColor="clients"
                         pageKey="clients"
+                        getter={getClients}
                     >
                         <ModalComponent open={open === 'NEW' || open === 'EDIT'} onClose={() => reset(setOpen)}>
                             <Typography variant="h6" sx={{ marginBottom: 2 }}>

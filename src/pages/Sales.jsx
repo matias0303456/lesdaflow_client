@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { Autocomplete, Box, Button, Checkbox, FormControl, FormControlLabel, Input, InputLabel, LinearProgress, TextField, Typography } from "@mui/material";
 import { format } from "date-fns";
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
@@ -8,6 +8,7 @@ import es from 'date-fns/locale/es';
 import PrintSharpIcon from '@mui/icons-material/PrintSharp';
 
 import { AuthContext } from "../providers/AuthProvider";
+import { PageContext } from "../providers/PageProvider";
 import { MessageContext } from "../providers/MessageProvider";
 import { useApi } from "../hooks/useApi";
 import { useProducts } from "../hooks/useProducts";
@@ -24,7 +25,8 @@ import { REPORT_URL, SALE_URL } from "../utils/urls";
 import { getAccountStatus, getCurrentSubtotal, getCurrentTotal, getDeadline, getInstallmentsAmount, getSaleDifference, getSaleTotal } from "../utils/helpers";
 
 export function Sales() {
-
+    
+    const { page, offset, count, setCount } = useContext(PageContext)
     const { auth } = useContext(AuthContext)
     const { setMessage, setOpenMessage, setSeverity } = useContext(MessageContext)
 
@@ -66,13 +68,18 @@ export function Sales() {
     const [stopPointerEvents, setStopPointerEvents] = useState(false)
     const [saleSaved, setSaleSaved] = useState(null)
 
+    const getOutcomes = useCallback(async () => {
+        const { status, data } = await get(page['sales'], offset['sales'])
+        if (status === 200) {
+            setSales(data[0])
+            setCount({ ...count, 'sales': data[1] })
+            setLoadingSales(false)
+        }
+    }, [page, offset])
+
     useEffect(() => {
         (async () => {
-            const { status, data } = await get()
-            if (status === 200) {
-                setSales(data)
-                setLoadingSales(false)
-            }
+            await getOutcomes()
         })()
     }, [])
 

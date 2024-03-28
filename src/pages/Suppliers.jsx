@@ -24,7 +24,7 @@ export function Suppliers() {
     const navigate = useNavigate()
 
     const { post, put, destroy, putMassive } = useApi(SUPPLIER_URL)
-    const { suppliers, setSuppliers, loadingSuppliers, setLoadingSuppliers } = useSuppliers()
+    const { suppliers, setSuppliers, loadingSuppliers, setLoadingSuppliers, getSuppliers } = useSuppliers()
     const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
         defaultData: {
             id: '',
@@ -209,6 +209,7 @@ export function Suppliers() {
                         handleDelete={handleDelete}
                         updateByPercentage
                         pageKey="suppliers"
+                        getter={getSuppliers}
                     >
                         <ModalComponent open={open === 'NEW' || open === 'EDIT'} onClose={() => reset(setOpen)}>
                             <Typography variant="h6" sx={{ marginBottom: 2 }}>

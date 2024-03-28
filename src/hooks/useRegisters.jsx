@@ -1,12 +1,14 @@
 import { useContext, useEffect, useState } from "react"
 
-import { useApi } from "./useApi"
+import { PageContext } from "../providers/PageProvider"
 import { MessageContext } from "../providers/MessageProvider"
+import { useApi } from "./useApi"
 
 import { REGISTER_URL } from "../utils/urls"
 
 export function useRegisters() {
 
+    const { page, offset, count, setCount } = useContext(PageContext)
     const { setMessage, setOpenMessage, setSeverity } = useContext(MessageContext)
 
     const [loadingRegisters, setLoadingRegisters] = useState(true)
@@ -16,17 +18,22 @@ export function useRegisters() {
 
     useEffect(() => {
         (async () => {
-            const { status, data } = await get()
-            if (status === 200) {
-                setRegisters(data)
-                setLoadingRegisters(false)
-            } else {
-                setMessage(data.message)
-                setSeverity('error')
-                setOpenMessage(true)
-            }
+            await getRegisters()
         })()
     }, [])
 
-    return { registers, setRegisters, loadingRegisters, setLoadingRegisters }
+    async function getRegisters() {
+        const { status, data } = await get(page['registers'], offset['registers'])
+        if (status === 200) {
+            setRegisters(data[0])
+            setCount({ ...count, 'registers': data[1] })
+            setLoadingRegisters(false)
+        } else {
+            setMessage(data.message)
+            setSeverity('error')
+            setOpenMessage(true)
+        }
+    }
+
+    return { registers, setRegisters, loadingRegisters, setLoadingRegisters, getRegisters }
 }
