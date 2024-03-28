@@ -400,8 +400,8 @@ export function DataGrid({
     const emptyRows = page[pageKey] > 0 ? Math.max(0, (1 + page[pageKey]) * offset[pageKey] - rows.length) : 0;
 
     const visibleRows = React.useMemo(
-        () => stableSort(rows, getComparator(order, orderBy)),
-        [order, orderBy, page, offset, rows],
+        () => stableSort(rows, getComparator(order, orderBy, headCells.find(hc => hc.id === orderBy)?.sorter)),
+        [order, orderBy, page, offset, rows, headCells]
     );
 
     return (
@@ -462,7 +462,7 @@ export function DataGrid({
                                             role="checkbox"
                                             aria-checked={isItemSelected}
                                             tabIndex={-1}
-                                            key={row.id}
+                                            key={row.id ?? index}
                                             selected={isItemSelected}
                                             sx={{ cursor: !disableSelection ? 'pointer' : 'auto' }}
                                         >

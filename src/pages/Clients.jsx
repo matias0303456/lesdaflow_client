@@ -123,6 +123,7 @@ export function Clients() {
             numeric: true,
             disablePadding: false,
             label: 'N°',
+            sorter: (row) => row.id ?? '',
             accessor: 'id'
         },
         {
@@ -144,7 +145,7 @@ export function Clients() {
             numeric: false,
             disablePadding: true,
             label: 'Email',
-            sorter: (row) => row.email,
+            sorter: (row) => row.email ?? '',
             accessor: 'email'
         },
         {

@@ -6,23 +6,27 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import es from 'date-fns/locale/es';
 
 import { AuthContext } from "../../providers/AuthProvider";
+import { PageContext } from "../../providers/PageProvider";
 
-import { getAccountStatus, setFromDate, setLocalDate, setToDate } from "../../utils/helpers";
+import { setLocalDate } from "../../utils/helpers";
 
-export function SaleFilter({ sales, setSales }) {
+export function SaleFilter({ sales, getter }) {
 
     const { auth } = useContext(AuthContext)
+    const { page, setPage, offset, setOffset, search, setSearch } = useContext(PageContext)
 
     const [backup] = useState(sales.sort((a, b) => new Date(b.date) - new Date(a.date)))
     const [users] = useState(Array.from(new Set(sales.map(s => s.client.user.username))))
+    const [defaultFrom] = useState(new Date(backup[backup.length - 1] ? setLocalDate(backup[backup.length - 1].date) : Date.now()))
+    const [defaultTo] = useState(new Date(backup[0] ? setLocalDate(backup[0].date) : Date.now()))
 
     const [filter, setFilter] = useState({
         id: '',
         client: '',
         type: 'ALL',
         pending: true,
-        from: new Date(backup[backup.length - 1] ? setLocalDate(backup[backup.length - 1].date) : Date.now()),
-        to: new Date(backup[0] ? setLocalDate(backup[0].date) : Date.now()),
+        from: defaultFrom,
+        to: defaultTo,
         user: ''
     })
 
@@ -39,27 +43,43 @@ export function SaleFilter({ sales, setSales }) {
             client: '',
             type: 'ALL',
             pending: true,
-            from: new Date(backup[backup.length - 1] ? setLocalDate(backup[backup.length - 1].date) : Date.now()),
-            to: new Date(backup[0] ? setLocalDate(backup[0].date) : Date.now()),
+            from: defaultFrom,
+            to: defaultTo,
             user: ''
         })
-        setSales(backup)
+        setPage({ ...page, 'sales': 0 })
+        setOffset({ ...offset, 'sales': 25 })
     }
 
     useEffect(() => {
-        setSales(backup.filter(item => {
-            return (
-                item.client.code.toLowerCase().includes(filter.client.toLowerCase()) ||
-                item.client.name.toLowerCase().includes(filter.client.toLowerCase())
-            ) &&
-                setLocalDate(item.date) >= setFromDate(filter.from) &&
-                setLocalDate(item.date) <= setToDate(filter.to) &&
-                item.client.user.username.toLowerCase().includes(filter.user.toLowerCase()) &&
-                (filter.type === 'ALL' || item.type === filter.type) &&
-                (filter.id.length === 0 || Math.abs(parseInt(filter.id)) === item.id) &&
-                (!filter.pending || getAccountStatus(item) === 'Pendiente')
-        }))
-    }, [backup, filter])
+        (async () => {
+            let params = `&from=${filter.from.toISOString()}&to=${filter.to.toISOString()}`
+            if (filter.id.length > 0) params += `&id=${filter.id}`
+            if (filter.client.length > 0) params += `&client=${filter.client}`
+            if (filter.type.length > 0) params += `&type=${filter.type}`
+            if (filter.pending) params += `&pending=${filter.pending}`
+            if (filter.user.length > 0) params += `&user=${filter.user}`
+            setSearch(params)
+        })()
+        // setSales(backup.filter(item => {
+        //     return (
+        //         item.client.code.toLowerCase().includes(filter.client.toLowerCase()) ||
+        //         item.client.name.toLowerCase().includes(filter.client.toLowerCase())
+        //     ) &&
+        //         setLocalDate(item.date) >= setFromDate(filter.from) &&
+        //         setLocalDate(item.date) <= setToDate(filter.to) &&
+        //         item.client.user.username.toLowerCase().includes(filter.user.toLowerCase()) &&
+        //         (filter.type === 'ALL' || item.type === filter.type) &&
+        //         (filter.id.length === 0 || Math.abs(parseInt(filter.id)) === item.id) &&
+        //         (!filter.pending || getAccountStatus(item) === 'Pendiente')
+        // }))
+    }, [filter])
+
+    useEffect(() => {
+        (async () => {
+            await getter()
+        })()
+    }, [search])
 
     return (
         <Box sx={{

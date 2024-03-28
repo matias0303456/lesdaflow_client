@@ -26,7 +26,7 @@ import { getAccountStatus, getCurrentSubtotal, getCurrentTotal, getDeadline, get
 
 export function Sales() {
 
-    const { page, offset, count, setCount } = useContext(PageContext)
+    const { page, offset, count, setCount, search } = useContext(PageContext)
     const { auth } = useContext(AuthContext)
     const { setMessage, setOpenMessage, setSeverity } = useContext(MessageContext)
 
@@ -68,18 +68,18 @@ export function Sales() {
     const [stopPointerEvents, setStopPointerEvents] = useState(false)
     const [saleSaved, setSaleSaved] = useState(null)
 
-    const getOutcomes = useCallback(async () => {
-        const { status, data } = await get(page['sales'], offset['sales'])
+    const getSales = useCallback(async () => {
+        const { status, data } = await get(page['sales'], offset['sales'], search)
         if (status === 200) {
             setSales(data[0])
             setCount({ ...count, 'sales': data[1] })
             setLoadingSales(false)
         }
-    }, [page, offset])
+    }, [page, offset, search])
 
     useEffect(() => {
         (async () => {
-            await getOutcomes()
+            await getSales()
         })()
     }, [])
 
@@ -105,7 +105,7 @@ export function Sales() {
                     setSaleSaved(data.id)
                 } else {
                     setSeverity('success')
-                    setSales([data, ...sales.filter(out => out.id !== formData.id)])
+                    setSales([data, ...sales.filter(s => s.id !== formData.id)])
                     setMessage('Venta editada correctamente.')
                     setOpenMessage(true)
                 }
@@ -132,7 +132,7 @@ export function Sales() {
         const result = await Promise.all(elements.map(e => destroy(e)))
         if (result.every(r => r.status === 200)) {
             const ids = result.map(r => r.data.id)
-            setSales([...sales.filter(out => !ids.includes(out.id))])
+            setSales([...sales.filter(s => !ids.includes(s.id))])
             setMessage(`${result.length === 1 ? 'Venta eliminada' : 'Ventas eliminadas'} correctamente.`)
             setSeverity('success')
         } else {
@@ -257,7 +257,7 @@ export function Sales() {
                     <LinearProgress />
                 </Box> :
                 <>
-                    <SaleFilter sales={sales} setSales={setSales} />
+                    <SaleFilter sales={sales} getter={getSales} />
                     <DataGrid
                         title=""
                         headCells={headCells}
