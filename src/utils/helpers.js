@@ -112,15 +112,14 @@ export function getSaleDifferenceByPayment(sale, idx) {
     return `$${(total - totalTillPayment).toFixed(2)}`
 }
 
-export function getStockTillDate(product, date) {
-    if (!product) return
-    return product.incomes?.filter(inc => inc.created_at < date)
+export function getStockTillDate(row) {
+    return row.product.incomes?.filter(inc => inc.created_at < row.created_at)
         .reduce((prev, curr) => {
             return prev + curr.amount
-        }, 0) - product.sale_products?.filter(sp => sp.created_at < date)
+        }, 0) - row.product.sale_products?.filter(sp => sp.created_at < row.created_at)
             .reduce((prev, curr) => {
                 return prev + curr.amount
-            }, 0) - product.outcomes?.filter(out => out.created_at < date)
+            }, 0) - row.product.outcomes?.filter(out => out.created_at < row.created_at)
                 .reduce((prev, curr) => {
                     return prev + curr.amount
                 }, 0)

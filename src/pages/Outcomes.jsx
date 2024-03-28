@@ -150,8 +150,8 @@ export function Outcomes() {
             numeric: false,
             disablePadding: true,
             label: 'Stock anterior',
-            sorter: (row) => getStockTillDate(products.find(p => p.id === row.product_id), row.created_at),
-            accessor: (row) => getStockTillDate(products.find(p => p.id === row.product_id), row.created_at)
+            sorter: (row) => getStockTillDate(row),
+            accessor: (row) => getStockTillDate(row)
         },
         {
             id: 'amount',
@@ -165,8 +165,8 @@ export function Outcomes() {
             numeric: false,
             disablePadding: true,
             label: 'Stock posterior',
-            sorter: (row) => getStockTillDate(products.find(p => p.id === row.product_id), row.created_at) - row.amount,
-            accessor: (row) => getStockTillDate(products.find(p => p.id === row.product_id), row.created_at) - row.amount
+            sorter: (row) => getStockTillDate(row) - row.amount,
+            accessor: (row) => getStockTillDate(row) - row.amount
         },
         {
             id: 'observations',
