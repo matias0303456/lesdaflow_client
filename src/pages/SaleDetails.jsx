@@ -86,8 +86,8 @@ export function SaleDetails() {
                                             <TableCell align="center">{sp.amount}</TableCell>
                                             <TableCell align="center">{sp.product.code}</TableCell>
                                             <TableCell align="center">{sp.product.details}</TableCell>
-                                            <TableCell align="center">${sp.product.buy_price.toFixed(2)}</TableCell>
-                                            <TableCell align="center">${((sp.product.buy_price + ((sp.product.buy_price / 100) * sp.product.earn)) * sp.amount).toFixed(2)}</TableCell>
+                                            <TableCell align="center">${(sp.buy_price + ((sp.buy_price / 100) * sp.earn)).toFixed(2)}</TableCell>
+                                            <TableCell align="center">${((sp.buy_price + ((sp.buy_price / 100) * sp.earn)) * sp.amount).toFixed(2)}</TableCell>
                                         </TableRow>
                                     ))}
                                 </TableBody>

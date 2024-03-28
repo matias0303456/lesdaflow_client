@@ -27,7 +27,7 @@ export function getCurrentTotal(formData, saleProducts, products) {
 }
 
 export function getSaleSubtotal(sale) {
-    const result = sale.sale_products.reduce((prev, curr) => prev + ((curr.product.buy_price + ((curr.product.buy_price / 100) * curr.product.earn)) * curr.amount), 0)
+    const result = sale.sale_products.reduce((prev, curr) => prev + ((curr.buy_price + ((curr.buy_price / 100) * curr.earn)) * curr.amount), 0)
     return `$${result.toFixed(2)}`
 }
 
