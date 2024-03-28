@@ -8,7 +8,7 @@ import { SUPPLIER_URL } from "../utils/urls"
 
 export function useSuppliers() {
 
-    const { page, offset, count, setCount } = useContext(PageContext)
+    const { page, offset, count, setCount, search } = useContext(PageContext)
     const { setMessage, setOpenMessage, setSeverity } = useContext(MessageContext)
 
     const [loadingSuppliers, setLoadingSuppliers] = useState(true)
@@ -23,7 +23,7 @@ export function useSuppliers() {
     }, [])
 
     async function getSuppliers() {
-        const { status, data } = await get(page['suppliers'], offset['suppliers'])
+        const { status, data } = await get(page['suppliers'], offset['suppliers'], search)
         if (status === 200) {
             setSuppliers(data[0])
             setCount({ ...count, 'suppliers': data[1] })

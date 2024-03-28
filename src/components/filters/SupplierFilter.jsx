@@ -1,9 +1,11 @@
+import { useContext, useEffect, useState } from "react";
 import { Box, Button, FormControl, Input, InputLabel, Typography } from "@mui/material";
-import { useEffect, useState } from "react";
 
-export function SupplierFilter({ suppliers, setSuppliers }) {
+import { PageContext } from "../../providers/PageProvider";
 
-    const [backup] = useState(suppliers)
+export function SupplierFilter({ getter }) {
+
+    const { page, setPage, offset, setOffset, search, setSearch } = useContext(PageContext)
 
     const [filter, setFilter] = useState({ name: '' })
 
@@ -16,12 +18,23 @@ export function SupplierFilter({ suppliers, setSuppliers }) {
 
     const handleReset = () => {
         setFilter({ name: '' })
-        setSuppliers(backup)
+        setPage({ ...page, 'suppliers': 0 })
+        setOffset({ ...offset, 'suppliers': 25 })
     }
 
     useEffect(() => {
-        setSuppliers(backup.filter(item => item.name.toLowerCase().includes(filter.name.toLowerCase())))
+        (async () => {
+            let params = ''
+            if (filter.name.length > 0) params += `&name=${filter.name}`
+            setSearch(params)
+        })()
     }, [filter])
+
+    useEffect(() => {
+        (async () => {
+            await getter()
+        })()
+    }, [search])
 
     return (
         <Box sx={{

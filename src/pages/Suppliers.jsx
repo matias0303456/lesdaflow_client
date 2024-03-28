@@ -197,7 +197,7 @@ export function Suppliers() {
                     <LinearProgress />
                 </Box> :
                 <>
-                    <SupplierFilter suppliers={suppliers} setSuppliers={setSuppliers} />
+                    <SupplierFilter getter={getSuppliers} />
                     <DataGrid
                         title=""
                         headCells={headCells}
