@@ -20,7 +20,7 @@ import { getStock, getStockTillDate } from "../utils/helpers";
 
 export function Outcomes() {
 
-    const { page, offset, count, setCount } = useContext(PageContext)
+    const { page, offset, count, setCount, search } = useContext(PageContext)
     const { auth } = useContext(AuthContext)
     const { setMessage, setOpenMessage, setSeverity } = useContext(MessageContext)
 
@@ -59,13 +59,13 @@ export function Outcomes() {
     }, [])
 
     const getOutcomes = useCallback(async () => {
-        const { status, data } = await get(page['outcomes'], offset['outcomes'])
+        const { status, data } = await get(page['outcomes'], offset['outcomes'], search)
         if (status === 200) {
             setOutcomes(data[0])
             setCount({ ...count, 'outcomes': data[1] })
             setLoadingOutcomes(false)
         }
-    }, [page, offset])
+    }, [page, offset, search])
 
     useEffect(() => {
         (async () => {
@@ -197,7 +197,7 @@ export function Outcomes() {
                     <LinearProgress />
                 </Box> :
                 <>
-                    <MovementFilter registers={outcomes} setRegisters={setOutcomes} />
+                    <MovementFilter registers={outcomes} entityKey="outcomes" getter={getOutcomes} />
                     <DataGrid
                         title=""
                         headCells={headCells}

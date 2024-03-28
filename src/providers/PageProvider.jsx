@@ -7,7 +7,7 @@ export const PageContext = createContext({
     setOffset: () => { },
     count: null,
     setCount: () => { },
-    search: null,
+    search: '',
     setSearch: () => { }
 })
 

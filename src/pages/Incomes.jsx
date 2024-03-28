@@ -20,7 +20,7 @@ import { getStock, getStockTillDate } from "../utils/helpers";
 
 export function Incomes() {
 
-    const { page, offset, count, setCount } = useContext(PageContext)
+    const { page, offset, count, setCount, search } = useContext(PageContext)
     const { auth } = useContext(AuthContext)
     const { setMessage, setOpenMessage, setSeverity } = useContext(MessageContext)
 
@@ -59,13 +59,13 @@ export function Incomes() {
     }, [])
 
     const getIncomes = useCallback(async () => {
-        const { status, data } = await get(page['incomes'], offset['incomes'])
+        const { status, data } = await get(page['incomes'], offset['incomes'], search)
         if (status === 200) {
             setIncomes(data[0])
             setCount({ ...count, 'incomes': data[1] })
             setLoadingIncomes(false)
         }
-    }, [page, offset])
+    }, [page, offset, search])
 
     useEffect(() => {
         (async () => {
@@ -197,7 +197,7 @@ export function Incomes() {
                     <LinearProgress />
                 </Box> :
                 <>
-                    <MovementFilter registers={incomes} setRegisters={setIncomes} />
+                    <MovementFilter registers={incomes} entityKey="incomes" getter={getIncomes} />
                     <DataGrid
                         title=""
                         headCells={headCells}

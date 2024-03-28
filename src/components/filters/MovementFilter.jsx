@@ -1,20 +1,23 @@
 import { Box, Button, FormControl, Input, InputLabel, Typography } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import es from 'date-fns/locale/es';
 
-import { setFromDate, setLocalDate, setToDate } from "../../utils/helpers";
+import { setLocalDate } from "../../utils/helpers";
+import { PageContext } from "../../providers/PageProvider";
 
-export function MovementFilter({ registers, setRegisters }) {
+export function MovementFilter({ registers, entityKey, getter }) {
 
-    const [backup] = useState(registers)
+    const { page, setPage, offset, setOffset, search, setSearch } = useContext(PageContext)
 
+    const [defaultFrom] = useState(new Date(registers[registers.length - 1] ? setLocalDate(registers[registers.length - 1].created_at) : Date.now()))
+    const [defaultTo] = useState(new Date(registers[0] ? setLocalDate(registers[0].created_at) : Date.now()))
     const [filter, setFilter] = useState({
         product: '',
-        from: new Date(backup[backup.length - 1] ? setLocalDate(backup[backup.length - 1].created_at) : Date.now()),
-        to: new Date(backup[0] ? setLocalDate(backup[0].created_at) : Date.now())
+        from: defaultFrom,
+        to: defaultTo
     })
 
     const handleChange = e => {
@@ -27,23 +30,26 @@ export function MovementFilter({ registers, setRegisters }) {
     const handleReset = () => {
         setFilter({
             product: '',
-            from: new Date(backup[backup.length - 1] ? setLocalDate(backup[backup.length - 1].created_at) : Date.now()),
-            to: new Date(backup[0] ? setLocalDate(backup[0].created_at) : Date.now())
+            from: defaultFrom,
+            to: defaultTo
         })
-        setRegisters(backup)
+        setPage({ ...page, [entityKey]: 0 })
+        setOffset({ ...offset, [entityKey]: 25 })
     }
 
     useEffect(() => {
-        setRegisters(backup.filter(item => {
-            return (
-                item.product.code.toLowerCase().includes(filter.product.toLowerCase()) ||
-                item.product.details.toLowerCase().includes(filter.product.toLowerCase()) ||
-                item.product.size.toLowerCase().includes(filter.product.toLowerCase()) 
-            ) &&
-                setLocalDate(item.created_at) >= setFromDate(filter.from) &&
-                setLocalDate(item.created_at) <= setToDate(filter.to)
-        }))
+        (async () => {
+            let params = `&from=${filter.from.toISOString()}&to=${filter.to.toISOString()}`
+            if (filter.product.length > 0) params += `&product=${filter.product}`
+            setSearch(params)
+        })()
     }, [filter])
+
+    useEffect(() => {
+        (async () => {
+            await getter()
+        })()
+    }, [search])
 
     return (
         <Box sx={{
