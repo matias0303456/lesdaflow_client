@@ -1,9 +1,11 @@
+import { useContext, useEffect, useState } from "react";
 import { Box, Button, FormControl, Input, InputLabel, MenuItem, Select, Typography } from "@mui/material";
-import { useEffect, useState } from "react";
 
-export function ProductFilter({ products, setProducts, suppliers }) {
+import { PageContext } from "../../providers/PageProvider";
 
-    const [backup] = useState(products)
+export function ProductFilter({ suppliers, getter }) {
+
+    const { page, setPage, offset, setOffset, search, setSearch } = useContext(PageContext)
 
     const [filter, setFilter] = useState({
         code: '',
@@ -26,17 +28,26 @@ export function ProductFilter({ products, setProducts, suppliers }) {
             size: '',
             supplier_id: ''
         })
-        setProducts(backup)
+        setPage({ ...page, 'products': 0 })
+        setOffset({ ...offset, 'products': 25 })
     }
 
     useEffect(() => {
-        setProducts(backup.filter(item =>
-            item.code.toLowerCase().includes(filter.code.toLowerCase()) &&
-            item.details.toLowerCase().includes(filter.details.toLowerCase()) &&
-            item.size.toString().toLowerCase().includes(filter.size.toLowerCase()) &&
-            (filter.supplier_id.length === 0 || parseInt(item.supplier.id) === parseInt(filter.supplier_id))
-        ))
+        (async () => {
+            let params = ''
+            if (filter.code.length > 0) params += `&code=${filter.code}`
+            if (filter.details.length > 0) params += `&details=${filter.details}`
+            if (filter.size.length > 0) params += `&size=${filter.size}`
+            if (filter.supplier_id.toString().length > 0) params += `&supplier_id=${filter.supplier_id}`
+            setSearch(params)
+        })()
     }, [filter])
+
+    useEffect(() => {
+        (async () => {
+            await getter()
+        })()
+    }, [search])
 
     return (
         <Box sx={{

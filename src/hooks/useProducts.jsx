@@ -8,7 +8,7 @@ import { PRODUCT_URL } from "../utils/urls"
 
 export function useProducts() {
 
-    const { page, offset, count, setCount } = useContext(PageContext)
+    const { page, offset, count, setCount, search } = useContext(PageContext)
     const { setMessage, setOpenMessage, setSeverity } = useContext(MessageContext)
 
     const [loadingProducts, setLoadingProducts] = useState(true)
@@ -23,7 +23,7 @@ export function useProducts() {
     }, [])
 
     async function getProducts() {
-        const { status, data } = await get(page['products'], offset['products'])
+        const { status, data } = await get(page['products'], offset['products'], search)
         if (status === 200) {
             setProducts(data[0])
             setCount({ ...count, 'products': data[1] })

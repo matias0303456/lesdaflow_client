@@ -6,7 +6,9 @@ export const PageContext = createContext({
     offset: null,
     setOffset: () => { },
     count: null,
-    setCount: () => { }
+    setCount: () => { },
+    search: null,
+    setSearch: () => { }
 })
 
 export function PageProvider({ children }) {
@@ -44,9 +46,10 @@ export function PageProvider({ children }) {
         'suppliers': 0,
         'users': 0
     })
+    const [search, setSearch] = useState('')
 
     return (
-        <PageContext.Provider value={{ page, setPage, offset, setOffset, count, setCount }}>
+        <PageContext.Provider value={{ page, setPage, offset, setOffset, count, setCount, search, setSearch }}>
             {children}
         </PageContext.Provider>
     )

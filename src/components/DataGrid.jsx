@@ -505,18 +505,15 @@ export function DataGrid({
                         count={-1}
                         rowsPerPage={offset[pageKey]}
                         labelRowsPerPage="Registros por página"
-                        labelDisplayedRows={({ from, to }) => {
-                            setToPage(to)
-                            return `${from}–${to} de ${count[pageKey]}`
-                        }}
+                        labelDisplayedRows={({ from, to }) => `${from}–${to} de ${count[pageKey]}`}
                         page={page[pageKey]}
                         onPageChange={handleChangePage}
                         onRowsPerPageChange={handleChangeRowsPerPage}
                         slotProps={{
                             actions: {
                                 nextButton: {
-                                    disabled: toPage >= count[pageKey]
-                            }
+                                    disabled: ((page[pageKey] + 1) * offset[pageKey]) >= count[pageKey]
+                                }
                             }
                         }}
                     />

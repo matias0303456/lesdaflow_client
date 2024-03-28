@@ -233,11 +233,7 @@ export function Products() {
                     <LinearProgress />
                 </Box> :
                 <>
-                    <ProductFilter
-                        products={products}
-                        setProducts={setProducts}
-                        suppliers={suppliers}
-                    />
+                    <ProductFilter suppliers={suppliers} getter={getProducts} />
                     <DataGrid
                         title="Inventario"
                         headCells={headCells}
