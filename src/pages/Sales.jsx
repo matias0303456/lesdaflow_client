@@ -22,7 +22,7 @@ import { ModalComponent } from "../components/ModalComponent";
 import { SaleFilter } from "../components/filters/SaleFilter";
 import { AddProductsToSale } from "../components/AddProductsToSale";
 
-import { CLIENT_URL, REPORT_URL, SALE_URL } from "../utils/urls";
+import { CLIENT_URL, PRODUCT_URL, REPORT_URL, SALE_URL } from "../utils/urls";
 import { getAccountStatus, getCurrentSubtotal, getCurrentTotal, getDeadline, getInstallmentsAmount, getSaleDifference, getSaleTotal } from "../utils/helpers";
 
 export function Sales() {
@@ -30,11 +30,9 @@ export function Sales() {
     const { page, offset, count, setCount, search } = useContext(PageContext)
     const { auth } = useContext(AuthContext)
     const { setMessage, setOpenMessage, setSeverity } = useContext(MessageContext)
-    const { searchClients, setSearchClients } = useContext(SearchContext)
+    const { searchClients, setSearchClients, searchProducts, setSearchProducts } = useContext(SearchContext)
 
     const { get, post, put, destroy } = useApi(SALE_URL)
-    const { products, loadingProducts } = useProducts(true)
-    const { clients, loadingClients } = useClients()
     const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
         defaultData: {
             id: '',
@@ -85,6 +83,22 @@ export function Sales() {
             }
         })()
     }, [searchClients])
+
+    useEffect(() => {
+        (async () => {
+            if (searchProducts.length === 0) {
+                const res = await fetch(PRODUCT_URL + '/search', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': auth.token
+                    }
+                })
+                const data = await res.json()
+                if (res.status === 200) setSearchProducts(data)
+            }
+        })()
+    }, [searchProducts])
 
     const getSales = useCallback(async () => {
         const { status, data } = await get(page['sales'], offset['sales'], search)
@@ -270,7 +284,7 @@ export function Sales() {
 
     return (
         <Layout title="Ventas">
-            {loadingClients || loadingSales || loadingProducts || disabled ?
+            {loadingSales || disabled ?
                 <Box sx={{ width: '100%' }}>
                     <LinearProgress />
                 </Box> :
@@ -313,7 +327,7 @@ export function Sales() {
                                                 <Autocomplete
                                                     disablePortal
                                                     id="client-autocomplete"
-                                                    value={formData.client_id.toString().length > 0 ? `${clients.find(c => c.id === formData.client_id)?.code} - ${clients.find(c => c.id === formData.client_id)?.name}` : ''}
+                                                    value={formData.client_id.toString().length > 0 ? `${searchClients.find(c => c.id === formData.client_id)?.code} - ${searchClients.find(c => c.id === formData.client_id)?.name}` : ''}
                                                     options={searchClients.map(c => ({ label: `${c.code} - ${c.name}`, id: c.id }))}
                                                     noOptionsText="No hay clientes registrados."
                                                     onChange={(e, value) => handleChange({ target: { name: 'client_id', value: value?.id ?? '' } })}
@@ -327,6 +341,7 @@ export function Sales() {
                                                 }
                                             </FormControl>
                                             <AddProductsToSale
+                                                searchProducts={searchProducts}
                                                 saleProducts={saleProducts}
                                                 setSaleProducts={setSaleProducts}
                                                 missing={missing}
@@ -425,17 +440,17 @@ export function Sales() {
                                     <Box sx={{ display: 'flex', justifyContent: 'end' }}>
                                         <FormControl>
                                             <InputLabel htmlFor="subtotal">Subtotal</InputLabel>
-                                            <Input value={getCurrentSubtotal(saleProducts, products)} id="subtotal" type="number" name="subtotal" disabled />
+                                            <Input value={getCurrentSubtotal(saleProducts, searchProducts)} id="subtotal" type="number" name="subtotal" disabled />
                                         </FormControl>
                                         <FormControl>
                                             <InputLabel htmlFor="total">Total</InputLabel>
-                                            <Input value={getCurrentTotal(formData, saleProducts, products)} id="total" type="number" name="total" disabled />
+                                            <Input value={getCurrentTotal(formData, saleProducts, searchProducts)} id="total" type="number" name="total" disabled />
                                         </FormControl>
                                         <FormControl>
                                             <InputLabel htmlFor="inst_amount">Monto por cuota</InputLabel>
                                             <Input
                                                 id="inst_amount" type="number" name="total" disabled
-                                                value={getInstallmentsAmount(getCurrentTotal(formData, saleProducts, products), formData.installments)}
+                                                value={getInstallmentsAmount(getCurrentTotal(formData, saleProducts, searchProducts), formData.installments)}
                                             />
                                         </FormControl>
                                     </Box>
