@@ -60,19 +60,17 @@ export function Incomes() {
 
     useEffect(() => {
         (async () => {
-            if (searchProducts.length === 0) {
-                const res = await fetch(PRODUCT_URL + '/search', {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': auth.token
-                    }
-                })
-                const data = await res.json()
-                if (res.status === 200) setSearchProducts(data)
-            }
+            const res = await fetch(PRODUCT_URL + '/search', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': auth.token
+                }
+            })
+            const data = await res.json()
+            if (res.status === 200) setSearchProducts(data)
         })()
-    }, [searchProducts])
+    }, [])
 
     const getIncomes = useCallback(async () => {
         const { status, data } = await get(page['incomes'], offset['incomes'], search)

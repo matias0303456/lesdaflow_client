@@ -60,7 +60,6 @@ export function Outcomes() {
 
     useEffect(() => {
         (async () => {
-            if (searchProducts.length === 0) {
                 const res = await fetch(PRODUCT_URL + '/search', {
                     method: 'GET',
                     headers: {
@@ -70,9 +69,8 @@ export function Outcomes() {
                 })
                 const data = await res.json()
                 if (res.status === 200) setSearchProducts(data)
-            }
         })()
-    }, [searchProducts])
+    }, [])
 
     const getOutcomes = useCallback(async () => {
         const { status, data } = await get(page['outcomes'], offset['outcomes'], search)

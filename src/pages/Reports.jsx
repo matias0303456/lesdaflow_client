@@ -31,35 +31,31 @@ export function Reports() {
 
     useEffect(() => {
         (async () => {
-            if (searchClients.length === 0) {
-                const res = await fetch(CLIENT_URL + '/search', {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': auth.token
-                    }
-                })
-                const data = await res.json()
-                if (res.status === 200) setSearchClients(data)
-            }
+            const res = await fetch(CLIENT_URL + '/search', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': auth.token
+                }
+            })
+            const data = await res.json()
+            if (res.status === 200) setSearchClients(data)
         })()
-    }, [searchClients])
+    }, [])
 
     useEffect(() => {
         (async () => {
-            if (searchProducts.length === 0) {
-                const res = await fetch(PRODUCT_URL + '/search', {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': auth.token
-                    }
-                })
-                const data = await res.json()
-                if (res.status === 200) setSearchProducts(data)
-            }
+            const res = await fetch(PRODUCT_URL + '/search', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': auth.token
+                }
+            })
+            const data = await res.json()
+            if (res.status === 200) setSearchProducts(data)
         })()
-    }, [searchProducts])
+    }, [])
 
     useEffect(() => {
         setCanDownloadClientReport(clientData.client_id.toString().length > 0)
