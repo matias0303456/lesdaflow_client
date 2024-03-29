@@ -9,7 +9,6 @@ import { PageContext } from "../providers/PageProvider";
 import { SearchContext } from "../providers/SearchProvider";
 import { useApi } from "../hooks/useApi";
 import { useForm } from "../hooks/useForm";
-import { useProducts } from "../hooks/useProducts";
 
 import { Layout } from "../components/Layout";
 import { DataGrid } from "../components/DataGrid";
@@ -17,7 +16,7 @@ import { ModalComponent } from "../components/ModalComponent";
 import { MovementFilter } from "../components/filters/MovementFilter";
 
 import { INCOME_URL, PRODUCT_URL } from "../utils/urls";
-import { getStock, getStockTillDate } from "../utils/helpers";
+import { getStockTillDate } from "../utils/helpers";
 
 export function Incomes() {
 
@@ -30,7 +29,6 @@ export function Incomes() {
 
     const { get, post, put, destroy } = useApi(INCOME_URL)
 
-    const { products, loadingProducts } = useProducts()
     const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
         defaultData: {
             id: '',
@@ -210,7 +208,7 @@ export function Incomes() {
 
     return (
         <Layout title="Ingresos">
-            {loadingIncomes || loadingProducts || disabled ?
+            {loadingIncomes || disabled ?
                 <Box sx={{ width: '100%' }}>
                     <LinearProgress />
                 </Box> :
@@ -239,7 +237,7 @@ export function Incomes() {
                                         <Autocomplete
                                             disablePortal
                                             id="product-autocomplete"
-                                            value={formData.product_id.toString() > 0 ? `${products.find(p => p.id === formData.product_id)?.code} - ${products.find(p => p.id === formData.product_id)?.details} - T: ${products.find(p => p.id === formData.product_id)?.size}` : ''}
+                                            value={formData.product_id.toString() > 0 ? `${searchProducts.find(p => p.id === formData.product_id)?.code} - ${searchProducts.find(p => p.id === formData.product_id)?.details} - T: ${searchProducts.find(p => p.id === formData.product_id)?.size}` : ''}
                                             options={searchProducts.map(p => ({ label: `Cód: ${p.code} - Det: ${p.details} - T: ${p.size}`, id: p.id }))}
                                             noOptionsText="No hay productos registrados."
                                             onChange={(e, value) => handleChange({ target: { name: 'product_id', value: value?.id ?? '' } })}
@@ -271,7 +269,7 @@ export function Incomes() {
                                                 <TableBody>
                                                     <TableRow>
                                                         <TableCell align="center">
-                                                            {formData.product_id.toString().length > 0 ? getStock(products.find(p => p.id === formData.product_id)) : 0}
+                                                            {formData.product_id.toString().length > 0 ? searchProducts.find(p => p.id === formData.product_id)?.stock : 0}
                                                         </TableCell>
                                                         <TableCell align="center">
                                                             <FormControl>
@@ -284,7 +282,7 @@ export function Incomes() {
                                                             </FormControl>
                                                         </TableCell>
                                                         <TableCell align="center">
-                                                            {formData.product_id.toString().length > 0 ? getStock(products.find(p => p.id === formData.product_id)) + Math.abs(parseInt(formData.amount.toString().length > 0 ? formData.amount : 0)) - oldFormDataAmount : 0}
+                                                            {formData.product_id.toString().length > 0 ? searchProducts.find(p => p.id === formData.product_id)?.stock + Math.abs(parseInt(formData.amount.toString().length > 0 ? formData.amount : 0)) - oldFormDataAmount : 0}
                                                         </TableCell>
                                                     </TableRow>
                                                 </TableBody>
