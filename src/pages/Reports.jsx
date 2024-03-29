@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Autocomplete, Box, Button, FormControl, LinearProgress, TextField, Typography } from "@mui/material";
 
 import { AuthContext } from "../providers/AuthProvider";
+import { SearchContext } from "../providers/SearchProvider";
 import { useForm } from '../hooks/useForm'
 import { useClients } from "../hooks/useClients";
 import { useProducts } from '../hooks/useProducts'
@@ -14,6 +15,7 @@ import { CLIENT_URL, PRODUCT_URL, REPORT_URL } from "../utils/urls";
 export function Reports() {
 
     const { auth } = useContext(AuthContext)
+    const { searchClients, setSearchClients, searchProducts, setSearchProducts } = useContext(SearchContext)
 
     const { formData: clientData, handleChange: changeClient } = useForm({
         defaultData: { client_id: '' },
@@ -26,8 +28,6 @@ export function Reports() {
 
     const [canDownloadClientReport, setCanDownloadClientReport] = useState(false)
     const [canDownloadProductReport, setCanDownloadProductReport] = useState(false)
-    const [searchClients, setSearchClients] = useState([])
-    const [searchProducts, setSearchProducts] = useState([])
 
     useEffect(() => {
         (async () => {

@@ -10,6 +10,7 @@ import PrintSharpIcon from '@mui/icons-material/PrintSharp';
 import { AuthContext } from "../providers/AuthProvider";
 import { PageContext } from "../providers/PageProvider";
 import { MessageContext } from "../providers/MessageProvider";
+import { SearchContext } from "../providers/SearchProvider";
 import { useApi } from "../hooks/useApi";
 import { useProducts } from "../hooks/useProducts";
 import { useClients } from '../hooks/useClients'
@@ -29,6 +30,7 @@ export function Sales() {
     const { page, offset, count, setCount, search } = useContext(PageContext)
     const { auth } = useContext(AuthContext)
     const { setMessage, setOpenMessage, setSeverity } = useContext(MessageContext)
+    const { searchClients, setSearchClients } = useContext(SearchContext)
 
     const { get, post, put, destroy } = useApi(SALE_URL)
     const { products, loadingProducts } = useProducts(true)
@@ -67,7 +69,6 @@ export function Sales() {
     const [idsToDelete, setIdsToDelete] = useState([])
     const [stopPointerEvents, setStopPointerEvents] = useState(false)
     const [saleSaved, setSaleSaved] = useState(null)
-    const [searchClients, setSearchClients] = useState([])
 
     useEffect(() => {
         (async () => {

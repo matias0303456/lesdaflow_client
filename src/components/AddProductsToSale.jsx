@@ -2,9 +2,10 @@ import { useContext, useEffect, useState } from "react";
 import { Autocomplete, Button, FormControl, Input, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from "@mui/material";
 import CancelSharpIcon from '@mui/icons-material/CancelSharp';
 
-import { getStock } from "../utils/helpers";
-import { PRODUCT_URL } from "../utils/urls";
 import { AuthContext } from "../providers/AuthProvider";
+import { SearchContext } from "../providers/SearchProvider";
+
+import { PRODUCT_URL } from "../utils/urls";
 
 export function AddProductsToSale({
     saleProducts,
@@ -17,13 +18,13 @@ export function AddProductsToSale({
 }) {
 
     const { auth } = useContext(AuthContext)
+    const { searchProducts, setSearchProducts } = useContext(SearchContext)
 
-    const [products, setProducts] = useState([])
     const [value, setValue] = useState('')
 
     useEffect(() => {
         (async () => {
-            if (products.length === 0) {
+            if (searchProducts.length === 0) {
                 const res = await fetch(PRODUCT_URL + '/search', {
                     method: 'GET',
                     headers: {
@@ -32,10 +33,10 @@ export function AddProductsToSale({
                     }
                 })
                 const data = await res.json()
-                if (res.status === 200) setProducts(data)
+                if (res.status === 200) setSearchProducts(data)
             }
         })()
-    }, [products])
+    }, [searchProducts])
 
     const handleAdd = data => {
         if (data.product_id.toString().length > 0) {
@@ -78,7 +79,7 @@ export function AddProductsToSale({
                 <Autocomplete
                     disablePortal
                     id="product-autocomplete"
-                    options={products.filter(p =>
+                    options={searchProducts.filter(p =>
                         !saleProducts.map(sp => sp.product_id).includes(p.id))
                         .map(p => ({ label: `Código ${p.code} / Detalle ${p.details} / Talle ${p.size}`, id: p.id }))}
                     noOptionsText="No hay productos disponibles."
@@ -120,34 +121,44 @@ export function AddProductsToSale({
                                 <TableCell></TableCell>
                                 <TableCell></TableCell>
                             </TableRow> :
-                            saleProducts.map(sp => {
-                                const p = products.find(p => p.id === sp.product_id)
-                                const currentAmount = isNaN(parseInt(sp.amount)) ? 0 : parseInt(sp.amount)
-                                return (
-                                    <TableRow
-                                        key={sp.product_id}
-                                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                                    >
-                                        <TableCell align="center">{p.code}</TableCell>
-                                        <TableCell align="center">{p.details}</TableCell>
-                                        <TableCell align="center">{p.size}</TableCell>
-                                        <TableCell align="center">
-                                            <Input type="number" value={sp.amount} onChange={e => handleChangeAmount({
-                                                product_id: p.id,
-                                                amount: e.target.value
-                                            })} />
-                                        </TableCell>
-                                        <TableCell>${((sp.buy_price ?? p.buy_price) + (((sp.buy_price ?? p.buy_price) / 100) * (sp.earn ?? p.earn))).toFixed(2)}</TableCell>
-                                        <TableCell>{getStock(p)}</TableCell>
-                                        <TableCell>${(currentAmount * ((sp.buy_price ?? p.buy_price) + (((sp.buy_price ?? p.buy_price) / 100) * (sp.earn ?? p.earn)))).toFixed(2)}</TableCell>
-                                        <TableCell align="center">
-                                            <Button type="button" onClick={() => handleDeleteProduct(sp.id, p.id)}>
-                                                <CancelSharpIcon />
-                                            </Button>
-                                        </TableCell>
-                                    </TableRow>
-                                )
-                            })}
+                            searchProducts.length === 0 ?
+                                <TableRow>
+                                    <TableCell></TableCell>
+                                    <TableCell></TableCell>
+                                    <TableCell></TableCell>
+                                    <TableCell align="center">Cargando productos...</TableCell>
+                                    <TableCell></TableCell>
+                                    <TableCell></TableCell>
+                                    <TableCell></TableCell>
+                                </TableRow> :
+                                saleProducts.map(sp => {
+                                    const p = searchProducts.find(p => p.id === sp.product_id)
+                                    const currentAmount = isNaN(parseInt(sp.amount)) ? 0 : parseInt(sp.amount)
+                                    return (
+                                        <TableRow
+                                            key={sp.product_id}
+                                            sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                        >
+                                            <TableCell align="center">{p?.code}</TableCell>
+                                            <TableCell align="center">{p?.details}</TableCell>
+                                            <TableCell align="center">{p?.size}</TableCell>
+                                            <TableCell align="center">
+                                                <Input type="number" value={sp.amount} onChange={e => handleChangeAmount({
+                                                    product_id: p.id,
+                                                    amount: e.target.value
+                                                })} />
+                                            </TableCell>
+                                            <TableCell>${((sp.buy_price ?? p?.buy_price) + (((sp.buy_price ?? p?.buy_price) / 100) * (sp.earn ?? p?.earn))).toFixed(2)}</TableCell>
+                                            <TableCell>{p?.stock}</TableCell>
+                                            <TableCell>${(currentAmount * ((sp.buy_price ?? p?.buy_price) + (((sp.buy_price ?? p?.buy_price) / 100) * (sp.earn ?? p?.earn)))).toFixed(2)}</TableCell>
+                                            <TableCell align="center">
+                                                <Button type="button" onClick={() => handleDeleteProduct(sp.id, p?.id)}>
+                                                    <CancelSharpIcon />
+                                                </Button>
+                                            </TableCell>
+                                        </TableRow>
+                                    )
+                                })}
                     </TableBody>
                 </Table>
             </TableContainer>

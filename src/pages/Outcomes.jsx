@@ -6,6 +6,7 @@ import { format } from 'date-fns'
 import { AuthContext } from "../providers/AuthProvider";
 import { MessageContext } from "../providers/MessageProvider";
 import { PageContext } from "../providers/PageProvider";
+import { SearchContext } from "../providers/SearchProvider";
 import { useApi } from "../hooks/useApi";
 import { useForm } from "../hooks/useForm";
 import { useProducts } from "../hooks/useProducts";
@@ -23,6 +24,7 @@ export function Outcomes() {
     const { page, offset, count, setCount, search } = useContext(PageContext)
     const { auth } = useContext(AuthContext)
     const { setMessage, setOpenMessage, setSeverity } = useContext(MessageContext)
+    const { searchProducts, setSearchProducts } = useContext(SearchContext)
 
     const navigate = useNavigate()
 
@@ -53,7 +55,6 @@ export function Outcomes() {
     const [outcomes, setOutcomes] = useState([])
     const [open, setOpen] = useState(null)
     const [oldFormDataAmount, setOldFormDataAmount] = useState(0)
-    const [searchProducts, setSearchProducts] = useState([])
 
     useEffect(() => {
         if (auth?.user.role.name !== 'ADMINISTRADOR') navigate('/veroshop/productos')
