@@ -15,7 +15,7 @@ import { DataGrid } from "../components/DataGrid";
 import { ModalComponent } from "../components/ModalComponent";
 import { MovementFilter } from "../components/filters/MovementFilter";
 
-import { INCOME_URL } from "../utils/urls";
+import { INCOME_URL, PRODUCT_URL } from "../utils/urls";
 import { getStock, getStockTillDate } from "../utils/helpers";
 
 export function Incomes() {
@@ -53,10 +53,27 @@ export function Incomes() {
     const [incomes, setIncomes] = useState([])
     const [open, setOpen] = useState(null)
     const [oldFormDataAmount, setOldFormDataAmount] = useState(0)
+    const [searchProducts, setSearchProducts] = useState([])
 
     useEffect(() => {
         if (auth?.user.role.name !== 'ADMINISTRADOR') navigate('/veroshop/productos')
     }, [])
+
+    useEffect(() => {
+        (async () => {
+            if (searchProducts.length === 0) {
+                const res = await fetch(PRODUCT_URL + '/search', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': auth.token
+                    }
+                })
+                const data = await res.json()
+                if (res.status === 200) setSearchProducts(data)
+            }
+        })()
+    }, [searchProducts])
 
     const getIncomes = useCallback(async () => {
         const { status, data } = await get(page['incomes'], offset['incomes'], search)
@@ -222,7 +239,7 @@ export function Incomes() {
                                             disablePortal
                                             id="product-autocomplete"
                                             value={formData.product_id.toString() > 0 ? `${products.find(p => p.id === formData.product_id)?.code} - ${products.find(p => p.id === formData.product_id)?.details} - T: ${products.find(p => p.id === formData.product_id)?.size}` : ''}
-                                            options={products.map(p => ({ label: `Cód: ${p.code} - Det: ${p.details} - T: ${p.size}`, id: p.id }))}
+                                            options={searchProducts.map(p => ({ label: `Cód: ${p.code} - Det: ${p.details} - T: ${p.size}`, id: p.id }))}
                                             noOptionsText="No hay productos registrados."
                                             onChange={(e, value) => handleChange({ target: { name: 'product_id', value: value?.id ?? '' } })}
                                             renderInput={(params) => <TextField {...params} label="Producto" />}

@@ -1,11 +1,12 @@
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Autocomplete, Button, FormControl, Input, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from "@mui/material";
 import CancelSharpIcon from '@mui/icons-material/CancelSharp';
 
 import { getStock } from "../utils/helpers";
+import { PRODUCT_URL } from "../utils/urls";
+import { AuthContext } from "../providers/AuthProvider";
 
 export function AddProductsToSale({
-    products,
     saleProducts,
     setSaleProducts,
     missing,
@@ -15,7 +16,26 @@ export function AddProductsToSale({
     open
 }) {
 
+    const { auth } = useContext(AuthContext)
+
+    const [products, setProducts] = useState([])
     const [value, setValue] = useState('')
+
+    useEffect(() => {
+        (async () => {
+            if (products.length === 0) {
+                const res = await fetch(PRODUCT_URL + '/search', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': auth.token
+                    }
+                })
+                const data = await res.json()
+                if (res.status === 200) setProducts(data)
+            }
+        })()
+    }, [products])
 
     const handleAdd = data => {
         if (data.product_id.toString().length > 0) {

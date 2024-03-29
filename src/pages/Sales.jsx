@@ -21,7 +21,7 @@ import { ModalComponent } from "../components/ModalComponent";
 import { SaleFilter } from "../components/filters/SaleFilter";
 import { AddProductsToSale } from "../components/AddProductsToSale";
 
-import { REPORT_URL, SALE_URL } from "../utils/urls";
+import { CLIENT_URL, REPORT_URL, SALE_URL } from "../utils/urls";
 import { getAccountStatus, getCurrentSubtotal, getCurrentTotal, getDeadline, getInstallmentsAmount, getSaleDifference, getSaleTotal } from "../utils/helpers";
 
 export function Sales() {
@@ -67,6 +67,23 @@ export function Sales() {
     const [idsToDelete, setIdsToDelete] = useState([])
     const [stopPointerEvents, setStopPointerEvents] = useState(false)
     const [saleSaved, setSaleSaved] = useState(null)
+    const [searchClients, setSearchClients] = useState([])
+
+    useEffect(() => {
+        (async () => {
+            if (searchClients.length === 0) {
+                const res = await fetch(CLIENT_URL + '/search', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': auth.token
+                    }
+                })
+                const data = await res.json()
+                if (res.status === 200) setSearchClients(data)
+            }
+        })()
+    }, [searchClients])
 
     const getSales = useCallback(async () => {
         const { status, data } = await get(page['sales'], offset['sales'], search)
@@ -296,7 +313,7 @@ export function Sales() {
                                                     disablePortal
                                                     id="client-autocomplete"
                                                     value={formData.client_id.toString().length > 0 ? `${clients.find(c => c.id === formData.client_id)?.code} - ${clients.find(c => c.id === formData.client_id)?.name}` : ''}
-                                                    options={clients.map(c => ({ label: `${c.code} - ${c.name}`, id: c.id }))}
+                                                    options={searchClients.map(c => ({ label: `${c.code} - ${c.name}`, id: c.id }))}
                                                     noOptionsText="No hay clientes registrados."
                                                     onChange={(e, value) => handleChange({ target: { name: 'client_id', value: value?.id ?? '' } })}
                                                     renderInput={(params) => <TextField {...params} label="Cliente" />}
@@ -309,7 +326,6 @@ export function Sales() {
                                                 }
                                             </FormControl>
                                             <AddProductsToSale
-                                                products={products}
                                                 saleProducts={saleProducts}
                                                 setSaleProducts={setSaleProducts}
                                                 missing={missing}
