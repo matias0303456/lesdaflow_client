@@ -300,6 +300,7 @@ export function Sales() {
                         handlePrint
                         stopPointerEvents={stopPointerEvents}
                         pageKey="sales"
+                        getter={getSales}
                     >
                         <ModalComponent
                             reduceWidth={50}

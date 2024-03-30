@@ -60,15 +60,15 @@ export function Outcomes() {
 
     useEffect(() => {
         (async () => {
-                const res = await fetch(PRODUCT_URL + '/search', {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': auth.token
-                    }
-                })
-                const data = await res.json()
-                if (res.status === 200) setSearchProducts(data)
+            const res = await fetch(PRODUCT_URL + '/search', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': auth.token
+                }
+            })
+            const data = await res.json()
+            if (res.status === 200) setSearchProducts(data)
         })()
     }, [])
 
@@ -211,7 +211,7 @@ export function Outcomes() {
                     <LinearProgress />
                 </Box> :
                 <>
-                    <MovementFilter registers={outcomes} entityKey="outcomes" getter={getOutcomes} />
+                    <MovementFilter entityKey="outcomes" getter={getOutcomes} />
                     <DataGrid
                         title=""
                         headCells={headCells}

@@ -211,7 +211,7 @@ export function Incomes() {
                     <LinearProgress />
                 </Box> :
                 <>
-                    <MovementFilter registers={incomes} entityKey="incomes" getter={getIncomes} />
+                    <MovementFilter entityKey="incomes" getter={getIncomes} />
                     <DataGrid
                         title=""
                         headCells={headCells}

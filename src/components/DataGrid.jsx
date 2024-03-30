@@ -379,7 +379,7 @@ export function DataGrid({
     const handleChangePage = (event, newPage) => {
         setPage({ ...page, [pageKey]: newPage });
     };
-
+    
     const handleChangeRowsPerPage = (event) => {
         setOffset({ ...offset, [pageKey]: event.target.value });
         setPage({ ...page, [pageKey]: 0 });

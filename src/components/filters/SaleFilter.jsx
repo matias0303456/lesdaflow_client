@@ -8,25 +8,20 @@ import es from 'date-fns/locale/es';
 import { AuthContext } from "../../providers/AuthProvider";
 import { PageContext } from "../../providers/PageProvider";
 
-import { setLocalDate } from "../../utils/helpers";
-
 export function SaleFilter({ sales, getter }) {
 
     const { auth } = useContext(AuthContext)
     const { page, setPage, offset, setOffset, search, setSearch } = useContext(PageContext)
 
-    const [backup] = useState(sales.sort((a, b) => new Date(b.date) - new Date(a.date)))
     const [users] = useState(Array.from(new Set(sales.map(s => s.client.user.username))))
-    const [defaultFrom] = useState(new Date(backup[backup.length - 1] ? setLocalDate(backup[backup.length - 1].date) : Date.now()))
-    const [defaultTo] = useState(new Date(backup[0] ? setLocalDate(backup[0].date) : Date.now()))
 
     const [filter, setFilter] = useState({
         id: '',
         client: '',
         type: 'ALL',
         pending: true,
-        from: defaultFrom,
-        to: defaultTo,
+        from: '',
+        to: '',
         user: ''
     })
 
@@ -43,8 +38,8 @@ export function SaleFilter({ sales, getter }) {
             client: '',
             type: 'ALL',
             pending: true,
-            from: defaultFrom,
-            to: defaultTo,
+            from: '',
+            to: '',
             user: ''
         })
         setPage({ ...page, 'sales': 0 })
@@ -53,7 +48,13 @@ export function SaleFilter({ sales, getter }) {
 
     useEffect(() => {
         (async () => {
-            let params = `&from=${filter.from.toISOString()}&to=${filter.to.toISOString()}`
+            let params = ''
+            if (typeof filter.from === 'object' && new Date(filter.from).toISOString().length > 0) {
+                params += `&from=${new Date(filter.from).toISOString()}`
+            }
+            if (typeof filter.to === 'object' && new Date(filter.to).toISOString().length > 0) {
+                params += `&to=${new Date(filter.to).toISOString()}`
+            }
             if (filter.id.length > 0) params += `&id=${filter.id}`
             if (filter.client.length > 0) params += `&client=${filter.client}`
             if (filter.type.length > 0) params += `&type=${filter.type}`
@@ -102,7 +103,7 @@ export function SaleFilter({ sales, getter }) {
                         <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
                             <DatePicker
                                 label="Desde"
-                                value={new Date(filter.from)}
+                                value={typeof filter.from === 'object' ? new Date(filter.from) : new Date(Date.now())}
                                 onChange={value => handleChange({
                                     target: {
                                         name: 'from',
@@ -116,7 +117,7 @@ export function SaleFilter({ sales, getter }) {
                         <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
                             <DatePicker
                                 label="Hasta"
-                                value={new Date(filter.to)}
+                                value={typeof filter.to === 'object' ? new Date(filter.to) : new Date(Date.now())}
                                 onChange={value => handleChange({
                                     target: {
                                         name: 'to',
