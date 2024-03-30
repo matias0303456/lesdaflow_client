@@ -60,7 +60,7 @@ export function AddProductsToSale({
                         !saleProducts.map(sp => sp.product_id).includes(p.id))
                         .map(p => ({ label: `Código ${p.code} / Detalle ${p.details} / Talle ${p.size}`, id: p.id }))}
                     noOptionsText="No hay productos disponibles."
-                    onChange={(e, value) => handleAdd({ idx: saleProducts.length, product_id: value?.id ?? '' })}
+                    onChange={(e, value) => handleAdd({ idx: saleProducts.length, product_id: value?.id ?? '', amount: 1 })}
                     renderInput={(params) => <TextField {...params} label="Producto" />}
                     isOptionEqualToValue={(option, value) => option.code === value.code || value.length === 0}
                     onInputChange={(e, value) => setValue(value)}
@@ -110,7 +110,6 @@ export function AddProductsToSale({
                                 </TableRow> :
                                 saleProducts.map(sp => {
                                     const p = searchProducts.find(p => p.id === sp.product_id)
-                                    const currentAmount = isNaN(parseInt(sp.amount)) ? 0 : parseInt(sp.amount)
                                     return (
                                         <TableRow
                                             key={sp.product_id}
@@ -127,7 +126,7 @@ export function AddProductsToSale({
                                             </TableCell>
                                             <TableCell>${((sp.buy_price ?? p?.buy_price) + (((sp.buy_price ?? p?.buy_price) / 100) * (sp.earn ?? p?.earn))).toFixed(2)}</TableCell>
                                             <TableCell>{p?.stock}</TableCell>
-                                            <TableCell>${(currentAmount * ((sp.buy_price ?? p?.buy_price) + (((sp.buy_price ?? p?.buy_price) / 100) * (sp.earn ?? p?.earn)))).toFixed(2)}</TableCell>
+                                            <TableCell>${(sp.amount * ((sp.buy_price ?? p?.buy_price) + (((sp.buy_price ?? p?.buy_price) / 100) * (sp.earn ?? p?.earn)))).toFixed(2)}</TableCell>
                                             <TableCell align="center">
                                                 <Button type="button" onClick={() => handleDeleteProduct(sp.id, p?.id)}>
                                                     <CancelSharpIcon />
