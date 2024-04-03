@@ -1,4 +1,4 @@
-import { Box, Button, Checkbox, FormControl, FormControlLabel, Input, InputLabel, MenuItem, Select, Typography } from "@mui/material";
+import { Box, Button, Checkbox, FormControl, FormControlLabel, Input, InputLabel } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 
 import { AuthContext } from "../../providers/AuthProvider";

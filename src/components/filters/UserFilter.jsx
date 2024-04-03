@@ -1,4 +1,4 @@
-import { Box, Button, FormControl, Input, InputLabel, Typography } from "@mui/material";
+import { Box, Button, FormControl, Input, InputLabel } from "@mui/material";
 import { useEffect, useState } from "react";
 
 export function UserFilter({ users, setUsers }) {
@@ -40,43 +40,30 @@ export function UserFilter({ users, setUsers }) {
 
     return (
         <Box sx={{
-            marginBottom: 1,
-            marginTop: { xs: 3, sm: 0 },
-            padding: 1,
-            borderRadius: 1
+            display: 'flex',
+            flexWrap: 'wrap',
+            alignItems: 'center',
+            gap: 2
         }}>
-            <Typography variant="h6" sx={{ marginBottom: 1 }}>
-                Filtrar
-            </Typography>
-            <Box sx={{
-                display: 'flex',
-                flexWrap: 'wrap',
-                gap: 3,
-                flexDirection: {
-                    xs: 'column',
-                    md: 'row'
-                }
-            }}>
-                <FormControl>
-                    <InputLabel htmlFor="first_name">Nombre</InputLabel>
-                    <Input id="first_name" type="text" name="first_name" value={filter.first_name} onChange={handleChange} />
-                </FormControl>
-                <FormControl>
-                    <InputLabel htmlFor="last_name">Apellido</InputLabel>
-                    <Input id="last_name" type="text" name="last_name" value={filter.last_name} onChange={handleChange} />
-                </FormControl>
-                <FormControl>
-                    <InputLabel htmlFor="username">Usuario</InputLabel>
-                    <Input id="username" type="text" name="username" value={filter.username} onChange={handleChange} />
-                </FormControl>
-                <FormControl>
-                    <InputLabel htmlFor="email">Email</InputLabel>
-                    <Input id="email" type="email" name="email" value={filter.email} onChange={handleChange} />
-                </FormControl>
-                <Button variant="outlined" onClick={handleReset}>
-                    Reiniciar
-                </Button>
-            </Box>
+            <FormControl>
+                <InputLabel htmlFor="first_name">Nombre</InputLabel>
+                <Input id="first_name" type="text" name="first_name" value={filter.first_name} onChange={handleChange} />
+            </FormControl>
+            <FormControl>
+                <InputLabel htmlFor="last_name">Apellido</InputLabel>
+                <Input id="last_name" type="text" name="last_name" value={filter.last_name} onChange={handleChange} />
+            </FormControl>
+            <FormControl>
+                <InputLabel htmlFor="username">Usuario</InputLabel>
+                <Input id="username" type="text" name="username" value={filter.username} onChange={handleChange} />
+            </FormControl>
+            <FormControl>
+                <InputLabel htmlFor="email">Email</InputLabel>
+                <Input id="email" type="email" name="email" value={filter.email} onChange={handleChange} />
+            </FormControl>
+            <Button variant="outlined" onClick={handleReset}>
+                Reiniciar Filtros
+            </Button>
         </Box>
     )
 }

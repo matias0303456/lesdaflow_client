@@ -11,6 +11,7 @@ import { Clients } from './pages/Clients'
 import { Visits } from "./pages/Visits";
 import { AccountsReport } from "./pages/AccountsReport";
 import { Users } from './pages/Users'
+import { Suppliers } from "./pages/Suppliers";
 import { Sales } from "./pages/Sales";
 import { SalesReport } from "./pages/SalesReport";
 import { Products } from './pages/Products'
@@ -43,6 +44,7 @@ function App() {
               <Route path="/visitas" element={<Visits />} />
               <Route path="/reporte-cta-cte" element={<AccountsReport />} />
               <Route path="/vendedor" element={<Users />} />
+              <Route path="/proveedores" element={<Suppliers />} />
               <Route path="/ventas" element={<Sales />} />
               <Route path="/reporte-ventas" element={<SalesReport />} />
               <Route path="/productos" element={<Products />} />

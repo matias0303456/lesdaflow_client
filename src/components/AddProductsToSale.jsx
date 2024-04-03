@@ -54,26 +54,30 @@ export function AddProductsToSale({
 
     return (
         <>
-            <FormControl>
-                <Autocomplete
-                    disablePortal
-                    id="product-autocomplete"
-                    options={products.filter(p =>
-                        !saleProducts.map(sp => sp.product_id).includes(p.id))
-                        .map(p => ({ label: `Código ${p.code} / Detalle ${p.details} / Talle ${p.size}`, id: p.id }))}
-                    noOptionsText="No hay productos disponibles."
-                    onChange={(e, value) => handleAdd({ idx: saleProducts.length, product_id: value?.id ?? '' })}
-                    renderInput={(params) => <TextField {...params} label="Producto" />}
-                    isOptionEqualToValue={(option, value) => option.code === value.code || value.length === 0}
-                    onInputChange={(e, value) => setValue(value)}
-                    value={value}
-                    onBlur={() => setValue('')}
-                />
-            </FormControl>
-            {missing &&
-                <Typography variant="caption" color="red" marginTop={1}>
-                    * Los productos y las cantidades son requeridos y las cantidades deben ser mayores a 0.
-                </Typography>
+            {(open === 'NEW' || open === 'EDIT') &&
+                <>
+                    <FormControl>
+                        <Autocomplete
+                            disablePortal
+                            id="product-autocomplete"
+                            options={products.filter(p =>
+                                !saleProducts.map(sp => sp.product_id).includes(p.id))
+                                .map(p => ({ label: `Código ${p.code} / Detalle ${p.details} / Talle ${p.size}`, id: p.id }))}
+                            noOptionsText="No hay productos disponibles."
+                            onChange={(e, value) => handleAdd({ idx: saleProducts.length, product_id: value?.id ?? '' })}
+                            renderInput={(params) => <TextField {...params} label="Producto" />}
+                            isOptionEqualToValue={(option, value) => option.code === value.code || value.length === 0}
+                            onInputChange={(e, value) => setValue(value)}
+                            value={value}
+                            onBlur={() => setValue('')}
+                        />
+                    </FormControl>
+                    {missing &&
+                        <Typography variant="caption" color="red" marginTop={1}>
+                            * Los productos y las cantidades son requeridos y las cantidades deben ser mayores a 0.
+                        </Typography>
+                    }
+                </>
             }
             <TableContainer component={Paper}>
                 <Table aria-label="simple table">
@@ -86,7 +90,7 @@ export function AddProductsToSale({
                             <TableCell align="center">Precio</TableCell>
                             <TableCell align="center">Stock</TableCell>
                             <TableCell align="center">Total det.</TableCell>
-                            <TableCell align="center"></TableCell>
+                            {(open === 'NEW' || open === 'EDIT') && <TableCell align="center"></TableCell>}
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -112,19 +116,26 @@ export function AddProductsToSale({
                                         <TableCell align="center">{p.details}</TableCell>
                                         <TableCell align="center">{p.size}</TableCell>
                                         <TableCell align="center">
-                                            <Input type="number" value={sp.amount} onChange={e => handleChangeAmount({
-                                                product_id: p.id,
-                                                amount: e.target.value
-                                            })} />
+                                            <Input
+                                                type="number"
+                                                value={sp.amount}
+                                                disabled={open === 'VIEW'}
+                                                onChange={e => handleChangeAmount({
+                                                    product_id: p.id,
+                                                    amount: e.target.value
+                                                })}
+                                            />
                                         </TableCell>
                                         <TableCell>${p.buy_price.toFixed(2)}</TableCell>
                                         <TableCell>{getStock(p)}</TableCell>
                                         <TableCell>${(currentAmount * p.buy_price).toFixed(2)}</TableCell>
-                                        <TableCell align="center">
-                                            <Button type="button" onClick={() => handleDeleteProduct(sp.id, p.id)}>
-                                                <CancelSharpIcon />
-                                            </Button>
-                                        </TableCell>
+                                        {(open === 'NEW' || open === 'EDIT') &&
+                                            <TableCell align="center">
+                                                <Button type="button" onClick={() => handleDeleteProduct(sp.id, p.id)}>
+                                                    <CancelSharpIcon />
+                                                </Button>
+                                            </TableCell>
+                                        }
                                     </TableRow>
                                 )
                             })}

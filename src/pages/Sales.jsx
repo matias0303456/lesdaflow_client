@@ -77,7 +77,7 @@ export function Sales() {
     }, [])
 
     useEffect(() => {
-        if (open === 'EDIT') {
+        if (open === 'EDIT' || open === 'VIEW') {
             setSaleProducts(formData.sale_products)
         }
     }, [formData])
@@ -250,24 +250,33 @@ export function Sales() {
                     <LinearProgress />
                 </Box> :
                 <>
-                    <SaleFilter sales={sales} setSales={setSales} />
                     <DataGrid
-                        title=""
                         headCells={headCells}
                         rows={sales}
-                        open={open}
                         setOpen={setOpen}
-                        data={formData}
                         setData={setFormData}
-                        handleDelete={handleDelete}
-                        deadlineColor="sales"
-                        seeAccount
-                        handlePrint
-                        stopPointerEvents={stopPointerEvents}
+                        contentHeader={
+                            <Box sx={{
+                                display: 'flex',
+                                flexWrap: 'wrap',
+                                alignItems: 'center',
+                                gap: 2
+                            }}>
+                                <Box sx={{ display: 'flex', gap: 1 }}>
+                                    <Button variant="outlined" onClick={() => setOpen('NEW')}>
+                                        Agregar
+                                    </Button>
+                                    <Button variant="outlined" color='success'>
+                                        Excel
+                                    </Button>
+                                </Box>
+                                <SaleFilter sales={sales} setSales={setSales} />
+                            </Box>
+                        }
                     >
                         <ModalComponent
                             reduceWidth={50}
-                            open={open === 'NEW' || open === 'EDIT'}
+                            open={open === 'NEW' || open === 'EDIT' || open === 'VIEW'}
                             onClose={() => {
                                 setSaleProducts([])
                                 setMissing(false)
@@ -278,6 +287,7 @@ export function Sales() {
                             <Typography variant="h6" sx={{ marginBottom: 2 }}>
                                 {open === 'NEW' && 'Nueva venta'}
                                 {open === 'EDIT' && 'Editar venta'}
+                                {open === 'VIEW' && `Venta #${formData.id}`}
                             </Typography>
                             <form onChange={handleChange} onSubmit={handleSubmit}>
                                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
@@ -293,6 +303,7 @@ export function Sales() {
                                                     onChange={(e, value) => handleChange({ target: { name: 'client_id', value: value?.id ?? '' } })}
                                                     renderInput={(params) => <TextField {...params} label="Cliente" />}
                                                     isOptionEqualToValue={(option, value) => option.code === value.code || value.length === 0}
+                                                    disabled={open === 'VIEW'}
                                                 />
                                                 {errors.client_id?.type === 'required' &&
                                                     <Typography variant="caption" color="red" marginTop={1}>
@@ -323,6 +334,7 @@ export function Sales() {
                                                                 value: new Date(value.toISOString())
                                                             }
                                                         })}
+                                                        disabled={open === 'VIEW'}
                                                     />
                                                 </LocalizationProvider>
                                                 {errors.date?.type === 'required' &&
@@ -338,7 +350,7 @@ export function Sales() {
                                                     type="number"
                                                     name="discount"
                                                     value={formData.discount}
-                                                    disabled={formData.type === 'CUENTA_CORRIENTE'}
+                                                    disabled={formData.type === 'CUENTA_CORRIENTE' || open === 'VIEW'}
                                                 />
                                             </FormControl>
                                             <FormControl>
@@ -348,7 +360,7 @@ export function Sales() {
                                                     type="number"
                                                     name="installments"
                                                     value={formData.installments}
-                                                    disabled={formData.type === 'CONTADO'}
+                                                    disabled={formData.type === 'CONTADO' || open === 'VIEW'}
                                                 />
                                                 {errors.installments?.type === 'required' &&
                                                     <Typography variant="caption" color="red" marginTop={1}>
@@ -358,7 +370,13 @@ export function Sales() {
                                             </FormControl>
                                             <FormControl>
                                                 <InputLabel htmlFor="observations">Observaciones</InputLabel>
-                                                <Input id="observations" type="text" name="observations" value={formData.observations} />
+                                                <Input
+                                                    id="observations"
+                                                    type="text"
+                                                    name="observations"
+                                                    value={formData.observations}
+                                                    disabled={open === 'VIEW'}
+                                                />
                                                 {errors.observations?.type === 'maxLength' &&
                                                     <Typography variant="caption" color="red" marginTop={1}>
                                                         * Las observaciones son demasiado largas.
@@ -367,7 +385,7 @@ export function Sales() {
                                             </FormControl>
                                             <Box sx={{ display: 'flex', justifyContent: 'space-around' }}>
                                                 <FormControlLabel
-                                                    control={<Checkbox />}
+                                                    control={<Checkbox disabled={open === 'VIEW'} />}
                                                     label="Cuenta Corriente"
                                                     checked={formData.type === 'CUENTA_CORRIENTE'}
                                                     onChange={e => {
@@ -381,7 +399,7 @@ export function Sales() {
                                                     }}
                                                 />
                                                 <FormControlLabel
-                                                    control={<Checkbox />}
+                                                    control={<Checkbox disabled={open === 'VIEW'} />}
                                                     label="Contado"
                                                     checked={formData.type === 'CONTADO'}
                                                     onChange={e => {
@@ -432,13 +450,15 @@ export function Sales() {
                                     }} sx={{
                                         width: '50%'
                                     }}>
-                                        Cancelar
+                                        {open === 'VIEW' ? 'Cerrar' : 'Cancelar'}
                                     </Button>
-                                    <Button type="submit" variant="contained" disabled={disabled} sx={{
-                                        width: '50%'
-                                    }}>
-                                        Guardar
-                                    </Button>
+                                    {(open === 'NEW' || open === 'EDIT') &&
+                                        <Button type="submit" variant="contained" disabled={disabled} sx={{
+                                            width: '50%'
+                                        }}>
+                                            Guardar
+                                        </Button>
+                                    }
                                 </FormControl>
                             </form>
                         </ModalComponent>

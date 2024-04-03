@@ -1,6 +1,4 @@
 import * as React from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { alpha } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -10,30 +8,16 @@ import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import TableSortLabel from '@mui/material/TableSortLabel';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
-import Checkbox from '@mui/material/Checkbox';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
 import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
 import { visuallyHidden } from '@mui/utils';
-import AddCircleSharpIcon from '@mui/icons-material/AddCircleSharp';
-import { Button } from '@mui/material';
-import AttachMoneySharpIcon from '@mui/icons-material/AttachMoneySharp';
-import PasswordSharpIcon from '@mui/icons-material/PasswordSharp';
-import PrintSharpIcon from '@mui/icons-material/PrintSharp';
-import { SearchSharp } from '@mui/icons-material';
 import SearchSharpIcon from '@mui/icons-material/SearchSharp';
 
-import { AuthContext } from '../providers/AuthProvider';
-import { ModalComponent } from './ModalComponent';
-
 import { deadlineIsPast, getStock } from '../utils/helpers';
-import { REPORT_URL } from '../utils/urls';
 
 function descendingComparator(a, b, orderBy, sorter) {
     if ((b[orderBy] ? b[orderBy] : sorter(b)) < (a[orderBy] ? a[orderBy] : sorter(a))) {
@@ -65,13 +49,9 @@ function stableSort(array, comparator) {
 
 function EnhancedTableHead({
     headCells,
-    onSelectAllClick,
     order,
     orderBy,
-    numSelected,
-    rowCount,
     onRequestSort,
-    disableSelection,
     disableSorting
 }) {
 
@@ -111,218 +91,21 @@ function EnhancedTableHead({
     );
 }
 
-// function EnhancedTableToolbar({
-//     numSelected,
-//     title,
-//     disableAdd,
-//     open,
-//     setOpen,
-//     data,
-//     setData,
-//     workOn,
-//     handleDelete,
-//     allowMassiveEdit,
-//     setMassiveEdit,
-//     updateByPercentage,
-//     changePwd,
-//     seeAccount,
-//     handlePrint,
-//     selected,
-//     rows,
-//     orderBy,
-//     order
-// }) {
-
-//     const { auth } = React.useContext(AuthContext)
-
-//     const navigate = useNavigate()
-//     const { pathname } = useLocation()
-
-//     return (
-//         <Toolbar
-//             sx={{
-//                 pl: { sm: 2 },
-//                 pr: { xs: 1, sm: 1 },
-//                 ...(numSelected > 0 && {
-//                     bgcolor: (theme) =>
-//                         alpha(theme.palette.primary.main, theme.palette.action.activatedOpacity),
-//                 }),
-//             }}
-//         >
-//             <Typography
-//                 sx={{ flex: '1 1 100%' }}
-//                 color="inherit"
-//                 variant="subtitle1"
-//                 component="div"
-//             >
-//                 {numSelected === 0 ?
-//                     <Box sx={{ display: 'flex', justifyContent: title.length > 0 ? 'space-between' : 'end' }}>
-//                         {title}
-//                         {!disableAdd &&
-//                             <Tooltip title="Nuevo">
-//                                 <IconButton onClick={() => {
-//                                     setData(data)
-//                                     setOpen('NEW')
-//                                 }}>
-//                                     <AddCircleSharpIcon />
-//                                 </IconButton>
-//                             </Tooltip>
-//                         }
-//                     </Box>
-//                     : numSelected === 1 ? 'Un registro seleccionado.' :
-//                         `${numSelected} registros seleccionados.`}
-//             </Typography>
-//             {numSelected >= 1 && auth.user.role.name === 'ADMINISTRADOR' &&
-//                 <>
-//                     <Tooltip title="Eliminar" onClick={() => {
-//                         setOpen('DELETE')
-//                     }}>
-//                         <IconButton>
-//                             <DeleteIcon />
-//                         </IconButton>
-//                     </Tooltip>
-//                     {handlePrint && pathname === '/cajas' && numSelected === 1 &&
-//                         <Tooltip title="Imprimir PDF">
-//                             <Link
-//                                 to={`${REPORT_URL}/payments/${auth.token}/${selected[0]}`}
-//                                 target="_blank"
-//                             >
-//                                 <IconButton>
-//                                     <PrintSharpIcon />
-//                                 </IconButton>
-//                             </Link>
-//                         </Tooltip>
-//                     }
-//                 </>
-//             }
-//             {auth.user.role.name === 'ADMINISTRADOR' &&
-//                 handlePrint &&
-//                 (pathname === '/ventas' || pathname === '/productos') &&
-//                 rows.length > 0 &&
-//                 <Tooltip title={`Imprimir ${pathname === '/productos' ? 'Excel' : 'PDF'}`}>
-//                     <Link
-//                         to={
-//                             pathname === '/ventas' ?
-//                                 `${REPORT_URL}/sales?token=${auth.token}${selected.length > 0 ? `&ids=${selected.join(',')}` : ''}${orderBy === 'id' || orderBy === 'client_code' ? `&orderBy=${orderBy}&order=${order}` : ''}` :
-//                                 `${REPORT_URL}/products?token=${auth.token}${selected.length > 0 ? `&ids=${selected.join(',')}` : ''}`
-//                         }
-//                         target="_blank"
-//                     >
-//                         <IconButton>
-//                             <PrintSharpIcon />
-//                         </IconButton>
-//                     </Link>
-//                 </Tooltip>
-//             }
-//             {numSelected === 1 && changePwd && workOn[0]?.role.name === 'VENDEDOR' &&
-//                 <Tooltip title="Cambiar contraseña" onClick={() => {
-//                     setData(workOn[0])
-//                     setOpen('PWD-EDIT')
-//                 }}>
-//                     <IconButton>
-//                         <PasswordSharpIcon />
-//                     </IconButton>
-//                 </Tooltip>
-//             }
-//             {numSelected === 1 && updateByPercentage &&
-//                 <Tooltip title="Actualizar precio/s por porcentaje" onClick={() => {
-//                     setData(workOn[0])
-//                     if (setMassiveEdit) setMassiveEdit(workOn)
-//                     setOpen('MASSIVE-EDIT')
-//                 }}>
-//                     <IconButton>
-//                         <AttachMoneySharpIcon />
-//                     </IconButton>
-//                 </Tooltip>
-//             }
-//             {(numSelected === 1 || (numSelected >= 1 && allowMassiveEdit)) &&
-//                 <Tooltip title={allowMassiveEdit && numSelected > 1 ?
-//                     "Actualizar precio/s por porcentaje" :
-//                     "Editar"} onClick={() => {
-//                         if (allowMassiveEdit && numSelected > 1) {
-//                             setMassiveEdit(workOn)
-//                             setOpen('MASSIVE-EDIT')
-//                         } else {
-//                             setData(workOn[0])
-//                             setOpen('EDIT')
-//                         }
-//                     }}>
-//                     <IconButton>
-//                         {
-//                             allowMassiveEdit && numSelected > 1 ?
-//                                 <AttachMoneySharpIcon /> :
-//                                 <EditIcon />
-//                         }
-//                     </IconButton>
-//                 </Tooltip>
-//             }
-//             {numSelected === 1 && seeAccount &&
-//                 <Tooltip title="Ver detalle" onClick={() => {
-//                     navigate(`/cuenta/${workOn[0].id}`)
-//                 }}>
-//                     <IconButton>
-//                         <SearchSharp />
-//                     </IconButton>
-//                 </Tooltip>
-//             }
-//             <ModalComponent reduceWidth={500} open={open === 'DELETE'} onClose={() => setOpen(null)}>
-//                 <Typography variant="h6" sx={{ marginBottom: 3, textAlign: 'center' }}>
-//                     ¿Desea eliminar los elementos seleccionados?
-//                 </Typography>
-//                 <Box sx={{
-//                     display: 'flex',
-//                     flexDirection: 'row',
-//                     gap: 1,
-//                     justifyContent: 'center',
-//                     margin: '0 auto',
-//                     marginTop: 1,
-//                     width: '50%'
-//                 }}>
-//                     <Button variant="outlined" onClick={() => setOpen(null)} sx={{
-//                         width: '50%'
-//                     }}>
-//                         Cancelar
-//                     </Button>
-//                     <Button variant="contained" onClick={() => handleDelete(workOn)} sx={{
-//                         width: '50%'
-//                     }}>
-//                         Eliminar
-//                     </Button>
-//                 </Box>
-//             </ModalComponent>
-//         </Toolbar>
-//     );
-// }
-
 export function DataGrid({
     children,
-    title,
     headCells,
     rows,
-    disableAdd = false,
-    open,
     setOpen,
-    data,
     setData,
-    handleDelete,
-    disableSelection = false,
     deadlineColor = false,
-    allowMassiveEdit = false,
-    setMassiveEdit,
-    updateByPercentage = false,
-    changePwd = false,
-    seeAccount = false,
-    handlePrint = false,
     disableSorting = false,
     defaultOrder = 'desc',
     defaultOrderBy = 'id',
-    stopPointerEvents = false,
     contentHeader
 }) {
 
     const [order, setOrder] = React.useState(defaultOrder);
     const [orderBy, setOrderBy] = React.useState(defaultOrderBy);
-    const [selected, setSelected] = React.useState([]);
     const [page, setPage] = React.useState(0);
     const [dense, setDense] = React.useState(true);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
@@ -332,34 +115,6 @@ export function DataGrid({
         const isAsc = orderBy === property && order === 'asc';
         setOrder(isAsc ? 'desc' : 'asc');
         setOrderBy(property);
-    };
-
-    const handleSelectAllClick = (event) => {
-        if (event.target.checked) {
-            const newSelected = rows.map((n) => n.id);
-            setSelected(newSelected);
-            return;
-        }
-        setSelected([]);
-    };
-
-    const handleClick = (event, id) => {
-        const selectedIndex = selected.indexOf(id);
-        let newSelected = [];
-
-        if (selectedIndex === -1) {
-            newSelected = newSelected.concat(selected, id);
-        } else if (selectedIndex === 0) {
-            newSelected = newSelected.concat(selected.slice(1));
-        } else if (selectedIndex === selected.length - 1) {
-            newSelected = newSelected.concat(selected.slice(0, -1));
-        } else if (selectedIndex > 0) {
-            newSelected = newSelected.concat(
-                selected.slice(0, selectedIndex),
-                selected.slice(selectedIndex + 1),
-            );
-        }
-        setSelected(newSelected);
     };
 
     const handleChangePage = (event, newPage) => {
@@ -374,8 +129,6 @@ export function DataGrid({
     const handleChangeDense = (event) => {
         setDense(event.target.checked);
     };
-
-    const isSelected = (id) => selected.indexOf(id) !== -1;
 
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
 
@@ -403,13 +156,9 @@ export function DataGrid({
                         >
                             <EnhancedTableHead
                                 headCells={headCells}
-                                numSelected={selected.length}
                                 order={order}
                                 orderBy={orderBy}
-                                onSelectAllClick={handleSelectAllClick}
                                 onRequestSort={handleRequestSort}
-                                rowCount={rows.length}
-                                disableSelection={disableSelection}
                                 disableSorting={disableSorting}
                             />
                             <TableBody>

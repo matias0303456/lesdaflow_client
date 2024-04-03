@@ -84,6 +84,18 @@ export function Layout({ children, title }) {
                                 </Box>
                             </Typography>
                         </Box>
+                        {auth.user.role.name === 'ADMINISTRADOR' &&
+                            <Box className="sections" sx={{ display: 'flex', alignItems: 'center', cursor: 'pointer', paddingLeft: 1, paddingRight: 1 }} onMouseEnter={() => setSubmenu('suppliers')} onMouseLeave={() => setSubmenu(null)}>
+                                <Typography variant='p' color="#fff" sx={{ position: 'relative', whiteSpace: 'nowrap' }}>
+                                    Proveedores <span style={{ fontSize: '.7rem' }}>▼</span>
+                                    <Box sx={{ boxShadow: '0 0 10px gray', position: 'absolute', top: '168%', left: '-7px', width: '220px', display: submenu === 'suppliers' ? 'block' : 'none', background: '#fff', zIndex: 2 }}>
+                                        <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>
+                                            <li style={{ color: '#078BCD', marginBottom: 1, padding: 5, paddingLeft: 15, paddingRight: 15 }} className='menuOption' onClick={() => navigate('/proveedores')}>ABM Proveedores</li>
+                                        </ul>
+                                    </Box>
+                                </Typography>
+                            </Box>
+                        }
                         <Box className="sections" sx={{ display: 'flex', alignItems: 'center', cursor: 'pointer', paddingLeft: 1, paddingRight: 1 }} onMouseEnter={() => setSubmenu('sales')} onMouseLeave={() => setSubmenu(null)}>
                             <Typography variant='p' color="#fff" sx={{ position: 'relative', whiteSpace: 'nowrap' }}>
                                 Ventas <span style={{ fontSize: '.7rem' }}>▼</span>
@@ -101,6 +113,9 @@ export function Layout({ children, title }) {
                                 Productos <span style={{ fontSize: '.7rem' }}>▼</span>
                                 <Box sx={{ boxShadow: '0 0 10px gray', position: 'absolute', top: '168%', left: '-7px', width: '220px', display: submenu === 'products' ? 'block' : 'none', background: '#fff', zIndex: 2 }}>
                                     <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>
+                                        {auth.user.role.name === 'ADMINISTRADOR' &&
+                                            <li style={{ color: '#078BCD', marginBottom: 1, padding: 5, paddingLeft: 15, paddingRight: 15 }} className='menuOption' onClick={() => navigate('/productos')}>ABM Productos</li>
+                                        }
                                         <li style={{ color: '#078BCD', marginBottom: 1, padding: 5, paddingLeft: 15, paddingRight: 15 }} className='menuOption' onClick={() => navigate('/productos')}>Lista de Precios</li>
                                         <li style={{ color: '#078BCD', marginBottom: 1, padding: 5, paddingLeft: 15, paddingRight: 15 }} className='menuOption' onClick={() => navigate('/reporte-productos')}>Reporte de Productos</li>
                                     </ul>
@@ -178,6 +193,18 @@ export function Layout({ children, title }) {
                             </Box>
                         </Typography>
                     </Box>
+                    {auth.user.role.name === 'ADMINISTRADOR' &&
+                        <Box className="sections" sx={{ display: 'flex', alignItems: 'center', cursor: 'pointer', padding: 2 }} onClick={() => !submenu ? setSubmenu('suppliers') : setSubmenu(null)}>
+                            <Typography variant='p' color="#fff" sx={{ position: 'relative', whiteSpace: 'nowrap' }}>
+                                Proveedores <span style={{ fontSize: '.7rem' }}>▼</span>
+                                <Box sx={{ boxShadow: '0 0 10px gray', position: 'absolute', top: '168%', left: '-15px', width: '240px', display: submenu === 'suppliers' ? 'block' : 'none', background: '#fff', zIndex: 2 }}>
+                                    <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>
+                                        <li style={{ color: '#078BCD', marginBottom: 1, padding: 5, paddingLeft: 15, paddingRight: 15 }} className='menuOption' onClick={() => navigate('/proveedores')}>ABM Proveedores</li>
+                                    </ul>
+                                </Box>
+                            </Typography>
+                        </Box>
+                    }
                     <Box className="sections" sx={{ display: 'flex', alignItems: 'center', cursor: 'pointer', padding: 2 }} onClick={() => !submenu ? setSubmenu('sales') : setSubmenu(null)}>
                         <Typography variant='p' color="#fff" sx={{ position: 'relative', whiteSpace: 'nowrap' }}>
                             Ventas <span style={{ fontSize: '.7rem' }}>▼</span>
@@ -195,6 +222,9 @@ export function Layout({ children, title }) {
                             Productos <span style={{ fontSize: '.7rem' }}>▼</span>
                             <Box sx={{ boxShadow: '0 0 10px gray', position: 'absolute', top: '168%', left: '-15px', width: '240px', display: submenu === 'products' ? 'block' : 'none', background: '#fff', zIndex: 2 }}>
                                 <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>
+                                    {auth.user.role.name === 'ADMINISTRADOR' &&
+                                        <li style={{ color: '#078BCD', marginBottom: 1, padding: 5, paddingLeft: 15, paddingRight: 15 }} className='menuOption' onClick={() => navigate('/productos')}>ABM Productos</li>
+                                    }
                                     <li style={{ color: '#078BCD', marginBottom: 1, padding: 5, paddingLeft: 15, paddingRight: 15 }} className='menuOption' onClick={() => navigate('/productos')}>Lista de Precios</li>
                                     <li style={{ color: '#078BCD', marginBottom: 1, padding: 5, paddingLeft: 15, paddingRight: 15 }} className='menuOption' onClick={() => navigate('/reporte-productos')}>Reporte de Productos</li>
                                 </ul>

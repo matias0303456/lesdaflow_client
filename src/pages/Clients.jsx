@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { Box, Button, FormControl, IconButton, Input, InputLabel, LinearProgress, MenuItem, Select, Tooltip, Typography } from "@mui/material";
+import { Box, Button, FormControl, Input, InputLabel, LinearProgress, Typography } from "@mui/material";
 
 import { AuthContext } from "../providers/AuthProvider";
 import { MessageContext } from "../providers/MessageProvider";
@@ -186,7 +186,6 @@ export function Clients() {
                     <LinearProgress />
                 </Box> :
                 <DataGrid
-                    title="Clientes"
                     headCells={auth.user.role.name !== 'ADMINISTRADOR' ?
                         headCells :
                         [
@@ -202,12 +201,8 @@ export function Clients() {
                         ]
                     }
                     rows={clients}
-                    open={open}
                     setOpen={setOpen}
-                    data={formData}
                     setData={setFormData}
-                    handleDelete={handleDelete}
-                    deadlineColor="clients"
                     contentHeader={
                         <Box sx={{
                             display: 'flex',
@@ -335,13 +330,15 @@ export function Clients() {
                                 <Button type="button" variant="outlined" onClick={() => reset(setOpen)} sx={{
                                     width: '50%'
                                 }}>
-                                    Cancelar
+                                    {open === 'VIEW' ? 'Cerrar' : 'Cancelar'}
                                 </Button>
-                                <Button type="submit" variant="contained" disabled={disabled} sx={{
-                                    width: '50%'
-                                }}>
-                                    Guardar
-                                </Button>
+                                {(open === 'NEW' || open === 'EDIT') &&
+                                    <Button type="submit" variant="contained" disabled={disabled} sx={{
+                                        width: '50%'
+                                    }}>
+                                        Guardar
+                                    </Button>
+                                }
                             </FormControl>
                         </form>
                     </ModalComponent>
