@@ -223,8 +223,18 @@ export function Layout({ children, title }) {
                     </Box>
                 </Box>
             </Drawer>
-            <Box sx={{ flex: 1, overflow: 'auto', padding: 2 }}>
-                {children}
+            <Box sx={{ flex: 1, overflow: 'auto' }}>
+                <Typography variant='h6' sx={{
+                    color: 'gray',
+                    backgroundColor: '#fff',
+                    padding: 1,
+                    paddingLeft: 3
+                }}>
+                    {title}
+                </Typography>
+                <Box sx={{ padding: 2 }}>
+                    {children}
+                </Box>
             </Box>
         </Box>
     );

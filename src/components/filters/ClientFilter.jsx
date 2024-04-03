@@ -1,4 +1,4 @@
-import { Box, Button, FormControl, Input, InputLabel, MenuItem, Select, Typography } from "@mui/material";
+import { Box, Button, Checkbox, FormControl, FormControlLabel, Input, InputLabel, MenuItem, Select, Typography } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 
 import { AuthContext } from "../../providers/AuthProvider";
@@ -44,39 +44,24 @@ export function ClientFilter({ clients, setClients }) {
     }, [filter])
 
     return (
-        <Box>
-            <Box sx={{
-                display: 'flex',
-                flexWrap: 'wrap',
-                flexDirection: 'column'
-            }}>
-                <FormControl>
-                    <InputLabel htmlFor="name">Nombre y Apellido</InputLabel>
-                    <Input id="name" type="text" name="name" value={filter.name} onChange={handleChange} />
-                </FormControl>
-                {/* {auth?.user.role.name === 'ADMINISTRADOR' &&
-                    <FormControl>
-                        <InputLabel id="user-select">Vendedor</InputLabel>
-                        <Select
-                            labelId="user-select"
-                            id="username"
-                            value={filter.username}
-                            label="Vendedor"
-                            name="username"
-                            sx={{ width: { xs: '100%', md: 150 } }}
-                            onChange={handleChange}
-                        >
-                            <MenuItem value="">Seleccione</MenuItem>
-                            {users.map(u => (
-                                <MenuItem key={u} value={u}>{u}</MenuItem>
-                            ))}
-                        </Select>
-                    </FormControl>
-                } */}
-                <Button variant="outlined" onClick={handleReset}>
-                    Reiniciar
-                </Button>
-            </Box>
+        <Box sx={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            alignItems: 'center',
+            gap: 2
+        }}>
+            <FormControl>
+                <InputLabel htmlFor="name">Comercio</InputLabel>
+                <Input id="work_place" type="text" name="work_place" value={filter.work_place} onChange={handleChange} />
+            </FormControl>
+            <FormControl>
+                <InputLabel htmlFor="name">Nombre y Apellido</InputLabel>
+                <Input id="name" type="text" name="name" value={filter.name} onChange={handleChange} />
+            </FormControl>
+            <FormControlLabel control={<Checkbox />} label="Bloqueado" />
+            <Button variant="outlined" onClick={handleReset}>
+                Reiniciar Filtros
+            </Button>
         </Box>
     )
 }

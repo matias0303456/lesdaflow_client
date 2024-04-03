@@ -27,6 +27,7 @@ import AttachMoneySharpIcon from '@mui/icons-material/AttachMoneySharp';
 import PasswordSharpIcon from '@mui/icons-material/PasswordSharp';
 import PrintSharpIcon from '@mui/icons-material/PrintSharp';
 import { SearchSharp } from '@mui/icons-material';
+import SearchSharpIcon from '@mui/icons-material/SearchSharp';
 
 import { AuthContext } from '../providers/AuthProvider';
 import { ModalComponent } from './ModalComponent';
@@ -110,188 +111,188 @@ function EnhancedTableHead({
     );
 }
 
-function EnhancedTableToolbar({
-    numSelected,
-    title,
-    disableAdd,
-    open,
-    setOpen,
-    data,
-    setData,
-    workOn,
-    handleDelete,
-    allowMassiveEdit,
-    setMassiveEdit,
-    updateByPercentage,
-    changePwd,
-    seeAccount,
-    handlePrint,
-    selected,
-    rows,
-    orderBy,
-    order
-}) {
+// function EnhancedTableToolbar({
+//     numSelected,
+//     title,
+//     disableAdd,
+//     open,
+//     setOpen,
+//     data,
+//     setData,
+//     workOn,
+//     handleDelete,
+//     allowMassiveEdit,
+//     setMassiveEdit,
+//     updateByPercentage,
+//     changePwd,
+//     seeAccount,
+//     handlePrint,
+//     selected,
+//     rows,
+//     orderBy,
+//     order
+// }) {
 
-    const { auth } = React.useContext(AuthContext)
+//     const { auth } = React.useContext(AuthContext)
 
-    const navigate = useNavigate()
-    const { pathname } = useLocation()
+//     const navigate = useNavigate()
+//     const { pathname } = useLocation()
 
-    return (
-        <Toolbar
-            sx={{
-                pl: { sm: 2 },
-                pr: { xs: 1, sm: 1 },
-                ...(numSelected > 0 && {
-                    bgcolor: (theme) =>
-                        alpha(theme.palette.primary.main, theme.palette.action.activatedOpacity),
-                }),
-            }}
-        >
-            <Typography
-                sx={{ flex: '1 1 100%' }}
-                color="inherit"
-                variant="subtitle1"
-                component="div"
-            >
-                {numSelected === 0 ?
-                    <Box sx={{ display: 'flex', justifyContent: title.length > 0 ? 'space-between' : 'end' }}>
-                        {title}
-                        {!disableAdd &&
-                            <Tooltip title="Nuevo">
-                                <IconButton onClick={() => {
-                                    setData(data)
-                                    setOpen('NEW')
-                                }}>
-                                    <AddCircleSharpIcon />
-                                </IconButton>
-                            </Tooltip>
-                        }
-                    </Box>
-                    : numSelected === 1 ? 'Un registro seleccionado.' :
-                        `${numSelected} registros seleccionados.`}
-            </Typography>
-            {numSelected >= 1 && auth.user.role.name === 'ADMINISTRADOR' &&
-                <>
-                    <Tooltip title="Eliminar" onClick={() => {
-                        setOpen('DELETE')
-                    }}>
-                        <IconButton>
-                            <DeleteIcon />
-                        </IconButton>
-                    </Tooltip>
-                    {handlePrint && pathname === '/cajas' && numSelected === 1 &&
-                        <Tooltip title="Imprimir PDF">
-                            <Link
-                                to={`${REPORT_URL}/payments/${auth.token}/${selected[0]}`}
-                                target="_blank"
-                            >
-                                <IconButton>
-                                    <PrintSharpIcon />
-                                </IconButton>
-                            </Link>
-                        </Tooltip>
-                    }
-                </>
-            }
-            {auth.user.role.name === 'ADMINISTRADOR' &&
-                handlePrint &&
-                (pathname === '/ventas' || pathname === '/productos') &&
-                rows.length > 0 &&
-                <Tooltip title={`Imprimir ${pathname === '/productos' ? 'Excel' : 'PDF'}`}>
-                    <Link
-                        to={
-                            pathname === '/ventas' ?
-                                `${REPORT_URL}/sales?token=${auth.token}${selected.length > 0 ? `&ids=${selected.join(',')}` : ''}${orderBy === 'id' || orderBy === 'client_code' ? `&orderBy=${orderBy}&order=${order}` : ''}` :
-                                `${REPORT_URL}/products?token=${auth.token}${selected.length > 0 ? `&ids=${selected.join(',')}` : ''}`
-                        }
-                        target="_blank"
-                    >
-                        <IconButton>
-                            <PrintSharpIcon />
-                        </IconButton>
-                    </Link>
-                </Tooltip>
-            }
-            {numSelected === 1 && changePwd && workOn[0]?.role.name === 'VENDEDOR' &&
-                <Tooltip title="Cambiar contraseña" onClick={() => {
-                    setData(workOn[0])
-                    setOpen('PWD-EDIT')
-                }}>
-                    <IconButton>
-                        <PasswordSharpIcon />
-                    </IconButton>
-                </Tooltip>
-            }
-            {numSelected === 1 && updateByPercentage &&
-                <Tooltip title="Actualizar precio/s por porcentaje" onClick={() => {
-                    setData(workOn[0])
-                    if (setMassiveEdit) setMassiveEdit(workOn)
-                    setOpen('MASSIVE-EDIT')
-                }}>
-                    <IconButton>
-                        <AttachMoneySharpIcon />
-                    </IconButton>
-                </Tooltip>
-            }
-            {(numSelected === 1 || (numSelected >= 1 && allowMassiveEdit)) &&
-                <Tooltip title={allowMassiveEdit && numSelected > 1 ?
-                    "Actualizar precio/s por porcentaje" :
-                    "Editar"} onClick={() => {
-                        if (allowMassiveEdit && numSelected > 1) {
-                            setMassiveEdit(workOn)
-                            setOpen('MASSIVE-EDIT')
-                        } else {
-                            setData(workOn[0])
-                            setOpen('EDIT')
-                        }
-                    }}>
-                    <IconButton>
-                        {
-                            allowMassiveEdit && numSelected > 1 ?
-                                <AttachMoneySharpIcon /> :
-                                <EditIcon />
-                        }
-                    </IconButton>
-                </Tooltip>
-            }
-            {numSelected === 1 && seeAccount &&
-                <Tooltip title="Ver detalle" onClick={() => {
-                    navigate(`/cuenta/${workOn[0].id}`)
-                }}>
-                    <IconButton>
-                        <SearchSharp />
-                    </IconButton>
-                </Tooltip>
-            }
-            <ModalComponent reduceWidth={500} open={open === 'DELETE'} onClose={() => setOpen(null)}>
-                <Typography variant="h6" sx={{ marginBottom: 3, textAlign: 'center' }}>
-                    ¿Desea eliminar los elementos seleccionados?
-                </Typography>
-                <Box sx={{
-                    display: 'flex',
-                    flexDirection: 'row',
-                    gap: 1,
-                    justifyContent: 'center',
-                    margin: '0 auto',
-                    marginTop: 1,
-                    width: '50%'
-                }}>
-                    <Button variant="outlined" onClick={() => setOpen(null)} sx={{
-                        width: '50%'
-                    }}>
-                        Cancelar
-                    </Button>
-                    <Button variant="contained" onClick={() => handleDelete(workOn)} sx={{
-                        width: '50%'
-                    }}>
-                        Eliminar
-                    </Button>
-                </Box>
-            </ModalComponent>
-        </Toolbar>
-    );
-}
+//     return (
+//         <Toolbar
+//             sx={{
+//                 pl: { sm: 2 },
+//                 pr: { xs: 1, sm: 1 },
+//                 ...(numSelected > 0 && {
+//                     bgcolor: (theme) =>
+//                         alpha(theme.palette.primary.main, theme.palette.action.activatedOpacity),
+//                 }),
+//             }}
+//         >
+//             <Typography
+//                 sx={{ flex: '1 1 100%' }}
+//                 color="inherit"
+//                 variant="subtitle1"
+//                 component="div"
+//             >
+//                 {numSelected === 0 ?
+//                     <Box sx={{ display: 'flex', justifyContent: title.length > 0 ? 'space-between' : 'end' }}>
+//                         {title}
+//                         {!disableAdd &&
+//                             <Tooltip title="Nuevo">
+//                                 <IconButton onClick={() => {
+//                                     setData(data)
+//                                     setOpen('NEW')
+//                                 }}>
+//                                     <AddCircleSharpIcon />
+//                                 </IconButton>
+//                             </Tooltip>
+//                         }
+//                     </Box>
+//                     : numSelected === 1 ? 'Un registro seleccionado.' :
+//                         `${numSelected} registros seleccionados.`}
+//             </Typography>
+//             {numSelected >= 1 && auth.user.role.name === 'ADMINISTRADOR' &&
+//                 <>
+//                     <Tooltip title="Eliminar" onClick={() => {
+//                         setOpen('DELETE')
+//                     }}>
+//                         <IconButton>
+//                             <DeleteIcon />
+//                         </IconButton>
+//                     </Tooltip>
+//                     {handlePrint && pathname === '/cajas' && numSelected === 1 &&
+//                         <Tooltip title="Imprimir PDF">
+//                             <Link
+//                                 to={`${REPORT_URL}/payments/${auth.token}/${selected[0]}`}
+//                                 target="_blank"
+//                             >
+//                                 <IconButton>
+//                                     <PrintSharpIcon />
+//                                 </IconButton>
+//                             </Link>
+//                         </Tooltip>
+//                     }
+//                 </>
+//             }
+//             {auth.user.role.name === 'ADMINISTRADOR' &&
+//                 handlePrint &&
+//                 (pathname === '/ventas' || pathname === '/productos') &&
+//                 rows.length > 0 &&
+//                 <Tooltip title={`Imprimir ${pathname === '/productos' ? 'Excel' : 'PDF'}`}>
+//                     <Link
+//                         to={
+//                             pathname === '/ventas' ?
+//                                 `${REPORT_URL}/sales?token=${auth.token}${selected.length > 0 ? `&ids=${selected.join(',')}` : ''}${orderBy === 'id' || orderBy === 'client_code' ? `&orderBy=${orderBy}&order=${order}` : ''}` :
+//                                 `${REPORT_URL}/products?token=${auth.token}${selected.length > 0 ? `&ids=${selected.join(',')}` : ''}`
+//                         }
+//                         target="_blank"
+//                     >
+//                         <IconButton>
+//                             <PrintSharpIcon />
+//                         </IconButton>
+//                     </Link>
+//                 </Tooltip>
+//             }
+//             {numSelected === 1 && changePwd && workOn[0]?.role.name === 'VENDEDOR' &&
+//                 <Tooltip title="Cambiar contraseña" onClick={() => {
+//                     setData(workOn[0])
+//                     setOpen('PWD-EDIT')
+//                 }}>
+//                     <IconButton>
+//                         <PasswordSharpIcon />
+//                     </IconButton>
+//                 </Tooltip>
+//             }
+//             {numSelected === 1 && updateByPercentage &&
+//                 <Tooltip title="Actualizar precio/s por porcentaje" onClick={() => {
+//                     setData(workOn[0])
+//                     if (setMassiveEdit) setMassiveEdit(workOn)
+//                     setOpen('MASSIVE-EDIT')
+//                 }}>
+//                     <IconButton>
+//                         <AttachMoneySharpIcon />
+//                     </IconButton>
+//                 </Tooltip>
+//             }
+//             {(numSelected === 1 || (numSelected >= 1 && allowMassiveEdit)) &&
+//                 <Tooltip title={allowMassiveEdit && numSelected > 1 ?
+//                     "Actualizar precio/s por porcentaje" :
+//                     "Editar"} onClick={() => {
+//                         if (allowMassiveEdit && numSelected > 1) {
+//                             setMassiveEdit(workOn)
+//                             setOpen('MASSIVE-EDIT')
+//                         } else {
+//                             setData(workOn[0])
+//                             setOpen('EDIT')
+//                         }
+//                     }}>
+//                     <IconButton>
+//                         {
+//                             allowMassiveEdit && numSelected > 1 ?
+//                                 <AttachMoneySharpIcon /> :
+//                                 <EditIcon />
+//                         }
+//                     </IconButton>
+//                 </Tooltip>
+//             }
+//             {numSelected === 1 && seeAccount &&
+//                 <Tooltip title="Ver detalle" onClick={() => {
+//                     navigate(`/cuenta/${workOn[0].id}`)
+//                 }}>
+//                     <IconButton>
+//                         <SearchSharp />
+//                     </IconButton>
+//                 </Tooltip>
+//             }
+//             <ModalComponent reduceWidth={500} open={open === 'DELETE'} onClose={() => setOpen(null)}>
+//                 <Typography variant="h6" sx={{ marginBottom: 3, textAlign: 'center' }}>
+//                     ¿Desea eliminar los elementos seleccionados?
+//                 </Typography>
+//                 <Box sx={{
+//                     display: 'flex',
+//                     flexDirection: 'row',
+//                     gap: 1,
+//                     justifyContent: 'center',
+//                     margin: '0 auto',
+//                     marginTop: 1,
+//                     width: '50%'
+//                 }}>
+//                     <Button variant="outlined" onClick={() => setOpen(null)} sx={{
+//                         width: '50%'
+//                     }}>
+//                         Cancelar
+//                     </Button>
+//                     <Button variant="contained" onClick={() => handleDelete(workOn)} sx={{
+//                         width: '50%'
+//                     }}>
+//                         Eliminar
+//                     </Button>
+//                 </Box>
+//             </ModalComponent>
+//         </Toolbar>
+//     );
+// }
 
 export function DataGrid({
     children,
@@ -316,8 +317,7 @@ export function DataGrid({
     defaultOrder = 'desc',
     defaultOrderBy = 'id',
     stopPointerEvents = false,
-    actions,
-    filter
+    contentHeader
 }) {
 
     const [order, setOrder] = React.useState(defaultOrder);
@@ -391,16 +391,8 @@ export function DataGrid({
     return (
         <div className='gridContainer'>
             <Box sx={{ width: '100%', backgroundColor: '#fff', padding: 1 }}>
-                <Box sx={{ display: 'flex', alignItems: 'start' }}>
-                    <Box sx={{ display: 'flex', gap: 1 }}>
-                        <Button variant="outlined" onClick={() => setOpen('NEW')}>
-                            Agregar
-                        </Button>
-                        <Button variant="outlined" color='error'>
-                            PDF
-                        </Button>
-                    </Box>
-                    {filter}
+                <Box sx={{ marginBottom: 3 }}>
+                    {contentHeader}
                 </Box>
                 <Paper sx={{ width: '100%', mb: 2 }}>
                     <TableContainer>
@@ -428,8 +420,25 @@ export function DataGrid({
                                             tabIndex={-1}
                                             key={row.id}
                                         >
-                                            <TableCell >
-                                                {actions}
+                                            <TableCell sx={{ wordWrap: '' }}>
+                                                <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                                                    <Tooltip title="Visualizar" onClick={() => {
+                                                        setData(rows.find(r => r.id === row.id))
+                                                        setOpen('VIEW')
+                                                    }}>
+                                                        <IconButton>
+                                                            <SearchSharpIcon />
+                                                        </IconButton>
+                                                    </Tooltip>
+                                                    <Tooltip title="Editar" onClick={() => {
+                                                        setData(rows.find(r => r.id === row.id))
+                                                        setOpen('EDIT')
+                                                    }}>
+                                                        <IconButton>
+                                                            <EditIcon />
+                                                        </IconButton>
+                                                    </Tooltip>
+                                                </Box>
                                             </TableCell>
                                             {headCells.map(cell => cell.accessor).map(accessor => (
                                                 <TableCell key={accessor} align="center" sx={{

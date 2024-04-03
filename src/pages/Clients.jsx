@@ -1,7 +1,5 @@
 import { useContext, useEffect, useState } from "react";
 import { Box, Button, FormControl, IconButton, Input, InputLabel, LinearProgress, MenuItem, Select, Tooltip, Typography } from "@mui/material";
-import EditIcon from '@mui/icons-material/Edit';
-import SearchSharpIcon from '@mui/icons-material/SearchSharp';
 
 import { AuthContext } from "../providers/AuthProvider";
 import { MessageContext } from "../providers/MessageProvider";
@@ -188,7 +186,7 @@ export function Clients() {
                     <LinearProgress />
                 </Box> :
                 <DataGrid
-                    title=""
+                    title="Clientes"
                     headCells={auth.user.role.name !== 'ADMINISTRADOR' ?
                         headCells :
                         [
@@ -210,33 +208,37 @@ export function Clients() {
                     setData={setFormData}
                     handleDelete={handleDelete}
                     deadlineColor="clients"
-                    actions={
-                        <>
-                            <Tooltip title="Visualizar" onClick={() => setOpen('VIEW')}>
-                                <IconButton>
-                                    <SearchSharpIcon />
-                                </IconButton>
-                            </Tooltip>
-                            <Tooltip title="Editar" onClick={() => setOpen('EDIT')}>
-                                <IconButton>
-                                    <EditIcon />
-                                </IconButton>
-                            </Tooltip>
-                        </>
+                    contentHeader={
+                        <Box sx={{
+                            display: 'flex',
+                            flexWrap: 'wrap',
+                            alignItems: 'center',
+                            gap: 2
+                        }}>
+                            <Box sx={{ display: 'flex', gap: 1 }}>
+                                <Button variant="outlined" onClick={() => setOpen('NEW')}>
+                                    Agregar
+                                </Button>
+                                <Button variant="outlined" color='error'>
+                                    PDF
+                                </Button>
+                            </Box>
+                            <ClientFilter clients={clients} setClients={setClients} />
+                        </Box>
                     }
-                    filter={<ClientFilter clients={clients} setClients={setClients} />}
                 >
-                    <ModalComponent open={open === 'NEW' || open === 'EDIT'} onClose={() => reset(setOpen)}>
+                    <ModalComponent open={open === 'NEW' || open === 'EDIT' || open === 'VIEW'} onClose={() => reset(setOpen)}>
                         <Typography variant="h6" sx={{ marginBottom: 2 }}>
                             {open === 'NEW' && 'Nuevo cliente'}
                             {open === 'EDIT' && 'Editar cliente'}
+                            {open === 'VIEW' && `Cliente ${formData.name}`}
                         </Typography>
                         <form onChange={handleChange} onSubmit={handleSubmit}>
                             <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 3 }}>
                                 <Box sx={{ display: 'flex', flexDirection: 'column', width: '50%', gap: 3 }}>
                                     <FormControl>
                                         <InputLabel htmlFor="code">Código</InputLabel>
-                                        <Input id="code" type="text" name="code" value={formData.code} />
+                                        <Input id="code" type="text" name="code" value={formData.code} disabled={open === 'VIEW'} />
                                         {errors.code?.type === 'required' &&
                                             <Typography variant="caption" color="red" marginTop={1}>
                                                 * El código es requerido.
@@ -250,7 +252,7 @@ export function Clients() {
                                     </FormControl>
                                     <FormControl>
                                         <InputLabel htmlFor="name">Nombre y Apellido</InputLabel>
-                                        <Input id="name" type="text" name="name" value={formData.name} />
+                                        <Input id="name" type="text" name="name" value={formData.name} disabled={open === 'VIEW'} />
                                         {errors.name?.type === 'required' &&
                                             <Typography variant="caption" color="red" marginTop={1}>
                                                 * El nombre y apellido es requerido.
@@ -264,7 +266,7 @@ export function Clients() {
                                     </FormControl>
                                     <FormControl>
                                         <InputLabel htmlFor="email">Email</InputLabel>
-                                        <Input id="email" type="text" name="email" value={formData.email} />
+                                        <Input id="email" type="text" name="email" value={formData.email} disabled={open === 'VIEW'} />
                                         {errors.email?.type === 'maxLength' &&
                                             <Typography variant="caption" color="red" marginTop={1}>
                                                 * El email es demasiado largo.
@@ -273,7 +275,7 @@ export function Clients() {
                                     </FormControl>
                                     <FormControl>
                                         <InputLabel htmlFor="address">Dirección</InputLabel>
-                                        <Input id="address" type="text" name="address" value={formData.address} />
+                                        <Input id="address" type="text" name="address" value={formData.address} disabled={open === 'VIEW'} />
                                         {errors.address?.type === 'required' &&
                                             <Typography variant="caption" color="red" marginTop={1}>
                                                 * La dirección es requerida.
@@ -289,7 +291,7 @@ export function Clients() {
                                 <Box sx={{ display: 'flex', flexDirection: 'column', width: '50%', gap: 3 }}>
                                     <FormControl>
                                         <InputLabel htmlFor="phone">Teléfono</InputLabel>
-                                        <Input id="phone" type="number" name="phone" value={formData.phone} />
+                                        <Input id="phone" type="number" name="phone" value={formData.phone} disabled={open === 'VIEW'} />
                                         {errors.phone?.type === 'required' &&
                                             <Typography variant="caption" color="red" marginTop={1}>
                                                 * El teléfono es requerido.
@@ -303,7 +305,7 @@ export function Clients() {
                                     </FormControl>
                                     <FormControl>
                                         <InputLabel htmlFor="work_place">Lugar de trabajo</InputLabel>
-                                        <Input id="work_place" type="text" name="work_place" value={formData.work_place} />
+                                        <Input id="work_place" type="text" name="work_place" value={formData.work_place} disabled={open === 'VIEW'} />
                                         {errors.work_place?.type === 'maxLength' &&
                                             <Typography variant="caption" color="red" marginTop={1}>
                                                 * El lugar de trabajo es demasiado largo.
@@ -312,7 +314,7 @@ export function Clients() {
                                     </FormControl>
                                     <FormControl>
                                         <InputLabel htmlFor="observations">Observaciones</InputLabel>
-                                        <Input id="observations" type="text" name="observations" value={formData.observations} />
+                                        <Input id="observations" type="text" name="observations" value={formData.observations} disabled={open === 'VIEW'} />
                                         {errors.observations?.type === 'maxLength' &&
                                             <Typography variant="caption" color="red" marginTop={1}>
                                                 * Las observaciones son demasiado largas.
