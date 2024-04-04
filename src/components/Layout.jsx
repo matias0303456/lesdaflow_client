@@ -147,7 +147,7 @@ export function Layout({ children, title }) {
                 <Box className="sections" sx={{ display: 'flex', alignItems: 'center', cursor: 'pointer', padding: 2, paddingLeft: 1, paddingRight: 1 }} onMouseEnter={() => setSubmenu('user')} onMouseLeave={() => setSubmenu(null)}>
                     <Typography variant='p' color="#fff" sx={{ position: 'relative', whiteSpace: 'nowrap' }}>
                         {auth.user.username} <span style={{ fontSize: '.7rem' }}>▼</span>
-                        <Box sx={{ boxShadow: '0 0 10px gray', position: 'absolute', top: '168%', left: '-40px', display: submenu === 'user' ? 'block' : 'none', background: '#fff', zIndex: 2 }}>
+                        <Box sx={{ boxShadow: '0 0 10px gray', position: 'absolute', top: '168%', left: '-100px', display: submenu === 'user' ? 'block' : 'none', background: '#fff', zIndex: 2 }}>
                             <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>
                                 <li style={{ color: '#078BCD', marginBottom: 1, padding: 5, paddingLeft: 15, paddingRight: 15 }} className='menuOption' onClick={() => navigate('/cambiar-contraseña')}>Cambiar contraseña</li>
                                 <li style={{ color: '#078BCD', marginBottom: 1, padding: 5, paddingLeft: 15, paddingRight: 15 }} className='menuOption' onClick={handleLogout}>Salir</li>
