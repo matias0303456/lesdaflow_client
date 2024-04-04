@@ -8,7 +8,7 @@ import { MessageContext } from "../providers/MessageProvider";
 import { useApi } from "../hooks/useApi";
 
 import { LOGIN_URL } from "../utils/urls";
-import Logo from '../assets/logo.jpeg'
+import Logo from '../assets/logo.png'
 
 export function Login() {
 

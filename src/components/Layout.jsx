@@ -8,7 +8,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 
 import { AuthContext } from '../providers/AuthProvider';
 
-import Logo from '../assets/logo.jpeg'
+import Logo from '../assets/logo.png'
 
 export function Layout({ children, title }) {
 
