@@ -147,6 +147,7 @@ function EnhancedTableToolbar({
 }) {
 
     const { auth } = React.useContext(AuthContext)
+    const { search } = React.useContext(PageContext)
 
     const navigate = useNavigate()
     const { pathname } = useLocation()
@@ -210,15 +211,25 @@ function EnhancedTableToolbar({
             }
             {auth.user.role.name === 'ADMINISTRADOR' &&
                 handlePrint &&
-                (pathname === '/veroshop/ventas' || pathname === '/veroshop/productos') &&
+                pathname === '/veroshop/productos' &&
                 rows.length > 0 &&
-                <Tooltip title={`Imprimir ${pathname === '/veroshop/productos' ? 'Excel' : 'PDF'}`}>
+                <Tooltip title="Imprimir Excel">
                     <Link
-                        to={
-                            pathname === '/veroshop/ventas' ?
-                                `${REPORT_URL}/sales?token=${auth.token}${selected.length > 0 ? `&ids=${selected.join(',')}` : ''}${orderBy === 'id' || orderBy === 'client_code' ? `&orderBy=${orderBy}&order=${order}` : ''}` :
-                                `${REPORT_URL}/products?token=${auth.token}${selected.length > 0 ? `&ids=${selected.join(',')}` : ''}`
-                        }
+                        to={`${REPORT_URL}/products?token=${auth.token}${selected.length > 0 ? `&ids=${selected.join(',')}` : ''}`}
+                        target="_blank"
+                    >
+                        <IconButton>
+                            <PrintSharpIcon />
+                        </IconButton>
+                    </Link>
+                </Tooltip>
+            }
+            {handlePrint &&
+                pathname === '/veroshop/ventas' &&
+                rows.length > 0 &&
+                <Tooltip title="Imprimir PDF">
+                    <Link
+                        to={`${REPORT_URL}/sales?token=${auth.token}&orderBy=${orderBy}&order=${order}${selected.length > 0 ? `&ids=${selected.join(',')}` : ''}${search.length > 0 ? search : ''}`}
                         target="_blank"
                     >
                         <IconButton>
@@ -379,7 +390,7 @@ export function DataGrid({
     const handleChangePage = (event, newPage) => {
         setPage({ ...page, [pageKey]: newPage });
     };
-    
+
     const handleChangeRowsPerPage = (event) => {
         setOffset({ ...offset, [pageKey]: event.target.value });
         setPage({ ...page, [pageKey]: 0 });
