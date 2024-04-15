@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import { useContext, useEffect, useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import { AuthContext } from "../providers/AuthProvider";
 import { Logo } from "./Logo";
@@ -13,6 +13,7 @@ import { Dropdown } from "./Dropdown";
 import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import { deepPurple } from '@mui/material/colors';
 import { UserDropdown } from "./UserDropdown";
 
@@ -32,24 +33,35 @@ export function Layout({ children, title }) {
 
   return (
    <>
-     <nav className="w-full h-[85px] lg:h-[90px] 2xl:h-[98px] sticky top-0 z-20 bg-[#288bcd] mx-auto grid grid-cols-[20%,80%] xl:grid-cols-[12%,80%,8%] items-center justify-center gap-2 xl:px-3">
+     <nav className={`${mobileOpen ? 'w-full h-screen flex-col flex items-start justify-start absolute left-[-100%] transition-all ease-out duration-100' : 'xl:h-[90px] 2xl:h-[98px] sticky top-0 z-20 bg-[#288bcd] mx-auto grid grid-cols-[20%,80%] xl:grid-cols-[12%,80%,8%] items-center justify-center gap-2 xl:px-3'} `}>
       {/* logo image component */}
-      <div className="">
-        <Logo />
+      <div className={`${mobileOpen ?'absolute z-40 h-[100%] w-[100%] right-[0%] top-0':'logo flex items justify-center'}`}>
+        <Logo mobileOpen={mobileOpen}/>
       </div>
       {/* drawer menu */}
-      <div className="flex xl:hidden">
-        <div className="w-full h-8 flex items-center justify-end pr-3">
-          {mobileOpen ? <CloseIcon /> : <MenuIcon />}
+      <div 
+      className={` ${mobileOpen ? 'flex items-start absolute z-40 h-[100%] right-[-100%] w-[100%] top-0' : ' flex xl:hidden w-full h-8  items-center justify-end pr-3'}`}
+      >
+        <div 
+        onClick={()=> setMobileOpen(prev => !prev)}
+        className={` ${mobileOpen ? 'flex items-start bg-[#288bcd] absolute z-40 h-[100%] right-[0%] w-[100%] top-0 transition-all ease-out duration-100' : 'flex xl:hidden w-full h-8  items-center justify-end pr-3 '}`}
+        >
+          {mobileOpen ? <CloseIcon
+          className="absolute text-white right-7 top-7  transition-all ease-out duration-100"
+          /> : <MenuIcon 
+          className="text-white"
+          />}
         </div>
       </div>
       {/* items */}
-      <div className="hidden xl:flex">
-        <ul className="w-[100%] static h-14 flex items-center justify-center gap-1">
+      <div className={`${mobileOpen ? 'text-white flex flex-col items-start justify-start z-40 absolute h-[90vh] right-[-100%] top-[50px] w-[100%]' : 'hidden xl:flex w-[100%] static h-14 items-center justify-center gap-1'}`}>
+        <ul 
+       className={`${mobileOpen ? 'text-white flex flex-col items-start justify-start z-40 absolute h-auto right-0 top-0 w-[100%]' : 'hidden xl:flex w-[100%] static h-14 items-center justify-center gap-1'}`}
+        >
           {auth.user.role.name === "ADMINISTRADOR"
             ? nav_items_admin.map((item, index) => (
                 <li
-                  className="bg-[#288bcd] text-center rounded-lg  cursor-pointer flex flex-col items-center justify-center w-[100%] h-20 decoration-transparent text-white px-2 py-5"
+                  className={`${mobileOpen ? 'bg-[#288bcd] text-center ' : 'bg-[#288bcd] text-center rounded-lg '}cursor-pointer flex flex-col items-center justify-center w-[100%] h-20 decoration-transparent text-white px-2 py-5`}
                   key={index}
                   onMouseEnter={() => {
                     setSubmenu(true);
@@ -60,20 +72,30 @@ export function Layout({ children, title }) {
                     setItemToShow("");
                   }}
                 >
-                  <div className="flex items-center justify-center">
+            <div className={`${mobileOpen ? 'float-right' : 'flex-col'} flex  items-center justify-center`}>
+                    <div className="flex items-center gap-1 justify-center">
                     <Link
                       className="font-semibold lg:text-[14px]"
                       to={item.path}
                     >
                       {item.title}
                     </Link>
-                    <KeyboardArrowDownIcon className="lg:text-base text-xs" />
-                  </div>
-                  <div className="w-[100%] mx-auto flex items-center justify-center">
+                    {
+                      mobileOpen ? (
+                        <KeyboardArrowRightIcon className="lg:text-base text-xs"/>
+                      ) : (
+                        <KeyboardArrowDownIcon className="lg:text-base text-xs" />
+                      )
+                      
+                    }
+                    </div>
+                    
+                  <div className={`${mobileOpen ? 'ml-24 mt-14' : 'mx-auto'} w-[100%] flex  items-center justify-center`}>
                     {submenu && itemToShow === item.title ? (
-                      <Dropdown item={item.submenu} itemToShow={itemToShow} />
+                      <Dropdown item={item.submenu} mobileOpen={mobileOpen} />
                     ) : null}
                   </div>
+            </div>
                 </li>
               ))
             : nav_items_user.map((item, index) => (
