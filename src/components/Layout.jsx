@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { useContext, useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
@@ -5,33 +6,33 @@ import { AuthContext } from "../providers/AuthProvider";
 import { Logo } from "./Logo";
 import { nav_items_admin, nav_items_user } from "../../data/navigation-items";
 
+//components imports
+import Avatar from '@mui/material/Avatar';
+import { Dropdown } from "./Dropdown";
 //icons import
 import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-import { Dropdown } from "./Dropdown";
+import { deepPurple } from '@mui/material/colors';
+import { UserDropdown } from "./UserDropdown";
 
 export function Layout({ children, title }) {
-  const { auth, setAuth } = useContext(AuthContext);
+  const { auth } = useContext(AuthContext);
   const navigate = useNavigate();
-  const { pathname } = useLocation();
+
   const [mobileOpen, setMobileOpen] = useState(false);
   const [submenu, setSubmenu] = useState(false);
   const [itemToShow, setItemToShow] = useState("");
-
+  // user avatar menu state
+  const [userDropdown, setUserDropdown] = useState(false)
 
   useEffect(() => {
     if (!auth) return navigate("/login");
   }, []);
 
-  const handleLogout = () => {
-    setAuth(null);
-    localStorage.clear();
-    navigate("/login");
-  };
-
   return (
-    <nav className="w-full h-[90px] lg:h-[95px] 2xl:h-[100px] sticky top-0 z-20 p-2 lg:p-4 bg-[#288bcd] mx-auto grid grid-cols-[20%,80%] xl:grid-cols-[10%,80%,10%] items-center justify-center gap-2">
+   <>
+     <nav className="w-full h-[85px] lg:h-[90px] 2xl:h-[98px] sticky top-0 z-20 bg-[#288bcd] mx-auto grid grid-cols-[20%,80%] xl:grid-cols-[12%,80%,8%] items-center justify-center gap-2 xl:px-3">
       {/* logo image component */}
       <div className="">
         <Logo />
@@ -106,6 +107,31 @@ export function Layout({ children, title }) {
             ))}
         </ul>
       </div>
+      {/* user avatar & menu */}
+      <div className="hidden xl:flex ">
+            <button className="w-auto p-2 h-auto flex items-center justify-center rounded-full bg-transparent hover:bg-slate-400"
+            onClick={()=> setUserDropdown(prev => !prev)}
+            >
+            <Avatar sx={{ bgcolor: deepPurple[500] }}>OP</Avatar>
+            </button>
+            {
+              userDropdown ? (
+                <div className="mt-2 mx-auto flex items-center justify-center rounded-md">
+                  <UserDropdown />
+                </div>
+              ) : null
+            }
+      </div>
     </nav>
+     {/* page content */}
+     <div className="w-[100%] h-screen flex-1 overflow-auto">
+     <h6 className="text-gray-700 bg-white p-1 pl-3">
+         {title}
+     </h6>
+     <div className="p-2 lg:overflow-x-auto">
+         {children}
+     </div>
+ </div>
+   </>
   );
 }

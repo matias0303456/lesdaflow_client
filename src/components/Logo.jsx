@@ -5,7 +5,7 @@ export const Logo = () => {
         <img
         src={logoImage}
         alt="logo-image"
-        className="w-44 xl:w-full h-auto flex object-cover"
+        className="w-44 xl:w-[95%] h-full flex object-cover"
         />
     </div>
   )

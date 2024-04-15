@@ -100,7 +100,7 @@ export const nav_items_admin = [
     submenu: [
       {
         subtitle: "Users",
-        // path: "/clientes",
+        path: "/vendedor",
       },
       {
         subtitle: "Roles",
