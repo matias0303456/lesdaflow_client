@@ -35,46 +35,53 @@ export function Layout({ children, title }) {
     if (!auth) return navigate("/login");
   }, []);
   
-
   //custom hook screen size 
   const screenSize = useScreenSize();
   useEffect(() => {
     if (screenSize.width >= 960) {
       setMobileOpen(false);
-      setUserDropdown(true)
     }
   }, [screenSize.width]);
+  //handle userInfo dropdown state by responsive measures
+  useEffect(() => {
+    if(!mobileOpen){
+      setUserDropdown(false)
+    }else{
+      setUserDropdown(true)
+    }
+  }, [mobileOpen])
 
   return (
    <>
-     <nav className={`${mobileOpen ? 'w-full h-screen flex-col flex items-start justify-start absolute left-[-100%] transition-all ease-out duration-100' : 'xl:h-[90px] 2xl:h-[98px] sticky top-0 z-20 bg-[#288bcd] mx-auto grid grid-cols-[20%,80%] xl:grid-cols-[12%,80%,8%] items-center justify-center gap-2 xl:px-3'} `}>
+     <nav className={`${mobileOpen ? 'w-full h-screen flex-col flex items-start justify-start absolute left-[-100%] transition-all ease-out duration-100' : 'xl:h-[90px] 2xl:h-[100px] sticky top-0 z-40 mx-auto grid grid-cols-[20%,80%] xl:grid-cols-[12%,80%,8%] items-center justify-center gap-2 xl:px-3'} bg-[#288bcd] `}>
       {/* logo image component */}
       <div className={`${mobileOpen ?'absolute z-50 h-16 w-[90%] right-[-3%] top-1':'logo flex items justify-center'}`}>
         <Logo mobileOpen={mobileOpen}/>
+                    {/* drawer menu */}
+                    <div 
+                    className={` ${mobileOpen ? 'flex items-start absolute z-40 h-[100%] right-[-100%] w-[100%] top-0' : ' flex xl:hidden w-full h-8  items-center justify-end pr-3'}`}
+                    >
+                      <div 
+                      onClick={()=> setMobileOpen(prev => !prev)}
+                      className={` ${mobileOpen ? 'flex items-start bg-[#288bcd] absolute z-40 h-[100%] right-[0%] w-[100%] top-0 transition-all ease-out duration-100' : 'flex xl:hidden w-full h-8  items-center justify-end pr-3 '}`}
+                      >
+                        {mobileOpen ? <CloseIcon
+                        className="absolute text-white right-7 top-7  transition-all ease-out duration-100"
+                        /> : <MenuIcon className="text-white"
+                        />}
+                      </div>
+                    </div>
       </div>
-      {/* drawer menu */}
-      <div 
-      className={` ${mobileOpen ? 'flex items-start absolute z-40 h-[100%] right-[-100%] w-[100%] top-0' : ' flex xl:hidden w-full h-8  items-center justify-end pr-3'}`}
-      >
-        <div 
-        onClick={()=> setMobileOpen(prev => !prev)}
-        className={` ${mobileOpen ? 'flex items-start bg-[#288bcd] absolute z-40 h-[100%] right-[0%] w-[100%] top-0 transition-all ease-out duration-100' : 'flex xl:hidden w-full h-8  items-center justify-end pr-3 '}`}
-        >
-          {mobileOpen ? <CloseIcon
-          className="absolute text-white right-7 top-7  transition-all ease-out duration-100"
-          /> : <MenuIcon className="text-white"
-          />}
-        </div>
-      </div>
+      
       {/* items */}
-      <div className={`${mobileOpen ? 'text-white flex flex-col items-start justify-start z-40 absolute h-[90vh] overflow-y-hidden right-[-100%] top-[90px] w-[100%]' : 'hidden xl:flex w-[100%] static h-14 items-center justify-center gap-1'}`}>
+      <div className={`${mobileOpen ? 'text-white flex flex-col items-start justify-start z-40 absolute h-[90vh] overflow-y-hidden right-[-100%] top-[90px] w-[100%]' : 'hidden xl:flex w-[100%] static h-[100%] items-center justify-center gap-1'}`}>
         <ul 
-       className={`${mobileOpen ? 'text-white flex flex-col items-start justify-start z-40 absolute h-auto right-0 top-5 w-[100%]' : 'hidden xl:flex w-[100%] static h-14 items-center justify-center gap-1'}`}
+       className={`${mobileOpen ? 'text-white flex flex-col items-start justify-start z-40 absolute h-full right-0 top-5 w-[100%]' : 'hidden xl:flex w-[100%] static h-[100%] items-center justify-center gap-1'}`}
         >
           {auth.user.role.name === "ADMINISTRADOR"
             ? nav_items_admin.map((item, index) => (
                 <li
-                  className={`${mobileOpen ? 'bg-[#288bcd] text-center px-0 py-1 h-16' : 'bg-[#288bcd] text-center rounded-lg px-2 py-5 h-20'} cursor-pointer flex flex-col items-center justify-center w-[100%] decoration-transparent text-white `}
+                  className={`${mobileOpen ? 'bg-[#288bcd] text-center px-0 py-1 h-16' : 'bg-[#3387c0] text-center rounded-lg px-2 py-5 h-[100%] hover:bg-[#2f75a3]'} cursor-pointer flex flex-col items-center justify-center w-[100%] h-full decoration-transparent text-white `}
                   key={index}
                   onMouseEnter={() => {
                     setSubmenu(true);
@@ -103,7 +110,7 @@ export function Layout({ children, title }) {
                     }
                     </div>
                     
-                  <div className={`${mobileOpen ? 'ml-24 mt-scroll-14' : 'mx-auto'} w-[100%] flex  items-center justify-center`}>
+                  <div className={`${mobileOpen ? 'ml-24 mt-[48px]' : 'mx-auto'} w-[100%] flex  items-center justify-center`}>
                     {submenu && itemToShow === item.title ? (
                       <Dropdown item={item.submenu} mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
                     ) : null}

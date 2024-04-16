@@ -39,7 +39,7 @@ console.log(mobileOpen)
         <p className="text-sm ">{auth.user.email}</p>
       </div>
       {/* action menu */}
-      <div className={`${mobileOpen ? 'w-[90%] gap-7 justify-start' : 'w-[90%] flex-col justify-center mx-auto  gap-1'} flex items-center text-xs font-thin `}>
+      <div className={`${mobileOpen ? 'w-[90%] gap-7 justify-start hover:text-white' : 'w-[90%] flex-col justify-center mx-auto  gap-1'} flex items-center text-xs font-thin `}>
         <Link 
         to="/cambiar-contraseña"
         className="w-[50%] h-auto flex items-center justify-center gap-1 ">
