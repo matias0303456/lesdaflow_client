@@ -14,8 +14,10 @@ import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
-import { deepPurple } from '@mui/material/colors';
+
 import { UserDropdown } from "./UserDropdown";
+import useScreenSize from "../hooks/useScreenSize";
+import { stringAvatar } from "../utils/avatarName";
 
 export function Layout({ children, title }) {
   const { auth } = useContext(AuthContext);
@@ -24,18 +26,30 @@ export function Layout({ children, title }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [submenu, setSubmenu] = useState(false);
   const [itemToShow, setItemToShow] = useState("");
-  // user avatar menu state
-  const [userDropdown, setUserDropdown] = useState(false)
 
+  // user avatar menu state & name rearrange
+  const [userDropdown, setUserDropdown] = useState(false)
+  const name = stringAvatar(`${auth.user.first_name} ${auth.user.last_name}`)
+ 
   useEffect(() => {
     if (!auth) return navigate("/login");
   }, []);
+  
+
+  //custom hook screen size 
+  const screenSize = useScreenSize();
+  useEffect(() => {
+    if (screenSize.width >= 960) {
+      setMobileOpen(false);
+      setUserDropdown(true)
+    }
+  }, [screenSize.width]);
 
   return (
    <>
      <nav className={`${mobileOpen ? 'w-full h-screen flex-col flex items-start justify-start absolute left-[-100%] transition-all ease-out duration-100' : 'xl:h-[90px] 2xl:h-[98px] sticky top-0 z-20 bg-[#288bcd] mx-auto grid grid-cols-[20%,80%] xl:grid-cols-[12%,80%,8%] items-center justify-center gap-2 xl:px-3'} `}>
       {/* logo image component */}
-      <div className={`${mobileOpen ?'absolute z-40 h-[100%] w-[100%] right-[0%] top-0':'logo flex items justify-center'}`}>
+      <div className={`${mobileOpen ?'absolute z-50 h-16 w-[90%] right-[-3%] top-1':'logo flex items justify-center'}`}>
         <Logo mobileOpen={mobileOpen}/>
       </div>
       {/* drawer menu */}
@@ -48,20 +62,19 @@ export function Layout({ children, title }) {
         >
           {mobileOpen ? <CloseIcon
           className="absolute text-white right-7 top-7  transition-all ease-out duration-100"
-          /> : <MenuIcon 
-          className="text-white"
+          /> : <MenuIcon className="text-white"
           />}
         </div>
       </div>
       {/* items */}
-      <div className={`${mobileOpen ? 'text-white flex flex-col items-start justify-start z-40 absolute h-[90vh] right-[-100%] top-[50px] w-[100%]' : 'hidden xl:flex w-[100%] static h-14 items-center justify-center gap-1'}`}>
+      <div className={`${mobileOpen ? 'text-white flex flex-col items-start justify-start z-40 absolute h-[90vh] overflow-y-hidden right-[-100%] top-[90px] w-[100%]' : 'hidden xl:flex w-[100%] static h-14 items-center justify-center gap-1'}`}>
         <ul 
-       className={`${mobileOpen ? 'text-white flex flex-col items-start justify-start z-40 absolute h-auto right-0 top-0 w-[100%]' : 'hidden xl:flex w-[100%] static h-14 items-center justify-center gap-1'}`}
+       className={`${mobileOpen ? 'text-white flex flex-col items-start justify-start z-40 absolute h-auto right-0 top-5 w-[100%]' : 'hidden xl:flex w-[100%] static h-14 items-center justify-center gap-1'}`}
         >
           {auth.user.role.name === "ADMINISTRADOR"
             ? nav_items_admin.map((item, index) => (
                 <li
-                  className={`${mobileOpen ? 'bg-[#288bcd] text-center ' : 'bg-[#288bcd] text-center rounded-lg '}cursor-pointer flex flex-col items-center justify-center w-[100%] h-20 decoration-transparent text-white px-2 py-5`}
+                  className={`${mobileOpen ? 'bg-[#288bcd] text-center px-0 py-1 h-16' : 'bg-[#288bcd] text-center rounded-lg px-2 py-5 h-20'} cursor-pointer flex flex-col items-center justify-center w-[100%] decoration-transparent text-white `}
                   key={index}
                   onMouseEnter={() => {
                     setSubmenu(true);
@@ -90,9 +103,9 @@ export function Layout({ children, title }) {
                     }
                     </div>
                     
-                  <div className={`${mobileOpen ? 'ml-24 mt-14' : 'mx-auto'} w-[100%] flex  items-center justify-center`}>
+                  <div className={`${mobileOpen ? 'ml-24 mt-scroll-14' : 'mx-auto'} w-[100%] flex  items-center justify-center`}>
                     {submenu && itemToShow === item.title ? (
-                      <Dropdown item={item.submenu} mobileOpen={mobileOpen} />
+                      <Dropdown item={item.submenu} mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
                     ) : null}
                   </div>
             </div>
@@ -129,21 +142,27 @@ export function Layout({ children, title }) {
             ))}
         </ul>
       </div>
-      {/* user avatar & menu */}
-      <div className="hidden xl:flex ">
-            <button className="w-auto p-2 h-auto flex items-center justify-center rounded-full bg-transparent hover:bg-slate-400"
-            onClick={()=> setUserDropdown(prev => !prev)}
-            >
-            <Avatar sx={{ bgcolor: deepPurple[500] }}>OP</Avatar>
-            </button>
-            {
-              userDropdown ? (
-                <div className="mt-2 mx-auto flex items-center justify-center rounded-md">
-                  <UserDropdown />
-                </div>
-              ) : null
-            }
-      </div>
+          {/* user avatar & menu */}
+          <div className={`${mobileOpen ? ' grid grid-cols-[40%,60%] items-center justify-start absolute z-50 h-16 w-[100%] mx-auto right-[-100%] bottom-1' : 'hidden xl:flex'}`}>
+                <button 
+                title={`${auth.user.first_name} ${auth.user.last_name}`}
+                className={`${mobileOpen ? ' justify-end ' : 'justify-center hover:bg-slate-400'} w-auto p-2 h-auto flex items-center  rounded-full bg-transparent `}
+                onClick={()=> {
+                  if(!mobileOpen){
+                    setUserDropdown(prev => !prev)
+                  }
+                }}
+                >
+                <Avatar sx={name.sx}>{name.children}</Avatar>
+                </button>
+                {
+                  userDropdown ? (
+                    <div className={`${mobileOpen ? 'w-[100%] pl-2 h-5 justify-start' : 'justify-center'} mt-2 mx-auto flex items-center  rounded-md`}>
+                      <UserDropdown {...stringAvatar(`${auth.user.first_name} ${auth.user.last_name}`)} mobileOpen={mobileOpen}/>
+                    </div>
+                  ) : null
+                }
+          </div>
     </nav>
      {/* page content */}
      <div className="w-[100%] h-screen flex-1 overflow-auto">

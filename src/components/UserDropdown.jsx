@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../providers/AuthProvider";
@@ -9,7 +10,8 @@ import { Avatar } from "@mui/material";
 import SettingsIcon from "@mui/icons-material/Settings";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 
-export const UserDropdown = () => {
+export const UserDropdown = ({children, sx, mobileOpen}) => {
+console.log(mobileOpen)
   const { auth, setAuth } = useContext(AuthContext);
   const navigate = useNavigate();
 
@@ -20,12 +22,12 @@ export const UserDropdown = () => {
   };
 
   return (
-    <div className="w-[185px] h-[200px] flex items-center justify-center flex-col bg-black/80 absolute top-[66px] 2xl:top-[70px] right-2 2xl:right-3 rounded-lg py-4 text-start text-white gap-5">
-      <div className="w-full my-auto flex flex-col items-center justify-center gap-1">
+    <div className={`${mobileOpen ? '' : 'w-[185px] h-[200px] flex items-center justify-center flex-col bg-black/80 absolute top-[70px] 2xl:top-[75px] right-2 2xl:right-3 rounded-lg py-4 text-start text-white gap-5'} `}>
+      <div className={`${mobileOpen ? 'hidden' : 'flex'} w-full my-auto flex-col items-center justify-center gap-1`}>
         <Avatar
-        /* sx={{ bgcolor: deepPurple[500] }} */
+        sx={sx}
         >
-          OP
+          {children}
         </Avatar>
         {/* name section */}
         <div className="w-full h-auto flex items-center justify-center pt-2  font-semibold gap-1">
@@ -37,19 +39,19 @@ export const UserDropdown = () => {
         <p className="text-sm ">{auth.user.email}</p>
       </div>
       {/* action menu */}
-      <div className="w-[90%] flex items-center flex-col justify-center gap-1 text-xs font-thin mx-auto">
+      <div className={`${mobileOpen ? 'w-[90%] gap-7 justify-start' : 'w-[90%] flex-col justify-center mx-auto  gap-1'} flex items-center text-xs font-thin `}>
         <Link 
         to="/cambiar-contraseña"
-        className="w-full h-auto flex items-center justify-center gap-1 ">
+        className="w-[50%] h-auto flex items-center justify-center gap-1 ">
           <SettingsIcon className="w-5 h-5" />
-          <p>Cambiar contraseña</p>
+          <p className="w-[50%]">Cambiar contraseña</p>
         </Link>
         <button
-          className="w-full h-auto flex items-center justify-center gap-1"
+          className="w-[50%] h-auto flex items-center justify-center gap-1"
           onClick={handleLogout}
         >
           <ExitToAppIcon className="w-5 h-5" />
-          <p>Salir</p>
+          <p className="w-[50%]">Salir</p>
         </button>
       </div>
     </div>
