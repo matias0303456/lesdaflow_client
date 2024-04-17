@@ -13,3 +13,4 @@ export const CHANGE_PASSWORD_URL = `${USER_URL}/change-password`
 export const REPORT_URL = `${BASE_URL}/reports`
 export const PAYMENT_URL = `${BASE_URL}/payments`
 export const REGISTER_URL = `${BASE_URL}/registers`
+export const SALE_PRODUCT_URL = `${BASE_URL}/sale-products`

@@ -8,7 +8,7 @@ import es from 'date-fns/locale/es';
 import { AuthContext } from "../../providers/AuthProvider";
 import { PageContext } from "../../providers/PageProvider";
 
-export function SaleFilter({ sales, getter }) {
+export function SaleFilter({ sales, getter, setOpen }) {
 
     const { auth } = useContext(AuthContext)
     const { page, setPage, offset, setOffset, search, setSearch } = useContext(PageContext)
@@ -209,7 +209,10 @@ export function SaleFilter({ sales, getter }) {
                         </FormControl>
                     }
                     <Button variant="outlined" onClick={handleReset}>
-                        Reiniciar
+                        Reiniciar Filtros
+                    </Button>
+                    <Button variant="outlined" onClick={() => setOpen('LAST-MODIFIED')}>
+                        Últ. boletas modif.
                     </Button>
                 </Box>
             </Box>

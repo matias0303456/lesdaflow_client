@@ -1,5 +1,5 @@
 import { useCallback, useContext, useEffect, useState } from "react";
-import { Autocomplete, Box, Button, Checkbox, FormControl, FormControlLabel, Input, InputLabel, LinearProgress, TextField, Typography } from "@mui/material";
+import { Autocomplete, Box, Button, Checkbox, FormControl, FormControlLabel, Input, InputLabel, LinearProgress, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from "@mui/material";
 import { format } from "date-fns";
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -12,8 +12,6 @@ import { PageContext } from "../providers/PageProvider";
 import { MessageContext } from "../providers/MessageProvider";
 import { SearchContext } from "../providers/SearchProvider";
 import { useApi } from "../hooks/useApi";
-import { useProducts } from "../hooks/useProducts";
-import { useClients } from '../hooks/useClients'
 import { useForm } from "../hooks/useForm";
 
 import { Layout } from "../components/Layout";
@@ -23,7 +21,7 @@ import { SaleFilter } from "../components/filters/SaleFilter";
 import { AddProductsToSale } from "../components/AddProductsToSale";
 
 import { CLIENT_URL, PRODUCT_URL, REPORT_URL, SALE_URL } from "../utils/urls";
-import { getAccountStatus, getCurrentSubtotal, getCurrentTotal, getDeadline, getInstallmentsAmount, getSaleDifference, getSaleTotal } from "../utils/helpers";
+import { getAccountStatus, getCurrentSubtotal, getCurrentTotal, getDeadline, getInstallmentsAmount, getSaleDifference, getSaleTotal, setLocalDate } from "../utils/helpers";
 
 export function Sales() {
 
@@ -67,6 +65,7 @@ export function Sales() {
     const [idsToDelete, setIdsToDelete] = useState([])
     const [stopPointerEvents, setStopPointerEvents] = useState(false)
     const [saleSaved, setSaleSaved] = useState(null)
+    const [lastModified, setLastModified] = useState([])
 
     useEffect(() => {
         (async () => {
@@ -116,6 +115,22 @@ export function Sales() {
             setSaleProducts(formData.sale_products)
         }
     }, [formData])
+
+    useEffect(() => {
+        (async () => {
+            if (open === 'LAST-MODIFIED') {
+                const res = await fetch(SALE_URL + '/last-modified', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': auth.token
+                    }
+                })
+                const data = await res.json()
+                if (res.status === 200) setLastModified(data)
+            }
+        })()
+    }, [open])
 
     async function handleSubmit(e) {
         e.preventDefault()
@@ -285,7 +300,7 @@ export function Sales() {
                     <LinearProgress />
                 </Box> :
                 <>
-                    <SaleFilter sales={sales} getter={getSales} />
+                    <SaleFilter sales={sales} getter={getSales} setOpen={setOpen} />
                     <DataGrid
                         title=""
                         headCells={headCells}
@@ -501,6 +516,47 @@ export function Sales() {
                         >
                             Compartir comprobante
                         </Button>
+                    </ModalComponent>
+                    <ModalComponent
+                        reduceWidth={800}
+                        open={open === 'LAST-MODIFIED'}
+                        onClose={() => setOpen(null)}
+                    >
+                        <Typography variant="h6" sx={{ textAlign: 'center', marginBottom: 2 }}>
+                            Últimas boletas modificadas
+                        </Typography>
+                        <TableContainer component={Paper}>
+                            <Table aria-label="simple table">
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell align="center">N° venta</TableCell>
+                                        <TableCell align="center">Cliente</TableCell>
+                                        <TableCell align="center">Modificado</TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {lastModified.map(item => {
+                                        return (
+                                            <TableRow key={item.id}>
+                                                <TableCell align="center">{item.id}</TableCell>
+                                                <TableCell align="center">{item.client.name}</TableCell>
+                                                <TableCell align="center">{format(setLocalDate(item.updated_at), 'dd-MM-yy hh:mm:ss')}</TableCell>
+                                            </TableRow>
+                                        )
+                                    })}
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
+                        <Box sx={{ display: 'flex', justifyContent: 'end' }}>
+                            <Button
+                                type="button"
+                                variant="outlined"
+                                onClick={() => setOpen(null)}
+                                sx={{ marginTop: 1 }}
+                            >
+                                Cerrar
+                            </Button>
+                        </Box>
                     </ModalComponent>
                 </>
             }
