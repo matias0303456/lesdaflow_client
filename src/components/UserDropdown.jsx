@@ -11,7 +11,7 @@ import SettingsIcon from "@mui/icons-material/Settings";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 
 export const UserDropdown = ({children, sx, mobileOpen}) => {
-console.log(mobileOpen)
+
   const { auth, setAuth } = useContext(AuthContext);
   const navigate = useNavigate();
 

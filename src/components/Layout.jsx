@@ -57,7 +57,7 @@ export function Layout({ children, title }) {
         className={`${
           mobileOpen
             ? "w-full h-screen flex-col flex items-start justify-start absolute left-[-100%] transition-all ease-out duration-100"
-            : "xl:h-[80px] 2xl:h-[90px] sticky top-0 z-40 mx-auto grid grid-cols-[20%,80%] xl:grid-cols-[12%,80%,8%] items-center justify-center gap-2 xl:px-3"
+            : "xl:h-[80px] 2xl:h-[100px] sticky top-0 z-40 mx-auto grid grid-cols-[20%,80%] xl:grid-cols-[12%,80%,8%] items-center justify-center gap-2 xl:px-3"
         } bg-[#288bcd] `}
       >
         {/* logo image component */}
@@ -74,7 +74,7 @@ export function Layout({ children, title }) {
         <div
           className={` ${
             mobileOpen
-              ? "flex items-start absolute z-40 h-[100%] right-[-100%] w-[100%] top-0"
+              ? "flex flex-col items-start absolute z-40 h-[100%] right-[-100%] w-[100%] top-0"
               : " flex xl:hidden w-full h-8  items-center justify-end pr-3"
           }`}
         >
@@ -87,18 +87,19 @@ export function Layout({ children, title }) {
             }`}
           >
             {mobileOpen ? (
-              <CloseIcon className="absolute text-white right-6 top-6  transition-all ease-out duration-100" />
+              <CloseIcon className="absolute z-60 text-white right-6 top-6  transition-all ease-out duration-100" />
             ) : (
               <MenuIcon className="text-white right-6 top-6" />
             )}
           </div>
+          
         </div>
 
         {/* items */}
         <div
           className={`${
             mobileOpen
-              ? "text-white flex flex-col items-start justify-start z-40 absolute h-[90vh] overflow-y-hidden right-[-100%] top-[90px] w-[100%]"
+              ? "text-white flex flex-col items-start justify-start z-40 absolute h-[70vh] right-[-100%] top-[100px] w-[100%]"
               : "hidden xl:flex w-[100%] static h-[100%] items-center justify-center gap-1"
           }`}
         >
@@ -114,7 +115,7 @@ export function Layout({ children, title }) {
                   <li
                     className={`${
                       mobileOpen
-                        ? "bg-[#288bcd] text-center px-0 py-1 h-16"
+                        ? "bg-[#288bcd] text-center px-0 py-1 h-[64px]"
                         : "bg-[#288bcd] text-center rounded-md px-2 py-5 h-[100%] hover:bg-[#3276B1]"
                     } cursor-pointer flex flex-col items-center justify-center w-[100%] h-full decoration-transparent text-white `}
                     key={index}
@@ -197,7 +198,7 @@ export function Layout({ children, title }) {
         <div
           className={`${
             mobileOpen
-              ? " grid grid-cols-[40%,60%] items-center justify-start absolute z-50 h-16 w-[100%] mx-auto right-[-100%] bottom-1"
+              ? " grid grid-cols-[40%,60%] py-2 px-1 items-center justify-start absolute z-40 w-[100%] mx-auto right-[-100%] bottom-0"
               : "hidden xl:flex"
           }`}
         >
