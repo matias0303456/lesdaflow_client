@@ -56,15 +56,15 @@ export function Layout({ children, title }) {
       <nav
         className={`${
           mobileOpen
-            ? "w-full h-screen flex-col flex items-start justify-start absolute left-[-100%] transition-all ease-out duration-100"
-            : "xl:h-[80px] 2xl:h-[100px] sticky top-0 z-40 mx-auto grid grid-cols-[20%,80%] xl:grid-cols-[12%,80%,8%] items-center justify-center gap-2 xl:px-3"
+            ? "w-full h-screen items-start grid grid-cols-[20%,80%] justify-start absolute left-[-100%] transition-all ease-out duration-100"
+            : "h-[80px] 2xl:h-[100px] sticky top-0 z-40 mx-auto grid grid-cols-[20%,80%] xl:grid-cols-[12%,80%,8%] items-center justify-center gap-2 xl:px-3"
         } bg-[#288bcd] `}
       >
         {/* logo image component */}
         <div
           className={`${
             mobileOpen
-              ? "absolute z-50 h-16 w-[90%] right-[-3%] top-1"
+              ? "hidden"
               : "logo flex items-center justify-center"
           }`}
         >
@@ -83,13 +83,13 @@ export function Layout({ children, title }) {
             className={` ${
               mobileOpen
                 ? "flex items-start bg-[#288bcd] absolute z-40 h-[100%] right-[0%] w-[100%] top-0 transition-all ease-out duration-100"
-                : "flex xl:hidden w-full h-8  items-center justify-end pr-3 "
+                : "flex xl:hidden w-full h-8  items-center justify-end "
             }`}
           >
             {mobileOpen ? (
-              <CloseIcon className="absolute z-60 text-white right-6 top-6  transition-all ease-out duration-100" />
+              <CloseIcon className="absolute z-60 text-white right-6 top-7  transition-all ease-out duration-100" />
             ) : (
-              <MenuIcon className="text-white right-6 top-6" />
+              <MenuIcon className="text-white right-6 top-7" />
             )}
           </div>
           
@@ -115,7 +115,7 @@ export function Layout({ children, title }) {
                   <li
                     className={`${
                       mobileOpen
-                        ? "bg-[#288bcd] text-center px-0 py-1 h-[64px]"
+                        ? "bg-[#288bcd] text-center px-0 py-1 h-[55px]"
                         : "bg-[#288bcd] text-center rounded-md px-2 py-5 h-[100%] hover:bg-[#3276B1]"
                     } cursor-pointer flex flex-col items-center justify-center w-[100%] h-full decoration-transparent text-white `}
                     key={index}
@@ -149,7 +149,7 @@ export function Layout({ children, title }) {
 
                       <div
                         className={`${
-                          mobileOpen ? "ml-24 mt-[48px]" : "mx-auto"
+                          mobileOpen ? "ml-28 mt-[20px]" : "mx-auto"
                         } w-[100%] flex  items-center justify-center`}
                       >
                         {submenu && itemToShow === item.title ? (
@@ -205,7 +205,7 @@ export function Layout({ children, title }) {
           <button
             title={`${auth.user.first_name} ${auth.user.last_name}`}
             className={`${
-              mobileOpen ? " justify-end " : "justify-center hover:bg-slate-400"
+              mobileOpen ? " justify-start " : "justify-center hover:bg-slate-400"
             } w-auto p-2 h-auto flex items-center  rounded-full bg-transparent `}
             onClick={() => {
               if (!mobileOpen) {
@@ -219,7 +219,7 @@ export function Layout({ children, title }) {
             <div
               className={`${
                 mobileOpen
-                  ? "w-[100%] pl-2 h-5 justify-start"
+                  ? "w-[100%] pl-2 h-5 justify-end"
                   : "justify-center"
               } mt-2 mx-auto flex items-center  rounded-md`}
             >

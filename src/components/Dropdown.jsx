@@ -13,7 +13,9 @@ export const Dropdown = ( {item,mobileOpen, setMobileOpen}) => {
       {item?.map((subitem, index) => (
         <li
           key={index}
-          className="bg-white rounded-[4px] cursor-pointer flex items-center justify-start w-[100%] mt-[1px] mx-auto h-[50px] decoration-transparent text-sm p-1 hover:bg-[#3276B1] hover:text-white"
+          className={
+            `${mobileOpen ? "h-[35px] text-[12px]" : "h-[50px] text-sm"} bg-white rounded-[4px] cursor-pointer flex items-center justify-start w-[100%] mt-[1px] mx-auto  decoration-transparent p-1 hover:bg-[#3276B1] hover:text-white`
+          }
         >
           <Link
             to={subitem.path}
