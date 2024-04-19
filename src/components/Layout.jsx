@@ -63,9 +63,7 @@ export function Layout({ children, title }) {
         {/* logo image component */}
         <div
           className={`${
-            mobileOpen
-              ? "hidden"
-              : "logo flex items-center justify-center"
+            mobileOpen ? "hidden" : "logo flex ml-2 items-center justify-center"
           }`}
         >
           <Logo mobileOpen={mobileOpen} />
@@ -74,7 +72,7 @@ export function Layout({ children, title }) {
         <div
           className={` ${
             mobileOpen
-              ? "flex flex-col items-start absolute z-40 h-[100%] right-[-100%] w-[100%] top-0"
+              ? "flex flex-col items-start absolute z-40 h-[100%] right-[-100%] w-[100%] top-0 transition-colors ease-in-out delay-400"
               : " flex xl:hidden w-full h-8  items-center justify-end pr-3"
           }`}
         >
@@ -92,14 +90,13 @@ export function Layout({ children, title }) {
               <MenuIcon className="text-white right-6 top-7" />
             )}
           </div>
-          
         </div>
 
         {/* items */}
         <div
           className={`${
             mobileOpen
-              ? "text-white flex flex-col items-start justify-start z-40 absolute h-[70vh] right-[-100%] top-[100px] w-[100%]"
+              ? "text-white flex flex-col items-start justify-start z-40 absolute h-[70vh] right-[-100%] top-[55px] w-[100%]"
               : "hidden xl:flex w-[100%] static h-[100%] items-center justify-center gap-1"
           }`}
         >
@@ -131,7 +128,7 @@ export function Layout({ children, title }) {
                     <div
                       className={`${
                         mobileOpen ? "float-right" : "flex-col"
-                      } flex  items-center justify-center`}
+                      } flex  items-center justify-start`}
                     >
                       <div className="flex items-center gap-1 justify-center">
                         <Link
@@ -149,7 +146,7 @@ export function Layout({ children, title }) {
 
                       <div
                         className={`${
-                          mobileOpen ? "ml-28 mt-[20px]" : "mx-auto"
+                          mobileOpen ? "ml-[92px] mt-[20px]" : "mx-auto"
                         } w-[100%] flex  items-center justify-center`}
                       >
                         {submenu && itemToShow === item.title ? (
@@ -198,14 +195,16 @@ export function Layout({ children, title }) {
         <div
           className={`${
             mobileOpen
-              ? " grid grid-cols-[40%,60%] py-2 px-1 items-center justify-start absolute z-40 w-[100%] mx-auto right-[-100%] bottom-0"
+              ? " grid grid-cols-[40%,60%] py-2 px-5 items-center justify-start absolute z-40 w-[100%] mx-auto right-[-100%] bottom-0"
               : "hidden xl:flex"
           }`}
         >
           <button
             title={`${auth.user.first_name} ${auth.user.last_name}`}
             className={`${
-              mobileOpen ? " justify-start " : "justify-center hover:bg-slate-400"
+              mobileOpen
+                ? " justify-start "
+                : "justify-center hover:bg-slate-400"
             } w-auto p-2 h-auto flex items-center  rounded-full bg-transparent `}
             onClick={() => {
               if (!mobileOpen) {
@@ -218,9 +217,7 @@ export function Layout({ children, title }) {
           {userDropdown ? (
             <div
               className={`${
-                mobileOpen
-                  ? "w-[100%] pl-2 h-5 justify-end"
-                  : "justify-center"
+                mobileOpen ? "w-[100%] pl-2 h-5 justify-end" : "justify-center"
               } mt-2 mx-auto flex items-center  rounded-md`}
             >
               <UserDropdown
