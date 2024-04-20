@@ -14,10 +14,12 @@ import Tooltip from '@mui/material/Tooltip';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
 import EditIcon from '@mui/icons-material/Edit';
+import SettingsIcon from "@mui/icons-material/Settings";
 import { visuallyHidden } from '@mui/utils';
 import SearchSharpIcon from '@mui/icons-material/SearchSharp';
 
 import { deadlineIsPast, getStock } from '../utils/helpers';
+import { Delete } from '@mui/icons-material';
 
 function descendingComparator(a, b, orderBy, sorter) {
     if ((b[orderBy] ? b[orderBy] : sorter(b)) < (a[orderBy] ? a[orderBy] : sorter(a))) {
@@ -164,43 +166,111 @@ export function DataGrid({
                             <TableBody>
                                 {visibleRows.map((row, index) => {
                                     return (
-                                        <TableRow
-                                            role="checkbox"
-                                            tabIndex={-1}
-                                            key={row.id}
-                                        >
-                                            <TableCell sx={{ wordWrap: '' }}>
-                                                <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                                                    <Tooltip title="Visualizar" onClick={() => {
-                                                        setData(rows.find(r => r.id === row.id))
-                                                        setOpen('VIEW')
-                                                    }}>
-                                                        <IconButton>
-                                                            <SearchSharpIcon />
-                                                        </IconButton>
-                                                    </Tooltip>
-                                                    <Tooltip title="Editar" onClick={() => {
-                                                        setData(rows.find(r => r.id === row.id))
-                                                        setOpen('EDIT')
-                                                    }}>
-                                                        <IconButton>
-                                                            <EditIcon />
-                                                        </IconButton>
-                                                    </Tooltip>
-                                                </Box>
+                                      <TableRow
+                                        role="checkbox"
+                                        tabIndex={-1}
+                                        key={row.id}
+                                      >
+                                        <TableCell sx={{ wordWrap: "" }}>
+                                          <Box
+                                            sx={{
+                                              display: "flex",
+                                              justifyContent: "center",
+                                              alignItems: "center",
+                                              opacity: 0.3,
+                                            }}
+                                          >
+                                            <Tooltip
+                                              title="Visualizar"
+                                              onClick={() => {
+                                                setData(
+                                                  rows.find(
+                                                    (r) => r.id === row.id
+                                                  )
+                                                );
+                                                setOpen("VIEW");
+                                              }}
+                                            >
+                                              <IconButton>
+                                                <SearchSharpIcon />
+                                              </IconButton>
+                                            </Tooltip>
+                                            <Tooltip
+                                              title="Editar"
+                                              onClick={() => {
+                                                setData(
+                                                  rows.find(
+                                                    (r) => r.id === row.id
+                                                  )
+                                                );
+                                                setOpen("EDIT");
+                                              }}
+                                            >
+                                              <IconButton>
+                                                <EditIcon />
+                                              </IconButton>
+                                            </Tooltip>
+                                            <Tooltip
+                                              title="Borrar"
+                                              onClick={() => {
+                                                setData(
+                                                  rows.find(
+                                                    (r) => r.id === row.id
+                                                  )
+                                                );
+                                                setOpen("DELETE");
+                                              }}
+                                            >
+                                              <IconButton aria-label="delete">
+                                                <Delete />
+                                              </IconButton>
+                                            </Tooltip>
+                                            <Tooltip
+                                              title="Configuracion"
+                                              onClick={() => {
+                                                setData(
+                                                  rows.find(
+                                                    (r) => r.id === row.id
+                                                  )
+                                                );
+                                                setOpen("SETTING");
+                                              }}
+                                            >
+                                              <IconButton aria-label="setting">
+                                                <SettingsIcon />
+                                              </IconButton>
+                                            </Tooltip>
+                                          </Box>
+                                        </TableCell>
+                                        {headCells
+                                          .map((cell) => cell.accessor)
+                                          .map((accessor) => (
+                                            <TableCell
+                                              key={accessor}
+                                              align="center"
+                                              sx={{
+                                                color:
+                                                  (deadlineColor === "sales" &&
+                                                    deadlineIsPast(row)) ||
+                                                  (deadlineColor ===
+                                                    "clients" &&
+                                                    row.sales.some((s) =>
+                                                      deadlineIsPast(s)
+                                                    )) ||
+                                                  (deadlineColor ===
+                                                    "products" &&
+                                                    row.min_stock >
+                                                      getStock(row))
+                                                    ? "red"
+                                                    : "",
+                                              }}
+                                            >
+                                              {typeof accessor === "function"
+                                                ? accessor(row, index)
+                                                : row[accessor]}
                                             </TableCell>
-                                            {headCells.map(cell => cell.accessor).map(accessor => (
-                                                <TableCell key={accessor} align="center" sx={{
-                                                    color: (
-                                                        (deadlineColor === 'sales' && deadlineIsPast(row)) ||
-                                                        (deadlineColor === 'clients' && row.sales.some(s => deadlineIsPast(s))) ||
-                                                        (deadlineColor === 'products' && row.min_stock > getStock(row))
-                                                    ) ? 'red' : ''
-                                                }}>
-                                                    {typeof accessor === 'function' ? accessor(row, index) : row[accessor]}
-                                                </TableCell>
-                                            ))}
-                                        </TableRow>
+                                          ))}
+                                      </TableRow>
                                     );
                                 })}
                                 {emptyRows > 0 && (
@@ -228,10 +298,10 @@ export function DataGrid({
                     />
                 </Paper>
                 {children}
-                <FormControlLabel
+               {/*  <FormControlLabel
                     control={<Switch checked={dense} onChange={handleChangeDense} />}
                     label="Condensar tabla"
-                />
+                /> */}
             </Box>
         </div>
     );

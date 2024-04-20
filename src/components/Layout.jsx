@@ -232,7 +232,9 @@ export function Layout({ children, title }) {
       </nav>
       {/* page content */}
       <div className="w-[100%] h-screen flex-1 overflow-auto">
-        <h6 className="text-gray-700 bg-white p-1 pl-3">{title}</h6>
+        <h6 className="text-[#455a64] text-[20px] leading-7 bg-white p-1 pl-3">
+          {title}
+        </h6>
         <div className="p-2 lg:overflow-x-auto">{children}</div>
       </div>
     </>
