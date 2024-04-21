@@ -68,6 +68,7 @@ function EnhancedTableHead({
                 {headCells.map((headCell) => (
                     <TableCell
                         key={headCell.id}
+                        className='font-bold'
                         align="center"
                         padding={headCell.disablePadding ? 'none' : 'normal'}
                         sortDirection={orderBy === headCell.id ? order : false}
@@ -142,7 +143,7 @@ export function DataGrid({
             ),
         [order, orderBy, page, rowsPerPage, rows],
     );
-
+console.log(headCells)
     return (
         <div className='gridContainer'>
             <Box sx={{ width: '100%', backgroundColor: '#fff', padding: 1 }}>
@@ -152,10 +153,9 @@ export function DataGrid({
                 <Paper sx={{ width: '100%', mb: 2 }}>
                     <TableContainer>
                         <Table
-                            sx={{ minWidth: 750 }}
+                            sx={{ minWidth: 750, fontWeight:"bold" }}
                             aria-labelledby="tableTitle"
-                            size={dense ? 'small' : 'medium'}
-                        >
+                            size={dense ? 'small' : 'medium'}>
                             <EnhancedTableHead
                                 headCells={headCells}
                                 order={order}
@@ -178,6 +178,8 @@ export function DataGrid({
                                               justifyContent: "center",
                                               alignItems: "center",
                                               opacity: 0.3,
+                                              padding: "1px",
+                                              width:"auto"
                                             }}
                                           >
                                             <Tooltip

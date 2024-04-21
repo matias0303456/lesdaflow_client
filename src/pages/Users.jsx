@@ -166,7 +166,8 @@ export function Users() {
             numeric: false,
             disablePadding: true,
             label: 'Nombre',
-            accessor: 'first_name'
+            accessor: 'first_name',
+            width: 10
         },
         {
             id: 'last_name',

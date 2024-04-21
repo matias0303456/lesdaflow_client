@@ -104,7 +104,7 @@ export const nav_items_admin = [
       },
       {
         subtitle: "Roles",
-        // path: "/visitas",
+        path: "/role",
       },
     ],
   },

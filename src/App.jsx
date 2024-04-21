@@ -20,6 +20,7 @@ import { Budgets } from "./pages/Budgets";
 import { Registers } from "./pages/Registers";
 import { Profile } from "./pages/Profile";
 import { Error } from './pages/Error'
+import { Role } from "./pages/Role";
 
 function App() {
 
@@ -44,6 +45,7 @@ function App() {
               <Route path="/visitas" element={<Visits />} />
               <Route path="/reporte-cta-cte" element={<AccountsReport />} />
               <Route path="/vendedor" element={<Users />} />
+              <Route path="/role" element={<Role />} />
               <Route path="/proveedores" element={<Suppliers />} />
               <Route path="/ventas" element={<Sales />} />
               <Route path="/reporte-ventas" element={<SalesReport />} />
