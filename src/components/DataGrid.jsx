@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import Table from '@mui/material/Table';
@@ -11,8 +12,6 @@ import TableSortLabel from '@mui/material/TableSortLabel';
 import Paper from '@mui/material/Paper';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Switch from '@mui/material/Switch';
 import EditIcon from '@mui/icons-material/Edit';
 import SettingsIcon from "@mui/icons-material/Settings";
 import { visuallyHidden } from '@mui/utils';
@@ -68,8 +67,8 @@ function EnhancedTableHead({
                 {headCells.map((headCell) => (
                     <TableCell
                         key={headCell.id}
-                        className='font-bold'
-                        align="center"
+                        className='font-bold flex-1 px-4 py-1'
+                        align="start"
                         padding={headCell.disablePadding ? 'none' : 'normal'}
                         sortDirection={orderBy === headCell.id ? order : false}
                     >
@@ -143,9 +142,8 @@ export function DataGrid({
             ),
         [order, orderBy, page, rowsPerPage, rows],
     );
-
     return (
-        <div className='gridContainer '>
+        <div className='gridContainer'>
             <Box sx={{ width: '100%', backgroundColor: '#fff', padding: 1 }}>
                 <Box sx={{ marginBottom: 3 }}>
                     {contentHeader}
@@ -164,7 +162,9 @@ export function DataGrid({
                                 disableSorting={disableSorting}
                             />
                             <TableBody>
-                                {visibleRows.map((row, index) => {
+                               {
+                                visibleRows && visibleRows.length > 0 ? (
+                                   visibleRows.map((row, index) => {
                                     return (
                                       <TableRow
                                         role="checkbox"
@@ -182,7 +182,7 @@ export function DataGrid({
                                               alignItems: "center",
                                               padding: "1px",
                                               gap: "1rem",
-                                              width: "auto",
+                                              width: "500px",
                                             }}
                                           >
                                             <Tooltip
@@ -283,7 +283,21 @@ export function DataGrid({
                                           ))}
                                       </TableRow>
                                     );
-                                })}
+                                })
+                                ) : (
+                                  <TableRow>
+                                    <TableCell
+                                      colSpan={headCells.length}
+                                      align="start"
+                                      sx={{
+                                        fontSize: "1rem",
+                                      }}
+                                    >
+                                      No se encontraron registros
+                                    </TableCell>
+                                  </TableRow>
+                                )
+                               }
                                 {emptyRows > 0 && (
                                     <TableRow
                                         style={{
