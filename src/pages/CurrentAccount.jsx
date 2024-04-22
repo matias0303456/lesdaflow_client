@@ -1,13 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import {
-  Box,
-  Button,
-  FormControl,
-  Input,
-  InputLabel,
-  LinearProgress,
-  Typography,
-} from "@mui/material";
+import { Box, Button, LinearProgress } from "@mui/material";
 
 import { AuthContext } from "../providers/AuthProvider";
 import { MessageContext } from "../providers/MessageProvider";
@@ -17,12 +9,11 @@ import { useClients } from "../hooks/useClients";
 
 import { Layout } from "../components/Layout";
 import { DataGrid } from "../components/DataGrid";
-import { ModalComponent } from "../components/ModalComponent";
 import { ClientFilter } from "../components/filters/ClientFilter";
 
 import { CLIENT_URL } from "../utils/urls";
 
-export function Visits() {
+export function CurrentAccount() {
   const { auth } = useContext(AuthContext);
   const { setMessage, setOpenMessage, setSeverity } =
     useContext(MessageContext);
@@ -107,18 +98,18 @@ export function Visits() {
 
   const headCells = [
     {
-      id: "date",
-      numeric: false,
+      id: "cta-cte",
+      numeric: true,
       disablePadding: true,
-      label: "Fecha",
-      accessor: "date",
+      label: "Cuenta Corriente",
+      accessor: "cta-cte",
     },
     {
-      id: "hour",
-      numeric: false,
+      id: "cod.venta",
+      numeric: true,
       disablePadding: true,
-      label: "Hora",
-      accessor: "hour",
+      label: "Cod.Venta",
+      accessor: "cod.venta",
     },
     {
       id: "client",
@@ -128,38 +119,51 @@ export function Visits() {
       accessor: "client",
     },
     {
-      id: "about",
+      id: "commerce name",
       numeric: false,
       disablePadding: true,
-      label: "Tema",
-      accessor: "about",
+      label: "Nombre Comercio",
+      accessor: "commerce name",
     },
     {
-      id: "phone",
+      id: "date",
       numeric: false,
       disablePadding: true,
-      label: "Celular",
-      accessor: "phone",
+      label: "Fecha",
+      accessor: "date",
     },
     {
-      id: "email",
+      id: "expiration",
       numeric: false,
       disablePadding: true,
-      label: "Email",
-      sorter: (row) => row.email,
-      accessor: "email",
+      label: "Vencimiento",
+      accessor: "expiration",
     },
     {
-      id: "address",
+      id: "amount",
+      numeric: true,
+      disablePadding: true,
+      label: "Importe",
+      accessor: "amount",
+    },
+    {
+      id: "money-balance",
+      numeric: true,
+      disablePadding: true,
+      label: "Saldo",
+      accessor: "money-balance",
+    },
+    {
+      id: "status",
       numeric: false,
       disablePadding: true,
-      label: "Dirección",
-      accessor: "address",
+      label: "Estado",
+      accessor: "status",
     },
   ];
 
   return (
-    <Layout title="Visitas a Clientes">
+    <Layout title="Cuentas Corrientes">
       {loadingClients || disabled ? (
         <Box sx={{ width: "100%" }}>
           <LinearProgress />

@@ -21,6 +21,7 @@ import { Registers } from "./pages/Registers";
 import { Profile } from "./pages/Profile";
 import { Error } from './pages/Error'
 import { Role } from "./pages/Role";
+import { CurrentAccount } from "./pages/CurrentAccount";
 
 function App() {
 
@@ -43,6 +44,7 @@ function App() {
               <Route path="/login" element={<Login />} />
               <Route path="/clientes" element={<Clients />} />
               <Route path="/visitas" element={<Visits />} />
+              <Route path="/cta-cte" element={<CurrentAccount />} />
               <Route path="/reporte-cta-cte" element={<AccountsReport />} />
               <Route path="/vendedor" element={<Users />} />
               <Route path="/role" element={<Role />} />
@@ -60,7 +62,7 @@ function App() {
         </AuthProvider>
       </MessageProvider>
     </ThemeProvider>
-  )
+  );
 }
 
 export default App

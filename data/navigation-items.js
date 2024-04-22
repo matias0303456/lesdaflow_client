@@ -17,7 +17,7 @@ export const nav_items_user = [
       },
       {
         subtitle: "Cuentas Corrientes",
-        path: "/cuenta-cte",
+        path: "/cta-cte",
       },
       {
         subtitle: "Reporte Cuenta Corriente",
@@ -120,10 +120,10 @@ export const nav_items_admin = [
         subtitle: "Visitas",
         path: "/visitas",
       },
-      /* {
+      {
           subtitle: "Cuentas Corrientes",
-          path: "/reporte-cta-cte",
-        }, */
+        path: "/cta-cte",
+        },
       {
         subtitle: "Reporte Cuenta Corriente",
         path: "/reporte-cta-cte",
