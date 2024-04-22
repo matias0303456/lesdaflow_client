@@ -19,7 +19,7 @@ import { visuallyHidden } from '@mui/utils';
 import SearchSharpIcon from '@mui/icons-material/SearchSharp';
 
 import { deadlineIsPast, getStock } from '../utils/helpers';
-import { Delete } from '@mui/icons-material';
+import CloseIcon from "@mui/icons-material/Close";
 
 function descendingComparator(a, b, orderBy, sorter) {
     if ((b[orderBy] ? b[orderBy] : sorter(b)) < (a[orderBy] ? a[orderBy] : sorter(a))) {
@@ -143,9 +143,9 @@ export function DataGrid({
             ),
         [order, orderBy, page, rowsPerPage, rows],
     );
-console.log(headCells)
+
     return (
-        <div className='gridContainer'>
+        <div className='gridContainer '>
             <Box sx={{ width: '100%', backgroundColor: '#fff', padding: 1 }}>
                 <Box sx={{ marginBottom: 3 }}>
                     {contentHeader}
@@ -170,16 +170,19 @@ console.log(headCells)
                                         role="checkbox"
                                         tabIndex={-1}
                                         key={row.id}
+                                        width="100px"
                                       >
-                                        <TableCell sx={{ wordWrap: "" }}>
+                                        <TableCell
+                                          sx={{ wordWrap: "", width: "20%" }}
+                                        >
                                           <Box
                                             sx={{
                                               display: "flex",
                                               justifyContent: "center",
                                               alignItems: "center",
-                                              opacity: 0.3,
                                               padding: "1px",
-                                              width:"auto"
+                                              gap: "1rem",
+                                              width: "auto",
                                             }}
                                           >
                                             <Tooltip
@@ -193,8 +196,8 @@ console.log(headCells)
                                                 setOpen("VIEW");
                                               }}
                                             >
-                                              <IconButton>
-                                                <SearchSharpIcon />
+                                              <IconButton className="rounded-full bg-black/20 opacity-50 hover:bg-[#288bcd]">
+                                                <SearchSharpIcon className="w-4 h-4 hover:text-white" />
                                               </IconButton>
                                             </Tooltip>
                                             <Tooltip
@@ -208,8 +211,8 @@ console.log(headCells)
                                                 setOpen("EDIT");
                                               }}
                                             >
-                                              <IconButton>
-                                                <EditIcon />
+                                              <IconButton className="rounded-full bg-black/20 opacity-50 hover:bg-[#288bcd]">
+                                                <EditIcon className="w-4 h-4 hover:text-white" />
                                               </IconButton>
                                             </Tooltip>
                                             <Tooltip
@@ -223,8 +226,11 @@ console.log(headCells)
                                                 setOpen("DELETE");
                                               }}
                                             >
-                                              <IconButton aria-label="delete">
-                                                <Delete />
+                                              <IconButton
+                                                className="rounded-full bg-black/20 opacity-50 hover:bg-[#288bcd]"
+                                                aria-label="delete"
+                                              >
+                                                <CloseIcon className="w-4 h-4 hover:text-white" />
                                               </IconButton>
                                             </Tooltip>
                                             <Tooltip
@@ -238,8 +244,11 @@ console.log(headCells)
                                                 setOpen("SETTING");
                                               }}
                                             >
-                                              <IconButton aria-label="setting">
-                                                <SettingsIcon />
+                                              <IconButton
+                                                className="rounded-full bg-black/20 opacity-50 hover:bg-[#078BCD]"
+                                                aria-label="setting"
+                                              >
+                                                <SettingsIcon className="w-4 h-4 hover:text-white" />
                                               </IconButton>
                                             </Tooltip>
                                           </Box>
@@ -249,7 +258,7 @@ console.log(headCells)
                                           .map((accessor) => (
                                             <TableCell
                                               key={accessor}
-                                              align="center"
+                                              align="start"
                                               sx={{
                                                 color:
                                                   (deadlineColor === "sales" &&

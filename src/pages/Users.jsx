@@ -154,20 +154,12 @@ export function Users() {
     }
 
     const headCells = [
-       /*  {
-            id: 'id',
-            numeric: true,
-            disablePadding: false,
-            label: 'N°',
-            accessor: 'id'
-        }, */
         {
             id: 'first_name',
             numeric: false,
             disablePadding: true,
             label: 'Nombre',
             accessor: 'first_name',
-            width: 10
         },
         {
             id: 'last_name',
