@@ -143,11 +143,11 @@ export function Sales() {
 
     const headCells = [
         {
-            id: 'id',
+            id: 'sale code',
             numeric: true,
             disablePadding: false,
-            label: 'N°',
-            accessor: 'id'
+            label: 'Codigo de Venta',
+            accessor: 'sale code'
         },
         {
             id: 'date',

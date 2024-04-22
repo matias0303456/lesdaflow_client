@@ -164,7 +164,7 @@ export const nav_items_admin = [
       },
       {
         subtitle: "Busqueda de ventas",
-        // path: "/busqueda-de-ventas",
+        path: "/ventas-busqueda",
       },
       {
         subtitle: "Reporte de Ventas",

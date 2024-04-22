@@ -23,6 +23,7 @@ import { Error } from './pages/Error'
 import { Role } from "./pages/Role";
 import { CurrentAccount } from "./pages/CurrentAccount";
 import { ClientsBySeller } from "./pages/ClientsBySeller";
+import { SalesSearch } from "./pages/SalesSearch";
 
 function App() {
 
@@ -52,6 +53,7 @@ function App() {
               <Route path="/role" element={<Role />} />
               <Route path="/proveedores" element={<Suppliers />} />
               <Route path="/ventas" element={<Sales />} />
+              <Route path="/ventas-busqueda" element={<SalesSearch />} />
               <Route path="/reporte-ventas" element={<SalesReport />} />
               <Route path="/productos" element={<Products />} />
               <Route path="/reporte-productos" element={<ProductsReport />} />

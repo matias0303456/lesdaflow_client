@@ -1,25 +1,28 @@
 import { useContext, useEffect, useState } from "react";
+import dayjs from 'dayjs';
 import {
   Box,
   Button,
   FormControl,
+  Input,
   InputLabel,
   LinearProgress,
   MenuItem,
   Select,
   Typography,
 } from "@mui/material";
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { CLIENT_URL, USER_URL } from "../utils/urls";
-
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { AuthContext } from "../providers/AuthProvider";
 import { MessageContext } from "../providers/MessageProvider";
 import { useApi } from "../hooks/useApi";
 import { useForm } from "../hooks/useForm";
 import { useClients } from "../hooks/useClients";
-
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { Layout } from "../components/Layout";
 
-export function AccountsReport() {
+export function SalesSearch() {
   const { auth } = useContext(AuthContext);
   const { setMessage, setOpenMessage, setSeverity } =
     useContext(MessageContext);
@@ -30,7 +33,12 @@ export function AccountsReport() {
   // users import
   const { get: getUsers } = useApi(USER_URL);
 
-  const {
+
+//    date data
+const today = dayjs();
+const tomorrow = dayjs().add(1, 'day');
+  
+const {
     formData,
     setFormData,
     handleChange,
@@ -97,8 +105,8 @@ export function AccountsReport() {
   }
 
   return (
-    <Layout title="Reporte Cuenta Corriente">
-      <Box className="w-[50%]">
+    <Layout title="Búsqueda de Ventas">
+      <Box className="w-[100%]">
         <Typography
           variant="h6"
           sx={{
@@ -113,7 +121,7 @@ export function AccountsReport() {
             marginBottom: "1.5rem",
           }}
         >
-          Informacion General
+         Búsqueda de Ventas
         </Typography>
 
         {loadingClients || loadingUsers ? (
@@ -122,15 +130,92 @@ export function AccountsReport() {
           </Box>
         ) : (
           <form onChange={handleChange} onSubmit={handleSubmit}>
-            <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
-              {/* vendor select */}
-              <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+        <Box 
+        sx={{ display: "flex", alignItems: "end", justifyContent: "start", gap: 2 }}>
+            <LocalizationProvider
+            dateAdapter={AdapterDayjs}>
+           
+           {/* start date */}
+            <FormControl variant="standard"
+            sx={{
+                width: "16.5%",
+                color: "#59656b"
+            }}
+            >
+                <InputLabel 
+                id="demo-simple-select-standard-label">
+                  Fecha Inicio*
+                </InputLabel>
+                <DatePicker
+                sx={{
+                    marginTop: "3rem",
+                }}
+                    defaultValue={today}
+                    minDate={tomorrow}
+                    views={['year', 'month', 'day']}
+                />
+            </FormControl>
+           
+           {/* end date */}
+           <FormControl variant="standard"
+            sx={{
+                width: "16.5%",
+                color: "#59656b"
+            }}
+            >
+                <InputLabel 
+                id="demo-simple-select-standard-label">
+                  Fecha Fin*
+                </InputLabel>
+                <DatePicker
+                sx={{
+                    marginTop: "3rem"
+                }}
+                    defaultValue={today}
+                    minDate={tomorrow}
+                    views={['year', 'month', 'day']}
+                />
+            </FormControl>
+            
+            </LocalizationProvider>
+
+               {/* sale code input */}
+               <FormControl variant="standard"
+               className="focus:text-black"
+               sx={{
+                    width: "16.5%",
+                    color: "#59656b",
+                    display: "flex",
+                    alignItems: "start",
+                    justifyContent: "center"
+                }}>
+                <InputLabel 
+                className="focus:text-black"
+                id="demo-simple-select-standard-label">
+                  Cod. Venta
+                </InputLabel>
+                <Input
+                onFocus={disabled}
+                />
+              </FormControl>
+
+                  {/* seller select */}
+            <FormControl variant="standard" sx={{
+                    minWidth: "50%",
+                    color: "#59656b",
+                    display: "flex",
+                    alignItems: "start",
+                    justifyContent: "center"
+                }}>
                 <InputLabel id="demo-simple-select-standard-label">
                   Vendedor
                 </InputLabel>
                 <Select
                   labelId="demo-simple-select-standard-label"
                   id="demo-simple-select-standard"
+                  sx={{
+                    width: "100%"
+                  }}
                   // value={age}
                   onChange={handleChange}
                   label="Vendedor"
@@ -146,50 +231,7 @@ export function AccountsReport() {
                   )}
                 </Select>
               </FormControl>
-              {/* client select */}
-              <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
-                <InputLabel id="demo-simple-select-standard-label">
-                  Cliente
-                </InputLabel>
-                <Select
-                  labelId="demo-simple-select-standard-label"
-                  id="demo-simple-select-standard"
-                  //   value={}
-                  onChange={handleChange}
-                  label="Cliente"
-                >
-                  {clients.length > 0 ? (
-                    clients.map((c) => (
-                      <MenuItem key={c.id} value={c}>
-                        {`${c.first_name} ${c.last_name}`.toUpperCase()}
-                      </MenuItem>
-                    ))
-                  ) : (
-                    <MenuItem>No se encontraron resultados</MenuItem>
-                  )}
-                </Select>
-              </FormControl>
-
-              {/* Button section */}
-              <FormControl
-                sx={{
-                  display: "flex",
-                  flexDirection: "row",
-                  gap: 1,
-                  justifyContent: "start",
-                  marginTop: 3,
-                  width: "70%",
-                }}
-              >
-                <Button
-                  type="button"
-                  variant="contained"
-                  onClick={() => reset(setOpen)}
-                >
-                  imprimir
-                </Button>
-              </FormControl>
-            </Box>
+        </Box>
           </form>
         )}
       </Box>
