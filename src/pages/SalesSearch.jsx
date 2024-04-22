@@ -21,6 +21,9 @@ import { useForm } from "../hooks/useForm";
 import { useClients } from "../hooks/useClients";
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { Layout } from "../components/Layout";
+import { DataGrid } from "../components/DataGrid";
+
+import { useNavigate } from "react-router-dom";
 
 export function SalesSearch() {
   const { auth } = useContext(AuthContext);
@@ -33,7 +36,7 @@ export function SalesSearch() {
   // users import
   const { get: getUsers } = useApi(USER_URL);
 
-
+  const navigate = useNavigate();
 //    date data
 const today = dayjs();
 const tomorrow = dayjs().add(1, 'day');
@@ -70,15 +73,6 @@ const {
     })();
   }, []);
 
-  useEffect(() => {
-    (async () => {
-      const { status, data } = await get();
-      if (status === 200) {
-        setClients(data);
-        setLoadingClients(false);
-      }
-    })();
-  }, []);
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -104,8 +98,42 @@ const {
     }
   }
 
+  const headCells = [
+    {
+      id: "sale code",
+      numeric: false,
+      disablePadding: true,
+      label: "Cod. Venta",
+      accessor: "sale code",
+    },
+    {
+      id: "date",
+      numeric: false,
+      disablePadding: true,
+      label: "Fecha",
+      sorter: (row) => format(new Date(getDeadline(row.date, row.installments)), 'dd/MM/yy'),
+      accessor: (row) => format(new Date(getDeadline(row.date, row.installments)), 'dd/MM/yy')
+    },
+    {
+      id: 'hour',
+      numeric: false,
+      disablePadding: true,
+      label: 'Hora',
+      sorter: (row) => format(new Date(getDeadline(row.date, row.installments)), 'dd/MM/yy'),
+      accessor: (row) => format(new Date(getDeadline(row.date, row.installments)), 'dd/MM/yy')
+  },
+  {
+    id: "receipt kind",
+    numeric: false,
+    disablePadding: true,
+    label: "Tipo de Comprobante",
+    accessor: "receipt kind",
+  },
+  ];
+
   return (
     <Layout title="Búsqueda de Ventas">
+      {/* sales search */}
       <Box className="w-[100%]">
         <Typography
           variant="h6"
@@ -118,7 +146,6 @@ const {
             backgroundColor: "#078BCD",
             borderRadius: "2px",
             fontWeight: "bold",
-            marginBottom: "1.5rem",
           }}
         >
          Búsqueda de Ventas
@@ -129,7 +156,9 @@ const {
             <LinearProgress />
           </Box>
         ) : (
-          <form onChange={handleChange} onSubmit={handleSubmit}>
+          <form onChange={handleChange} onSubmit={handleSubmit}
+          className="gridContainer mb-5"
+          >
         <Box 
         sx={{ display: "flex", alignItems: "end", justifyContent: "start", gap: 2 }}>
             <LocalizationProvider
@@ -232,6 +261,43 @@ const {
                 </Select>
               </FormControl>
         </Box>
+          </form>
+        )}
+      </Box>
+
+      {/* sales info */}
+      <Box className="w-[100%] mt-3">
+        <Typography
+          variant="h6"
+          sx={{
+            width: "100%",
+            fontSize: "14px",
+            color: "white",
+            paddingX: "10px",
+            paddingY: "5px",
+            backgroundColor: "#078BCD",
+            borderRadius: "2px",
+            fontWeight: "bold",
+          }}
+        >
+         Información de Ventas
+        </Typography>
+
+        {loadingClients || loadingUsers ? (
+          <Box sx={{ width: "100%" }}>
+            <LinearProgress />
+          </Box>
+        ) : (
+          <form onChange={handleChange} onSubmit={handleSubmit}
+          className="gridContainer mb-5"
+          >
+            <DataGrid
+            headCells={headCells}
+            rows={clients}
+            setOpen={setOpen}
+            setData={setFormData}
+            contentHeader={""}
+            ></DataGrid>
           </form>
         )}
       </Box>
