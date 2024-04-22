@@ -173,7 +173,7 @@ export function DataGrid({
                                         width="100px"
                                       >
                                         <TableCell
-                                          sx={{ wordWrap: "", width: "20%" }}
+                                          sx={{ wordWrap: "", width: "auto" }}
                                         >
                                           <Box
                                             sx={{
@@ -182,7 +182,7 @@ export function DataGrid({
                                               alignItems: "center",
                                               padding: "1px",
                                               gap: "1rem",
-                                              width: "500px",
+                                              width: "auto",
                                             }}
                                           >
                                             <Tooltip

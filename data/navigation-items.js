@@ -121,7 +121,7 @@ export const nav_items_admin = [
         path: "/visitas",
       },
       {
-          subtitle: "Cuentas Corrientes",
+        subtitle: "Cuentas Corrientes",
         path: "/cta-cte",
         },
       {
@@ -130,7 +130,7 @@ export const nav_items_admin = [
       },
       {
         subtitle: "Clientes por Vendedor",
-        // path: "/reporte-cta-cte",
+        path: "/clientes-vendedor",
       },
     ],
   },

@@ -22,6 +22,7 @@ import { Profile } from "./pages/Profile";
 import { Error } from './pages/Error'
 import { Role } from "./pages/Role";
 import { CurrentAccount } from "./pages/CurrentAccount";
+import { ClientsBySeller } from "./pages/ClientsBySeller";
 
 function App() {
 
@@ -46,6 +47,7 @@ function App() {
               <Route path="/visitas" element={<Visits />} />
               <Route path="/cta-cte" element={<CurrentAccount />} />
               <Route path="/reporte-cta-cte" element={<AccountsReport />} />
+              <Route path="/clientes-vendedor" element={<ClientsBySeller />} />
               <Route path="/vendedor" element={<Users />} />
               <Route path="/role" element={<Role />} />
               <Route path="/proveedores" element={<Suppliers />} />

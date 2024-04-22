@@ -231,11 +231,11 @@ export function Layout({ children, title }) {
         </div>
       </nav>
       {/* page content */}
-      <div className="w-[100%] h-screen">
-        <h6 className="text-[#455a64] text-[20px] leading-7 bg-white p-1 pl-3">
+      <div className="w-[100%] h-screen ">
+        <h6 className="text-[#455a64] text-[20px] leading-7 bg-white px-4 py-2">
           {title}
         </h6>
-        <div className="p-2 overflow-x-scroll">{children}</div>
+        <div className="px-4 py-2 mt-2">{children}</div>
       </div>
     </>
   );

@@ -18,8 +18,9 @@ import { useForm } from "../hooks/useForm";
 import { useClients } from "../hooks/useClients";
 
 import { Layout } from "../components/Layout";
+import { DataGrid } from "../components/DataGrid";
 
-export function AccountsReport() {
+export function ClientsBySeller() {
   const { auth } = useContext(AuthContext);
   const { setMessage, setOpenMessage, setSeverity } =
     useContext(MessageContext);
@@ -96,12 +97,48 @@ export function AccountsReport() {
     }
   }
 
-  console.log(users);
-  console.log(clients);
+  const headCells = [
+    {
+      id: "clients",
+      numeric: false,
+      disablePadding: true,
+      label: "Clientes",
+      accessor: "clients",
+    },
+    {
+      id: "commerce name",
+      numeric: false,
+      disablePadding: true,
+      label: "Nombre Comercio",
+      accessor: "commerce name",
+    },
+    {
+      id: "address",
+      numeric: false,
+      disablePadding: true,
+      label: "Dirección",
+      accessor: "address",
+    },
+    {
+      id: "phone",
+      numeric: false,
+      disablePadding: true,
+      label: "Celular",
+      accessor: "phone",
+    },
+    {
+      id: "email",
+      numeric: false,
+      disablePadding: true,
+      label: "Email",
+      sorter: (row) => row.email,
+      accessor: "email",
+    },
+  ];
 
   return (
-    <Layout title="Reporte Cuenta Corriente">
-      <Box className="w-[50%]">
+    <Layout title="Clientes por Vendedor">
+      <Box className="w-[100%]">
         <Typography
           variant="h6"
           sx={{
@@ -115,19 +152,27 @@ export function AccountsReport() {
             fontWeight: "bold",
             marginBottom: "1.5rem",
           }}
-        >
-          Informacion General
-        </Typography>
+        ></Typography>
 
         {loadingClients || loadingUsers ? (
           <Box sx={{ width: "100%" }}>
             <LinearProgress />
           </Box>
         ) : (
-          <form onChange={handleChange} onSubmit={handleSubmit}>
-            <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
+          <form onChange={handleChange} onSubmit={handleSubmit}
+          className="mb-2"
+          >
+            <Box
+              sx={{
+                width: "100%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "start",
+                gap: 3,
+              }}
+            >
               {/* vendor select */}
-              <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+              <FormControl variant="standard" sx={{ m: 1, minWidth: 300 }}>
                 <InputLabel id="demo-simple-select-standard-label">
                   Vendedor
                 </InputLabel>
@@ -149,30 +194,6 @@ export function AccountsReport() {
                   )}
                 </Select>
               </FormControl>
-              {/* client select */}
-              <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
-                <InputLabel id="demo-simple-select-standard-label">
-                  Cliente
-                </InputLabel>
-                <Select
-                  labelId="demo-simple-select-standard-label"
-                  id="demo-simple-select-standard"
-                  //   value={}
-                  onChange={handleChange}
-                  label="Cliente"
-                >
-                  {clients.length > 0 ? (
-                    clients.map((c) => (
-                      <MenuItem key={c.id} value={c}>
-                        {`${c.first_name} ${c.last_name}`.toUpperCase()}
-                      </MenuItem>
-                    ))
-                  ) : (
-                    <MenuItem>No se encontraron resultados</MenuItem>
-                  )}
-                </Select>
-              </FormControl>
-
               {/* Button section */}
               <FormControl
                 sx={{
@@ -181,7 +202,7 @@ export function AccountsReport() {
                   gap: 1,
                   justifyContent: "start",
                   marginTop: 3,
-                  width: "70%",
+                  width: "50%",
                 }}
               >
                 <Button
@@ -189,13 +210,32 @@ export function AccountsReport() {
                   variant="contained"
                   onClick={() => reset(setOpen)}
                 >
-                  imprimir
+                  Buscar
                 </Button>
               </FormControl>
             </Box>
           </form>
         )}
       </Box>
+      <DataGrid
+        headCells={headCells}
+        rows={clients}
+        setOpen={setOpen}
+        setData={setFormData}
+        contentHeader={
+          <Box
+            sx={{
+              display: "flex",
+              flexWrap: "wrap",
+              alignItems: "center",
+              gap: 2,
+            }}
+          >
+           
+            {/* <ClientFilter clients={clients} setClients={setClients} /> */}
+          </Box>
+        }
+      ></DataGrid>
     </Layout>
   );
 }
