@@ -13,12 +13,12 @@ import {
 } from "@mui/material";
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { CLIENT_URL, USER_URL } from "../utils/urls";
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { AuthContext } from "../providers/AuthProvider";
 import { MessageContext } from "../providers/MessageProvider";
 import { useApi } from "../hooks/useApi";
 import { useForm } from "../hooks/useForm";
 import { useClients } from "../hooks/useClients";
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { Layout } from "../components/Layout";
 import { DataGrid } from "../components/DataGrid";
@@ -111,16 +111,16 @@ const {
       numeric: false,
       disablePadding: true,
       label: "Fecha",
-      sorter: (row) => format(new Date(getDeadline(row.date, row.installments)), 'dd/MM/yy'),
-      accessor: (row) => format(new Date(getDeadline(row.date, row.installments)), 'dd/MM/yy')
+      // sorter: (row) => format(new Date(getDeadline(row.date, row.installments)), 'dd/MM/yy'),
+      // accessor: (row) => format(new Date(getDeadline(row.date, row.installments)), 'dd/MM/yy')
     },
     {
       id: 'hour',
       numeric: false,
       disablePadding: true,
       label: 'Hora',
-      sorter: (row) => format(new Date(getDeadline(row.date, row.installments)), 'dd/MM/yy'),
-      accessor: (row) => format(new Date(getDeadline(row.date, row.installments)), 'dd/MM/yy')
+      // sorter: (row) => format(new Date(getDeadline(row.date, row.installments)), 'dd/MM/yy'),
+      // accessor: (row) => format(new Date(getDeadline(row.date, row.installments)), 'dd/MM/yy')
   },
   {
     id: "receipt kind",
