@@ -135,42 +135,48 @@ export function Suppliers() {
 
     const headCells = [
         {
-            id: 'id',
-            numeric: true,
-            disablePadding: false,
-            label: 'N°',
-            accessor: 'id'
-        },
-        {
-            id: 'name',
+            id: 'supplier',
             numeric: false,
             disablePadding: true,
-            label: 'Nombre',
-            accessor: 'name'
+            label: 'Proveedor',
+            accessor: 'supplier'
+        },
+        {
+            id: 'business name',
+            numeric: false,
+            disablePadding: true,
+            label: 'Razon Social',
+            accessor: 'business name'
+        },
+        {
+            id: 'cuil',
+            numeric: true,
+            disablePadding: true,
+            label: 'CUIL',
+            accessor: 'cuil'
         },
         {
             id: 'address',
             numeric: false,
             disablePadding: true,
             label: 'Dirección',
-            sorter: (row) => row.address ?? '',
             accessor: 'address'
         },
         {
-            id: 'city',
+            id: 'phone',
             numeric: false,
             disablePadding: true,
-            label: 'Ciudad',
-            sorter: (row) => row.city ?? '',
-            accessor: 'city'
+            label: 'Teléfono',
+            sorter: (row) => row.phone ?? '',
+            accessor: 'phone'
         },
         {
-            id: 'province',
+            id: 'bussiness phone',
             numeric: false,
             disablePadding: true,
-            label: 'Provincia',
-            sorter: (row) => row.province ?? '',
-            accessor: 'province'
+            label: 'Teléfono',
+            sorter: (row) => row.phone ?? '',
+            accessor: 'bussiness phone'
         },
         {
             id: 'email',
@@ -180,14 +186,7 @@ export function Suppliers() {
             sorter: (row) => row.email ?? '',
             accessor: 'email'
         },
-        {
-            id: 'phone',
-            numeric: false,
-            disablePadding: true,
-            label: 'Teléfono',
-            sorter: (row) => row.phone ?? '',
-            accessor: 'phone'
-        }
+        
     ]
 
     return (
