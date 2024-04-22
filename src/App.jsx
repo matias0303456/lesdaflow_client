@@ -24,6 +24,8 @@ import { Role } from "./pages/Role";
 import { CurrentAccount } from "./pages/CurrentAccount";
 import { ClientsBySeller } from "./pages/ClientsBySeller";
 import { SalesSearch } from "./pages/SalesSearch";
+import { SalesReady } from "./pages/SalesReady";
+import { SalesToDeliver } from "./pages/SalesToDeliver";
 
 function App() {
 
@@ -55,6 +57,8 @@ function App() {
               <Route path="/ventas" element={<Sales />} />
               <Route path="/ventas-busqueda" element={<SalesSearch />} />
               <Route path="/reporte-ventas" element={<SalesReport />} />
+              <Route path="/prep-ventas" element={<SalesReady />} />
+              <Route path="/entrega-ventas" element={<SalesToDeliver />} />
               <Route path="/productos" element={<Products />} />
               <Route path="/reporte-productos" element={<ProductsReport />} />
               <Route path="/presupuestos" element={<Budgets />} />

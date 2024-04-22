@@ -172,11 +172,11 @@ export const nav_items_admin = [
       },
       {
         subtitle: "Preparacion de Ventas",
-        // path: "/preparacion-ventas",
+        path: "/prep-ventas",
       },
       {
         subtitle: "Entrega de Ventas",
-        // path: "/entrega-ventas",
+        path: "/entrega-ventas",
       },
     ],
   },
