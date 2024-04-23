@@ -126,7 +126,7 @@ const { suppliers, setSuppliers, loadingSuppliers, setLoadingSuppliers } = useSu
 
   return (
     <Layout title="Reporte Productos">
-    {/* upper section */}
+
       <Box className="w-[50%] mb-3 px-2 py-4 bg-white rounded-md">
         <Typography
           variant="h6"
@@ -227,6 +227,9 @@ const { suppliers, setSuppliers, loadingSuppliers, setLoadingSuppliers } = useSu
           </form>
         )}
       </Box>
+      <Button variant="contained" size="medium">
+imprimir
+        </Button>
     </Layout>
   );
 }
