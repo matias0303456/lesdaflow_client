@@ -151,13 +151,6 @@ export function Products() {
 
     const headCells = [
         {
-            id: 'id',
-            numeric: true,
-            disablePadding: false,
-            label: 'N°',
-            accessor: 'id'
-        },
-        {
             id: 'code',
             numeric: false,
             disablePadding: true,
@@ -165,19 +158,11 @@ export function Products() {
             accessor: 'code'
         },
         {
-            id: 'details',
+            id: 'product',
             numeric: false,
             disablePadding: true,
-            label: 'Detalle',
-            accessor: 'details'
-        },
-        {
-            id: 'size',
-            numeric: false,
-            disablePadding: true,
-            label: 'Talle',
-            sorter: (row) => row.size.toLowerCase(),
-            accessor: 'size'
+            label: 'Producto',
+            accessor: 'product'
         },
         {
             id: 'buy_price',
@@ -185,6 +170,14 @@ export function Products() {
             disablePadding: true,
             label: 'Precio de compra',
             accessor: (row) => `$${row.buy_price.toFixed(2)}`
+        },
+        {
+            id: 'buy price',
+            numeric: false,
+            disablePadding: true,
+            label: 'Precio Compra',
+            // sorter: (row) => row.size.toLowerCase(),
+            accessor: 'buy price'
         },
         {
             id: 'earn',
@@ -202,12 +195,12 @@ export function Products() {
             accessor: (row) => `$${(row.buy_price + ((row.buy_price / 100) * row.earn)).toFixed(2)}`
         },
         {
-            id: 'supplier',
+            id: 'stock',
             numeric: false,
             disablePadding: true,
-            label: 'Proveedor',
-            sorter: (row) => row.supplier.name.toLowerCase(),
-            accessor: (row) => row.supplier.name
+            label: 'Stock',
+            sorter: (row) => getStock(row),
+            accessor: (row) => getStock(row)
         },
         {
             id: 'min_stock',
@@ -217,13 +210,13 @@ export function Products() {
             accessor: 'min_stock'
         },
         {
-            id: 'stock',
+            id: 'supplier',
             numeric: false,
             disablePadding: true,
-            label: 'Stock actual',
-            sorter: (row) => getStock(row),
-            accessor: (row) => getStock(row)
-        }
+            label: 'Proveedor',
+            sorter: (row) => row.supplier.name.toLowerCase(),
+            accessor: (row) => row.supplier.name
+        },
     ]
 
     return (
@@ -252,12 +245,15 @@ export function Products() {
                                 <Button variant="outlined" color='success'>
                                     Excel
                                 </Button>
+                                <Button variant="contained" onClick={() => setOpen('NEW')}>
+                                    Stock nulo
+                                </Button>
                             </Box>
-                            <ProductFilter
+                            {/* <ProductFilter
                                 products={products}
                                 setProducts={setProducts}
                                 suppliers={suppliers}
-                            />
+                            /> */}
                         </Box>
                     }
                 >
