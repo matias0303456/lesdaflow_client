@@ -6,14 +6,10 @@ import {
   FormControl,
   InputLabel,
   LinearProgress,
-  MenuItem,
-  Select,
   Typography,
 } from "@mui/material";
 import { CLIENT_URL, USER_URL } from "../utils/urls";
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+
 import { AuthContext } from "../providers/AuthProvider";
 import { MessageContext } from "../providers/MessageProvider";
 import { useApi } from "../hooks/useApi";
@@ -21,11 +17,8 @@ import { useForm } from "../hooks/useForm";
 import { useClients } from "../hooks/useClients";
 
 import { Layout } from "../components/Layout";
-import dayjs from 'dayjs';
+
 import { DataGrid } from "../components/DataGrid";
-//    date data
-const today = dayjs();
-const tomorrow = dayjs().add(1, 'day');
 
 
 export function ProductsPriceList() {
