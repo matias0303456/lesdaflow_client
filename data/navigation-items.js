@@ -190,7 +190,7 @@ export const nav_items_admin = [
       },
       {
         subtitle: "Lista de Precios",
-        // path: "/lista-precios",
+        path: "/lista-precios",
       },
       {
         subtitle: "Reporte de Productos",
