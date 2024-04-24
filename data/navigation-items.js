@@ -202,7 +202,7 @@ export const nav_items_admin = [
       },
       {
         subtitle: "Reposicion de Stock",
-        // path: "/reposicion-stock",
+        path: "/reposicion-stock",
       },
       {
         subtitle: "Actualizar Precios Por Producto",
