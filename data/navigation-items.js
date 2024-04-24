@@ -198,7 +198,7 @@ export const nav_items_admin = [
       },
       {
         subtitle: "Actualizar Precios Por Proveedor",
-        // path: "/",
+        path: "/producto-actualiza-precio",
       },
       {
         subtitle: "Reposicion de Stock",
