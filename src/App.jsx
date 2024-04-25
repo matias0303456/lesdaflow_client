@@ -32,6 +32,7 @@ import { StockReplenishment } from "./pages/StockReplenishment";
 import { UpdateProductPriceBySupplier } from "./pages/UpdateProductPriceBySupplier";
 import {Orders} from "./pages/Orders";
 import { OrdersCheckIn } from "./pages/OrdersCheckIn";
+import { OpenRegister } from "./pages/OpenRegister";
 
 function App() {
 
@@ -39,6 +40,9 @@ function App() {
     palette: {
       primary: {
         main: '#078BCD',
+      },
+      terciary:{
+        main: '#000000'
       }
     },
   })
@@ -84,6 +88,7 @@ function App() {
               <Route path="/ingreso-pedidos" element={<OrdersCheckIn />} />
               <Route path="/presupuestos" element={<Budgets />} />
               <Route path="/cajas" element={<Registers />} />
+              <Route path="/movimientos-caja" element={<OpenRegister />} />
               <Route path="/cambiar-contraseña" element={<Profile />} />
               <Route path="*" element={<Error />} />
             </Routes>

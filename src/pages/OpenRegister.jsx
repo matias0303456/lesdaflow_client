@@ -16,7 +16,7 @@ import { ModalComponent } from "../components/ModalComponent";
 import { REGISTER_URL } from "../utils/urls";
 import { getRegisterTotal, setLocalDate } from "../utils/helpers";
 
-export function Registers() {
+export function OpenRegister() {
 
     const { auth } = useContext(AuthContext)
     const { setMessage, setOpenMessage, setSeverity } = useContext(MessageContext)
@@ -79,10 +79,52 @@ export function Registers() {
             label: 'Caja',
             accessor: 'cash_register'
         },
+        {
+            id: "open_date",
+            numeric: false,
+            disablePadding: true,
+            label: "Apertura Fecha",
+            accessor: "open_date"
+          },
+          {
+            id: 'open_hour',
+            numeric: false,
+            disablePadding: true,
+            label: 'Apertura Hora',
+            accessor: "open_hour"
+        },
+        {
+            id: 'open_amount',
+            numeric: false,
+            disablePadding: true,
+            label: 'Apertura Saldo',
+            accessor: "open_amount"
+        },
+        {
+            id: "end_date",
+            numeric: false,
+            disablePadding: true,
+            label: "Cierre Fecha",
+            accessor: "end_date"
+          },
+          {
+            id: "end_hour",
+            numeric: false,
+            disablePadding: true,
+            label: "Cierre hora",
+            accessor: "end_hour"
+          },
+          {
+            id: 'end_amount',
+            numeric: false,
+            disablePadding: true,
+            label: 'Cierre Saldo',
+            accessor: "end_amount"
+        },
     ]
 
     return (
-        <Layout title="Cajas">
+        <Layout title="Movimientos Caja">
             {loadingRegisters || loadingPayments || disabled ?
                 <Box sx={{ width: '100%' }}>
                     <LinearProgress />
@@ -104,8 +146,8 @@ export function Registers() {
                         gap: 2
                     }}>
                         <Box sx={{ display: 'flex', gap: 1 }}>
-                            <Button variant="outlined" onClick={() => setOpen('NEW')}>
-                                Agregar
+                            <Button variant="outlined" color="terciary" onClick={() => console.log(`abrir modal apertura de caja`)}>
+                                Apertura de Caja
                             </Button>
                             <Button variant="outlined" color='success'>
                                 Excel
