@@ -216,7 +216,7 @@ export const nav_items_admin = [
     submenu: [
       {
         subtitle: "ABM de Pedidos",
-        // path: "/pedidos",
+        path: "/pedidos",
       },
       {
         subtitle: "Ingreso de Pedidos",
