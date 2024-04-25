@@ -27,8 +27,9 @@ import { SalesSearch } from "./pages/SalesSearch";
 import { SalesReady } from "./pages/SalesReady";
 import { SalesToDeliver } from "./pages/SalesToDeliver";
 import {ProductsPriceList } from "./pages/ProductsPriceList"
-import { UpdateProductPrice } from "./pages/UpdateProductPrice";
+import { UpdateProductPriceByProduct } from "./pages/UpdateProductPriceByProduct";
 import { StockReplenishment } from "./pages/StockReplenishment";
+import { UpdateProductPriceBySupplier } from "./pages/UpdateProductPriceBySupplier";
 
 function App() {
 
@@ -66,12 +67,16 @@ function App() {
               <Route path="/lista-precios" element={<ProductsPriceList />} />
               <Route path="/reporte-productos" element={<ProductsReport />} />
               <Route
-                path="/producto-actualiza-precio"
-                element={<UpdateProductPrice />}
+                path="/producto-actualiza-precio-proveedor"
+                element={<UpdateProductPriceBySupplier />}
               />
               <Route
                 path="/reposicion-stock"
                 element={<StockReplenishment />}
+              />
+              <Route
+                path="/producto-actualiza-precio"
+                element={<UpdateProductPriceByProduct />}
               />
               <Route path="/presupuestos" element={<Budgets />} />
               <Route path="/cajas" element={<Registers />} />

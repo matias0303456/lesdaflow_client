@@ -23,7 +23,7 @@ import { Layout } from "../components/Layout";
 
 import { DataGrid } from "../components/DataGrid";
 
-export function UpdateProductPrice() {
+export function UpdateProductPriceBySupplier() {
   const { auth } = useContext(AuthContext);
   const { setMessage, setOpenMessage, setSeverity } =
     useContext(MessageContext);
@@ -136,7 +136,7 @@ export function UpdateProductPrice() {
      },
    ];
   return (
-    <Layout title="Actualizar Precio">
+    <Layout title="Actualizar Precio Producto">
       <Box className="w-[50%] mb-3 px-2 py-4 bg-white rounded-md">
         <Typography
           variant="h6"
