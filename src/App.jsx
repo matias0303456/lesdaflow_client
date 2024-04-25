@@ -33,6 +33,7 @@ import { UpdateProductPriceBySupplier } from "./pages/UpdateProductPriceBySuppli
 import {Orders} from "./pages/Orders";
 import { OrdersCheckIn } from "./pages/OrdersCheckIn";
 import { OpenRegister } from "./pages/OpenRegister";
+import { RegisterMovements } from "./pages/RegisterMovements";
 
 function App() {
 
@@ -89,6 +90,7 @@ function App() {
               <Route path="/presupuestos" element={<Budgets />} />
               <Route path="/cajas" element={<Registers />} />
               <Route path="/movimientos-caja" element={<OpenRegister />} />
+              <Route path="/reporte-movimientos-caja" element={<RegisterMovements />} />
               <Route path="/cambiar-contraseña" element={<Profile />} />
               <Route path="*" element={<Error />} />
             </Routes>

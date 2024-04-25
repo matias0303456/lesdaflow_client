@@ -258,7 +258,7 @@ export const nav_items_admin = [
     submenu: [
       {
         subtitle: "Movimientos de caja",
-        // path: "/reporte-mov-cajas",
+        path: "/reporte-movimientos-caja",
       },
       {
         subtitle: "Clientes Bloqueados",
