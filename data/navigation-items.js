@@ -220,7 +220,7 @@ export const nav_items_admin = [
       },
       {
         subtitle: "Ingreso de Pedidos",
-        // path: "/lista-precios",
+        path: "/ingreso-pedidos",
       },
       {
         subtitle: "Busqueda de Pedidos",

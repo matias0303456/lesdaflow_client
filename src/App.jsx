@@ -31,6 +31,7 @@ import { UpdateProductPriceByProduct } from "./pages/UpdateProductPriceByProduct
 import { StockReplenishment } from "./pages/StockReplenishment";
 import { UpdateProductPriceBySupplier } from "./pages/UpdateProductPriceBySupplier";
 import {Orders} from "./pages/Orders";
+import { OrdersCheckIn } from "./pages/OrdersCheckIn";
 
 function App() {
 
@@ -80,6 +81,7 @@ function App() {
                 element={<UpdateProductPriceByProduct />}
               />
               <Route path="/pedidos" element={<Orders />} />
+              <Route path="/ingreso-pedidos" element={<OrdersCheckIn />} />
               <Route path="/presupuestos" element={<Budgets />} />
               <Route path="/cajas" element={<Registers />} />
               <Route path="/cambiar-contraseña" element={<Profile />} />
