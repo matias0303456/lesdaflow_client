@@ -262,7 +262,7 @@ export const nav_items_admin = [
       },
       {
         subtitle: "Clientes Bloqueados",
-        // path: "/reportes-clientes-bloqueados",
+        path: "/reportes-clientes-bloqueados",
       },
     ],
   },
