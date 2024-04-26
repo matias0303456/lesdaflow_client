@@ -57,7 +57,7 @@ export function Layout({ children, title }) {
         className={`${
           mobileOpen
             ? "w-full h-screen items-start grid grid-cols-[20%,80%] justify-start absolute left-[-100%] transition-all ease-out duration-100"
-            : "h-[80px] 2xl:h-[100px] sticky top-0 z-40 mx-auto grid grid-cols-[20%,80%] xl:grid-cols-[12%,80%,8%] items-center justify-center gap-2 xl:px-3"
+            : "h-[70px] 2xl:h-[90px] sticky top-0 z-40 mx-auto grid grid-cols-[20%,80%] xl:grid-cols-[12%,80%,8%] items-center justify-center gap-2 xl:px-3"
         } bg-[#288bcd] `}
       >
         {/* logo image component */}

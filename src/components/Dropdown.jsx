@@ -8,7 +8,7 @@ export const Dropdown = ( {item,mobileOpen, setMobileOpen}) => {
     <ul
       className={`${
         mobileOpen ? "float-right" : "top-[80px] shadow-2xl z-10"
-      } w-32 h-auto absolute  xl:top-[80px] 2xl:top-[100px] text-start list-none text-[#288bcd]`}
+      } w-32 h-auto absolute  xl:top-[70px] 2xl:top-[90px] text-start list-none text-[#288bcd]`}
     >
       {item?.map((subitem, index) => (
         <li
