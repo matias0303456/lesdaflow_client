@@ -2,8 +2,6 @@ import { useContext, useEffect, useState } from "react";
 import {
   Box,
   Button,
-  Select,
-  MenuItem,
   Input,
   FormControl,
   InputLabel,
@@ -236,8 +234,8 @@ const { suppliers, setSuppliers, loadingSuppliers, setLoadingSuppliers } = useSu
               <Box
               className="w-[50%] flex items-center justify-start gap-6"
               >
-             <Box
-             className="w-[50%]"
+             <FormControl
+             className="w-[50%] mt-4"
              >
              <InputLabel id="demo-simple-select-standard-label"
                 className="font-semibold text-gray-400 text-sm flex items-center justify-start"
@@ -247,16 +245,12 @@ const { suppliers, setSuppliers, loadingSuppliers, setLoadingSuppliers } = useSu
                 <Input
                 className="w-[100%] flex items-center justify-start"
                 type="text"/>
-             </Box>
+             </FormControl>
             {/* reception date */}
-            <Box className="w-[50%] flex flex-col">
-                <label id="demo-simple-select-standard-label"
-                className=" font-semibold text-gray-400 text-sm"
-                >
-                  Fecha Recepción
-                </label>
+            <Box className="w-[50%] flex flex-col mt-4">
                  <LocalizationProvider dateAdapter={AdapterDayjs}>
                  <DatePicker
+                 label="Fecha Recepción"
                  />
                  </LocalizationProvider>
                 </Box>

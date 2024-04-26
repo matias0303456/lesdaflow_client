@@ -218,7 +218,6 @@ export function UpdateProductPriceByProduct() {
                     display: "flex",
                     alignItems: "start",
                     justifyContent: "center",
-                    marginTop: "2rem",
                   }}
                 >
                   <InputLabel
@@ -227,7 +226,9 @@ export function UpdateProductPriceByProduct() {
                   >
                     Porcentaje*
                   </InputLabel>
-                  <Input className="w-full" />
+                  <Input className="w-full" 
+                  placeholder="0,00"
+                  />
                 </FormControl>
                 <Button variant="contained" size="small">
                   Calcular

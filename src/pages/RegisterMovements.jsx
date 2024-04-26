@@ -140,11 +140,8 @@ export function RegisterMovements() {
             <FormControl variant="standard"
            className="w-[100%]"
             >
-                <InputLabel 
-                id="demo-simple-select-standard-label">
-                  Fecha Desde
-                </InputLabel>
                 <DatePicker
+                label="Fecha Desde"
                 sx={{
                     marginTop: "3rem",
                 }}
@@ -161,11 +158,8 @@ export function RegisterMovements() {
                 color: "#59656b"
             }}
             >
-                <InputLabel 
-                id="demo-simple-select-standard-label">
-                  Fecha Hasta
-                </InputLabel>
                 <DatePicker
+                label="Fecha Hasta"
                 sx={{
                     marginTop: "3rem"
                 }}

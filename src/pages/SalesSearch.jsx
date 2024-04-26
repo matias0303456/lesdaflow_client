@@ -2,7 +2,6 @@ import { useContext, useEffect, useState } from "react";
 import dayjs from 'dayjs';
 import {
   Box,
-  Button,
   FormControl,
   Input,
   InputLabel,
@@ -171,11 +170,8 @@ const {
                 color: "#59656b"
             }}
             >
-                <InputLabel 
-                id="demo-simple-select-standard-label">
-                  Fecha Inicio*
-                </InputLabel>
                 <DatePicker
+                label="Fecha Inicio*"
                 sx={{
                     marginTop: "3rem",
                 }}
@@ -192,14 +188,8 @@ const {
                 color: "#59656b"
             }}
             >
-                <InputLabel 
-                id="demo-simple-select-standard-label">
-                  Fecha Fin*
-                </InputLabel>
                 <DatePicker
-                sx={{
-                    marginTop: "3rem"
-                }}
+               label="Fecha Fin*"
                     defaultValue={today}
                     minDate={tomorrow}
                     views={['year', 'month', 'day']}
@@ -250,9 +240,9 @@ const {
                   label="Vendedor"
                 >
                   {users.length > 0 ? (
-                    users.map((c) => (
-                      <MenuItem key={c.id} value={c}>
-                        {`${c.first_name} ${c.last_name}`.toUpperCase()}
+                    users.map((user) => (
+                      <MenuItem key={user.id} value={user}>
+                        {`${user.first_name} ${user.last_name}`.toUpperCase()}
                       </MenuItem>
                     ))
                   ) : (

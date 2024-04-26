@@ -1,8 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import {
   Box,
-  Button,
-  Input,
   FormControl,
   InputLabel,
   LinearProgress,
@@ -130,7 +128,7 @@ export function SalesReport() {
         ) : (
           <form onChange={handleChange} onSubmit={handleSubmit}>
              <Box 
-        sx={{ display: "flex", alignItems: "center", justifyContent: "start", flexDirection: "column", gap: 2 }}>
+        sx={{ display: "flex", alignItems: "center", justifyContent: "start", flexDirection: "column", gap: 4, marginTop:"2rem" }}>
             <LocalizationProvider
             dateAdapter={AdapterDayjs}>
            
@@ -141,14 +139,8 @@ export function SalesReport() {
                 color: "#59656b"
             }}
             >
-                <InputLabel 
-                id="demo-simple-select-standard-label">
-                  Fecha Inicio*
-                </InputLabel>
                 <DatePicker
-                sx={{
-                    marginTop: "3rem",
-                }}
+               label="Fecha Inicio"
                     defaultValue={today}
                     minDate={tomorrow}
                     views={['year', 'month', 'day']}
@@ -162,14 +154,8 @@ export function SalesReport() {
                 color: "#59656b"
             }}
             >
-                <InputLabel 
-                id="demo-simple-select-standard-label">
-                  Fecha Fin*
-                </InputLabel>
                 <DatePicker
-                sx={{
-                    marginTop: "3rem"
-                }}
+               label="Fecha Fin"
                     defaultValue={today}
                     minDate={tomorrow}
                     views={['year', 'month', 'day']}
@@ -201,9 +187,9 @@ export function SalesReport() {
                   label="Vendedor"
                 >
                   {users.length > 0 ? (
-                    users.map((c) => (
-                      <MenuItem key={c.id} value={c}>
-                        {`${c.first_name} ${c.last_name}`.toUpperCase()}
+                    users.map((user) => (
+                      <MenuItem key={user.id} value={user}>
+                        {`${user.first_name} ${user.last_name}`.toUpperCase()}
                       </MenuItem>
                     ))
                   ) : (
