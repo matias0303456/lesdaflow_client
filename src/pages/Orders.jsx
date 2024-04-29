@@ -230,11 +230,7 @@ export function Orders() {
                                     Excel
                                 </Button>
                             </Box>
-                            {/* <ProductFilter
-                                products={products}
-                                setProducts={setProducts}
-                                suppliers={suppliers}
-                            /> */}
+                           
                         </Box>
                     }
                 >

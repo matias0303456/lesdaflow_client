@@ -21,7 +21,6 @@ import { useForm } from "../hooks/useForm";
 import { DataGrid } from "../components/DataGrid";
 import { Layout } from "../components/Layout";
 
-// import { UserFilter } from "../components/filters/UserFilter";
 import { CLIENT_URL } from "../utils/urls";
 
 export function StockReplenishment() {
@@ -162,9 +161,7 @@ export function StockReplenishment() {
                   Pdf
                 </Button>
               </Box>
-              {/* user filter implementation */}
-              {/* <UserFilter users={users} setUsers={setUsers} /> */}
-              {/* by search box approach  */}
+             
             </Box>
           }
         ></DataGrid>

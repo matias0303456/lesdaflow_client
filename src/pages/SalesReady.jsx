@@ -15,6 +15,7 @@ import { SupplierFilter } from "../components/filters/SupplierFilter";
 
 import { SUPPLIER_URL } from "../utils/urls";
 import { getNewPrice } from "../utils/helpers";
+import { SalesReadyFilter } from "../components/filters/SalesReadyFilter";
 
 export function SalesReady() {
 
@@ -219,10 +220,10 @@ export function SalesReady() {
                             display: 'flex',
                             flexWrap: 'wrap',
                             alignItems: 'center',
+                            justifyContent: 'end',
                             gap: 2
                         }}>
-                            
-                            {/* <SupplierFilter suppliers={suppliers} setSuppliers={setSuppliers} /> */}
+                            <SalesReadyFilter  />
                         </Box>
                     }
                 >

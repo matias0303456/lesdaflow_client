@@ -231,9 +231,6 @@ export function SalesToDeliver() {
                             Pdf
                           </Button>
                         </Box>
-                        {/* user filter implementation */}
-                        {/* <UserFilter users={users} setUsers={setUsers} /> */}
-                        {/* by search box approach  */}
                         
                       </Box>
                     }

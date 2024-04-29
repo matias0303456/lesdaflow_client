@@ -223,9 +223,7 @@ export function Users() {
                     Pdf
                   </Button>
                 </Box>
-                {/* user filter implementation */}
-                {/* <UserFilter users={users} setUsers={setUsers} /> */}
-                {/* by search box approach  */}
+                <UserFilter users={users} setUsers={setUsers} />
                 
               </Box>
             }
