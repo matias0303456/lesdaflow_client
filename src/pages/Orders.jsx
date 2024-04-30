@@ -15,6 +15,7 @@ import { ProductFilter } from "../components/filters/ProductFilter";
 
 import { PRODUCT_URL } from "../utils/urls";
 import { getNewPrice, getStock } from "../utils/helpers";
+import { OrderFilter } from "../components/filters/OrderFilter";
 
 export function Orders() {
 
@@ -220,6 +221,7 @@ export function Orders() {
                             display: 'flex',
                             flexWrap: 'wrap',
                             alignItems: 'center',
+                            justifyContent:'space-between',
                             gap: 2
                         }}>
                             <Box sx={{ display: 'flex', gap: 1 }}>
@@ -230,7 +232,7 @@ export function Orders() {
                                     Excel
                                 </Button>
                             </Box>
-                           
+                           <OrderFilter/>
                         </Box>
                     }
                 >

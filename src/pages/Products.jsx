@@ -3,8 +3,8 @@ import { Box, Button, FormControl, Input, InputLabel, LinearProgress, MenuItem, 
 
 import { MessageContext } from "../providers/MessageProvider";
 import { useProducts } from '../hooks/useProducts'
-import { useForm } from "../hooks/useForm";
 import { useSuppliers } from "../hooks/useSuppliers";
+import { useForm } from "../hooks/useForm";
 import { useApi } from "../hooks/useApi";
 
 import { AuthContext } from "../providers/AuthProvider";
@@ -249,11 +249,11 @@ export function Products() {
                                     Stock nulo
                                 </Button>
                             </Box>
-                            {/* <ProductFilter
+                            <ProductFilter
                                 products={products}
                                 setProducts={setProducts}
                                 suppliers={suppliers}
-                            /> */}
+                            />
                         </Box>
                     }
                 >

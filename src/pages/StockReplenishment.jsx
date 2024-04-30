@@ -1,6 +1,8 @@
 import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useClients } from "../hooks/useClients";
+import { useProducts } from "../hooks/useProducts";
+import { useSuppliers } from "../hooks/useSuppliers";
 import {
   Box,
   Button,
@@ -21,7 +23,8 @@ import { useForm } from "../hooks/useForm";
 import { DataGrid } from "../components/DataGrid";
 import { Layout } from "../components/Layout";
 
-import { CLIENT_URL } from "../utils/urls";
+import { CLIENT_URL, PRODUCT_URL } from "../utils/urls";
+import { ProductFilter } from "../components/filters/ProductFilter";
 
 export function StockReplenishment() {
   const { setMessage, setOpenMessage, setSeverity } =
@@ -45,10 +48,13 @@ export function StockReplenishment() {
   });
 
   const [open, setOpen] = useState(null);
-  const { get, post, put, destroy } = useApi(CLIENT_URL);
+  const { get, post, put } = useApi(CLIENT_URL);
   const { clients, setClients, loadingClients, setLoadingClients } =
     useClients();
-
+const { putMassive } = useApi(PRODUCT_URL);
+const { products, setProducts, loadingProducts, setLoadingProducts } =
+  useProducts();
+const { suppliers, loadingSuppliers } = useSuppliers();
   useEffect(() => {
     if (auth?.user.role.name !== "ADMINISTRADOR") navigate("/productos");
   }, []);
@@ -161,7 +167,11 @@ export function StockReplenishment() {
                   Pdf
                 </Button>
               </Box>
-             
+              <ProductFilter
+                products={products}
+                setProducts={setProducts}
+                suppliers={suppliers}
+              />
             </Box>
           }
         ></DataGrid>

@@ -14,18 +14,12 @@ import dayjs from "dayjs";
 //    date data
 const today = dayjs();
 const tomorrow = dayjs().add(1, "day");
-export const SalesReadyFilter = () => {
-  const searchSelect = [
-    "Fecha Venta",
-    "Cod. Venta",
-    "Cliente",
-    "Venta Tipo Comprobante",
-  ];
+export const OrderFilter = () => {
+  const searchSelect = ["Cod. Pedido", "Fecha", "Proveedor"];
 
   const [searchItemToRender, setSearchItemToRender] = useState("");
-
   return (
-    <Box className="w-[40%] px-2 py-3 flex items-center justify-end">
+    <Box className="w-[50%] px-2 py-3 flex items-center justify-end">
       <FormControl className="w-[30%]" variant="standard">
         <InputLabel htmlFor="last_name">Buscar en </InputLabel>
         <Select type="underline" value={searchItemToRender}>
@@ -40,35 +34,43 @@ export const SalesReadyFilter = () => {
         </Select>
       </FormControl>
       <Box
-        className="w-[70%] h-12 flex gap-2 items-end justify-center"
+        className="w-[70%] h-12 flex gap-1 items-end justify-center"
         variant="standard"
       >
         <Typography
           variant="p"
-          className="w-[30%] flex items-end justify-end text-sm text-gray"
+          className="w-[10%] flex items-end justify-end text-sm text-gray"
         >
           Valor
         </Typography>
-        <Box className="w-[60%]">
-          {searchItemToRender === "Fecha Venta" ? (
+        <Box className="w-[80%]">
+          {searchItemToRender === "Fecha" ? (
             <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <FormControl variant="standard" className="w-[100%]">
+              <FormControl variant="standard" className="w-[50%]">
                 <DatePicker
                   className="h-10"
+                  label="Desde"
+                  value={today}
                   defaultValue={today}
                   minDate={tomorrow}
                   views={["year", "month", "day"]}
                 />
               </FormControl>
+              <FormControl variant="standard" className="w-[50%]">
+                <DatePicker
+                  className="h-10"
+                  label="Hasta"
+                  value={tomorrow}
+                  defaultValue={tomorrow}
+                  minDate={tomorrow}
+                  views={["year", "month", "day"]}
+                />
+              </FormControl>
             </LocalizationProvider>
-          ) : searchItemToRender === "Cod. Venta" ? (
+          ) : searchItemToRender === "Cod. Pedido" ? (
             <Input type="number" placeholder="0" />
-          ) : searchItemToRender === "Cliente" ? (
-            <Input type="text" />
           ) : (
-            searchItemToRender === "Venta Tipo Comprobante" && (
-              <Input type="text" />
-            )
+            searchItemToRender === "Proveedor" && <Input type="text" />
           )}
         </Box>
       </Box>
