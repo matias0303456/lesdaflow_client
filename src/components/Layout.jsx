@@ -112,9 +112,9 @@ export function Layout({ children, title }) {
                   <li
                     className={`${
                       mobileOpen
-                        ? "bg-[#288bcd] text-center px-0 py-1 h-[55px]"
-                        : "bg-[#288bcd] text-center rounded-md px-2 py-5 h-[100%] hover:bg-[#3276B1]"
-                    } cursor-pointer flex flex-col items-center justify-center w-[100%] h-full decoration-transparent text-white `}
+                        ? "text-center px-0 py-1 h-[55px] w-[30%] mx-auto"
+                        : "bg-[#288bcd] text-center rounded-md px-2 py-5 h-[100%] hover:bg-[#3276B1] w-[100%]"
+                    } cursor-pointer flex flex-col items-center justify-center h-full decoration-transparent text-white`}
                     key={index}
                     onMouseEnter={() => {
                       setSubmenu(true);
