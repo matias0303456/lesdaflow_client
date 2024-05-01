@@ -205,14 +205,14 @@ export function Layout({ children, title }) {
               mobileOpen
                 ? " justify-end mr-3"
                 : "justify-center hover:bg-slate-400"
-            } w-auto p-2 h-auto flex items-center  rounded-full bg-transparent `}
+            } w-auto p-2 h-auto flex items-center  rounded-full bg-transparent`}
             onClick={() => {
               if (!mobileOpen) {
                 setUserDropdown((prev) => !prev);
               }
             }}
           >
-            <Avatar sx={name.sx}>{name.children}</Avatar>
+            <Avatar sx={name.sx}>{name.children.toUpperCase()}</Avatar>
           </button>
           {userDropdown ? (
             <div
@@ -224,7 +224,7 @@ export function Layout({ children, title }) {
             >
               <UserDropdown
                 {...stringAvatar(
-                  `${auth.user.first_name} ${auth.user.last_name}`
+                  `${auth.user.first_name} ${auth.user.last_name} capitalize`
                 )}
                 mobileOpen={mobileOpen}
               />

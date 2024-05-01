@@ -10,8 +10,7 @@ import { Avatar } from "@mui/material";
 import SettingsIcon from "@mui/icons-material/Settings";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 
-export const UserDropdown = ({children, sx, mobileOpen}) => {
-
+export const UserDropdown = ({ children, sx, mobileOpen }) => {
   const { auth, setAuth } = useContext(AuthContext);
   const navigate = useNavigate();
 
@@ -22,15 +21,21 @@ export const UserDropdown = ({children, sx, mobileOpen}) => {
   };
 
   return (
-    <div className={`${mobileOpen ? '' : 'w-[185px] h-[200px] flex items-center justify-center flex-col bg-black/80 absolute top-[70px] 2xl:top-[75px] right-2 2xl:right-3 rounded-lg py-4 text-start text-white gap-5'} `}>
-      <div className={`${mobileOpen ? 'hidden' : 'flex'} w-full my-auto flex-col items-center justify-center gap-1`}>
-        <Avatar
-        sx={sx}
-        >
-          {children}
-        </Avatar>
+    <div
+      className={`${
+        mobileOpen
+          ? ""
+          : "w-[185px] h-[220px] flex items-center justify-center flex-col bg-black/80 absolute top-[70px] 2xl:top-[75px] right-2 2xl:right-3 rounded-lg py-4 text-start text-white gap-5"
+      }`}
+    >
+      <div
+        className={`${
+          mobileOpen ? "hidden" : "flex"
+        } w-full my-auto flex-col items-center justify-center gap-1`}
+      >
+        <Avatar sx={sx}>{children.toUpperCase()}</Avatar>
         {/* name section */}
-        <div className="w-full h-auto flex items-center justify-center pt-2  font-semibold gap-1">
+        <div className="w-full h-auto flex items-center justify-center pt-2  font-semibold gap-1 capitalize">
           <h2>{auth.user.first_name}</h2>
           <h2>{auth.user.last_name}</h2>
         </div>
@@ -39,10 +44,17 @@ export const UserDropdown = ({children, sx, mobileOpen}) => {
         <p className="text-sm ">{auth.user.email}</p>
       </div>
       {/* action menu */}
-      <div className={`${mobileOpen ? 'w-[90%] gap-7 justify-start' : 'w-[90%] flex-col justify-center mx-auto  gap-1'} flex items-center text-xs font-thin `}>
-        <Link 
-        to="/cambiar-contraseña"
-        className="w-[50%] h-auto flex items-center justify-center gap-1 hover:text-white">
+      <div
+        className={`${
+          mobileOpen
+            ? "w-[90%] gap-7 justify-start"
+            : "w-[90%] flex-col justify-center mx-auto  gap-1"
+        } flex items-center text-xs font-thin `}
+      >
+        <Link
+          to="/cambiar-contraseña"
+          className="w-[50%] h-auto flex items-center justify-center gap-1 hover:text-white"
+        >
           <SettingsIcon className="w-5 h-5" />
           <p className="w-[50%]">Cambiar contraseña</p>
         </Link>
