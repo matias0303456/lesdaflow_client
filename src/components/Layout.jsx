@@ -56,8 +56,8 @@ export function Layout({ children, title }) {
       <nav
         className={`${
           mobileOpen
-            ? "w-full h-screen items-start grid grid-cols-[20%,80%] justify-start absolute left-[-100%] transition-all ease-out duration-100"
-            : "h-[70px] 2xl:h-[90px] sticky top-0 z-40 mx-auto grid grid-cols-[20%,80%] xl:grid-cols-[12%,80%,8%] items-center justify-center gap-2 xl:px-3"
+            ? "w-full h-screen items-start grid grid-cols-[20%,80%] justify-start absolute left-[-100%] transition-all ease duration-1000"
+            : "h-[70px] 2xl:h-[90px] sticky top-0 z-40 mx-auto grid grid-cols-[20%,80%] xl:grid-cols-[12%,80%,8%] items-center justify-center gap-2 xl:px-3 transition-all ease-out duration-1000"
         } bg-[#288bcd] `}
       >
         {/* logo image component */}
@@ -72,7 +72,7 @@ export function Layout({ children, title }) {
         <div
           className={` ${
             mobileOpen
-              ? "flex flex-col items-start absolute z-40 h-[100%] right-[-100%] w-[100%] top-0 transition-colors ease-in-out delay-400"
+              ? "flex flex-col items-start absolute z-40 h-[100%] right-[-100%] w-[100%] top-0 transition-colors ease-in-out delay-1000"
               : " flex xl:hidden w-full h-8  items-center justify-end pr-3"
           }`}
         >
@@ -80,14 +80,14 @@ export function Layout({ children, title }) {
             onClick={() => setMobileOpen((prev) => !prev)}
             className={` ${
               mobileOpen
-                ? "flex items-start bg-[#288bcd] absolute z-40 h-[100%] right-[0%] w-[100%] top-0 transition-all ease-out duration-100"
-                : "flex xl:hidden w-full h-8  items-center justify-end "
+                ? "flex items-start bg-[#288bcd] absolute z-40 h-[100%] right-[0%] w-[100%] top-0 transition ease duration-2000"
+                : "flex xl:hidden w-full h-8  items-center justify-end transition ease duration-2000"
             }`}
           >
             {mobileOpen ? (
-              <CloseIcon className="absolute z-60 text-white right-6 top-7  transition-all ease-out duration-100" />
+              <CloseIcon className="absolute z-60 text-white md:right-10 top-7 right-6" />
             ) : (
-              <MenuIcon className="text-white right-6 top-7" />
+              <MenuIcon className="absolute text-white right-6 top-7" />
             )}
           </div>
         </div>
@@ -203,7 +203,7 @@ export function Layout({ children, title }) {
             title={`${auth.user.first_name} ${auth.user.last_name}`}
             className={`${
               mobileOpen
-                ? " justify-start "
+                ? " justify-end mr-3"
                 : "justify-center hover:bg-slate-400"
             } w-auto p-2 h-auto flex items-center  rounded-full bg-transparent `}
             onClick={() => {
@@ -217,7 +217,9 @@ export function Layout({ children, title }) {
           {userDropdown ? (
             <div
               className={`${
-                mobileOpen ? "w-[100%] pl-2 h-5 justify-end" : "justify-center"
+                mobileOpen
+                  ? "w-[100%] pl-2 h-auto ml-3 justify-start"
+                  : "justify-center"
               } mt-2 mx-auto flex items-center  rounded-md`}
             >
               <UserDropdown
