@@ -264,7 +264,7 @@ function EnhancedTableToolbar({
                     "Actualizar precio/s por porcentaje" :
                     "Editar"} onClick={() => {
                         if (allowMassiveEdit && numSelected > 1) {
-                            setMassiveEdit(workOn)
+                            setMassiveEdit(selected)
                             setOpen('MASSIVE-EDIT')
                         } else {
                             setData(workOn[0])

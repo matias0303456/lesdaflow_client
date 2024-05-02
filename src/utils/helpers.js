@@ -71,7 +71,7 @@ export function setToDate(date) {
 }
 
 export function getNewPrice(product, percentage) {
-    const price = parseFloat(product.buy_price)
+    const price = parseFloat((product.buy_price + ((product.buy_price / 100) * product.earn)).toFixed(2))
     const perc = percentage.toString().length === 0 ? 0 : parseInt(percentage)
     return (price + ((price / 100) * perc)).toFixed(2)
 }

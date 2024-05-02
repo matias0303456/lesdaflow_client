@@ -2,12 +2,13 @@ import { useContext, useEffect, useState } from "react";
 import { Box, Button, FormControl, Input, InputLabel, LinearProgress, MenuItem, Paper, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
 
 import { MessageContext } from "../providers/MessageProvider";
+import { SearchContext } from "../providers/SearchProvider";
+import { AuthContext } from "../providers/AuthProvider";
 import { useProducts } from '../hooks/useProducts'
 import { useForm } from "../hooks/useForm";
 import { useSuppliers } from "../hooks/useSuppliers";
 import { useApi } from "../hooks/useApi";
 
-import { AuthContext } from "../providers/AuthProvider";
 import { Layout } from "../components/Layout";
 import { DataGrid } from "../components/DataGrid";
 import { ModalComponent } from "../components/ModalComponent";
@@ -20,6 +21,7 @@ export function Products() {
 
     const { auth } = useContext(AuthContext)
     const { setMessage, setOpenMessage, setSeverity } = useContext(MessageContext)
+    const { searchProducts, setSearchProducts } = useContext(SearchContext)
 
     const { post, put, putMassive, destroy } = useApi(PRODUCT_URL)
     const { products, setProducts, loadingProducts, setLoadingProducts, getProducts } = useProducts()
@@ -81,6 +83,20 @@ export function Products() {
         const earn = formData.earn.toString().length === 0 ? 0 : parseInt(formData.earn)
         setEarnPrice(`$${(buy_price + ((buy_price / 100) * earn)).toFixed(2)}`)
     }, [formData])
+
+    useEffect(() => {
+        (async () => {
+            const res = await fetch(PRODUCT_URL + '/search', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': auth.token
+                }
+            })
+            const data = await res.json()
+            if (res.status === 200) setSearchProducts(data)
+        })()
+    }, [])
 
     async function handleSubmit(e) {
         e.preventDefault()
@@ -247,7 +263,7 @@ export function Products() {
                         disableAdd={auth?.user.role.name !== 'ADMINISTRADOR'}
                         allowMassiveEdit
                         updateByPercentage
-                        setMassiveEdit={setMassiveEdit}
+                        setMassiveEdit={(values) => setMassiveEdit(searchProducts.filter(sp => values.includes(sp.id)))}
                         deadlineColor="products"
                         handlePrint
                         pageKey="products"
@@ -434,8 +450,8 @@ export function Products() {
                                             >
                                                 <TableCell align="center">{me.details}</TableCell>
                                                 <TableCell align="center">{me.code}</TableCell>
-                                                <TableCell align="center">{me.supplier.name}</TableCell>
-                                                <TableCell align="center">${me.buy_price.toFixed(2)}</TableCell>
+                                                <TableCell align="center">{me.supplier_name}</TableCell>
+                                                <TableCell align="center">${(me.buy_price + ((me.buy_price / 100) * me.earn)).toFixed(2)}</TableCell>
                                                 <TableCell align="center">${getNewPrice(me, massiveEditPercentage)}</TableCell>
                                             </TableRow>
                                         ))}
