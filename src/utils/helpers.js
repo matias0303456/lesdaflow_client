@@ -98,7 +98,7 @@ export function getRegisterTotal(register, payments, close = false) {
         new Date(p.date).getTime() > new Date(register.created_at).getTime() &&
         new Date(p.date).getTime() < (close ? Date.now() : new Date(register.updated_at).getTime())
     }).reduce((prev, curr) => prev + curr.amount, 0)
-    return `$${total}`
+    return `$${total.toFixed(2)}`
 }
 
 export function getAmountByInstallment(sale) {
