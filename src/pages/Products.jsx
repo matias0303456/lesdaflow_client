@@ -176,7 +176,7 @@ export function Products() {
             numeric: false,
             disablePadding: true,
             label: 'Precio Compra',
-            // sorter: (row) => row.size.toLowerCase(),
+            sorter: (row) => row.buy_price.toLowerCase(),
             accessor: 'buy price'
         },
         {

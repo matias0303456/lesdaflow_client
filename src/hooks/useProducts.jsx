@@ -18,7 +18,7 @@ export function useProducts() {
         (async () => {
             const { status, data } = await get()
             if (status === 200) {
-                setProducts(data)
+                setProducts(data[0])
                 setLoadingProducts(false)
             } else {
                 setMessage(data.message)

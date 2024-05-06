@@ -18,7 +18,7 @@ export function useSuppliers() {
         (async () => {
             const { status, data } = await get()
             if (status === 200) {
-                setSuppliers(data)
+                setSuppliers(data[0])
                 setLoadingSuppliers(false)
             } else {
                 setMessage(data.message)

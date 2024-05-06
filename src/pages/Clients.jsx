@@ -118,65 +118,65 @@ export function Clients() {
     }
 
     const headCells = [
-      {
-        id: "name",
-        numeric: false,
-        disablePadding: true,
-        label: "Nombre y apellido",
-        accessor: "name",
-      },
-      {
-        id: "nro de documento",
-        numeric: false,
-        disablePadding: true,
-        label: "Nro. Documento/CUIT",
-        accessor: "nro de documento",
-      },
-      {
-        id: "phone",
-        numeric: false,
-        disablePadding: true,
-        label: "Celular",
-        accessor: "phone",
-      },
-      {
-        id: "email",
-        numeric: false,
-        disablePadding: true,
-        label: "Email",
-        sorter: (row) => row.email,
-        accessor: "email",
-      },
-      {
-        id: "address",
-        numeric: false,
-        disablePadding: true,
-        label: "Dirección",
-        accessor: "address",
-      },
-      /* {
+        {
+            id: "name",
+            numeric: false,
+            disablePadding: true,
+            label: "Nombre y apellido",
+            accessor: "name",
+        },
+        {
+            id: "nro de documento",
+            numeric: false,
+            disablePadding: true,
+            label: "Nro. Documento/CUIT",
+            accessor: "nro de documento",
+        },
+        {
+            id: "phone",
+            numeric: false,
+            disablePadding: true,
+            label: "Celular",
+            accessor: "phone",
+        },
+        {
+            id: "email",
+            numeric: false,
+            disablePadding: true,
+            label: "Email",
+            sorter: (row) => row.email,
+            accessor: "email",
+        },
+        {
+            id: "address",
+            numeric: false,
+            disablePadding: true,
+            label: "Dirección",
+            accessor: "address",
+        },
+        {
             id: 'work_place',
             numeric: false,
             disablePadding: true,
             label: 'Lug. trabajo',
             sorter: (row) => row.work_place ?? '',
             accessor: 'work_place'
-        }, */
-      /* {
-        id: "observations",
-        numeric: false,
-        disablePadding: true,
-        label: "Observaciones",
-        sorter: (row) => row.observations ?? "",
-        accessor: "observations",
-      }, */
-      {
-        id: "commerce name",
-        numeric: false,
-        disablePadding: true,
-        label: "Nombre Comercio",
-        accessor: "commerce name",
-      },
+        },
+        {
+            id: "observations",
+            numeric: false,
+            disablePadding: true,
+            label: "Observaciones",
+            sorter: (row) => row.observations ?? "",
+            accessor: "observations",
+        },
+        {
+            id: "commerce name",
+            numeric: false,
+            disablePadding: true,
+            label: "Nombre Comercio",
+            accessor: "commerce name",
+        },
     ];
 
     return (

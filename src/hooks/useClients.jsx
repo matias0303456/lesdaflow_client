@@ -18,7 +18,7 @@ export function useClients() {
         (async () => {
             const { status, data } = await get()
             if (status === 200) {
-                setClients(data)
+                setClients(data[0])
                 setLoadingClients(false)
             } else {
                 setMessage(data.message)
