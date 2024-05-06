@@ -110,8 +110,8 @@ export function Clients() {
     const headCells = [
         {
             id: "name",
-            numeric: false,
-            disablePadding: true,
+            numeric: true,
+            disablePadding: false,
             label: "Nombre y apellido",
             accessor: "name",
         },

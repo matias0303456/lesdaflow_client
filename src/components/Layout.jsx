@@ -57,13 +57,13 @@ export function Layout({ children, title }) {
         className={`${
           mobileOpen
             ? "w-full h-screen items-start grid grid-cols-[20%,80%] justify-start absolute left-[-100%] transition-all ease duration-1000"
-            : "h-[70px] 2xl:h-[90px] sticky top-0 z-40 mx-auto grid grid-cols-[20%,80%] xl:grid-cols-[12%,80%,8%] items-center justify-center gap-2 xl:px-3 transition-all ease-out duration-1000"
+            : "sticky top-0 z-40 mx-auto grid grid-cols-[20%,80%] xl:grid-cols-[12%,80%,8%] items-center justify-center gap-2 xl:px-3 transition-all ease-out duration-1000"
         } bg-[#288bcd] `}
       >
         {/* logo image component */}
         <div
           className={`${
-            mobileOpen ? "hidden" : "logo flex ml-2 items-center justify-center"
+            mobileOpen ? "hidden" : "logo flex ml-2 items-center justify-center w-28"
           }`}
         >
           <Logo mobileOpen={mobileOpen} />
@@ -113,7 +113,7 @@ export function Layout({ children, title }) {
                     className={`${
                       mobileOpen
                         ? "text-center px-0 py-1 h-[55px] w-[30%] mx-auto"
-                        : "bg-[#288bcd] text-center rounded-md px-2 h-[100%] hover:bg-[#3276B1] w-[100%]"
+                        : "bg-[#288bcd] text-center px-2 h-[100%] hover:bg-[#3276B1] w-[100%]"
                     } cursor-pointer flex flex-col items-center justify-center h-full decoration-transparent text-white`}
                     key={index}
                     onMouseEnter={() => {
@@ -132,7 +132,7 @@ export function Layout({ children, title }) {
                     >
                       <div className="flex items-center gap-1 justify-center">
                         <Link
-                          className="font-semibold lg:text-[14px]"
+                          className="lg:text-[14px]"
                           to={item.path}
                         >
                           {item.title}
@@ -175,14 +175,14 @@ export function Layout({ children, title }) {
                   >
                     <div className="flex items-center justify-center">
                       <Link
-                        className="font-semibold lg:text-[14px]"
+                        className="lg:text-[14px]"
                         to={item.path}
                       >
                         {item.title}
                       </Link>
                       <KeyboardArrowDownIcon className="lg:text-base text-xs" />
                     </div>
-                    <div className="w-[100%] absolute mt-2 mx-auto flex items-center justify-center rounded-md">
+                    <div className="w-[100%] absolute mt-2 mx-auto flex items-center justify-center">
                       {submenu && itemToShow === item.title ? (
                         <Dropdown item={item.submenu} itemToShow={itemToShow} />
                       ) : null}
@@ -220,7 +220,7 @@ export function Layout({ children, title }) {
                 mobileOpen
                   ? "w-[100%] pl-2 h-auto ml-3 justify-start"
                   : "justify-center"
-              } mt-2 mx-auto flex items-center  rounded-md`}
+              } mt-2 mx-auto flex items-center`}
             >
               <UserDropdown
                 {...stringAvatar(

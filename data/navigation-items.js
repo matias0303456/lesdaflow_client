@@ -96,7 +96,7 @@ export const nav_items_admin = [
       },
       {
         subtitle: "Roles",
-        path: "/role",
+        path: "/roles",
       },
     ],
   },

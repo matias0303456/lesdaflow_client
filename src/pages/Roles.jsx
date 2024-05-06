@@ -25,7 +25,7 @@ import { ModalComponent } from "../components/ModalComponent";
 
 import { ROLE_URL /* USER_URL */ } from "../utils/urls";
 
-export function Role() {
+export function Roles() {
   const { setMessage, setOpenMessage, setSeverity } =
     useContext(MessageContext);
   const { auth } = useContext(AuthContext);
@@ -76,7 +76,7 @@ export function Role() {
     (async () => {
       const { status, data } = await getRoles();
       if (status === 200) {
-        setRoles(data);
+        setRoles(data[0]);
         setLoadingRoles(false);
       }
     })();
@@ -88,7 +88,7 @@ export function Role() {
       setOpen(null);
     }
   }, [open])
-  
+
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -119,8 +119,7 @@ export function Role() {
     if (result.every((r) => r.status === 200)) {
       const ids = result.map((r) => r.data.id);
       setMessage(
-        `${
-          result.length === 1 ? "Usuario eliminado" : "Usuarios eliminados"
+        `${result.length === 1 ? "Usuario eliminado" : "Usuarios eliminados"
         } correctamente.`
       );
       setSeverity("success");
@@ -139,8 +138,8 @@ export function Role() {
   const headCells = [
     {
       id: "role",
-      numeric: false,
-      disablePadding: true,
+      numeric: true,
+      disablePadding: false,
       label: "Rol",
       accessor: "name",
     },
@@ -149,8 +148,15 @@ export function Role() {
       numeric: false,
       disablePadding: true,
       label: "Descripción",
-      accessor: "name",
+      accessor: "description",
     },
+    {
+      id: "is_admin",
+      numeric: false,
+      disablePadding: true,
+      label: "Es administrador",
+      accessor: (row) => row.is_admin ? 'Sí' : 'No',
+    }
   ];
 
   return (
@@ -165,6 +171,9 @@ export function Role() {
           rows={roles}
           setOpen={setOpen}
           setData={setFormData}
+          showViewAction
+          showEditAction
+          showDeleteAction
           contentHeader={
             <Box
               sx={{

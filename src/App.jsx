@@ -20,7 +20,7 @@ import { Budgets } from "./pages/Budgets";
 import { Registers } from "./pages/Registers";
 import { Profile } from "./pages/Profile";
 import { Error } from './pages/Error'
-import { Role } from "./pages/Role";
+import { Roles } from "./pages/Roles";
 import { CurrentAccount } from "./pages/CurrentAccount";
 import { ClientsBySeller } from "./pages/ClientsBySeller";
 import { SalesSearch } from "./pages/SalesSearch";
@@ -64,7 +64,7 @@ function App() {
               <Route path="/reporte-cta-cte" element={<AccountsReport />} />
               <Route path="/clientes-vendedor" element={<ClientsBySeller />} />
               <Route path="/usuarios" element={<Users />} />
-              <Route path="/role" element={<Role />} />
+              <Route path="/roles" element={<Roles />} />
               <Route path="/proveedores" element={<Suppliers />} />
               <Route path="/ventas" element={<Sales />} />
               <Route path="/ventas-busqueda" element={<SalesSearch />} />

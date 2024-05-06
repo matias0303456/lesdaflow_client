@@ -68,7 +68,7 @@ function EnhancedTableHead({
           <TableCell
             key={headCell.id}
             className='font-bold flex-1 px-4 py-1'
-            align="start"
+            align="inherit"
             padding={headCell.disablePadding ? 'none' : 'normal'}
             sortDirection={orderBy === headCell.id ? order : false}
           >
@@ -99,11 +99,15 @@ export function DataGrid({
   rows,
   setOpen,
   setData,
+  contentHeader,
   deadlineColor = false,
   disableSorting = false,
   defaultOrder = 'desc',
   defaultOrderBy = 'id',
-  contentHeader
+  showEditAction = false,
+  showViewAction = false,
+  showSettingsAction = false,
+  showDeleteAction = false
 }) {
 
   const [order, setOrder] = React.useState(defaultOrder);
@@ -153,7 +157,8 @@ export function DataGrid({
             <Table
               sx={{ minWidth: 750, fontWeight: "bold" }}
               aria-labelledby="tableTitle"
-              size={dense ? 'small' : 'medium'}>
+              size="small"
+            >
               <EnhancedTableHead
                 headCells={headCells}
                 order={order}
@@ -185,72 +190,80 @@ export function DataGrid({
                                 width: "auto",
                               }}
                             >
-                              <Tooltip
-                                title="Visualizar"
-                                onClick={() => {
-                                  setData(
-                                    rows.find(
-                                      (r) => r.id === row.id
-                                    )
-                                  );
-                                  setOpen("VIEW");
-                                }}
-                              >
-                                <IconButton className="rounded-full bg-black/20 opacity-50 hover:bg-[#288bcd]">
-                                  <SearchSharpIcon className="w-4 h-4 hover:text-white" />
-                                </IconButton>
-                              </Tooltip>
-                              <Tooltip
-                                title="Editar"
-                                onClick={() => {
-                                  setData(
-                                    rows.find(
-                                      (r) => r.id === row.id
-                                    )
-                                  );
-                                  setOpen("EDIT");
-                                }}
-                              >
-                                <IconButton className="rounded-full bg-black/20 opacity-50 hover:bg-[#288bcd]">
-                                  <EditIcon className="w-4 h-4 hover:text-white" />
-                                </IconButton>
-                              </Tooltip>
-                              <Tooltip
-                                title="Borrar"
-                                onClick={() => {
-                                  setData(
-                                    rows.find(
-                                      (r) => r.id === row.id
-                                    )
-                                  );
-                                  setOpen("DELETE");
-                                }}
-                              >
-                                <IconButton
-                                  className="rounded-full bg-black/20 opacity-50 hover:bg-[#288bcd]"
-                                  aria-label="delete"
+                              {showViewAction &&
+                                <Tooltip
+                                  title="Visualizar"
+                                  onClick={() => {
+                                    setData(
+                                      rows.find(
+                                        (r) => r.id === row.id
+                                      )
+                                    );
+                                    setOpen("VIEW");
+                                  }}
                                 >
-                                  <CloseIcon className="w-4 h-4 hover:text-white" />
-                                </IconButton>
-                              </Tooltip>
-                              {/* <Tooltip
-                                title="Configuracion"
-                                onClick={() => {
-                                  setData(
-                                    rows.find(
-                                      (r) => r.id === row.id
-                                    )
-                                  );
-                                  setOpen("SETTING");
-                                }}
-                              >
-                                <IconButton
-                                  className="rounded-full bg-black/20 opacity-50 hover:bg-[#078BCD]"
-                                  aria-label="setting"
+                                  <IconButton className="rounded-full bg-black/20 opacity-50 hover:bg-[#288bcd]">
+                                    <SearchSharpIcon className="w-4 h-4 hover:text-white" />
+                                  </IconButton>
+                                </Tooltip>
+                              }
+                              {showEditAction &&
+                                <Tooltip
+                                  title="Editar"
+                                  onClick={() => {
+                                    setData(
+                                      rows.find(
+                                        (r) => r.id === row.id
+                                      )
+                                    );
+                                    setOpen("EDIT");
+                                  }}
                                 >
-                                  <SettingsIcon className="w-4 h-4 hover:text-white" />
-                                </IconButton>
-                              </Tooltip> */}
+                                  <IconButton className="rounded-full bg-black/20 opacity-50 hover:bg-[#288bcd]">
+                                    <EditIcon className="w-4 h-4 hover:text-white" />
+                                  </IconButton>
+                                </Tooltip>
+                              }
+                              {showDeleteAction &&
+                                <Tooltip
+                                  title="Borrar"
+                                  onClick={() => {
+                                    setData(
+                                      rows.find(
+                                        (r) => r.id === row.id
+                                      )
+                                    );
+                                    setOpen("DELETE");
+                                  }}
+                                >
+                                  <IconButton
+                                    className="rounded-full bg-black/20 opacity-50 hover:bg-[#288bcd]"
+                                    aria-label="delete"
+                                  >
+                                    <CloseIcon className="w-4 h-4 hover:text-white" />
+                                  </IconButton>
+                                </Tooltip>
+                              }
+                              {showSettingsAction &&
+                                <Tooltip
+                                  title="Configuracion"
+                                  onClick={() => {
+                                    setData(
+                                      rows.find(
+                                        (r) => r.id === row.id
+                                      )
+                                    );
+                                    setOpen("SETTING");
+                                  }}
+                                >
+                                  <IconButton
+                                    className="rounded-full bg-black/20 opacity-50 hover:bg-[#078BCD]"
+                                    aria-label="setting"
+                                  >
+                                    <SettingsIcon className="w-4 h-4 hover:text-white" />
+                                  </IconButton>
+                                </Tooltip>
+                              }
                             </Box>
                           </TableCell>
                           {headCells
@@ -258,7 +271,7 @@ export function DataGrid({
                             .map((accessor) => (
                               <TableCell
                                 key={accessor}
-                                align="start"
+                                align="inherit"
                                 sx={{
                                   color:
                                     (deadlineColor === "sales" &&
@@ -288,7 +301,7 @@ export function DataGrid({
                     <TableRow>
                       <TableCell
                         colSpan={headCells.length}
-                        align="start"
+                        align="inherit"
                         sx={{
                           fontSize: "1rem",
                         }}
