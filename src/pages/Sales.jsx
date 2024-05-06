@@ -6,6 +6,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import es from 'date-fns/locale/es';
 import PrintSharpIcon from '@mui/icons-material/PrintSharp';
+import { FaWhatsapp } from "react-icons/fa6";
 
 import { AuthContext } from "../providers/AuthProvider";
 import { PageContext } from "../providers/PageProvider";
@@ -191,6 +192,14 @@ export function Sales() {
         setOpen(null)
     }
 
+    const handleShare = async (url) => {
+        const res = await fetch(url)
+        const data = await res.json()
+        if(res.status === 200){
+            window.open(data.shareLink, '_blank')
+        }
+    }
+
     const headCells = [
         {
             id: 'id',
@@ -213,20 +222,38 @@ export function Sales() {
             label: 'Detalle',
             sorter: (row) => row.id,
             accessor: (row) => (
-                <PrintSharpIcon
-                    sx={{
-                        color: '#8B4992',
-                        transition: '100ms all',
-                        ":hover": {
-                            transform: 'scale(1.1)'
-                        }
-                    }}
-                    onMouseEnter={() => setStopPointerEvents(true)}
-                    onMouseLeave={() => setStopPointerEvents(false)}
-                    onClick={() => {
-                        window.open(`${REPORT_URL}/account-details/${auth.token}/${row.id}`, '_blank')
-                    }}
-                />
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <PrintSharpIcon
+                        sx={{
+                            color: '#8B4992',
+                            transition: '100ms all',
+                            ":hover": {
+                                transform: 'scale(1.1)'
+                            }
+                        }}
+                        onMouseEnter={() => setStopPointerEvents(true)}
+                        onMouseLeave={() => setStopPointerEvents(false)}
+                        onClick={() => {
+                            window.open(`${REPORT_URL}/account-details/${auth.token}/${row.id}?download=true`, '_blank')
+                        }}
+                    />
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            color: '#8B4992',
+                            transition: '100ms all',
+                            ":hover": {
+                                transform: 'scale(1.1)'
+                            }
+                        }}
+                        onMouseEnter={() => setStopPointerEvents(true)}
+                        onMouseLeave={() => setStopPointerEvents(false)}
+                        onClick={() => handleShare(`${REPORT_URL}/account-details/${auth.token}/${row.id}`)}
+                    >
+                        <FaWhatsapp style={{ transform: 'scale(1.5)' }} />
+                    </Box>
+                </Box>
             )
         },
         {
@@ -509,8 +536,8 @@ export function Sales() {
                                 display: 'block',
                                 margin: '0 auto'
                             }}
-                            onClick={() => {
-                                window.open(`${REPORT_URL}/account-details/${auth.token}/${saleSaved}`, '_blank')
+                            onClick={async () => {
+                                await handleShare(`${REPORT_URL}/account-details/${auth.token}/${saleSaved}`)
                                 setSaleSaved(null)
                             }}
                         >
