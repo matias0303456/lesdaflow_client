@@ -19,7 +19,7 @@ export function Clients() {
     const { auth } = useContext(AuthContext)
     const { setMessage, setOpenMessage, setSeverity } = useContext(MessageContext)
 
-    const { get, post, put, destroy } = useApi(CLIENT_URL)
+    const { post, put, destroy } = useApi(CLIENT_URL)
     const { clients, setClients, loadingClients, setLoadingClients } = useClients()
     const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
         defaultData: {
@@ -62,16 +62,6 @@ export function Clients() {
     })
 
     const [open, setOpen] = useState(null)
-
-    useEffect(() => {
-        (async () => {
-            const { status, data } = await get()
-            if (status === 200) {
-                setClients(data)
-                setLoadingClients(false)
-            }
-        })()
-    }, [])
 
     async function handleSubmit(e) {
         e.preventDefault()

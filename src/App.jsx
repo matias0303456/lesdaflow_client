@@ -63,7 +63,7 @@ function App() {
               <Route path="/cta-cte" element={<CurrentAccount />} />
               <Route path="/reporte-cta-cte" element={<AccountsReport />} />
               <Route path="/clientes-vendedor" element={<ClientsBySeller />} />
-              <Route path="/vendedor" element={<Users />} />
+              <Route path="/usuarios" element={<Users />} />
               <Route path="/role" element={<Role />} />
               <Route path="/proveedores" element={<Suppliers />} />
               <Route path="/ventas" element={<Sales />} />

@@ -113,7 +113,7 @@ export function Layout({ children, title }) {
                     className={`${
                       mobileOpen
                         ? "text-center px-0 py-1 h-[55px] w-[30%] mx-auto"
-                        : "bg-[#288bcd] text-center rounded-md px-2 py-5 h-[100%] hover:bg-[#3276B1] w-[100%]"
+                        : "bg-[#288bcd] text-center rounded-md px-2 h-[100%] hover:bg-[#3276B1] w-[100%]"
                     } cursor-pointer flex flex-col items-center justify-center h-full decoration-transparent text-white`}
                     key={index}
                     onMouseEnter={() => {
