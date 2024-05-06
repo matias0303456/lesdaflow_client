@@ -1,9 +1,5 @@
 export const nav_items_user = [
   {
-    title: "Home",
-    path: "/",
-  },
-  {
     title: "Clientes",
     name: "clients",
     submenu: [
@@ -90,10 +86,6 @@ export const nav_items_user = [
 ];
 
 export const nav_items_admin = [
-  {
-    title: "Home",
-    path: "/",
-  },
   {
     title: "Security",
     name: "security",
