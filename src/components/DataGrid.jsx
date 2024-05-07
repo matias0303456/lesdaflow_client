@@ -300,10 +300,11 @@ export function DataGrid({
                   ) : (
                     <TableRow>
                       <TableCell
-                        colSpan={headCells.length}
+                        colSpan={headCells.length + 1}
                         align="inherit"
                         sx={{
                           fontSize: "1rem",
+                          textAlign: 'center'
                         }}
                       >
                         No se encontraron registros

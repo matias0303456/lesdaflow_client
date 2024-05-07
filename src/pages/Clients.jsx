@@ -193,6 +193,9 @@ export function Clients() {
                     rows={clients}
                     setOpen={setOpen}
                     setData={setFormData}
+                    showEditAction
+                    showDeleteAction
+                    showViewAction
                     contentHeader={
                         <Box sx={{
                             display: 'flex',

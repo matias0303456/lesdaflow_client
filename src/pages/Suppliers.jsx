@@ -200,6 +200,9 @@ export function Suppliers() {
                     rows={suppliers}
                     setOpen={setOpen}
                     setData={setFormData}
+                    showEditAction
+                    showDeleteAction
+                    showViewAction
                     contentHeader={
                         <Box sx={{
                             display: 'flex',

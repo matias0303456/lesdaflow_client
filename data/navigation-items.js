@@ -91,8 +91,8 @@ export const nav_items_admin = [
     name: "security",
     submenu: [
       {
-        subtitle: "Users",
-        path: "/vendedor",
+        subtitle: "Usuarios",
+        path: "/usuarios",
       },
       {
         subtitle: "Roles",

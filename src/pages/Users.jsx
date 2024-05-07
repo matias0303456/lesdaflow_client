@@ -76,7 +76,7 @@ export function Users() {
         (async () => {
             const { status, data } = await getUsers()
             if (status === 200) {
-                setUsers(data)
+                setUsers(data[0])
                 setLoadingUsers(false)
             }
         })()
@@ -203,6 +203,9 @@ export function Users() {
             rows={users}
             setOpen={setOpen}
             setData={setFormData}
+            showEditAction
+            showDeleteAction
+            showViewAction
             contentHeader={
               <Box
                 sx={{
