@@ -122,7 +122,7 @@ export function Products() {
     }
 
     async function handleSubmitMassive() {
-        setLoadingProducts(true)
+        // setLoadingProducts(true)
         const body = {
             products: massiveEdit.map(me => ({ id: me.id, buy_price: me.buy_price })),
             percentage: parseInt(massiveEditPercentage)
@@ -140,7 +140,7 @@ export function Products() {
             setSeverity('error')
             setDisabled(false)
         }
-        setLoadingProducts(false)
+        // setLoadingProducts(false)
         setOpenMessage(true)
     }
 
