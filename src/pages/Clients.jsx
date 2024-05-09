@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { Box, Button, FormControl, Input, InputLabel, LinearProgress, Typography } from "@mui/material";
+import { Box, Button, FormControl, Input, InputLabel, LinearProgress, MenuItem, Select, Typography } from "@mui/material";
 
 import { AuthContext } from "../providers/AuthProvider";
 import { MessageContext } from "../providers/MessageProvider";
@@ -13,6 +13,9 @@ import { ModalComponent } from "../components/ModalComponent";
 import { ClientFilter } from "../components/filters/ClientFilter";
 
 import { CLIENT_URL } from "../utils/urls";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { es } from "date-fns/locale";
 
 export function Clients() {
 
@@ -24,39 +27,41 @@ export function Clients() {
     const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
         defaultData: {
             id: '',
-            code: '',
-            name: '',
+            first_name: '',
+            last_name: '',
+            document_type: '',
+            document_number: '',
+            gender_type: '',
+            birth: '',
+            cell_phone: '',
+            local_phone: '',
             email: '',
             address: '',
             phone: '',
             work_place: '',
-            observations: ''
+            seller_id: ''
         },
         rules: {
-            code: {
+            first_name: {
                 required: true,
-                maxLength: 55
+                maxLength: 255
             },
-            name: {
+            last_name: {
                 required: true,
-                maxLength: 55
+                maxLength: 255
             },
-            email: {
-                maxLength: 55
+            document_number: {
+                maxLength: 255
+            },
+            cell_phone: {
+                maxLength: 255
             },
             address: {
                 required: true,
-                maxLength: 55
-            },
-            phone: {
-                required: true,
-                maxLength: 55
+                maxLength: 255
             },
             work_place: {
-                maxLength: 55
-            },
-            observations: {
-                maxLength: 55
+                maxLength: 255
             }
         }
     })
@@ -110,24 +115,24 @@ export function Clients() {
     const headCells = [
         {
             id: "name",
-            numeric: true,
-            disablePadding: false,
+            numeric: false,
+            disablePadding: true,
             label: "Nombre y apellido",
-            accessor: "name",
+            accessor: (row) => `${row.first_name} ${row.last_name}`,
         },
         {
-            id: "nro de documento",
+            id: "document_number",
             numeric: false,
             disablePadding: true,
             label: "Nro. Documento/CUIT",
-            accessor: "nro de documento",
+            accessor: "document_number",
         },
         {
-            id: "phone",
+            id: "cell_phone",
             numeric: false,
             disablePadding: true,
             label: "Celular",
-            accessor: "phone",
+            accessor: "cell_phone",
         },
         {
             id: "email",
@@ -153,20 +158,12 @@ export function Clients() {
             accessor: 'work_place'
         },
         {
-            id: "observations",
-            numeric: false,
-            disablePadding: true,
-            label: "Observaciones",
-            sorter: (row) => row.observations ?? "",
-            accessor: "observations",
-        },
-        {
-            id: "commerce name",
+            id: "work_place",
             numeric: false,
             disablePadding: true,
             label: "Nombre Comercio",
-            accessor: "commerce name",
-        },
+            accessor: "work_place",
+        }
     ];
 
     return (
@@ -181,12 +178,12 @@ export function Clients() {
                         [
                             ...headCells,
                             {
-                                id: 'seller',
+                                id: "seller_id",
                                 numeric: false,
                                 disablePadding: true,
-                                label: 'Vendedor',
-                                sorter: (row) => row.user.username.toLowerCase(),
-                                accessor: (row) => row.user.username
+                                label: "Vendedor",
+                                sorter: (row) => `${row.seller.first_name} ${row.seller.last_name}`,
+                                accessor: (row) => `${row.seller.first_name} ${row.seller.last_name}`,
                             }
                         ]
                     }
@@ -222,95 +219,127 @@ export function Clients() {
                             {open === 'VIEW' && `Cliente ${formData.name}`}
                         </Typography>
                         <form onChange={handleChange} onSubmit={handleSubmit}>
-                            <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 3 }}>
-                                <Box sx={{ display: 'flex', flexDirection: 'column', width: '50%', gap: 3 }}>
-                                    <FormControl>
-                                        <InputLabel htmlFor="code">Código</InputLabel>
-                                        <Input id="code" type="text" name="code" value={formData.code} disabled={open === 'VIEW'} />
-                                        {errors.code?.type === 'required' &&
-                                            <Typography variant="caption" color="red" marginTop={1}>
-                                                * El código es requerido.
-                                            </Typography>
-                                        }
-                                        {errors.name?.type === 'maxLength' &&
-                                            <Typography variant="caption" color="red" marginTop={1}>
-                                                * El código es demasiado largo.
-                                            </Typography>
-                                        }
-                                    </FormControl>
-                                    <FormControl>
-                                        <InputLabel htmlFor="name">Nombre y Apellido</InputLabel>
-                                        <Input id="name" type="text" name="name" value={formData.name} disabled={open === 'VIEW'} />
-                                        {errors.name?.type === 'required' &&
-                                            <Typography variant="caption" color="red" marginTop={1}>
-                                                * El nombre y apellido es requerido.
-                                            </Typography>
-                                        }
-                                        {errors.name?.type === 'maxLength' &&
-                                            <Typography variant="caption" color="red" marginTop={1}>
-                                                * El nombre y apellido es demasiado largo.
-                                            </Typography>
-                                        }
-                                    </FormControl>
-                                    <FormControl>
-                                        <InputLabel htmlFor="email">Email</InputLabel>
-                                        <Input id="email" type="text" name="email" value={formData.email} disabled={open === 'VIEW'} />
-                                        {errors.email?.type === 'maxLength' &&
-                                            <Typography variant="caption" color="red" marginTop={1}>
-                                                * El email es demasiado largo.
-                                            </Typography>
-                                        }
-                                    </FormControl>
-                                    <FormControl>
-                                        <InputLabel htmlFor="address">Dirección</InputLabel>
-                                        <Input id="address" type="text" name="address" value={formData.address} disabled={open === 'VIEW'} />
-                                        {errors.address?.type === 'required' &&
-                                            <Typography variant="caption" color="red" marginTop={1}>
-                                                * La dirección es requerida.
-                                            </Typography>
-                                        }
-                                        {errors.address?.type === 'maxLength' &&
-                                            <Typography variant="caption" color="red" marginTop={1}>
-                                                * La dirección es demasiado larga.
-                                            </Typography>
-                                        }
-                                    </FormControl>
-                                </Box>
-                                <Box sx={{ display: 'flex', flexDirection: 'column', width: '50%', gap: 3 }}>
-                                    <FormControl>
-                                        <InputLabel htmlFor="phone">Teléfono</InputLabel>
-                                        <Input id="phone" type="number" name="phone" value={formData.phone} disabled={open === 'VIEW'} />
-                                        {errors.phone?.type === 'required' &&
-                                            <Typography variant="caption" color="red" marginTop={1}>
-                                                * El teléfono es requerido.
-                                            </Typography>
-                                        }
-                                        {errors.phone?.type === 'maxLength' &&
-                                            <Typography variant="caption" color="red" marginTop={1}>
-                                                * El teléfono es demasiado largo.
-                                            </Typography>
-                                        }
-                                    </FormControl>
-                                    <FormControl>
-                                        <InputLabel htmlFor="work_place">Lugar de trabajo</InputLabel>
-                                        <Input id="work_place" type="text" name="work_place" value={formData.work_place} disabled={open === 'VIEW'} />
-                                        {errors.work_place?.type === 'maxLength' &&
-                                            <Typography variant="caption" color="red" marginTop={1}>
-                                                * El lugar de trabajo es demasiado largo.
-                                            </Typography>
-                                        }
-                                    </FormControl>
-                                    <FormControl>
-                                        <InputLabel htmlFor="observations">Observaciones</InputLabel>
-                                        <Input id="observations" type="text" name="observations" value={formData.observations} disabled={open === 'VIEW'} />
-                                        {errors.observations?.type === 'maxLength' &&
-                                            <Typography variant="caption" color="red" marginTop={1}>
-                                                * Las observaciones son demasiado largas.
-                                            </Typography>
-                                        }
-                                    </FormControl>
-                                </Box>
-                            </Box>
+                            <FormControl>
+                                <InputLabel htmlFor="first_name">Nombres</InputLabel>
+                                <Input id="first_name" type="text" name="first_name" value={formData.first_name} disabled={open === 'VIEW'} />
+                                {errors.first_name?.type === 'required' &&
+                                    <Typography variant="caption" color="red" marginTop={1}>
+                                        * El nombre es requerido.
+                                    </Typography>
+                                }
+                                {errors.first_name?.type === 'maxLength' &&
+                                    <Typography variant="caption" color="red" marginTop={1}>
+                                        * El nombre es demasiado largo.
+                                    </Typography>
+                                }
+                            </FormControl>
+                            <FormControl>
+                                <InputLabel htmlFor="last_name">Apellidos</InputLabel>
+                                <Input id="last_name" type="text" name="last_name" value={formData.last_name} disabled={open === 'VIEW'} />
+                                {errors.last_name?.type === 'required' &&
+                                    <Typography variant="caption" color="red" marginTop={1}>
+                                        * El apellido es requerido.
+                                    </Typography>
+                                }
+                                {errors.last_name?.type === 'maxLength' &&
+                                    <Typography variant="caption" color="red" marginTop={1}>
+                                        * El apellido es demasiado largo.
+                                    </Typography>
+                                }
+                            </FormControl>
+                            <FormControl>
+                                <InputLabel id="type-select">Tipo documento</InputLabel>
+                                <Select
+                                    labelId="type-select"
+                                    id="document_type"
+                                    value={formData.document_type}
+                                    label="Tipo documento"
+                                    name="document_type"
+                                    onChange={handleChange}
+                                >
+                                    <MenuItem value="DNI">DNI</MenuItem>
+                                    <MenuItem value="LE">LE</MenuItem>
+                                    <MenuItem value="CUIL">CUIL</MenuItem>
+                                </Select>
+                            </FormControl>
+                            <FormControl>
+                                <InputLabel htmlFor="document_number">Nro. documento / CUIT</InputLabel>
+                                <Input id="document_number" type="text" name="document_number" value={formData.document_number} disabled={open === 'VIEW'} />
+                            </FormControl>
+                            <FormControl>
+                                <InputLabel id="gender-select">Sexo</InputLabel>
+                                <Select
+                                    labelId="gender-select"
+                                    id="gender__type"
+                                    value={formData.gender_type}
+                                    label="Sexo"
+                                    name="gender_type"
+                                    onChange={handleChange}
+                                >
+                                    <MenuItem value="MASCULINO">MASCULINO</MenuItem>
+                                    <MenuItem value="FEMENINO">FEMENINO</MenuItem>
+                                </Select>
+                            </FormControl>
+                            <FormControl>
+                                <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
+                                    <DatePicker
+                                        label="Fecha nacimiento"
+                                        value={new Date(formData.birth)}
+                                        onChange={value => handleChange({
+                                            target: {
+                                                name: 'birth',
+                                                value: new Date(value.toISOString())
+                                            }
+                                        })}
+                                        disabled={auth.user.role.name !== 'ADMINISTRADOR' && open === 'EDIT'}
+                                    />
+                                </LocalizationProvider>
+                                {errors.birth?.type === 'required' &&
+                                    <Typography variant="caption" color="red" marginTop={1}>
+                                        * La fecha de nacimiento es requerida.
+                                    </Typography>
+                                }
+                            </FormControl>
+                            <FormControl>
+                                <InputLabel htmlFor="cell_phone">Celular</InputLabel>
+                                <Input id="cell_phone" type="number" name="cell_phone" value={formData.cell_phone} disabled={open === 'VIEW'} />
+                                {errors.cell_phone?.type === 'maxLength' &&
+                                    <Typography variant="caption" color="red" marginTop={1}>
+                                        * El celular es demasiado largo.
+                                    </Typography>
+                                }
+                            </FormControl>
+                            <FormControl>
+                                <InputLabel htmlFor="local_phone">Teléfono</InputLabel>
+                                <Input id="local_phone" type="number" name="local_phone" value={formData.local_phone} disabled={open === 'VIEW'} />
+                            </FormControl>
+                            <FormControl>
+                                <InputLabel htmlFor="email">Email</InputLabel>
+                                <Input id="email" type="text" name="email" value={formData.email} disabled={open === 'VIEW'} />
+                            </FormControl>
+                            <FormControl>
+                                <InputLabel htmlFor="work_place">Nombre comercio</InputLabel>
+                                <Input id="work_place" type="text" name="work_place" value={formData.work_place} disabled={open === 'VIEW'} />
+                                {errors.work_place?.type === 'maxLength' &&
+                                    <Typography variant="caption" color="red" marginTop={1}>
+                                        * El lugar de trabajo es demasiado largo.
+                                    </Typography>
+                                }
+                            </FormControl>
+                            <FormControl>
+                                <InputLabel htmlFor="address">Dirección</InputLabel>
+                                <Input id="address" type="text" name="address" value={formData.address} disabled={open === 'VIEW'} />
+                                {errors.address?.type === 'required' &&
+                                    <Typography variant="caption" color="red" marginTop={1}>
+                                        * La dirección es requerida.
+                                    </Typography>
+                                }
+                                {errors.address?.type === 'maxLength' &&
+                                    <Typography variant="caption" color="red" marginTop={1}>
+                                        * La dirección es demasiado larga.
+                                    </Typography>
+                                }
+                            </FormControl>
                             <FormControl sx={{
                                 display: 'flex',
                                 flexDirection: 'row',
