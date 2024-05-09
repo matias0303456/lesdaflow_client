@@ -7,6 +7,7 @@ export const OUTCOME_URL = `${BASE_URL}/outcomes`
 export const SALE_URL = `${BASE_URL}/sales`
 export const PRODUCT_URL = `${BASE_URL}/products`
 export const CLIENT_URL = `${BASE_URL}/clients`
+export const SELLER_URL = `${BASE_URL}/sellers`
 export const SUPPLIER_URL = `${BASE_URL}/suppliers`
 export const USER_URL = `${BASE_URL}/users`
 export const CHANGE_PASSWORD_URL = `${USER_URL}/change-password`
