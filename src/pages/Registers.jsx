@@ -1,10 +1,8 @@
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { Box, Button, FormControl, LinearProgress, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
 import { format } from "date-fns";
 
 import { AuthContext } from "../providers/AuthProvider";
-import { MessageContext } from "../providers/MessageProvider";
-import { useApi } from "../hooks/useApi";
 import { useForm } from "../hooks/useForm";
 import { usePayments } from "../hooks/usePayments";
 import { useRegisters } from "../hooks/useRegisters";
@@ -13,16 +11,13 @@ import { Layout } from "../components/Layout";
 import { DataGrid } from "../components/DataGrid";
 import { ModalComponent } from "../components/ModalComponent";
 
-import { REGISTER_URL } from "../utils/urls";
 import { getRegisterTotal, setLocalDate } from "../utils/helpers";
 
 export function Registers() {
 
     const { auth } = useContext(AuthContext)
-    const { setMessage, setOpenMessage, setSeverity } = useContext(MessageContext)
 
-    const { post, put, destroy } = useApi(REGISTER_URL)
-    const { registers, setRegisters, loadingRegisters, setLoadingRegisters, getRegisters } = useRegisters()
+    const { registers, loadingRegisters, getRegisters, handleSubmit, handleDelete, open, setOpen } = useRegisters()
     const { payments, loadingPayments } = usePayments()
     const { formData, setFormData, handleChange, disabled, setDisabled, reset } = useForm({
         defaultData: {
@@ -30,46 +25,6 @@ export function Registers() {
             user_id: auth?.user.id
         }
     })
-
-    const [open, setOpen] = useState(null)
-
-    async function handleSubmit(e) {
-        e.preventDefault()
-        const { status, data } = open === 'NEW' ? await post(formData) : await put(formData)
-        if (status === 200) {
-            if (open === 'NEW') {
-                setRegisters([data, ...registers])
-                setMessage('Caja abierta correctamente.')
-            } else {
-                setRegisters([data, ...registers.filter(r => r.id !== formData.id)])
-                setMessage('Caja cerrada correctamente.')
-            }
-            setSeverity('success')
-            reset(setOpen)
-        } else {
-            setMessage(data.message)
-            setSeverity('error')
-            setDisabled(false)
-        }
-        setOpenMessage(true)
-    }
-
-    async function handleDelete(elements) {
-        setLoadingRegisters(true)
-        const result = await Promise.all(elements.map(e => destroy(e)))
-        if (result.every(r => r.status === 200)) {
-            const ids = result.map(r => r.data.id)
-            setRegisters([...registers.filter(r => !ids.includes(r.id))])
-            setMessage(`${result.length === 1 ? 'Caja eliminada' : 'Cajas eliminadas'} correctamente.`)
-            setSeverity('success')
-        } else {
-            setMessage('Ocurrió un error. Actualice la página.')
-            setSeverity('error')
-        }
-        setOpenMessage(true)
-        setLoadingRegisters(false)
-        setOpen(null)
-    }
 
     const headCells = [
         {
@@ -144,7 +99,7 @@ export function Registers() {
                             {open === 'NEW' && 'Abrir caja'}
                             {open === 'EDIT' && 'Cerrar caja'}
                         </Typography>
-                        <form onChange={handleChange} onSubmit={handleSubmit}>
+                        <form onChange={handleChange} onSubmit={(e) => handleSubmit(e, formData, reset, setDisabled, setOpen)}>
                             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
                                 <Typography variant="h6" sx={{ marginBottom: 3, textAlign: 'center' }}>
                                     <TableContainer component={Paper}>

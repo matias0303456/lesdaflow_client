@@ -307,7 +307,7 @@ function EnhancedTableToolbar({
                     }}>
                         Cancelar
                     </Button>
-                    <Button variant="contained" onClick={() => handleDelete(workOn)} sx={{
+                    <Button variant="contained" onClick={() => handleDelete(workOn, setOpen)} sx={{
                         width: '50%'
                     }}>
                         Eliminar
