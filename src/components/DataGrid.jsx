@@ -249,7 +249,7 @@ function EnhancedTableToolbar({
                 </Tooltip>
             }
             {numSelected === 1 && updateByPercentage &&
-                <Tooltip title="Actualizar precio/s por porcentaje" onClick={() => {
+                <Tooltip title="Actualización de precios" onClick={() => {
                     setData(workOn[0])
                     if (setMassiveEdit) setMassiveEdit(workOn)
                     setOpen('MASSIVE-EDIT')
@@ -261,7 +261,7 @@ function EnhancedTableToolbar({
             }
             {(numSelected === 1 || (numSelected >= 1 && allowMassiveEdit)) &&
                 <Tooltip title={allowMassiveEdit && numSelected > 1 ?
-                    "Actualizar precio/s por porcentaje" :
+                    "Actualización de precios" :
                     "Editar"} onClick={() => {
                         if (allowMassiveEdit && numSelected > 1) {
                             setMassiveEdit(selected)
