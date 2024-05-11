@@ -3,6 +3,7 @@ import { useContext, useEffect, useState } from "react"
 import { useApi } from "./useApi"
 import { MessageContext } from "../providers/MessageProvider"
 import { PageContext } from "../providers/PageProvider"
+import { SearchContext } from "../providers/SearchProvider"
 
 import { PRODUCT_URL } from "../utils/urls"
 
@@ -10,6 +11,7 @@ export function useProducts() {
 
     const { page, offset, count, setCount, search } = useContext(PageContext)
     const { setMessage, setOpenMessage, setSeverity } = useContext(MessageContext)
+    const { searchProducts, setSearchProducts } = useContext(SearchContext)
 
     const { post, put, putMassive, putMassiveCostEarn, destroy } = useApi(PRODUCT_URL)
 
@@ -76,6 +78,7 @@ export function useProducts() {
         const { status, data } = await putMassive(body)
         if (status === 200) {
             setProducts([...data, ...products.filter(p => !data.map(d => d.id).includes(p.id))])
+            setSearchProducts([...data, ...searchProducts.filter(sp => !data.map(d => d.id).includes(sp.id))])
             setMessage('Precios actualizados correctamente.')
             setSeverity('success')
             setMassiveEdit([])
@@ -109,6 +112,7 @@ export function useProducts() {
         const { status, data } = await putMassiveCostEarn(body)
         if (status === 200) {
             setProducts([...data, ...products.filter(p => !data.map(d => d.id).includes(p.id))])
+            setSearchProducts([...data, ...searchProducts.filter(sp => !data.map(d => d.id).includes(sp.id))])
             setMessage('Datos actualizados correctamente.')
             setSeverity('success')
             setMassiveEdit([])
