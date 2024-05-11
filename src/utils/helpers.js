@@ -76,6 +76,19 @@ export function getNewPrice(product, percentage) {
     return (price + ((price / 100) * perc)).toFixed(2)
 }
 
+export function getNewCostAndEarnPrice(product, value, earn) {
+    if (parseFloat(earn) === 0 && parseFloat(value) === 0) {
+        return (product.buy_price + (product.buy_price / 100) * product.earn).toFixed(2)
+    }
+    if (parseFloat(value) === 0) {
+        return (product.buy_price + (product.buy_price / 100) * parseFloat(earn)).toFixed(2)
+    }
+    if (parseFloat(earn) === 0) {
+        return (parseFloat(value) + (parseFloat(value) / 100) * product.earn).toFixed(2)
+    }
+    return (parseFloat(value) + (parseFloat(value) / 100) * parseFloat(earn)).toFixed(2)
+}
+
 export function getInstallmentsAmount(total, installments) {
     const inst = installments.toString().length === 0 ? 1 : parseInt(installments)
     return (total.replace('$', '') / inst).toFixed(2)
@@ -95,8 +108,8 @@ export function getRegisterTotal(register, payments, close = false) {
     if (register.created_at === register.updated_at && !close) return '$0'
     const total = payments.filter(p => {
         return p.sale.client.user_id === register.user_id &&
-        new Date(p.date).getTime() > new Date(register.created_at).getTime() &&
-        new Date(p.date).getTime() < (close ? Date.now() : new Date(register.updated_at).getTime())
+            new Date(p.date).getTime() > new Date(register.created_at).getTime() &&
+            new Date(p.date).getTime() < (close ? Date.now() : new Date(register.updated_at).getTime())
     }).reduce((prev, curr) => prev + curr.amount, 0)
     return `$${total.toFixed(2)}`
 }

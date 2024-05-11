@@ -100,6 +100,25 @@ export function useApi(url) {
         }
     }
 
+    async function putMassiveCostEarn(req) {
+        try {
+            const res = await fetch(url + '/massive-edit-cost-earn', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': auth.token
+                },
+                body: JSON.stringify(req)
+            })
+            const json = await res.json()
+            return { status: res.status, data: json }
+        } catch (err) {
+            setMessage('Ocurrió un error.')
+            setSeverity('error')
+            setOpenMessage(true)
+        }
+    }
+
     async function changeVendorPwd(id, req) {
         try {
             const res = await fetch(url + `/vendor-pwd-edit/${id}`, {
@@ -137,5 +156,5 @@ export function useApi(url) {
         }
     }
 
-    return { get, post, put, putMassive, changeVendorPwd, destroy, getById }
+    return { get, post, put, putMassive, changeVendorPwd, destroy, getById, putMassiveCostEarn }
 }

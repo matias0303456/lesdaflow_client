@@ -1,9 +1,9 @@
+import { useState } from "react";
 import { Box, Button, Input, Paper, Tab, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tabs, Typography } from "@mui/material"
 
 import { ModalComponent } from "./ModalComponent"
 
-import { getNewPrice } from "../utils/helpers"
-import { useState } from "react";
+import { getNewCostAndEarnPrice, getNewPrice } from "../utils/helpers"
 
 function CustomTabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -35,41 +35,31 @@ function a11yProps(index) {
 export function UpdateProductPrice({
     open,
     massiveEdit,
-    massiveEditPercentage,
-    setMassiveEditPercentage,
     reset,
     setMassiveEdit,
     setOpen,
-    handleSubmitMassive
+    handleSubmitMassive,
+    handleUpdateCostAndEarn,
+    setDisabled
 }) {
 
     const [value, setValue] = useState(0)
+    const [massiveEditPercentage, setMassiveEditPercentage] = useState(0)
+    const [massiveEditValue, setMassiveEditValue] = useState(0)
+    const [massiveEditEarn, setMassiveEditEarn] = useState(0)
 
     const handleChange = (event, newValue) => {
         setValue(newValue)
-      };
+        setMassiveEditPercentage(0)
+        setMassiveEditValue(0)
+        setMassiveEditEarn(0)
+    };
 
     return (
         <ModalComponent open={open === 'MASSIVE-EDIT'} dynamicContent>
             <Typography variant="h6" sx={{ marginBottom: 2 }}>
                 Actualización de precios
             </Typography>
-            <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
-                    <Tab label="Item One" {...a11yProps(0)} />
-                    <Tab label="Item Two" {...a11yProps(1)} />
-                    <Tab label="Item Three" {...a11yProps(2)} />
-                </Tabs>
-            </Box>
-            <CustomTabPanel value={value} index={0}>
-                Item One
-            </CustomTabPanel>
-            <CustomTabPanel value={value} index={1}>
-                Item Two
-            </CustomTabPanel>
-            <CustomTabPanel value={value} index={2}>
-                Item Three
-            </CustomTabPanel>
             <TableContainer component={Paper} sx={{ marginBottom: 2 }}>
                 <Table sx={{ minWidth: 650 }} aria-label="simple table">
                     <TableHead>
@@ -91,32 +81,81 @@ export function UpdateProductPrice({
                                 <TableCell align="center">{me.code}</TableCell>
                                 <TableCell align="center">{me.supplier_name}</TableCell>
                                 <TableCell align="center">${(me.buy_price + ((me.buy_price / 100) * me.earn)).toFixed(2)}</TableCell>
-                                <TableCell align="center">${getNewPrice(me, massiveEditPercentage)}</TableCell>
+                                <TableCell align="center">
+                                    ${value === 0 ?
+                                        getNewPrice(me, massiveEditPercentage) :
+                                        getNewCostAndEarnPrice(me, massiveEditValue, massiveEditEarn)}
+                                </TableCell>
                             </TableRow>
                         ))}
                     </TableBody>
                 </Table>
             </TableContainer>
-            <Box sx={{
-                display: 'flex',
-                flexDirection: 'row',
-                gap: 1,
-                justifyContent: 'center',
-                marginTop: 5,
-                marginBottom: 5
-            }}>
-                <Typography variant="h6">
-                    Porcentaje
-                </Typography>
-                <Input
-                    type="number"
-                    value={massiveEditPercentage}
-                    onChange={e => setMassiveEditPercentage(e.target.value)}
-                />
-                <Typography variant="h6">
-                    %
-                </Typography>
+            <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                <Tabs value={value} onChange={handleChange}>
+                    <Tab label="Porcentual" {...a11yProps(0)} />
+                    <Tab label="Por costo y ganancia" {...a11yProps(1)} />
+                </Tabs>
             </Box>
+            <CustomTabPanel value={value} index={0}>
+                <Box sx={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    gap: 1,
+                    justifyContent: 'center',
+                    marginTop: 2,
+                    marginBottom: 3
+                }}>
+                    <Typography variant="h6">
+                        Porcentaje
+                    </Typography>
+                    <Input
+                        type="number"
+                        value={massiveEditPercentage}
+                        onChange={e => setMassiveEditPercentage(e.target.value)}
+                    />
+                    <Typography variant="h6">
+                        %
+                    </Typography>
+                </Box>
+            </CustomTabPanel>
+            <CustomTabPanel value={value} index={1}>
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                    <Box sx={{
+                        display: 'flex',
+                        flexDirection: 'row',
+                        gap: 1,
+                        justifyContent: 'center'
+                    }}>
+                        <Typography variant="h6">
+                            Costo
+                        </Typography>
+                        <Input
+                            type="number"
+                            value={massiveEditValue}
+                            onChange={e => setMassiveEditValue(e.target.value)}
+                        />
+                    </Box>
+                    <Box sx={{
+                        display: 'flex',
+                        flexDirection: 'row',
+                        gap: 1,
+                        justifyContent: 'center'
+                    }}>
+                        <Typography variant="h6">
+                            Ganancia
+                        </Typography>
+                        <Input
+                            type="number"
+                            value={massiveEditEarn}
+                            onChange={e => setMassiveEditEarn(e.target.value)}
+                        />
+                        <Typography variant="h6">
+                            %
+                        </Typography>
+                    </Box>
+                </Box>
+            </CustomTabPanel>
             <Box sx={{
                 display: 'flex',
                 flexDirection: 'row',
@@ -137,7 +176,27 @@ export function UpdateProductPrice({
                 </Button>
                 <Button type="submit" variant="contained"
                     sx={{ width: '50%' }}
-                    onClick={handleSubmitMassive}
+                    onClick={
+                        () => value === 0 ?
+                            handleSubmitMassive(
+                                massiveEdit,
+                                massiveEditPercentage,
+                                reset,
+                                setMassiveEdit,
+                                setMassiveEditPercentage,
+                                setDisabled
+                            ) :
+                            handleUpdateCostAndEarn(
+                                massiveEdit,
+                                setMassiveEdit,
+                                massiveEditValue,
+                                setMassiveEditValue,
+                                massiveEditEarn,
+                                setMassiveEditEarn,
+                                reset,
+                                setDisabled
+                            )
+                    }
                 >
                     Guardar
                 </Button>

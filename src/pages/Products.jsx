@@ -29,7 +29,8 @@ export function Products() {
         handleDelete,
         open,
         setOpen,
-        handleSubmitMassive
+        handleSubmitMassive,
+        handleUpdateCostAndEarn
     } = useProducts()
     const { suppliers, loadingSuppliers } = useSuppliers()
     const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
@@ -80,7 +81,6 @@ export function Products() {
     })
 
     const [massiveEdit, setMassiveEdit] = useState([])
-    const [massiveEditPercentage, setMassiveEditPercentage] = useState(0)
     const [earnPrice, setEarnPrice] = useState(0)
 
     useEffect(() => {
@@ -374,12 +374,12 @@ export function Products() {
                         <UpdateProductPrice
                             open={open}
                             massiveEdit={massiveEdit}
-                            massiveEditPercentage={massiveEditPercentage}
-                            setMassiveEditPercentage={setMassiveEditPercentage}
                             reset={reset}
                             setMassiveEdit={setMassiveEdit}
                             setOpen={setOpen}
                             handleSubmitMassive={handleSubmitMassive}
+                            handleUpdateCostAndEarn={handleUpdateCostAndEarn}
+                            setDisabled={setDisabled}
                         />
                     </DataGrid>
                 </>

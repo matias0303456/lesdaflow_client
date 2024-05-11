@@ -11,7 +11,7 @@ export function useProducts() {
     const { page, offset, count, setCount, search } = useContext(PageContext)
     const { setMessage, setOpenMessage, setSeverity } = useContext(MessageContext)
 
-    const { post, put, putMassive, destroy } = useApi(PRODUCT_URL)
+    const { post, put, putMassive, putMassiveCostEarn, destroy } = useApi(PRODUCT_URL)
 
     const [loadingProducts, setLoadingProducts] = useState(true)
     const [products, setProducts] = useState([])
@@ -61,19 +61,60 @@ export function useProducts() {
         }
     }
 
-    async function handleSubmitMassive(massiveEdit, massiveEditPercentage, reset, setMassiveEdit, setMassiveEditPercentage, setDisabled) {
+    async function handleSubmitMassive(
+        massiveEdit,
+        massiveEditPercentage,
+        reset,
+        setMassiveEdit,
+        setMassiveEditPercentage,
+        setDisabled
+    ) {
         const body = {
             products: massiveEdit.map(me => ({ id: me.id, buy_price: me.buy_price })),
-            percentage: parseInt(massiveEditPercentage)
+            percentage: parseFloat(massiveEditPercentage)
         }
         const { status, data } = await putMassive(body)
         if (status === 200) {
             setProducts([...data, ...products.filter(p => !data.map(d => d.id).includes(p.id))])
             setMessage('Precios actualizados correctamente.')
             setSeverity('success')
-            reset(setOpen)
             setMassiveEdit([])
             setMassiveEditPercentage(0)
+            reset(setOpen)
+        } else {
+            setMessage(data.message)
+            setSeverity('error')
+            setDisabled(false)
+        }
+        setOpenMessage(true)
+    }
+
+    async function handleUpdateCostAndEarn(
+        massiveEdit,
+        setMassiveEdit,
+        massiveEditValue,
+        setMassiveEditValue,
+        massiveEditEarn,
+        setMassiveEditEarn,
+        reset,
+        setDisabled
+    ) {
+        const body = {
+            products: massiveEdit.map(me => ({
+                id: me.id,
+                buy_price: parseFloat(massiveEditValue),
+                earn: parseFloat(massiveEditEarn)
+            }))
+        }
+        const { status, data } = await putMassiveCostEarn(body)
+        if (status === 200) {
+            setProducts([...data, ...products.filter(p => !data.map(d => d.id).includes(p.id))])
+            setMessage('Datos actualizados correctamente.')
+            setSeverity('success')
+            setMassiveEdit([])
+            setMassiveEditValue(0)
+            setMassiveEditEarn(0)
+            reset(setOpen)
         } else {
             setMessage(data.message)
             setSeverity('error')
@@ -113,6 +154,7 @@ export function useProducts() {
         setOpen,
         handleSubmit,
         handleSubmitMassive,
-        handleDelete
+        handleDelete,
+        handleUpdateCostAndEarn
     }
 }
