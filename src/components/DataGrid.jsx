@@ -25,8 +25,9 @@ import AddCircleSharpIcon from '@mui/icons-material/AddCircleSharp';
 import { Button } from '@mui/material';
 import AttachMoneySharpIcon from '@mui/icons-material/AttachMoneySharp';
 import PasswordSharpIcon from '@mui/icons-material/PasswordSharp';
-import PrintSharpIcon from '@mui/icons-material/PrintSharp';
 import { SearchSharp } from '@mui/icons-material';
+import PictureAsPdfSharpIcon from '@mui/icons-material/PictureAsPdfSharp';
+import { SiMicrosoftexcel } from "react-icons/si";
 
 import { AuthContext } from '../providers/AuthProvider';
 import { PageContext } from '../providers/PageProvider';
@@ -202,7 +203,7 @@ function EnhancedTableToolbar({
                                 target="_blank"
                             >
                                 <IconButton>
-                                    <PrintSharpIcon />
+                                    <PictureAsPdfSharpIcon />
                                 </IconButton>
                             </Link>
                         </Tooltip>
@@ -219,7 +220,7 @@ function EnhancedTableToolbar({
                         target="_blank"
                     >
                         <IconButton>
-                            <PrintSharpIcon />
+                            <SiMicrosoftexcel />
                         </IconButton>
                     </Link>
                 </Tooltip>
@@ -227,16 +228,28 @@ function EnhancedTableToolbar({
             {handlePrint &&
                 pathname === '/veroshop/ventas' &&
                 rows.length > 0 &&
-                <Tooltip title="Imprimir PDF">
-                    <Link
-                        to={`${REPORT_URL}/sales?token=${auth.token}&orderBy=${orderBy}&order=${order}${selected.length > 0 ? `&ids=${selected.join(',')}` : ''}${search.length > 0 ? search : ''}`}
-                        target="_blank"
-                    >
-                        <IconButton>
-                            <PrintSharpIcon />
-                        </IconButton>
-                    </Link>
-                </Tooltip>
+                <>
+                    <Tooltip title="Imprimir PDF">
+                        <Link
+                            to={`${REPORT_URL}/sales-pdf?token=${auth.token}&orderBy=${orderBy}&order=${order}${selected.length > 0 ? `&ids=${selected.join(',')}` : ''}${search.length > 0 ? search : ''}`}
+                            target="_blank"
+                        >
+                            <IconButton>
+                                <PictureAsPdfSharpIcon />
+                            </IconButton>
+                        </Link>
+                    </Tooltip>
+                    <Tooltip title="Imprimir Excel">
+                        <Link
+                            to={`${REPORT_URL}/sales-excel?token=${auth.token}&orderBy=${orderBy}&order=${order}${selected.length > 0 ? `&ids=${selected.join(',')}` : ''}${search.length > 0 ? search : ''}`}
+                            target="_blank"
+                        >
+                            <IconButton>
+                                <SiMicrosoftexcel />
+                            </IconButton>
+                        </Link>
+                    </Tooltip>
+                </>
             }
             {numSelected === 1 && changePwd && workOn[0]?.role.name === 'VENDEDOR' &&
                 <Tooltip title="Cambiar contraseña" onClick={() => {
