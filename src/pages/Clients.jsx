@@ -1,12 +1,10 @@
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { Box, Button, FormControl, Input, InputLabel, LinearProgress, MenuItem, Select, Typography } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { es } from "date-fns/locale";
 
 import { AuthContext } from "../providers/AuthProvider";
-import { MessageContext } from "../providers/MessageProvider";
-import { useApi } from "../hooks/useApi";
 import { useForm } from "../hooks/useForm";
 import { useClients } from "../hooks/useClients";
 import { useSellers } from "../hooks/useSellers";
@@ -16,15 +14,11 @@ import { DataGrid } from "../components/DataGrid";
 import { ModalComponent } from "../components/ModalComponent";
 // import { ClientFilter } from "../components/filters/ClientFilter";
 
-import { CLIENT_URL } from "../utils/urls";
-
 export function Clients() {
 
     const { auth } = useContext(AuthContext)
-    const { setMessage, setOpenMessage, setSeverity } = useContext(MessageContext)
 
-    const { post, put, destroy } = useApi(CLIENT_URL)
-    const { clients, setClients, loadingClients, setLoadingClients } = useClients()
+    const { clients, loadingClients, handleSubmit, handleDelete, open, setOpen } = useClients()
     const { sellers, loadingSellers } = useSellers()
     const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
         defaultData: {
@@ -69,51 +63,6 @@ export function Clients() {
             }
         }
     })
-
-    const [open, setOpen] = useState(null)
-
-    async function handleSubmit(e) {
-        e.preventDefault()
-        if (validate()) {
-            const { status, data } = open === 'NEW' ? await post(formData) : await put(formData)
-            if (status === 200) {
-                if (open === 'NEW') {
-                    setClients([data, ...clients])
-                    setMessage('Cliente creado correctamente.')
-                } else {
-                    setClients([data, ...clients.filter(c => c.id !== formData.id)])
-                    setMessage('Cliente editado correctamente.')
-                }
-                setSeverity('success')
-                reset(setOpen)
-            } else {
-                setMessage(data.message)
-                setSeverity('error')
-                setDisabled(false)
-            }
-            setOpenMessage(true)
-        }
-    }
-
-    async function handleDelete() {
-        setLoadingClients(true)
-        const { status, data } = await destroy(formData)
-        if (status === 200) {
-            setClients([...clients.filter(c => c.id !== data.id)])
-            setMessage('Cliente eliminado correctamente.')
-            setSeverity('success')
-        } else {
-            if (status === 300) {
-                setMessage('El cliente tiene datos asociados.')
-            } else {
-                setMessage('Ocurrió un error. Actualice la página.')
-            }
-            setSeverity('error')
-        }
-        setOpenMessage(true)
-        setLoadingClients(false)
-        setOpen(null)
-    }
 
     const headCells = [
         {
@@ -214,7 +163,7 @@ export function Clients() {
                             {open === 'EDIT' && 'Editar cliente'}
                             {open === 'VIEW' && `Cliente ${formData.first_name} ${formData.last_name}`}
                         </Typography>
-                        <form onChange={handleChange} onSubmit={handleSubmit}>
+                        <form onChange={handleChange} onSubmit={(e) => handleSubmit(e, validate, formData, reset, setDisabled)}>
                             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
                                 <Box sx={{ display: 'flex', gap: 5 }}>
                                     <FormControl sx={{ width: '50%' }}>
@@ -408,7 +357,13 @@ export function Clients() {
                             <Button type="button" variant="outlined" onClick={() => reset(setOpen)} sx={{ width: '35%' }}>
                                 Cancelar
                             </Button>
-                            <Button type="submit" variant="contained" disabled={disabled} sx={{ width: '35%' }} onClick={handleDelete}>
+                            <Button
+                                type="button"
+                                variant="contained"
+                                disabled={disabled}
+                                sx={{ width: '35%' }}
+                                onClick={() => handleDelete(formData)}
+                            >
                                 Confirmar
                             </Button>
                         </Box>

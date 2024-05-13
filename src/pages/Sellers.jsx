@@ -1,26 +1,18 @@
-import { useContext, useState } from "react";
 import { Box, Button, FormControl, Input, InputLabel, LinearProgress, MenuItem, Select, Typography } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { es } from "date-fns/locale";
 
-import { MessageContext } from "../providers/MessageProvider";
 import { useSellers } from '../hooks/useSellers'
 import { useForm } from '../hooks/useForm'
-import { useApi } from "../hooks/useApi";
 
 import { Layout } from "../components/Layout";
 import { DataGrid } from "../components/DataGrid";
 import { ModalComponent } from "../components/ModalComponent";
 
-import { USER_URL } from "../utils/urls";
-
 export function Sellers() {
 
-    const { setMessage, setOpenMessage, setSeverity } = useContext(MessageContext)
-
-    const { loadingSellers, sellers, setSellers } = useSellers()
-    const { post, put, destroy } = useApi(USER_URL)
+    const { loadingSellers, sellers, open, setOpen, handleSubmit, handleDelete } = useSellers()
     const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
         defaultData: {
             id: '',
@@ -66,31 +58,6 @@ export function Sellers() {
             }
         }
     })
-
-    const [open, setOpen] = useState(null)
-
-    async function handleSubmit(e) {
-        e.preventDefault()
-        if (validate()) {
-            const { status, data } = open === 'NEW' ? await post(formData) : await put(formData)
-            if (status === 200) {
-                if (open === 'NEW') {
-                    setSellers([data, ...sellers])
-                    setMessage('Vendedor creado correctamente.')
-                } else {
-                    setSellers([data, ...sellers.filter(s => s.id !== formData.id)])
-                    setMessage('Vendedor editado correctamente.')
-                }
-                setSeverity('success')
-                reset(setOpen)
-            } else {
-                setMessage(data.message)
-                setSeverity('error')
-                setDisabled(false)
-            }
-            setOpenMessage(true)
-        }
-    }
 
     const headCells = [
         {
@@ -176,7 +143,7 @@ export function Sellers() {
                             {open === 'EDIT' && 'Editar vendedor'}
                             {open === 'VIEW' && `Vendedor ${formData.name}`}
                         </Typography>
-                        <form onChange={handleChange} onSubmit={handleSubmit}>
+                        <form onChange={handleChange} onSubmit={(e) => handleSubmit(e, validate, formData, reset, setDisabled)}>
                             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
                                 <Box sx={{ display: 'flex', gap: 5 }}>
                                     <FormControl sx={{ width: '50%' }}>
@@ -339,6 +306,28 @@ export function Sellers() {
                                 }
                             </FormControl>
                         </form>
+                    </ModalComponent>
+                    <ModalComponent open={open === 'DELETE'} onClose={() => reset(setOpen)} reduceWidth={900}>
+                        <Typography variant="h6" marginBottom={1} textAlign="center">
+                            Confirmar eliminación de vendedor
+                        </Typography>
+                        <Typography variant="body1" marginBottom={2} textAlign="center">
+                            Los datos no podrán recuperarse
+                        </Typography>
+                        <Box sx={{ display: 'flex', gap: 1, justifyContent: 'center' }}>
+                            <Button type="button" variant="outlined" onClick={() => reset(setOpen)} sx={{ width: '35%' }}>
+                                Cancelar
+                            </Button>
+                            <Button
+                                type="button"
+                                variant="contained"
+                                disabled={disabled}
+                                sx={{ width: '35%' }}
+                                onClick={() => handleDelete(formData)}
+                            >
+                                Confirmar
+                            </Button>
+                        </Box>
                     </ModalComponent>
                 </DataGrid>
             }
