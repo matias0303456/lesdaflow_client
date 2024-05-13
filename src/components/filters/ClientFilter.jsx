@@ -11,7 +11,6 @@ export function ClientFilter({ clients, setClients }) {
     const [users] = useState(Array.from(new Set(clients.map(c => c.user.username))))
 
     const [filter, setFilter] = useState({
-        code: '',
         name: '',
         email: '',
         username: ''
@@ -26,7 +25,6 @@ export function ClientFilter({ clients, setClients }) {
 
     const handleReset = () => {
         setFilter({
-            code: '',
             name: '',
             email: '',
             username: ''
@@ -36,8 +34,7 @@ export function ClientFilter({ clients, setClients }) {
 
     useEffect(() => {
         setClients(backup.filter(item =>
-            item.code.toLowerCase().includes(filter.code.toLowerCase()) &&
-            item.name.toLowerCase().includes(filter.name.toLowerCase()) &&
+            item.first_name.toLowerCase().includes(filter.first_name.toLowerCase()) &&
             item.email.toLowerCase().includes(filter.email.toLowerCase()) &&
             item.user.username.toLowerCase().includes(filter.username.toLowerCase())
         ))

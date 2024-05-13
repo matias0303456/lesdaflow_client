@@ -107,7 +107,7 @@ export function Layout({ children, title }) {
                 : "hidden xl:flex w-[100%] static h-[100%] items-center justify-center gap-1"
             }`}
           >
-            {auth.user.role.name === "ADMINISTRADOR"
+            {auth.user.role === "ADMINISTRADOR"
               ? nav_items_admin.map((item, index) => (
                   <li
                     className={`${

@@ -4,28 +4,23 @@ import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { es } from "date-fns/locale";
 
-import { AuthContext } from "../providers/AuthProvider";
 import { MessageContext } from "../providers/MessageProvider";
+import { useSellers } from '../hooks/useSellers'
+import { useForm } from '../hooks/useForm'
 import { useApi } from "../hooks/useApi";
-import { useForm } from "../hooks/useForm";
-import { useClients } from "../hooks/useClients";
-import { useSellers } from "../hooks/useSellers";
 
 import { Layout } from "../components/Layout";
 import { DataGrid } from "../components/DataGrid";
 import { ModalComponent } from "../components/ModalComponent";
-// import { ClientFilter } from "../components/filters/ClientFilter";
 
-import { CLIENT_URL } from "../utils/urls";
+import { USER_URL } from "../utils/urls";
 
-export function Clients() {
+export function Sellers() {
 
-    const { auth } = useContext(AuthContext)
     const { setMessage, setOpenMessage, setSeverity } = useContext(MessageContext)
 
-    const { post, put, destroy } = useApi(CLIENT_URL)
-    const { clients, setClients, loadingClients, setLoadingClients } = useClients()
-    const { sellers, loadingSellers } = useSellers()
+    const { loadingSellers, sellers, setSellers } = useSellers()
+    const { post, put, destroy } = useApi(USER_URL)
     const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
         defaultData: {
             id: '',
@@ -33,14 +28,14 @@ export function Clients() {
             last_name: '',
             document_type: '',
             document_number: '',
-            gender_type: '',
             birth: Date.now(),
             cell_phone: '',
             local_phone: '',
             email: '',
             address: '',
-            work_place: '',
-            user_id: ''
+            username: '',
+            password: '',
+            role: 'VENDEDOR'
         },
         rules: {
             first_name: {
@@ -61,11 +56,13 @@ export function Clients() {
                 required: true,
                 maxLength: 255
             },
-            work_place: {
+            username: {
+                required: true,
                 maxLength: 255
             },
-            user_id: {
-                required: true
+            password: {
+                required: true,
+                maxLength: 255
             }
         }
     })
@@ -78,11 +75,11 @@ export function Clients() {
             const { status, data } = open === 'NEW' ? await post(formData) : await put(formData)
             if (status === 200) {
                 if (open === 'NEW') {
-                    setClients([data, ...clients])
-                    setMessage('Cliente creado correctamente.')
+                    setSellers([data, ...sellers])
+                    setMessage('Vendedor creado correctamente.')
                 } else {
-                    setClients([data, ...clients.filter(c => c.id !== formData.id)])
-                    setMessage('Cliente editado correctamente.')
+                    setSellers([data, ...sellers.filter(s => s.id !== formData.id)])
+                    setMessage('Vendedor editado correctamente.')
                 }
                 setSeverity('success')
                 reset(setOpen)
@@ -95,40 +92,19 @@ export function Clients() {
         }
     }
 
-    async function handleDelete(elements) {
-        setLoadingClients(true)
-        const result = await Promise.all(elements.map(e => destroy(e)))
-        if (result.every(r => r.status === 200)) {
-            const ids = result.map(r => r.data.id)
-            setClients([...clients.filter(c => !ids.includes(c.id))])
-            setMessage(`${result.length === 1 ? 'Cliente eliminado' : 'Clientes eliminados'} correctamente.`)
-            setSeverity('success')
-        } else {
-            if (result.some(r => r.status === 300)) {
-                setMessage('Existen clientes con datos asociados.')
-            } else {
-                setMessage('Ocurrió un error. Actualice la página.')
-            }
-            setSeverity('error')
-        }
-        setOpenMessage(true)
-        setLoadingClients(false)
-        setOpen(null)
-    }
-
     const headCells = [
         {
             id: "name",
             numeric: false,
             disablePadding: true,
             label: "Nombre y apellido",
-            accessor: (row) => `${row.first_name} ${row.last_name}`
+            accessor: (row) => `${row.first_name} ${row.last_name}`,
         },
         {
             id: "document_number",
             numeric: false,
             disablePadding: true,
-            label: "Nro. Documento/CUIT",
+            label: "Nro. Documento",
             accessor: "document_number",
         },
         {
@@ -136,6 +112,13 @@ export function Clients() {
             numeric: false,
             disablePadding: true,
             label: "Celular",
+            accessor: "cell_phone",
+        },
+        {
+            id: "local_phone",
+            numeric: false,
+            disablePadding: true,
+            label: "Teléfono",
             accessor: "cell_phone",
         },
         {
@@ -152,39 +135,18 @@ export function Clients() {
             disablePadding: true,
             label: "Dirección",
             accessor: "address",
-        },
-        {
-            id: 'work_place',
-            numeric: false,
-            disablePadding: true,
-            label: 'Nombre comercio',
-            sorter: (row) => row.work_place ?? '',
-            accessor: 'work_place'
         }
     ];
 
     return (
-        <Layout title="Clientes">
-            {loadingClients || disabled || loadingSellers ?
+        <Layout title="Personal">
+            {loadingSellers ?
                 <Box sx={{ width: '100%' }}>
                     <LinearProgress />
                 </Box> :
                 <DataGrid
-                    headCells={auth.user.role !== 'ADMINISTRADOR' ?
-                        headCells :
-                        [
-                            ...headCells,
-                            {
-                                id: "user_id",
-                                numeric: false,
-                                disablePadding: true,
-                                label: "Vendedor",
-                                sorter: (row) => `${row.user.first_name} ${row.user.last_name}`,
-                                accessor: (row) => `${row.user.first_name} ${row.user.last_name}`,
-                            }
-                        ]
-                    }
-                    rows={clients}
+                    headCells={headCells}
+                    rows={sellers}
                     setOpen={setOpen}
                     setData={setFormData}
                     showEditAction
@@ -201,19 +163,18 @@ export function Clients() {
                                 <Button variant="outlined" onClick={() => setOpen('NEW')}>
                                     Agregar
                                 </Button>
-                                <Button variant="outlined" color='error'>
-                                    PDF
+                                <Button variant="outlined" color='success'>
+                                    Excel
                                 </Button>
                             </Box>
-                            {/* <ClientFilter clients={clients} setClients={setClients} /> */}
                         </Box>
                     }
                 >
                     <ModalComponent open={open === 'NEW' || open === 'EDIT' || open === 'VIEW'} onClose={() => reset(setOpen)}>
                         <Typography variant="h6" marginBottom={1}>
-                            {open === 'NEW' && 'Nuevo cliente'}
-                            {open === 'EDIT' && 'Editar cliente'}
-                            {open === 'VIEW' && `Cliente ${formData.first_name} ${formData.last_name}`}
+                            {open === 'NEW' && 'Nuevo vendedor'}
+                            {open === 'EDIT' && 'Editar vendedor'}
+                            {open === 'VIEW' && `Vendedor ${formData.name}`}
                         </Typography>
                         <form onChange={handleChange} onSubmit={handleSubmit}>
                             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
@@ -249,6 +210,36 @@ export function Clients() {
                                 </Box>
                                 <Box sx={{ display: 'flex', gap: 5 }}>
                                     <FormControl sx={{ width: '50%' }}>
+                                        <InputLabel htmlFor="username">Usuario</InputLabel>
+                                        <Input id="username" type="text" name="username" value={formData.username} disabled={open === 'VIEW'} />
+                                        {errors.username?.type === 'required' &&
+                                            <Typography variant="caption" color="red" marginTop={1}>
+                                                * El usuario es requerido.
+                                            </Typography>
+                                        }
+                                        {errors.username?.type === 'maxLength' &&
+                                            <Typography variant="caption" color="red" marginTop={1}>
+                                                * El usuario es demasiado largo.
+                                            </Typography>
+                                        }
+                                    </FormControl>
+                                    <FormControl sx={{ width: '50%' }}>
+                                        <InputLabel htmlFor="password">Contraseña</InputLabel>
+                                        <Input id="password" type="password" name="password" value={formData.password} disabled={open === 'VIEW'} />
+                                        {errors.password?.type === 'required' &&
+                                            <Typography variant="caption" color="red" marginTop={1}>
+                                                * La contraseña es requerida.
+                                            </Typography>
+                                        }
+                                        {errors.password?.type === 'maxLength' &&
+                                            <Typography variant="caption" color="red" marginTop={1}>
+                                                * La contraseña es demasiado larga.
+                                            </Typography>
+                                        }
+                                    </FormControl>
+                                </Box>
+                                <Box sx={{ display: 'flex', gap: 5 }}>
+                                    <FormControl sx={{ width: '50%' }}>
                                         <InputLabel id="type-select">Tipo documento</InputLabel>
                                         <Select
                                             labelId="type-select"
@@ -257,7 +248,6 @@ export function Clients() {
                                             label="Tipo documento"
                                             name="document_type"
                                             onChange={handleChange}
-                                            disabled={open === 'VIEW'}
                                         >
                                             <MenuItem value="DNI">DNI</MenuItem>
                                             <MenuItem value="LE">LE</MenuItem>
@@ -267,43 +257,6 @@ export function Clients() {
                                     <FormControl sx={{ width: '50%' }}>
                                         <InputLabel htmlFor="document_number">Nro. documento / CUIT</InputLabel>
                                         <Input id="document_number" type="text" name="document_number" value={formData.document_number} disabled={open === 'VIEW'} />
-                                    </FormControl>
-                                </Box>
-                                <Box sx={{ display: 'flex', gap: 5 }}>
-                                    <FormControl sx={{ width: '50%' }}>
-                                        <InputLabel id="gender-select">Sexo</InputLabel>
-                                        <Select
-                                            labelId="gender-select"
-                                            id="gender__type"
-                                            value={formData.gender_type}
-                                            label="Sexo"
-                                            name="gender_type"
-                                            onChange={handleChange}
-                                            disabled={open === 'VIEW'}
-                                            >
-                                            <MenuItem value="MASCULINO">MASCULINO</MenuItem>
-                                            <MenuItem value="FEMENINO">FEMENINO</MenuItem>
-                                        </Select>
-                                    </FormControl>
-                                    <FormControl sx={{ width: '50%' }}>
-                                        <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
-                                            <DatePicker
-                                                label="Fecha nacimiento"
-                                                value={new Date(formData.birth)}
-                                                onChange={value => handleChange({
-                                                    target: {
-                                                        name: 'birth',
-                                                        value: new Date(value.toISOString())
-                                                    }
-                                                })}
-                                                disabled={open === 'VIEW'}
-                                            />
-                                        </LocalizationProvider>
-                                        {errors.birth?.type === 'required' &&
-                                            <Typography variant="caption" color="red" marginTop={1}>
-                                                * La fecha de nacimiento es requerida.
-                                            </Typography>
-                                        }
                                     </FormControl>
                                 </Box>
                                 <Box sx={{ display: 'flex', gap: 5 }}>
@@ -323,17 +276,27 @@ export function Clients() {
                                 </Box>
                                 <Box sx={{ display: 'flex', gap: 5 }}>
                                     <FormControl sx={{ width: '50%' }}>
-                                        <InputLabel htmlFor="email">Email</InputLabel>
-                                        <Input id="email" type="text" name="email" value={formData.email} disabled={open === 'VIEW'} />
-                                    </FormControl>
-                                    <FormControl sx={{ width: '50%' }}>
-                                        <InputLabel htmlFor="work_place">Nombre comercio</InputLabel>
-                                        <Input id="work_place" type="text" name="work_place" value={formData.work_place} disabled={open === 'VIEW'} />
-                                        {errors.work_place?.type === 'maxLength' &&
+                                        <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
+                                            <DatePicker
+                                                label="Fecha nacimiento"
+                                                value={new Date(formData.birth)}
+                                                onChange={value => handleChange({
+                                                    target: {
+                                                        name: 'birth',
+                                                        value: new Date(value.toISOString())
+                                                    }
+                                                })}
+                                            />
+                                        </LocalizationProvider>
+                                        {errors.birth?.type === 'required' &&
                                             <Typography variant="caption" color="red" marginTop={1}>
-                                                * El nombre del comercio es demasiado largo.
+                                                * La fecha de nacimiento es requerida.
                                             </Typography>
                                         }
+                                    </FormControl>
+                                    <FormControl sx={{ width: '50%' }}>
+                                        <InputLabel htmlFor="email">Email</InputLabel>
+                                        <Input id="email" type="text" name="email" value={formData.email} disabled={open === 'VIEW'} />
                                     </FormControl>
                                 </Box>
                                 <Box sx={{ display: 'flex', gap: 5 }}>
@@ -348,27 +311,6 @@ export function Clients() {
                                         {errors.address?.type === 'maxLength' &&
                                             <Typography variant="caption" color="red" marginTop={1}>
                                                 * La dirección es demasiado larga.
-                                            </Typography>
-                                        }
-                                    </FormControl>
-                                    <FormControl sx={{ width: '50%' }}>
-                                        <InputLabel id="seller-select">Vendedor</InputLabel>
-                                        <Select
-                                            labelId="seller-select"
-                                            id="user_id"
-                                            value={formData.user_id}
-                                            label="Vendedor"
-                                            name="user_id"
-                                            onChange={handleChange}
-                                            disabled={open === 'VIEW'}
-                                        >
-                                            {sellers.map(s => (
-                                                <MenuItem key={s.id} value={s.id}>{`${s.first_name} ${s.last_name}`}</MenuItem>
-                                            ))}
-                                        </Select>
-                                        {errors.user_id?.type === 'required' &&
-                                            <Typography variant="caption" color="red" marginTop={1}>
-                                                * El vendedor es requerido.
                                             </Typography>
                                         }
                                     </FormControl>
@@ -400,6 +342,6 @@ export function Clients() {
                     </ModalComponent>
                 </DataGrid>
             }
-        </Layout >
+        </Layout>
     )
 }

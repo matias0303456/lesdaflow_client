@@ -166,7 +166,7 @@ export function Visits() {
       ) : (
         <DataGrid
           headCells={
-            auth.user.role.name !== "ADMINISTRADOR"
+            auth.user.role !== "ADMINISTRADOR"
               ? headCells
               : [
                   ...headCells,

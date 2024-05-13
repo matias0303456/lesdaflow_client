@@ -18,7 +18,6 @@ import { Products } from './pages/Products'
 import { ProductsReport } from './pages/ProductsReport'
 import { Budgets } from "./pages/Budgets";
 import { Registers } from "./pages/Registers";
-import { Profile } from "./pages/Profile";
 import { Error } from './pages/Error'
 import { Roles } from "./pages/Roles";
 import { CurrentAccount } from "./pages/CurrentAccount";
@@ -35,6 +34,7 @@ import { OrdersCheckIn } from "./pages/OrdersCheckIn";
 import { OpenRegister } from "./pages/OpenRegister";
 import { RegisterMovements } from "./pages/RegisterMovements";
 import { BlockedCustomers } from "./pages/BlockedCustomers";
+import { Sellers } from "./pages/Sellers";
 
 function App() {
 
@@ -66,6 +66,7 @@ function App() {
               <Route path="/usuarios" element={<Users />} />
               <Route path="/roles" element={<Roles />} />
               <Route path="/proveedores" element={<Suppliers />} />
+              <Route path="/vendedores" element={<Sellers />} />
               <Route path="/ventas" element={<Sales />} />
               <Route path="/ventas-busqueda" element={<SalesSearch />} />
               <Route path="/reporte-ventas" element={<SalesReport />} />

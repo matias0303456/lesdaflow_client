@@ -132,7 +132,7 @@ export const nav_items_admin = [
     submenu: [
       {
         subtitle: "ABM Vendedor",
-        path: "/vendedor",
+        path: "/vendedores",
       },
     ],
   },

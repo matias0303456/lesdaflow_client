@@ -192,7 +192,7 @@ export function Payments({ sale, setSale, loading, setLoading }) {
                                                 type="number"
                                                 name="amount"
                                                 value={formData.amount}
-                                                disabled={auth.user.role.name !== 'ADMINISTRADOR' && open === 'EDIT'}
+                                                disabled={auth.user.role !== 'ADMINISTRADOR' && open === 'EDIT'}
                                             />
                                             {errors.amount?.type === 'required' &&
                                                 <Typography variant="caption" color="red" marginTop={1}>
@@ -215,7 +215,7 @@ export function Payments({ sale, setSale, loading, setLoading }) {
                                                         value: new Date(value.toISOString())
                                                     }
                                                 })}
-                                                disabled={auth.user.role.name !== 'ADMINISTRADOR' && open === 'EDIT'}
+                                                disabled={auth.user.role !== 'ADMINISTRADOR' && open === 'EDIT'}
                                             />
                                         </LocalizationProvider>
                                         {errors.date?.type === 'required' &&

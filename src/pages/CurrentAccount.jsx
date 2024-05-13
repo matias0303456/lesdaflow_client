@@ -171,7 +171,7 @@ export function CurrentAccount() {
       ) : (
         <DataGrid
           headCells={
-            auth.user.role.name !== "ADMINISTRADOR"
+            auth.user.role !== "ADMINISTRADOR"
               ? headCells
               : [
                   ...headCells,
