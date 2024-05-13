@@ -34,7 +34,7 @@ export function Clients() {
             document_type: '',
             document_number: '',
             gender_type: '',
-            birth: Date.now(),
+            birth: new Date(Date.now()),
             cell_phone: '',
             local_phone: '',
             email: '',
@@ -95,17 +95,16 @@ export function Clients() {
         }
     }
 
-    async function handleDelete(elements) {
+    async function handleDelete() {
         setLoadingClients(true)
-        const result = await Promise.all(elements.map(e => destroy(e)))
-        if (result.every(r => r.status === 200)) {
-            const ids = result.map(r => r.data.id)
-            setClients([...clients.filter(c => !ids.includes(c.id))])
-            setMessage(`${result.length === 1 ? 'Cliente eliminado' : 'Clientes eliminados'} correctamente.`)
+        const { status, data } = await destroy(formData)
+        if (status === 200) {
+            setClients([...clients.filter(c => c.id !== data.id)])
+            setMessage('Cliente eliminado correctamente.')
             setSeverity('success')
         } else {
-            if (result.some(r => r.status === 300)) {
-                setMessage('Existen clientes con datos asociados.')
+            if (status === 300) {
+                setMessage('El cliente tiene datos asociados.')
             } else {
                 setMessage('Ocurrió un error. Actualice la página.')
             }
@@ -280,7 +279,7 @@ export function Clients() {
                                             name="gender_type"
                                             onChange={handleChange}
                                             disabled={open === 'VIEW'}
-                                            >
+                                        >
                                             <MenuItem value="MASCULINO">MASCULINO</MenuItem>
                                             <MenuItem value="FEMENINO">FEMENINO</MenuItem>
                                         </Select>
@@ -397,6 +396,22 @@ export function Clients() {
                                 }
                             </FormControl>
                         </form>
+                    </ModalComponent>
+                    <ModalComponent open={open === 'DELETE'} onClose={() => reset(setOpen)} reduceWidth={900}>
+                        <Typography variant="h6" marginBottom={1} textAlign="center">
+                            Confirmar eliminación de cliente
+                        </Typography>
+                        <Typography variant="body1" marginBottom={2} textAlign="center">
+                            Los datos no podrán recuperarse
+                        </Typography>
+                        <Box sx={{ display: 'flex', gap: 1, justifyContent: 'center' }}>
+                            <Button type="button" variant="outlined" onClick={() => reset(setOpen)} sx={{ width: '35%' }}>
+                                Cancelar
+                            </Button>
+                            <Button type="submit" variant="contained" disabled={disabled} sx={{ width: '35%' }} onClick={handleDelete}>
+                                Confirmar
+                            </Button>
+                        </Box>
                     </ModalComponent>
                 </DataGrid>
             }

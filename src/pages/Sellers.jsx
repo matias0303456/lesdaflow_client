@@ -28,7 +28,7 @@ export function Sellers() {
             last_name: '',
             document_type: '',
             document_number: '',
-            birth: Date.now(),
+            birth: new Date(Date.now()),
             cell_phone: '',
             local_phone: '',
             email: '',
