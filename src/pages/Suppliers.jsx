@@ -1,156 +1,92 @@
-import { useContext, useEffect, useState } from "react";
-import { Box, Button, FormControl, Input, InputLabel, LinearProgress, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
+import { useContext, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { Box, Button, FormControl, Input, InputLabel, LinearProgress, Typography } from "@mui/material";
 
 import { AuthContext } from "../providers/AuthProvider";
-import { MessageContext } from "../providers/MessageProvider";
-import { useApi } from "../hooks/useApi";
 import { useForm } from "../hooks/useForm";
 import { useSuppliers } from "../hooks/useSuppliers";
-import { useNavigate } from "react-router-dom";
 
 import { Layout } from "../components/Layout";
 import { DataGrid } from "../components/DataGrid";
 import { ModalComponent } from "../components/ModalComponent";
 import { SupplierFilter } from "../components/filters/SupplierFilter";
 
-import { SUPPLIER_URL } from "../utils/urls";
-import { getNewPrice } from "../utils/helpers";
-
 export function Suppliers() {
 
     const { auth } = useContext(AuthContext)
-    const { setMessage, setOpenMessage, setSeverity } = useContext(MessageContext)
 
     const navigate = useNavigate()
 
-    const { post, put, destroy, putMassive } = useApi(SUPPLIER_URL)
-    const { suppliers, setSuppliers, loadingSuppliers, setLoadingSuppliers } = useSuppliers()
+    const { suppliers, setSuppliers, loadingSuppliers, handleSubmit, handleDelete, setOpen, open } = useSuppliers()
     const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
         defaultData: {
             id: '',
             name: '',
+            business_name: '',
+            cuil: '',
             address: '',
-            city: '',
-            province: '',
+            cell_phone: '',
+            business_phone: '',
             email: '',
-            phone: '',
             products: []
         },
         rules: {
             name: {
                 required: true,
-                maxLength: 55
+                maxLength: 255
+            },
+            business_name: {
+                required: true,
+                maxLength: 255
+            },
+            cuil: {
+                maxLength: 255
             },
             address: {
-                maxLength: 55
+                maxLength: 255
             },
-            city: {
-                maxLength: 55
+            cell_phone: {
+                required: true,
+                maxLength: 255
             },
-            province: {
-                maxLength: 55
+            business_phone: {
+                maxLength: 255
             },
             email: {
-                maxLength: 55
-            },
-            phone: {
-                maxLength: 55
+                maxLength: 255
             }
         }
     })
 
-    const [open, setOpen] = useState(null)
-    const [massiveEditPercentage, setMassiveEditPercentage] = useState(0)
-
     useEffect(() => {
-        if (auth?.user.role.name !== 'ADMINISTRADOR') navigate('/productos')
+        if (auth?.user.role !== 'ADMINISTRADOR') navigate('/productos')
     }, [])
-
-    async function handleSubmit(e) {
-        e.preventDefault()
-        if (validate()) {
-            const { status, data } = open === 'NEW' ? await post(formData) : await put(formData)
-            if (status === 200) {
-                if (open === 'NEW') {
-                    setSuppliers([data, ...suppliers])
-                    setMessage('Proveedor creado correctamente.')
-                } else {
-                    setSuppliers([data, ...suppliers.filter(s => s.id !== formData.id)])
-                    setMessage('Proveedor editado correctamente.')
-                }
-                setSeverity('success')
-                reset(setOpen)
-            } else {
-                setMessage(data.message)
-                setSeverity('error')
-                setDisabled(false)
-            }
-            setOpenMessage(true)
-        }
-    }
-
-    async function handleSubmitMassive() {
-        setLoadingSuppliers(true)
-        const body = {
-            supplier: formData.id,
-            products: formData.products.map(p => ({ id: p.id, buy_price: p.buy_price })),
-            percentage: parseInt(massiveEditPercentage)
-        }
-        const { status, data } = await putMassive(body)
-        if (status === 200) {
-            setSuppliers([data, ...suppliers.filter(s => s.id !== data.id)])
-            setMessage('Precios actualizados correctamente.')
-            setSeverity('success')
-            reset(setOpen)
-            setMassiveEditPercentage(0)
-        } else {
-            setMessage(data.message)
-            setSeverity('error')
-            setDisabled(false)
-        }
-        setLoadingSuppliers(false)
-        setOpenMessage(true)
-    }
-
-    async function handleDelete(elements) {
-        setLoadingSuppliers(true)
-        const result = await Promise.all(elements.map(e => destroy(e)))
-        if (result.every(r => r.status === 200)) {
-            const ids = result.map(r => r.data.id)
-            setSuppliers([...suppliers.filter(s => !ids.includes(s.id))])
-            setMessage(`${result.length === 1 ? 'Proveedor eliminado' : 'Proveedores eliminados'} correctamente.`)
-            setSeverity('success')
-        } else {
-            if (result.some(r => r.status === 300)) {
-                setMessage('Existen proveedores con datos asociados.')
-            } else {
-                setMessage('Ocurrió un error. Actualice la página.')
-            }
-            setSeverity('error')
-        }
-        setOpenMessage(true)
-        setLoadingSuppliers(false)
-        setOpen(null)
-    }
 
     const headCells = [
         {
-            id: 'supplier',
+            id: 'id',
+            numeric: true,
+            disablePadding: false,
+            label: 'Código',
+            accessor: 'id'
+        },
+        {
+            id: 'name',
             numeric: false,
             disablePadding: true,
             label: 'Proveedor',
-            accessor: 'supplier'
+            accessor: 'name'
         },
         {
-            id: 'business name',
+            id: 'business_name',
             numeric: false,
             disablePadding: true,
-            label: 'Razon Social',
-            accessor: 'business name'
+            label: 'Razón Social',
+            accessor: 'business_name'
         },
         {
             id: 'cuil',
-            numeric: true,
+            numeric: false,
             disablePadding: true,
             label: 'CUIL',
             accessor: 'cuil'
@@ -163,20 +99,20 @@ export function Suppliers() {
             accessor: 'address'
         },
         {
-            id: 'phone',
+            id: 'cell_phone',
             numeric: false,
             disablePadding: true,
             label: 'Teléfono',
             sorter: (row) => row.phone ?? '',
-            accessor: 'phone'
+            accessor: 'cell_phone'
         },
         {
-            id: 'bussiness phone',
+            id: 'business_phone',
             numeric: false,
             disablePadding: true,
             label: 'Teléfono',
             sorter: (row) => row.phone ?? '',
-            accessor: 'bussiness phone'
+            accessor: 'business_phone'
         },
         {
             id: 'email',
@@ -186,7 +122,7 @@ export function Suppliers() {
             sorter: (row) => row.email ?? '',
             accessor: 'email'
         },
-        
+
     ]
 
     return (
@@ -228,64 +164,89 @@ export function Suppliers() {
                             {open === 'EDIT' && 'Editar proveedor'}
                             {open === 'VIEW' && `Proveedor #${formData.id}`}
                         </Typography>
-                        <form onChange={handleChange} onSubmit={handleSubmit}>
+                        <form onChange={handleChange} onSubmit={(e) => handleSubmit(e, validate, formData, reset, setDisabled)}>
                             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-                                <FormControl>
-                                    <InputLabel htmlFor="name">Nombre</InputLabel>
-                                    <Input id="name" type="text" name="name" value={formData.name} disabled={open === 'VIEW'} />
-                                    {errors.name?.type === 'required' &&
-                                        <Typography variant="caption" color="red" marginTop={1}>
-                                            * El nombre es requerido.
-                                        </Typography>
-                                    }
-                                    {errors.name?.type === 'maxLength' &&
-                                        <Typography variant="caption" color="red" marginTop={1}>
-                                            * El nombre es demasiado largo.
-                                        </Typography>
-                                    }
-                                </FormControl>
-                                <FormControl>
+                                <Box sx={{ display: 'flex', gap: 5 }}>
+                                    <FormControl sx={{ width: '50%' }}>
+                                        <InputLabel htmlFor="name">Nombre Completo</InputLabel>
+                                        <Input id="name" type="text" name="name" value={formData.name} disabled={open === 'VIEW'} />
+                                        {errors.name?.type === 'required' &&
+                                            <Typography variant="caption" color="red" marginTop={1}>
+                                                * El nombre es requerido.
+                                            </Typography>
+                                        }
+                                        {errors.name?.type === 'maxLength' &&
+                                            <Typography variant="caption" color="red" marginTop={1}>
+                                                * El nombre es demasiado largo.
+                                            </Typography>
+                                        }
+                                    </FormControl>
+                                    <FormControl sx={{ width: '50%' }}>
+                                        <InputLabel htmlFor="business_name">Razón Social</InputLabel>
+                                        <Input id="business_name" type="text" name="business_name" value={formData.business_name} disabled={open === 'VIEW'} />
+                                        {errors.business_name?.type === 'required' &&
+                                            <Typography variant="caption" color="red" marginTop={1}>
+                                                * La razón social es requerida.
+                                            </Typography>
+                                        }
+                                        {errors.business_name?.type === 'maxLength' &&
+                                            <Typography variant="caption" color="red" marginTop={1}>
+                                                * La razón social es demasiado larga.
+                                            </Typography>
+                                        }
+                                    </FormControl>
+                                </Box>
+                                <Box sx={{ display: 'flex', gap: 5 }}>
+                                    <FormControl sx={{ width: '50%' }}>
+                                        <InputLabel htmlFor="cuil">CUIL</InputLabel>
+                                        <Input id="cuil" type="text" name="cuil" value={formData.cuil} disabled={open === 'VIEW'} />
+                                        {errors.cuil?.type === 'maxLength' &&
+                                            <Typography variant="caption" color="red" marginTop={1}>
+                                                * El CUIL es demasiado largo.
+                                            </Typography>
+                                        }
+                                    </FormControl>
+                                    <FormControl sx={{ width: '50%' }}>
+                                        <InputLabel htmlFor="email">Email</InputLabel>
+                                        <Input id="email" type="email" name="email" value={formData.email} disabled={open === 'VIEW'} />
+                                        {errors.email?.type === 'maxLength' &&
+                                            <Typography variant="caption" color="red" marginTop={1}>
+                                                * El email es demasiado largo.
+                                            </Typography>
+                                        }
+                                    </FormControl>
+                                </Box>
+                                <Box sx={{ display: 'flex', gap: 5 }}>
+                                    <FormControl sx={{ width: '50%' }}>
+                                        <InputLabel htmlFor="cell_phone">Celular</InputLabel>
+                                        <Input id="cell_phone" type="text" name="cell_phone" value={formData.cell_phone} disabled={open === 'VIEW'} />
+                                        {errors.cell_phone?.type === 'required' &&
+                                            <Typography variant="caption" color="red" marginTop={1}>
+                                                * El celular es requerido.
+                                            </Typography>
+                                        }
+                                        {errors.cell_phone?.type === 'maxLength' &&
+                                            <Typography variant="caption" color="red" marginTop={1}>
+                                                * El celular es demasiado largo.
+                                            </Typography>
+                                        }
+                                    </FormControl>
+                                    <FormControl sx={{ width: '50%' }}>
+                                        <InputLabel htmlFor="business_phone">Teléfono Particular</InputLabel>
+                                        <Input id="business_phone" type="text" name="business_phone" value={formData.business_phone} disabled={open === 'VIEW'} />
+                                        {errors.business_phone?.type === 'maxLength' &&
+                                            <Typography variant="caption" color="red" marginTop={1}>
+                                                * El teléfono es demasiado largo.
+                                            </Typography>
+                                        }
+                                    </FormControl>
+                                </Box>
+                                <FormControl sx={{ width: '50%' }}>
                                     <InputLabel htmlFor="address">Dirección</InputLabel>
                                     <Input id="address" type="text" name="address" value={formData.address} disabled={open === 'VIEW'} />
                                     {errors.address?.type === 'maxLength' &&
                                         <Typography variant="caption" color="red" marginTop={1}>
                                             * La dirección es demasiado larga.
-                                        </Typography>
-                                    }
-                                </FormControl>
-                                <FormControl>
-                                    <InputLabel htmlFor="city">Ciudad</InputLabel>
-                                    <Input id="city" type="text" name="city" value={formData.city} disabled={open === 'VIEW'} />
-                                    {errors.city?.type === 'maxLength' &&
-                                        <Typography variant="caption" color="red" marginTop={1}>
-                                            * La ciudad es demasiado larga.
-                                        </Typography>
-                                    }
-                                </FormControl>
-                                <FormControl>
-                                    <InputLabel htmlFor="province">Provincia / Estado</InputLabel>
-                                    <Input id="province" type="text" name="province" value={formData.province} disabled={open === 'VIEW'} />
-                                    {errors.province?.type === 'maxLength' &&
-                                        <Typography variant="caption" color="red" marginTop={1}>
-                                            * La provincia es demasiado larga.
-                                        </Typography>
-                                    }
-                                </FormControl>
-                                <FormControl>
-                                    <InputLabel htmlFor="email">Email</InputLabel>
-                                    <Input id="email" type="email" name="email" value={formData.email} disabled={open === 'VIEW'} />
-                                    {errors.email?.type === 'maxLength' &&
-                                        <Typography variant="caption" color="red" marginTop={1}>
-                                            * El email es demasiado largo.
-                                        </Typography>
-                                    }
-                                </FormControl>
-                                <FormControl>
-                                    <InputLabel htmlFor="phone">Teléfono</InputLabel>
-                                    <Input id="phone" type="number" name="phone" value={formData.phone} disabled={open === 'VIEW'} />
-                                    {errors.phone?.type === 'maxLength' &&
-                                        <Typography variant="caption" color="red" marginTop={1}>
-                                            * El teléfono es demasiado largo.
                                         </Typography>
                                     }
                                 </FormControl>
@@ -307,86 +268,32 @@ export function Suppliers() {
                                         <Button type="submit" variant="contained" disabled={disabled} sx={{
                                             width: '50%'
                                         }}>
-                                            Guardar
+                                            Confirmar
                                         </Button>
                                     }
                                 </FormControl>
                             </Box>
                         </form>
                     </ModalComponent>
-                    <ModalComponent open={open === 'MASSIVE-EDIT'} dynamicContent>
-                        <Typography variant="h6" sx={{ marginBottom: 2 }}>
-                            Actualización de precios del proveedor {formData.name}
+                    <ModalComponent open={open === 'DELETE'} onClose={() => reset(setOpen)} reduceWidth={900}>
+                        <Typography variant="h6" marginBottom={1} textAlign="center">
+                            Confirmar eliminación de proveedor
                         </Typography>
-                        <TableContainer component={Paper} sx={{ marginBottom: 2 }}>
-                            <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                                <TableHead>
-                                    <TableRow>
-                                        <TableCell align="center">Producto</TableCell>
-                                        <TableCell align="center">Código</TableCell>
-                                        <TableCell align="center">Precio actual</TableCell>
-                                        <TableCell align="center">Precio nuevo</TableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    {formData.products.map(p => (
-                                        <TableRow
-                                            key={p.id}
-                                            sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                                        >
-                                            <TableCell align="center">{p.code}</TableCell>
-                                            <TableCell align="center">{p.details}</TableCell>
-                                            <TableCell align="center">${p.buy_price.toFixed(2)}</TableCell>
-                                            <TableCell align="center">${getNewPrice(p, massiveEditPercentage)}</TableCell>
-                                        </TableRow>
-                                    ))}
-                                </TableBody>
-                            </Table>
-                        </TableContainer>
-                        <Box sx={{
-                            display: 'flex',
-                            flexDirection: 'row',
-                            gap: 1,
-                            justifyContent: 'center',
-                            marginTop: 5,
-                            marginBottom: 5
-                        }}>
-                            <Typography variant="h6">
-                                Porcentaje
-                            </Typography>
-                            <Input
-                                type="number"
-                                value={massiveEditPercentage}
-                                disabled={formData.products.length === 0}
-                                onChange={e => setMassiveEditPercentage(e.target.value)}
-                            />
-                            <Typography variant="h6">
-                                %
-                            </Typography>
-                        </Box>
-                        <Box sx={{
-                            display: 'flex',
-                            flexDirection: 'row',
-                            gap: 1,
-                            justifyContent: 'center',
-                            width: '60%',
-                            margin: '0 auto'
-                        }}>
-                            <Button type="button" variant="outlined"
-                                sx={{ width: '50%' }}
-                                onClick={() => {
-                                    reset(setOpen)
-                                    setMassiveEditPercentage(0)
-                                }}
-                            >
+                        <Typography variant="body1" marginBottom={2} textAlign="center">
+                            Los datos no podrán recuperarse
+                        </Typography>
+                        <Box sx={{ display: 'flex', gap: 1, justifyContent: 'center' }}>
+                            <Button type="button" variant="outlined" onClick={() => reset(setOpen)} sx={{ width: '35%' }}>
                                 Cancelar
                             </Button>
-                            <Button type="submit" variant="contained"
-                                sx={{ width: '50%' }}
-                                disabled={formData.products.length === 0}
-                                onClick={handleSubmitMassive}
+                            <Button
+                                type="button"
+                                variant="contained"
+                                disabled={disabled}
+                                sx={{ width: '35%' }}
+                                onClick={() => handleDelete(formData)}
                             >
-                                Guardar
+                                Confirmar
                             </Button>
                         </Box>
                     </ModalComponent>

@@ -9,8 +9,11 @@ export function useSuppliers() {
 
     const { setMessage, setOpenMessage, setSeverity } = useContext(MessageContext)
 
+    const { post, put, destroy } = useApi(SUPPLIER_URL)
+
     const [loadingSuppliers, setLoadingSuppliers] = useState(true)
     const [suppliers, setSuppliers] = useState([])
+    const [open, setOpen] = useState(null)
 
     const { get } = useApi(SUPPLIER_URL)
 
@@ -28,5 +31,48 @@ export function useSuppliers() {
         })()
     }, [])
 
-    return { suppliers, setSuppliers, loadingSuppliers, setLoadingSuppliers }
+    async function handleSubmit(e, validate, formData, reset, setDisabled) {
+        e.preventDefault()
+        if (validate()) {
+            const { status, data } = open === 'NEW' ? await post(formData) : await put(formData)
+            if (status === 200) {
+                if (open === 'NEW') {
+                    setSuppliers([data, ...suppliers])
+                    setMessage('Proveedor creado correctamente.')
+                } else {
+                    setSuppliers([data, ...suppliers.filter(s => s.id !== formData.id)])
+                    setMessage('Proveedor editado correctamente.')
+                }
+                setSeverity('success')
+                reset(setOpen)
+            } else {
+                setMessage(data.message)
+                setSeverity('error')
+                setDisabled(false)
+            }
+            setOpenMessage(true)
+        }
+    }
+
+    async function handleDelete(formData) {
+        setLoadingSuppliers(true)
+        const { status, data } = await destroy(formData)
+        if (status === 200) {
+            setSuppliers([...suppliers.filter(s => s.id !== data.id)])
+            setMessage('Proveedor eliminado correctamente.')
+            setSeverity('success')
+        } else {
+            if (status === 300) {
+                setMessage('El proveedor tiene datos asociados.')
+            } else {
+                setMessage('Ocurrió un error. Actualice la página.')
+            }
+            setSeverity('error')
+        }
+        setOpenMessage(true)
+        setLoadingSuppliers(false)
+        setOpen(null)
+    }
+
+    return { suppliers, setSuppliers, loadingSuppliers, setLoadingSuppliers, handleSubmit, handleDelete, open, setOpen }
 }
