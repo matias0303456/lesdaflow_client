@@ -3,8 +3,6 @@ import { Box, Button, FormControl, LinearProgress, Paper, Table, TableBody, Tabl
 import { format } from "date-fns";
 
 import { AuthContext } from "../providers/AuthProvider";
-import { MessageContext } from "../providers/MessageProvider";
-import { useApi } from "../hooks/useApi";
 import { useForm } from "../hooks/useForm";
 import { usePayments } from "../hooks/usePayments";
 import { useRegisters } from "../hooks/useRegisters";
@@ -17,7 +15,7 @@ export function Registers() {
 
     const { auth } = useContext(AuthContext)
 
-    const { registers, setRegisters, loadingRegisters, setLoadingRegisters } = useRegisters()
+    const { registers, loadingRegisters, handleSubmit, handleDelete, open, setOpen } = useRegisters()
     const { payments, loadingPayments } = usePayments()
     const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
         defaultData: {

@@ -31,7 +31,7 @@ export function useRegisters() {
         })()
     }, [])
 
-    async function handleSubmit(e) {
+    async function handleSubmit(e, formData, reset, setDisabled) {
         e.preventDefault()
         const { status, data } = open === 'NEW' ? await post(formData) : await put(formData)
         if (status === 200) {
@@ -52,13 +52,12 @@ export function useRegisters() {
         setOpenMessage(true)
     }
 
-    async function handleDelete(elements) {
+    async function handleDelete(formData) {
         setLoadingRegisters(true)
-        const result = await Promise.all(elements.map(e => destroy(e)))
-        if (result.every(r => r.status === 200)) {
-            const ids = result.map(r => r.data.id)
-            setRegisters([...registers.filter(r => !ids.includes(r.id))])
-            setMessage(`${result.length === 1 ? 'Caja eliminada' : 'Cajas eliminadas'} correctamente.`)
+        const { status, data } = await destroy(formData)
+        if (status === 200) {
+            setRegisters([...registers.filter(r => r.id !== data.id)])
+            setMessage('Caja eliminada correctamente.')
             setSeverity('success')
         } else {
             setMessage('Ocurrió un error. Actualice la página.')
@@ -69,5 +68,13 @@ export function useRegisters() {
         setOpen(null)
     }
 
-    return { registers, setRegisters, loadingRegisters, setLoadingRegisters }
+    return {
+        registers,
+        setRegisters,
+        loadingRegisters,
+        setLoadingRegisters,
+        handleSubmit,
+        handleDelete,
+        open, setOpen
+    }
 }
