@@ -25,13 +25,12 @@ import { ClientsBySeller } from "./pages/ClientsBySeller";
 import { SalesSearch } from "./pages/SalesSearch";
 import { SalesReady } from "./pages/SalesReady";
 import { SalesToDeliver } from "./pages/SalesToDeliver";
-import {ProductsPriceList } from "./pages/ProductsPriceList"
+import { ProductsPriceList } from "./pages/ProductsPriceList"
 import { UpdateProductPriceByProduct } from "./pages/UpdateProductPriceByProduct";
 import { StockReplenishment } from "./pages/StockReplenishment";
 import { UpdateProductPriceBySupplier } from "./pages/UpdateProductPriceBySupplier";
-import {Orders} from "./pages/Orders";
+import { Orders } from "./pages/Orders";
 import { OrdersCheckIn } from "./pages/OrdersCheckIn";
-import { OpenRegister } from "./pages/OpenRegister";
 import { RegisterMovements } from "./pages/RegisterMovements";
 import { BlockedCustomers } from "./pages/BlockedCustomers";
 import { Sellers } from "./pages/Sellers";
@@ -43,7 +42,7 @@ function App() {
       primary: {
         main: '#078BCD',
       },
-      terciary:{
+      terciary: {
         main: '#000000'
       }
     },
@@ -90,8 +89,7 @@ function App() {
               <Route path="/pedidos" element={<Orders />} />
               <Route path="/ingreso-pedidos" element={<OrdersCheckIn />} />
               <Route path="/presupuestos" element={<Budgets />} />
-              <Route path="/cajas" element={<Registers />} />
-              <Route path="/movimientos-caja" element={<OpenRegister />} />
+              <Route path="/movimientos-caja" element={<Registers />} />
               <Route path="/reporte-movimientos-caja" element={<RegisterMovements />} />
               <Route path="/reporte-movimientos-caja" element={<RegisterMovements />} />
               <Route path="/reportes-clientes-bloqueados" element={<BlockedCustomers />} />
