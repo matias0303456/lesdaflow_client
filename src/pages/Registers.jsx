@@ -10,6 +10,7 @@ import { useRegisters } from "../hooks/useRegisters";
 import { Layout } from "../components/Layout";
 import { DataGrid } from "../components/DataGrid";
 import { ModalComponent } from "../components/ModalComponent";
+import { getRegisterTotal, setLocalDate } from "../utils/helpers";
 
 export function Registers() {
 
@@ -37,47 +38,50 @@ export function Registers() {
             numeric: false,
             disablePadding: true,
             label: "Apertura Fecha",
-            accessor: "open_date",
+            accessor: (row) => format(setLocalDate(row.created_at), 'dd/MM/yy')
         },
         {
             id: "open_hour",
             numeric: false,
             disablePadding: true,
             label: "Apertura Hora",
-            accessor: "open_hour",
+            accessor: (row) => format(setLocalDate(row.created_at), 'HH:mm:ss')
         },
         {
             id: "open_amount",
             numeric: false,
             disablePadding: true,
             label: "Apertura Saldo",
-            accessor: "open_amount",
+            sorter: () => 0.00,
+            accessor: () => '$0.00'
         },
         {
             id: "end_date",
             numeric: false,
             disablePadding: true,
             label: "Cierre Fecha",
-            accessor: "end_date",
+            sorter: (row) => row.created_at === row.updated_at ? '-' : row.updated_at,
+            accessor: (row) => row.created_at === row.updated_at ? '-' : format(setLocalDate(row.updated_at), 'dd/MM/yy')
         },
         {
             id: "end_hour",
             numeric: false,
             disablePadding: true,
             label: "Cierre hora",
-            accessor: "end_hour",
+            accessor: (row) => row.created_at === row.updated_at ? '-' : format(setLocalDate(row.updated_at), 'HH:mm:ss')
         },
         {
             id: "end_amount",
             numeric: false,
             disablePadding: true,
             label: "Cierre Saldo",
-            accessor: "end_amount",
-        },
+            sorter: (row) => parseFloat(getRegisterTotal(row, payments).replace('$', '')),
+            accessor: (row) => getRegisterTotal(row, payments)
+        }
     ];
 
     return (
-        <Layout title="Cajas">
+        <Layout title="Movimientos Caja">
             {loadingRegisters || loadingPayments || disabled ?
                 <Box sx={{ width: '100%' }}>
                     <LinearProgress />
@@ -106,7 +110,6 @@ export function Registers() {
                                 Excel
                             </Button>
                         </Box>
-                        {/* <SaleFilter sales={sales} setSales={setSales} /> */}
                     </Box>}
                 >
 
