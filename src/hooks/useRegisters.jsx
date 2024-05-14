@@ -75,6 +75,7 @@ export function useRegisters() {
         setLoadingRegisters,
         handleSubmit,
         handleDelete,
-        open, setOpen
+        open,
+        setOpen
     }
 }

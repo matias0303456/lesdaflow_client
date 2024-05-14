@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { Box, Button, FormControl, LinearProgress, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
 import { format } from "date-fns";
 
@@ -10,15 +10,16 @@ import { useRegisters } from "../hooks/useRegisters";
 import { Layout } from "../components/Layout";
 import { DataGrid } from "../components/DataGrid";
 import { ModalComponent } from "../components/ModalComponent";
+
 import { getRegisterTotal, setLocalDate } from "../utils/helpers";
 
 export function Registers() {
 
     const { auth } = useContext(AuthContext)
 
-    const { registers, loadingRegisters, handleSubmit, handleDelete, open, setOpen } = useRegisters()
+    const { registers, loadingRegisters, handleSubmit, open, setOpen } = useRegisters()
     const { payments, loadingPayments } = usePayments()
-    const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
+    const { formData, setFormData, handleChange, disabled, setDisabled, reset } = useForm({
         defaultData: {
             id: '',
             user_id: auth.user.id
@@ -87,15 +88,12 @@ export function Registers() {
                     <LinearProgress />
                 </Box> :
                 <DataGrid
-                    title=""
                     headCells={headCells}
                     rows={registers}
-                    open={open}
                     setOpen={setOpen}
-                    data={formData}
                     setData={setFormData}
-                    handleDelete={handleDelete}
-                    handlePrint
+                    showViewAction
+                    showSettingsAction
                     contentHeader={<Box sx={{
                         display: 'flex',
                         flexWrap: 'wrap',
@@ -112,9 +110,83 @@ export function Registers() {
                         </Box>
                     </Box>}
                 >
-
+                    <ModalComponent open={open === 'NEW' || open === 'SETTINGS' || open === 'VIEW'} onClose={() => reset(setOpen)}>
+                        <Typography variant="h6" sx={{ marginBottom: 2 }}>
+                            {open === 'NEW' && 'Apertura de caja'}
+                            {open === 'VIEW' && `Caja ${formData.user.first_name} ${formData.user.last_name}`}
+                            {open === 'SETTINGS' && 'Cerrar caja'}
+                        </Typography>
+                        <form onChange={handleChange} onSubmit={(e) => handleSubmit(e, formData, reset, setDisabled, setOpen)}>
+                            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+                                <Typography variant="h6" sx={{ marginBottom: 3, textAlign: 'center' }}>
+                                    <TableContainer component={Paper}>
+                                        <Table aria-label="simple table">
+                                            <TableHead>
+                                                <TableRow>
+                                                    <TableCell align="center">Fecha</TableCell>
+                                                    <TableCell align="center">Hora</TableCell>
+                                                    <TableCell align="center">Saldo </TableCell>
+                                                </TableRow>
+                                            </TableHead>
+                                            <TableBody>
+                                                <TableRow>
+                                                    {open === 'NEW' &&
+                                                        <>
+                                                            <TableCell align="center">
+                                                                {format(setLocalDate(Date.now()), 'dd-MM-yyyy')}
+                                                            </TableCell>
+                                                            <TableCell align="center">
+                                                                {format(setLocalDate(Date.now()), 'HH:mm:ss')}
+                                                            </TableCell>
+                                                            <TableCell align="center">$0.00</TableCell>
+                                                        </>
+                                                    }
+                                                    {(open === 'SETTINGS' || open === 'VIEW') &&
+                                                        <>
+                                                            <TableCell align="center">
+                                                                {format(setLocalDate(formData.created_at), 'dd-MM-yyyy')}
+                                                            </TableCell>
+                                                            <TableCell align="center">
+                                                                {format(setLocalDate(Date.now()), 'HH:mm:ss')}
+                                                            </TableCell>
+                                                            <TableCell align="center">
+                                                                {getRegisterTotal(formData, payments, true)}
+                                                            </TableCell>
+                                                        </>
+                                                    }
+                                                </TableRow>
+                                            </TableBody>
+                                        </Table>
+                                    </TableContainer>
+                                </Typography>
+                                <FormControl sx={{
+                                    display: 'flex',
+                                    flexDirection: 'row',
+                                    gap: 1,
+                                    justifyContent: 'center',
+                                    margin: '0 auto',
+                                    marginTop: 1,
+                                    width: '50%'
+                                }}>
+                                    <Button type="button" variant="outlined" onClick={() => reset(setOpen)} sx={{
+                                        width: '50%'
+                                    }}>
+                                        {open === 'VIEW' && 'Cerrar'}
+                                        {(open === 'SETTINGS' || open === 'NEW') && 'Cancelar'}
+                                    </Button>
+                                    {(open === 'NEW' || open === 'SETTINGS') &&
+                                        < Button type="submit" variant="contained" disabled={disabled} sx={{
+                                            width: '50%'
+                                        }}>
+                                            Confirmar
+                                        </Button>
+                                    }
+                                </FormControl>
+                            </Box>
+                        </form>
+                    </ModalComponent>
                 </DataGrid>
             }
-        </Layout>
+        </Layout >
     )
 }

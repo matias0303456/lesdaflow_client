@@ -253,7 +253,7 @@ export function DataGrid({
                                         (r) => r.id === row.id
                                       )
                                     );
-                                    setOpen("SETTING");
+                                    setOpen("SETTINGS");
                                   }}
                                 >
                                   <IconButton
