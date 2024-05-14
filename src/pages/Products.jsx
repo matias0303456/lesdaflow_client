@@ -1,30 +1,35 @@
-import { useContext, useEffect, useState } from "react";
-import { Box, Button, FormControl, Input, InputLabel, LinearProgress, MenuItem, Paper, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
+import { useEffect } from "react";
+import { Box, Button, Checkbox, FormControl, FormControlLabel, Input, InputLabel, LinearProgress, MenuItem, Paper, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
 
-import { MessageContext } from "../providers/MessageProvider";
 import { useProducts } from '../hooks/useProducts'
 import { useSuppliers } from "../hooks/useSuppliers";
 import { useForm } from "../hooks/useForm";
-import { useApi } from "../hooks/useApi";
 
-import { AuthContext } from "../providers/AuthProvider";
 import { Layout } from "../components/Layout";
 import { DataGrid } from "../components/DataGrid";
 import { ModalComponent } from "../components/ModalComponent";
-import { ProductFilter } from "../components/filters/ProductFilter";
+// import { ProductFilter } from "../components/filters/ProductFilter";
 
-import { PRODUCT_URL } from "../utils/urls";
 import { getNewPrice, getStock } from "../utils/helpers";
 
 export function Products() {
 
-    const { auth } = useContext(AuthContext)
-    const { setMessage, setOpenMessage, setSeverity } = useContext(MessageContext)
-
-    const { post, put, putMassive, destroy } = useApi(PRODUCT_URL)
-    const { products, setProducts, loadingProducts, setLoadingProducts } = useProducts()
+    const {
+        products,
+        loadingProducts,
+        setEarnPrice,
+        open,
+        setOpen,
+        handleSubmit,
+        massiveEdit,
+        earnPrice,
+        massiveEditPercentage,
+        setMassiveEdit,
+        setMassiveEditPercentage,
+        handleSubmitMassive,
+        handleDelete
+    } = useProducts()
     const { suppliers, loadingSuppliers } = useSuppliers()
-    const [open, setOpen] = useState(null)
     const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
         defaultData: {
             id: '',
@@ -33,10 +38,11 @@ export function Products() {
             buy_price: '',
             min_stock: '',
             earn: '',
-            size: '',
             supplier_id: '',
-            amount: '',
-            observations: ''
+            cash: true,
+            cta_cte: true,
+            poxipol: false,
+            amount: ''
         },
         rules: {
             code: {
@@ -56,98 +62,20 @@ export function Products() {
             earn: {
                 required: true
             },
-            size: {
-                maxLength: 55,
-                required: true
-            },
             supplier_id: {
                 required: true
             },
             amount: {
                 required: open === 'NEW'
-            },
-            observations: {
-                maxLength: 55
             }
         }
     })
-
-    const [massiveEdit, setMassiveEdit] = useState([])
-    const [massiveEditPercentage, setMassiveEditPercentage] = useState(0)
-    const [earnPrice, setEarnPrice] = useState(0)
 
     useEffect(() => {
         const buy_price = formData.buy_price.toString().length === 0 ? 0 : parseInt(formData.buy_price)
         const earn = formData.earn.toString().length === 0 ? 0 : parseInt(formData.earn)
         setEarnPrice(`$${(buy_price + ((buy_price / 100) * earn)).toFixed(2)}`)
     }, [formData])
-
-    async function handleSubmit(e) {
-        e.preventDefault()
-        if (validate()) {
-            const { status, data } = open === 'NEW' ? await post(formData) : await put(formData)
-            if (status === 200) {
-                if (open === 'NEW') {
-                    setProducts([data, ...products])
-                    setMessage('Producto creado correctamente.')
-                } else {
-                    setProducts([data, ...products.filter(p => p.id !== formData.id)])
-                    setMessage('Producto editado correctamente.')
-                }
-                setSeverity('success')
-                reset(setOpen)
-            } else {
-                setMessage(data.message)
-                setSeverity('error')
-                setDisabled(false)
-            }
-            setOpenMessage(true)
-        }
-    }
-
-    async function handleSubmitMassive() {
-        setLoadingProducts(true)
-        const body = {
-            products: massiveEdit.map(me => ({ id: me.id, buy_price: me.buy_price })),
-            percentage: parseInt(massiveEditPercentage)
-        }
-        const { status, data } = await putMassive(body)
-        if (status === 200) {
-            setProducts([...data, ...products.filter(p => !data.map(d => d.id).includes(p.id))])
-            setMessage('Precios actualizados correctamente.')
-            setSeverity('success')
-            reset(setOpen)
-            setMassiveEdit([])
-            setMassiveEditPercentage(0)
-        } else {
-            setMessage(data.message)
-            setSeverity('error')
-            setDisabled(false)
-        }
-        setLoadingProducts(false)
-        setOpenMessage(true)
-    }
-
-    async function handleDelete(elements) {
-        setLoadingProducts(true)
-        const result = await Promise.all(elements.map(e => destroy(e)))
-        if (result.every(r => r.status === 200)) {
-            const ids = result.map(r => r.data.id)
-            setProducts([...products.filter(p => !ids.includes(p.id))])
-            setMessage(`${result.length === 1 ? 'Producto eliminado' : 'Productos eliminados'} correctamente.`)
-            setSeverity('success')
-        } else {
-            if (result.some(r => r.status === 300)) {
-                setMessage('Existen productos con datos asociados.')
-            } else {
-                setMessage('Ocurrió un error. Actualice la página.')
-            }
-            setSeverity('error')
-        }
-        setOpenMessage(true)
-        setLoadingProducts(false)
-        setOpen(null)
-    }
 
     const headCells = [
         {
@@ -158,33 +86,25 @@ export function Products() {
             accessor: 'code'
         },
         {
-            id: 'product',
+            id: 'details',
             numeric: false,
             disablePadding: true,
             label: 'Producto',
-            accessor: 'product'
+            accessor: 'details'
         },
         {
             id: 'buy_price',
             numeric: false,
             disablePadding: true,
             label: 'Precio de compra',
-            accessor: (row) => `$${row.buy_price.toFixed(2)}`
-        },
-        {
-            id: 'buy price',
-            numeric: false,
-            disablePadding: true,
-            label: 'Precio Compra',
-            sorter: (row) => row.buy_price.toLowerCase(),
-            accessor: 'buy price'
+            accessor: 'buy_price'
         },
         {
             id: 'earn',
             numeric: false,
             disablePadding: true,
-            label: 'Ganancia',
-            accessor: (row) => `${row.earn}%`
+            label: '% Ganancia',
+            accessor: 'earn'
         },
         {
             id: 'sale_price',
@@ -231,6 +151,9 @@ export function Products() {
                     setOpen={setOpen}
                     setData={setFormData}
                     deadlineColor="products"
+                    showDeleteAction
+                    showViewAction
+                    showEditAction
                     contentHeader={
                         <Box sx={{
                             display: 'flex',
@@ -249,11 +172,11 @@ export function Products() {
                                     Stock nulo
                                 </Button>
                             </Box>
-                            <ProductFilter
+                            {/* <ProductFilter
                                 products={products}
                                 setProducts={setProducts}
                                 suppliers={suppliers}
-                            />
+                            /> */}
                         </Box>
                     }
                 >
@@ -266,7 +189,7 @@ export function Products() {
                             {open === 'EDIT' && 'Editar producto'}
                             {open === 'VIEW' && `Producto #${formData.id}`}
                         </Typography>
-                        <form onChange={handleChange} onSubmit={handleSubmit}>
+                        <form onChange={handleChange} onSubmit={(e) => handleSubmit(e, validate, formData, reset, setDisabled)}>
                             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                                 <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 3 }}>
                                     <Box sx={{ display: 'flex', flexDirection: 'column', width: '50%', gap: 3 }}>
@@ -285,34 +208,11 @@ export function Products() {
                                             }
                                         </FormControl>
                                         <FormControl>
-                                            <InputLabel htmlFor="details">Detalle</InputLabel>
-                                            <Input id="details" type="text" name="details" value={formData.details} disabled={open === 'VIEW'} />
-                                            {errors.details?.type === 'required' &&
-                                                <Typography variant="caption" color="red" marginTop={1}>
-                                                    * El detalle es requerido.
-                                                </Typography>
-                                            }
-                                            {errors.details?.type === 'maxLength' &&
-                                                <Typography variant="caption" color="red" marginTop={1}>
-                                                    * El detalle es demasiado largo.
-                                                </Typography>
-                                            }
-                                        </FormControl>
-                                        <FormControl>
                                             <InputLabel htmlFor="buy_price">Precio de compra</InputLabel>
                                             <Input id="buy_price" type="number" name="buy_price" value={formData.buy_price} disabled={open === 'VIEW'} />
                                             {errors.buy_price?.type === 'required' &&
                                                 <Typography variant="caption" color="red" marginTop={1}>
                                                     * El precio de compra es requerido.
-                                                </Typography>
-                                            }
-                                        </FormControl>
-                                        <FormControl>
-                                            <InputLabel htmlFor="earn">% Ganancia</InputLabel>
-                                            <Input id="earn" type="number" name="earn" value={formData.earn} disabled={open === 'VIEW'} />
-                                            {errors.earn?.type === 'required' &&
-                                                <Typography variant="caption" color="red" marginTop={1}>
-                                                    * La ganancia es requerida.
                                                 </Typography>
                                             }
                                         </FormControl>
@@ -324,22 +224,17 @@ export function Products() {
                                                 disabled
                                             />
                                         </FormControl>
-                                    </Box>
-                                    <Box sx={{ display: 'flex', flexDirection: 'column', width: '50%', gap: 3 }}>
-                                        <FormControl>
-                                            <InputLabel htmlFor="size">Talle</InputLabel>
-                                            <Input id="size" type="text" name="size" value={formData.size} disabled={open === 'VIEW'} />
-                                            {errors.size?.type === 'required' &&
-                                                <Typography variant="caption" color="red" marginTop={1}>
-                                                    * El talle es requerido.
-                                                </Typography>
-                                            }
-                                            {errors.size?.type === 'maxLength' &&
-                                                <Typography variant="caption" color="red" marginTop={1}>
-                                                    * El talle es demasiado largo.
-                                                </Typography>
-                                            }
-                                        </FormControl>
+                                        {open === 'NEW' &&
+                                            <FormControl>
+                                                <InputLabel htmlFor="amount">Stock</InputLabel>
+                                                <Input id="amount" type="number" name="amount" value={formData.amount} disabled={open === 'VIEW'} />
+                                                {errors.amount?.type === 'required' &&
+                                                    <Typography variant="caption" color="red" marginTop={1}>
+                                                        * El stock es requerido.
+                                                    </Typography>
+                                                }
+                                            </FormControl>
+                                        }
                                         <FormControl>
                                             <InputLabel id="supplier-select">Proveedor</InputLabel>
                                             <Select
@@ -361,17 +256,31 @@ export function Products() {
                                                 </Typography>
                                             }
                                         </FormControl>
-                                        {open === 'NEW' &&
-                                            <FormControl>
-                                                <InputLabel htmlFor="amount">Stock inicial</InputLabel>
-                                                <Input id="amount" type="number" name="amount" value={formData.amount} disabled={open === 'VIEW'} />
-                                                {errors.amount?.type === 'required' &&
-                                                    <Typography variant="caption" color="red" marginTop={1}>
-                                                        * La cantidad es requerida.
-                                                    </Typography>
-                                                }
-                                            </FormControl>
-                                        }
+                                    </Box>
+                                    <Box sx={{ display: 'flex', flexDirection: 'column', width: '50%', gap: 3 }}>
+                                        <FormControl>
+                                            <InputLabel htmlFor="details">Nombre producto</InputLabel>
+                                            <Input id="details" type="text" name="details" value={formData.details} disabled={open === 'VIEW'} />
+                                            {errors.details?.type === 'required' &&
+                                                <Typography variant="caption" color="red" marginTop={1}>
+                                                    * El nombre es requerido.
+                                                </Typography>
+                                            }
+                                            {errors.details?.type === 'maxLength' &&
+                                                <Typography variant="caption" color="red" marginTop={1}>
+                                                    * El nombre es demasiado largo.
+                                                </Typography>
+                                            }
+                                        </FormControl>
+                                        <FormControl>
+                                            <InputLabel htmlFor="earn">% Ganancia</InputLabel>
+                                            <Input id="earn" type="number" name="earn" value={formData.earn} disabled={open === 'VIEW'} />
+                                            {errors.earn?.type === 'required' &&
+                                                <Typography variant="caption" color="red" marginTop={1}>
+                                                    * La ganancia es requerida.
+                                                </Typography>
+                                            }
+                                        </FormControl>
                                         <FormControl>
                                             <InputLabel htmlFor="min_stock">Stock mínimo</InputLabel>
                                             <Input id="min_stock" type="number" name="min_stock" value={formData.min_stock} disabled={open === 'VIEW'} />
@@ -381,17 +290,44 @@ export function Products() {
                                                 </Typography>
                                             }
                                         </FormControl>
-                                        {open === 'NEW' &&
-                                            <FormControl>
-                                                <InputLabel htmlFor="observations">Observaciones de ingreso</InputLabel>
-                                                <Input id="observations" type="text" name="observations" value={formData.observations} />
-                                                {errors.observations?.type === 'maxLength' &&
-                                                    <Typography variant="caption" color="red" marginTop={1}>
-                                                        * Las observaciones son demasiado largas.
-                                                    </Typography>
-                                                }
-                                            </FormControl>
-                                        }
+                                        <Box sx={{ display: 'flex', justifyContent: 'space-around' }}>
+                                            <FormControlLabel
+                                                control={<Checkbox />}
+                                                label="Efectivo"
+                                                checked={formData.cash}
+                                                disabled={open === 'VIEW'}
+                                                onChange={e => handleChange({
+                                                    target: {
+                                                        name: 'cash',
+                                                        value: e.target.checked
+                                                    }
+                                                })}
+                                            />
+                                            <FormControlLabel
+                                                control={<Checkbox />}
+                                                label="Cta. Cte."
+                                                checked={formData.cta_cte}
+                                                disabled={open === 'VIEW'}
+                                                onChange={e => handleChange({
+                                                    target: {
+                                                        name: 'cta_cte',
+                                                        value: e.target.checked
+                                                    }
+                                                })}
+                                            />
+                                            <FormControlLabel
+                                                control={<Checkbox />}
+                                                label="Poxipol"
+                                                checked={formData.poxipol}
+                                                disabled={open === 'VIEW'}
+                                                onChange={e => handleChange({
+                                                    target: {
+                                                        name: 'poxipol',
+                                                        value: e.target.checked
+                                                    }
+                                                })}
+                                            />
+                                        </Box>
                                     </Box>
                                 </Box>
                                 <FormControl sx={{
@@ -412,7 +348,7 @@ export function Products() {
                                         <Button type="submit" variant="contained" disabled={disabled} sx={{
                                             width: '50%'
                                         }}>
-                                            Guardar
+                                            Confirmar
                                         </Button>
                                     }
                                 </FormControl>
@@ -490,9 +426,31 @@ export function Products() {
                             </Button>
                             <Button type="submit" variant="contained"
                                 sx={{ width: '50%' }}
-                                onClick={handleSubmitMassive}
+                                onClick={() => handleSubmitMassive(reset, setDisabled)}
                             >
                                 Guardar
+                            </Button>
+                        </Box>
+                    </ModalComponent>
+                    <ModalComponent open={open === 'DELETE'} onClose={() => reset(setOpen)} reduceWidth={900}>
+                        <Typography variant="h6" marginBottom={1} textAlign="center">
+                            Confirmar eliminación de producto
+                        </Typography>
+                        <Typography variant="body1" marginBottom={2} textAlign="center">
+                            Los datos no podrán recuperarse
+                        </Typography>
+                        <Box sx={{ display: 'flex', gap: 1, justifyContent: 'center' }}>
+                            <Button type="button" variant="outlined" onClick={() => reset(setOpen)} sx={{ width: '35%' }}>
+                                Cancelar
+                            </Button>
+                            <Button
+                                type="button"
+                                variant="contained"
+                                disabled={disabled}
+                                sx={{ width: '35%' }}
+                                onClick={() => handleDelete(formData)}
+                            >
+                                Confirmar
                             </Button>
                         </Box>
                     </ModalComponent>

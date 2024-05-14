@@ -1,7 +1,6 @@
 const BASE_URL = import.meta.env.VITE_APP_BASE_URL
 
 export const LOGIN_URL = `${BASE_URL}/auth/login`
-export const ROLE_URL = `${BASE_URL}/roles`
 export const INCOME_URL = `${BASE_URL}/incomes`
 export const OUTCOME_URL = `${BASE_URL}/outcomes`
 export const SALE_URL = `${BASE_URL}/sales`

@@ -12,7 +12,7 @@ import { Layout } from "../components/Layout";
 import { ModalComponent } from "../components/ModalComponent";
 import { UserFilter } from "../components/filters/UserFilter";
 
-import { ROLE_URL, USER_URL } from "../utils/urls";
+import { USER_URL } from "../utils/urls";
 
 export function Users() {
 
@@ -22,7 +22,6 @@ export function Users() {
     const navigate = useNavigate()
 
     const { get: getUsers, post, put, changeVendorPwd, destroy } = useApi(USER_URL)
-    const { get: getRoles } = useApi(ROLE_URL)
     const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
         defaultData: {
             id: '',
@@ -31,7 +30,7 @@ export function Users() {
             username: '',
             email: '',
             password: '',
-            role_id: ''
+            role: 'ADMINISTRADOR'
         },
         rules: {
             first_name: {
@@ -54,22 +53,17 @@ export function Users() {
                 required: true,
                 minLength: 8,
                 maxLength: 255
-            },
-            role_id: {
-                required: true
             }
         }
     })
 
     const [loadingUsers, setLoadingUsers] = useState(true)
-    const [loadingRoles, setLoadingRoles] = useState(true)
     const [users, setUsers] = useState([])
-    const [roles, setRoles] = useState([])
     const [open, setOpen] = useState(null)
     const [newPwd, setNewPwd] = useState('')
 
     useEffect(() => {
-        if (auth?.user.role.name !== 'ADMINISTRADOR') navigate('/productos')
+        if (auth?.user.role !== 'ADMINISTRADOR') navigate('/productos')
     }, [])
 
     useEffect(() => {
@@ -78,16 +72,6 @@ export function Users() {
             if (status === 200) {
                 setUsers(data[0])
                 setLoadingUsers(false)
-            }
-        })()
-    }, [])
-
-    useEffect(() => {
-        (async () => {
-            const { status, data } = await getRoles()
-            if (status === 200) {
-                setRoles(data)
-                setLoadingRoles(false)
             }
         })()
     }, [])
@@ -183,17 +167,17 @@ export function Users() {
             accessor: 'email'
         },
         {
-            id: 'role_id',
+            id: 'role',
             numeric: false,
             disablePadding: true,
             label: 'Rol',
-            accessor: (row) => row.role.name
+            accessor: 'role'
         },
     ]
 
     return (
       <Layout title="Personal">
-        {loadingUsers || loadingRoles || disabled ? (
+        {loadingUsers || disabled ? (
           <Box sx={{ width: "100%" }}>
             <LinearProgress />
           </Box>
@@ -348,29 +332,6 @@ export function Users() {
                       )}
                     </FormControl>
                   )}
-                  <FormControl>
-                    <InputLabel id="role-select">Rol</InputLabel>
-                    <Select
-                      labelId="role-select"
-                      id="role_id"
-                      value={formData.role_id}
-                      label="Rol"
-                      name="role_id"
-                      onChange={handleChange}
-                      disabled={open === "VIEW"}
-                    >
-                      {roles.map((r) => (
-                        <MenuItem key={r.id} value={r.id}>
-                          {r.name}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                    {errors.role_id?.type === "required" && (
-                      <Typography variant="caption" color="red" marginTop={1}>
-                        * El rol es requerido.
-                      </Typography>
-                    )}
-                  </FormControl>
                   <FormControl
                     sx={{
                       display: "flex",
