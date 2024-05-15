@@ -22,17 +22,13 @@ import { useClients } from "../hooks/useClients";
 import { Layout } from "../components/Layout";
 
 import { DataGrid } from "../components/DataGrid";
+import { useNavigate } from "react-router-dom";
 
 export function UpdateProductPriceByProduct() {
+
   const { auth } = useContext(AuthContext);
-  const { setMessage, setOpenMessage, setSeverity } =
-    useContext(MessageContext);
-  // clients import
-  const { get /* post, put */ } = useApi(CLIENT_URL);
-  const { clients, setClients, loadingClients, setLoadingClients } =
-    useClients();
-  // users import
-  const { get: getUsers } = useApi(USER_URL);
+
+  const navigate = useNavigate()
 
   const {
     formData,
@@ -48,93 +44,40 @@ export function UpdateProductPriceByProduct() {
     rules: {},
   });
 
-  //suppliers imports
-  const { post, put, destroy, putMassive } = useApi(SUPPLIER_URL);
-  const { suppliers, setSuppliers, loadingSuppliers, setLoadingSuppliers } =
-    useSuppliers();
-
-  const [open, setOpen] = useState(null);
-  const [loadingUsers, setLoadingUsers] = useState(true);
-  const [users, setUsers] = useState([]);
-
   useEffect(() => {
-    if (auth?.user.role.name !== "ADMINISTRADOR") navigate("/productos");
+    if (auth?.user.role !== "ADMINISTRADOR") navigate("/productos");
   }, []);
 
-  useEffect(() => {
-    (async () => {
-      const { status, data } = await getUsers();
-      if (status === 200) {
-        setUsers(data);
-        setLoadingUsers(false);
-      }
-    })();
-  }, []);
-
-  useEffect(() => {
-    (async () => {
-      const { status, data } = await get();
-      if (status === 200) {
-        setClients(data);
-        setLoadingClients(false);
-      }
-    })();
-  }, []);
-
-  async function handleSubmit(e) {
-    e.preventDefault();
-    if (validate()) {
-      const { status, data } =
-        open === "NEW" ? await post(formData) : await put(formData);
-      if (status === 200) {
-        if (open === "NEW") {
-          setClients([data, ...clients]);
-          setMessage("Cliente creado correctamente.");
-        } else {
-          setClients([data, ...clients.filter((c) => c.id !== formData.id)]);
-          setMessage("Cliente editado correctamente.");
-        }
-        setSeverity("success");
-        reset(setOpen);
-      } else {
-        setMessage(data.message);
-        setSeverity("error");
-        setDisabled(false);
-      }
-      setOpenMessage(true);
-    }
-  }
-
-   const headCells = [
-     {
-       id: "cod",
-       numeric: false,
-       disablePadding: true,
-       label: "Cod.",
-       accessor: "cod",
-     },
-     {
-       id: "product",
-       numeric: false,
-       disablePadding: true,
-       label: "Producto",
-       accessor: "product",
-     },
-     {
-       id: "actual_price",
-       numeric: false,
-       disablePadding: true,
-       label: "Precio Actual",
-       accessor: "actual_price",
-     },
-     {
-       id: "new_price",
-       numeric: false,
-       disablePadding: true,
-       label: "Precio Nuevo",
-       accessor: "new_price",
-     },
-   ];
+  const headCells = [
+    {
+      id: "cod",
+      numeric: false,
+      disablePadding: true,
+      label: "Cod.",
+      accessor: "cod",
+    },
+    {
+      id: "product",
+      numeric: false,
+      disablePadding: true,
+      label: "Producto",
+      accessor: "product",
+    },
+    {
+      id: "actual_price",
+      numeric: false,
+      disablePadding: true,
+      label: "Precio Actual",
+      accessor: "actual_price",
+    },
+    {
+      id: "new_price",
+      numeric: false,
+      disablePadding: true,
+      label: "Precio Nuevo",
+      accessor: "new_price",
+    },
+  ];
   return (
     <Layout title="Actualizar Precio Producto">
       <Box className="w-[50%] mb-3 px-2 py-4 bg-white rounded-md">
@@ -226,8 +169,8 @@ export function UpdateProductPriceByProduct() {
                   >
                     Porcentaje*
                   </InputLabel>
-                  <Input className="w-full" 
-                  placeholder="0,00"
+                  <Input className="w-full"
+                    placeholder="0,00"
                   />
                 </FormControl>
                 <Button variant="contained" size="small">
@@ -256,7 +199,7 @@ export function UpdateProductPriceByProduct() {
         setData={setFormData}
         contentHeader={''}
       >
-        
+
       </DataGrid>
     </Layout>
   );
