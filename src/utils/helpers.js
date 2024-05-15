@@ -128,3 +128,13 @@ export function getStockTillDate(product, date) {
                     return prev + curr.amount
                 }, 0)
 }
+
+export function getProductSalePrice(product) {
+    return parseFloat(parseFloat(product.buy_price) + ((parseFloat(product.buy_price) / 100) * parseFloat(product.earn)))
+}
+
+export function getProductNewSalePriceByPercentage(product, percentage) {
+    const perc = percentage.toString().length === 0 ? 0 : parseFloat(percentage)
+    const currentPrice = getProductSalePrice(product)
+    return currentPrice + ((currentPrice / 100) * perc)
+}

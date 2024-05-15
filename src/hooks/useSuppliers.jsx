@@ -9,7 +9,7 @@ export function useSuppliers() {
 
     const { setMessage, setOpenMessage, setSeverity } = useContext(MessageContext)
 
-    const { post, put, destroy } = useApi(SUPPLIER_URL)
+    const { post, put, destroy, putMassive } = useApi(SUPPLIER_URL)
 
     const [loadingSuppliers, setLoadingSuppliers] = useState(true)
     const [suppliers, setSuppliers] = useState([])
@@ -74,5 +74,38 @@ export function useSuppliers() {
         setOpen(null)
     }
 
-    return { suppliers, setSuppliers, loadingSuppliers, setLoadingSuppliers, handleSubmit, handleDelete, open, setOpen }
+    async function handleSubmitMassive(e, validate, formData, reset, setDisabled) {
+        e.preventDefault()
+        if (validate()) {
+            const body = {
+                supplier: formData.id,
+                products: suppliers.find(s => s.id === formData.id).products.map(p => ({ id: p.id, buy_price: p.buy_price })),
+                percentage: parseFloat(formData.percentage)
+            }
+            const { status, data } = await putMassive(body)
+            if (status === 200) {
+                setSuppliers([data, ...suppliers.filter(s => s.id !== data.id)])
+                setMessage('Precios actualizados correctamente.')
+                setSeverity('success')
+                reset(setOpen)
+            } else {
+                setMessage(data.message)
+                setSeverity('error')
+                setDisabled(false)
+            }
+            setOpenMessage(true)
+        }
+    }
+
+    return {
+        suppliers,
+        setSuppliers,
+        loadingSuppliers,
+        setLoadingSuppliers,
+        handleSubmit,
+        handleDelete,
+        open,
+        setOpen,
+        handleSubmitMassive
+    }
 }
