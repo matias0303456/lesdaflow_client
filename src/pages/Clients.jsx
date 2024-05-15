@@ -49,6 +49,10 @@ export function Clients() {
                 maxLength: 255
             },
             cell_phone: {
+                required: true,
+                maxLength: 255
+            },
+            local_phone: {
                 maxLength: 255
             },
             address: {
@@ -56,6 +60,7 @@ export function Clients() {
                 maxLength: 255
             },
             work_place: {
+                required: true,
                 maxLength: 255
             },
             user_id: {
@@ -258,6 +263,11 @@ export function Clients() {
                                     <FormControl sx={{ width: '50%' }}>
                                         <InputLabel htmlFor="cell_phone">Celular</InputLabel>
                                         <Input id="cell_phone" type="number" name="cell_phone" value={formData.cell_phone} disabled={open === 'VIEW'} />
+                                        {errors.cell_phone?.type === 'required' &&
+                                            <Typography variant="caption" color="red" marginTop={1}>
+                                                * El celular es requerido.
+                                            </Typography>
+                                        }
                                         {errors.cell_phone?.type === 'maxLength' &&
                                             <Typography variant="caption" color="red" marginTop={1}>
                                                 * El celular es demasiado largo.
@@ -277,6 +287,11 @@ export function Clients() {
                                     <FormControl sx={{ width: '50%' }}>
                                         <InputLabel htmlFor="work_place">Nombre comercio</InputLabel>
                                         <Input id="work_place" type="text" name="work_place" value={formData.work_place} disabled={open === 'VIEW'} />
+                                        {errors.work_place?.type === 'required' &&
+                                            <Typography variant="caption" color="red" marginTop={1}>
+                                                * El nombre del comercio es requerido.
+                                            </Typography>
+                                        }
                                         {errors.work_place?.type === 'maxLength' &&
                                             <Typography variant="caption" color="red" marginTop={1}>
                                                 * El nombre del comercio es demasiado largo.

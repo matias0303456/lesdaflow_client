@@ -54,6 +54,11 @@ export function Sellers() {
             },
             password: {
                 required: true,
+                minLength: 8,
+                maxLength: 255
+            },
+            email: {
+                required: true,
                 maxLength: 255
             }
         }
@@ -198,6 +203,11 @@ export function Sellers() {
                                                 * La contraseña es requerida.
                                             </Typography>
                                         }
+                                        {errors.password?.type === "minLength" && (
+                                            <Typography variant="caption" color="red" marginTop={1}>
+                                                * La contraseña es demasiado corta.
+                                            </Typography>
+                                        )}
                                         {errors.password?.type === 'maxLength' &&
                                             <Typography variant="caption" color="red" marginTop={1}>
                                                 * La contraseña es demasiado larga.
@@ -235,6 +245,11 @@ export function Sellers() {
                                                 * El celular es demasiado largo.
                                             </Typography>
                                         }
+                                        {errors.cell_phone?.type === 'maxLength' &&
+                                            <Typography variant="caption" color="red" marginTop={1}>
+                                                * El celular es demasiado largo.
+                                            </Typography>
+                                        }
                                     </FormControl>
                                     <FormControl sx={{ width: '50%' }}>
                                         <InputLabel htmlFor="local_phone">Teléfono</InputLabel>
@@ -264,6 +279,16 @@ export function Sellers() {
                                     <FormControl sx={{ width: '50%' }}>
                                         <InputLabel htmlFor="email">Email</InputLabel>
                                         <Input id="email" type="text" name="email" value={formData.email} disabled={open === 'VIEW'} />
+                                        {errors.email?.type === 'required' &&
+                                            <Typography variant="caption" color="red" marginTop={1}>
+                                                * El email es requerido.
+                                            </Typography>
+                                        }
+                                        {errors.email?.type === 'maxLength' &&
+                                            <Typography variant="caption" color="red" marginTop={1}>
+                                                * El email es demasiado largo.
+                                            </Typography>
+                                        }
                                     </FormControl>
                                 </Box>
                                 <Box sx={{ display: 'flex', gap: 5 }}>
