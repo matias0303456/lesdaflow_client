@@ -179,6 +179,7 @@ export function Sales() {
                     showEditAction
                     showViewAction
                     showDeleteAction
+                    showPDFAction
                     contentHeader={
                         <Box sx={{
                             display: 'flex',

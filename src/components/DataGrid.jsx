@@ -16,6 +16,8 @@ import EditIcon from '@mui/icons-material/Edit';
 import SettingsIcon from "@mui/icons-material/Settings";
 import { visuallyHidden } from '@mui/utils';
 import SearchSharpIcon from '@mui/icons-material/SearchSharp';
+import PictureAsPdfSharpIcon from '@mui/icons-material/PictureAsPdfSharp';
+import { SiMicrosoftexcel } from "react-icons/si";
 
 import { deadlineIsPast, getStock } from '../utils/helpers';
 import CloseIcon from "@mui/icons-material/Close";
@@ -107,7 +109,11 @@ export function DataGrid({
   showEditAction = false,
   showViewAction = false,
   showSettingsAction = false,
-  showDeleteAction = false
+  showDeleteAction = false,
+  showPDFAction = false,
+  showExcelAction = false,
+  openPdfUrl = '',
+  openExcelUrl = ''
 }) {
 
   const [order, setOrder] = React.useState(defaultOrder);
@@ -190,6 +196,26 @@ export function DataGrid({
                                 width: "auto",
                               }}
                             >
+                              {showExcelAction &&
+                                <Tooltip
+                                  title="Imprimir Excel"
+                                  onClick={() => window.open(openPdfUrl, '_blank')}
+                                >
+                                  <IconButton className="rounded-full bg-black/20 opacity-50 hover:bg-[#288bcd] hover:text-white">
+                                    <SiMicrosoftexcel className="w-4 h-4" />
+                                  </IconButton>
+                                </Tooltip>
+                              }
+                              {showPDFAction &&
+                                <Tooltip
+                                  title="Imprimir PDF"
+                                  onClick={() => window.open(openPdfUrl, '_blank')}
+                                >
+                                  <IconButton className="rounded-full bg-black/20 opacity-50 hover:bg-[#288bcd] hover:text-white">
+                                    <PictureAsPdfSharpIcon className="w-4 h-4" />
+                                  </IconButton>
+                                </Tooltip>
+                              }
                               {showViewAction &&
                                 <Tooltip
                                   title="Visualizar"
@@ -202,8 +228,8 @@ export function DataGrid({
                                     setOpen("VIEW");
                                   }}
                                 >
-                                  <IconButton className="rounded-full bg-black/20 opacity-50 hover:bg-[#288bcd]">
-                                    <SearchSharpIcon className="w-4 h-4 hover:text-white" />
+                                  <IconButton className="rounded-full bg-black/20 opacity-50 hover:bg-[#288bcd] hover:text-white">
+                                    <SearchSharpIcon className="w-4 h-4" />
                                   </IconButton>
                                 </Tooltip>
                               }
@@ -219,8 +245,8 @@ export function DataGrid({
                                     setOpen("EDIT");
                                   }}
                                 >
-                                  <IconButton className="rounded-full bg-black/20 opacity-50 hover:bg-[#288bcd]">
-                                    <EditIcon className="w-4 h-4 hover:text-white" />
+                                  <IconButton className="rounded-full bg-black/20 opacity-50 hover:bg-[#288bcd] hover:text-white">
+                                    <EditIcon className="w-4 h-4" />
                                   </IconButton>
                                 </Tooltip>
                               }
@@ -237,10 +263,10 @@ export function DataGrid({
                                   }}
                                 >
                                   <IconButton
-                                    className="rounded-full bg-black/20 opacity-50 hover:bg-[#288bcd]"
+                                    className="rounded-full bg-black/20 opacity-50 hover:bg-[#288bcd] hover:text-white"
                                     aria-label="delete"
                                   >
-                                    <CloseIcon className="w-4 h-4 hover:text-white" />
+                                    <CloseIcon className="w-4 h-4" />
                                   </IconButton>
                                 </Tooltip>
                               }
