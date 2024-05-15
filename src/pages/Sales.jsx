@@ -19,7 +19,7 @@ import { ModalComponent } from "../components/ModalComponent";
 import { AddProductsToSale } from "../components/AddProductsToSale";
 
 import { REPORT_URL } from "../utils/urls";
-import { getAccountStatus, getCurrentSubtotal, getCurrentTotal, getDeadline, getInstallmentsAmount, getSaleDifference, getSaleTotal } from "../utils/helpers";
+import { getCurrentSubtotal, getCurrentTotal, getInstallmentsAmount, getSaleTotal } from "../utils/helpers";
 
 export function Sales() {
 
@@ -101,51 +101,68 @@ export function Sales() {
             accessor: 'created_by'
         },
         {
-            id: 'total',
+            id: 'client',
             numeric: false,
             disablePadding: true,
-            label: 'Total',
-            sorter: (row) => parseFloat(getSaleTotal(row).replace('$', '')),
-            accessor: (row) => getSaleTotal(row)
+            label: 'Cliente',
+            accessor: (row) => `${row.client.first_name} ${row.client.last_name}`
         },
         {
-            id: 'deadline',
+            id: 'work_place',
             numeric: false,
             disablePadding: true,
-            label: 'Vencimiento',
-            sorter: (row) => format(new Date(getDeadline(row.date, row.installments)), 'dd/MM/yy'),
-            accessor: (row) => format(new Date(getDeadline(row.date, row.installments)), 'dd/MM/yy')
+            label: 'Comercio',
+            accessor: (row) => row.client.work_place
         },
         {
-            id: 'created_by',
+            id: 'address',
             numeric: false,
             disablePadding: true,
-            label: 'Vendedor',
-            accessor: 'created_by'
+            label: 'Dirección',
+            accessor: (row) => row.client.address
         },
         {
             id: 'type',
             numeric: false,
             disablePadding: true,
-            label: 'Tipo',
-            accessor: (row) => row.type.replace('CUENTA_CORRIENTE', 'CTA CTE')
+            label: 'Tipo Comprobante',
+            accessor: 'type'
         },
         {
-            id: 'difference',
+            id: 'paid',
             numeric: false,
             disablePadding: true,
-            label: 'Saldo',
-            sorter: (row) => parseFloat(getSaleDifference(row).replace('$', '')),
-            accessor: (row) => getSaleDifference(row)
+            label: 'Pagado',
+            accessor: (row) => ''
         },
         {
-            id: 'status',
+            id: 'total',
             numeric: false,
             disablePadding: true,
-            label: 'Estado',
-            sorter: (row) => getAccountStatus(row),
-            accessor: (row) => getAccountStatus(row)
-        }
+            label: 'Total',
+            accessor: (row) => getSaleTotal(row)
+        },
+        {
+            id: 'register',
+            numeric: false,
+            disablePadding: true,
+            label: 'Caja',
+            accessor: (row) => ''
+        },
+        {
+            id: 'delivered',
+            numeric: false,
+            disablePadding: true,
+            label: 'Entregado',
+            accessor: (row) => ''
+        },
+        {
+            id: 'imp',
+            numeric: false,
+            disablePadding: true,
+            label: 'Imp',
+            accessor: (row) => ''
+        },
     ]
 
     return (
