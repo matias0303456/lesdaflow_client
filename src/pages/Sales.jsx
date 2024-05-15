@@ -176,6 +176,9 @@ export function Sales() {
                     rows={sales}
                     setOpen={setOpen}
                     setData={setFormData}
+                    showEditAction
+                    showViewAction
+                    showDeleteAction
                     contentHeader={
                         <Box sx={{
                             display: 'flex',
