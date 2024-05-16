@@ -78,6 +78,10 @@ export const nav_items_user = [
     name: "registers",
     submenu: [
       {
+        subtitle: "ABM Cajas",
+        path: "/cajas",
+      },
+      {
         subtitle: "Movimientos de Cajas",
         path: "/movimientos-caja",
       },
@@ -234,6 +238,10 @@ export const nav_items_admin = [
     title: "Cajas",
     name: "registers",
     submenu: [
+      {
+        subtitle: "ABM Cajas",
+        path: "/cajas",
+      },
       {
         subtitle: "Movimientos de Cajas",
         path: "/movimientos-caja",

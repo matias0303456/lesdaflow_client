@@ -199,7 +199,7 @@ export function DataGrid({
                               {showExcelAction &&
                                 <Tooltip
                                   title="Imprimir Excel"
-                                  onClick={() => window.open(openPdfUrl, '_blank')}
+                                  onClick={() => window.open(openExcelUrl, '_blank')}
                                 >
                                   <IconButton className="rounded-full bg-black/20 opacity-50 hover:bg-[#288bcd] hover:text-white">
                                     <SiMicrosoftexcel className="w-4 h-4" />
@@ -220,12 +220,8 @@ export function DataGrid({
                                 <Tooltip
                                   title="Visualizar"
                                   onClick={() => {
-                                    setData(
-                                      rows.find(
-                                        (r) => r.id === row.id
-                                      )
-                                    );
-                                    setOpen("VIEW");
+                                    if (setData) setData(rows.find((r) => r.id === row.id));
+                                    if (setOpen) setOpen("VIEW");
                                   }}
                                 >
                                   <IconButton className="rounded-full bg-black/20 opacity-50 hover:bg-[#288bcd] hover:text-white">
@@ -237,12 +233,8 @@ export function DataGrid({
                                 <Tooltip
                                   title="Editar"
                                   onClick={() => {
-                                    setData(
-                                      rows.find(
-                                        (r) => r.id === row.id
-                                      )
-                                    );
-                                    setOpen("EDIT");
+                                    if (setData) setData(rows.find((r) => r.id === row.id));
+                                    if (setOpen) setOpen("EDIT");
                                   }}
                                 >
                                   <IconButton className="rounded-full bg-black/20 opacity-50 hover:bg-[#288bcd] hover:text-white">
@@ -254,12 +246,8 @@ export function DataGrid({
                                 <Tooltip
                                   title="Borrar"
                                   onClick={() => {
-                                    setData(
-                                      rows.find(
-                                        (r) => r.id === row.id
-                                      )
-                                    );
-                                    setOpen("DELETE");
+                                    if (setData) setData(rows.find((r) => r.id === row.id));
+                                    if (setOpen) setOpen("DELETE");
                                   }}
                                 >
                                   <IconButton
@@ -274,12 +262,8 @@ export function DataGrid({
                                 <Tooltip
                                   title="Configuracion"
                                   onClick={() => {
-                                    setData(
-                                      rows.find(
-                                        (r) => r.id === row.id
-                                      )
-                                    );
-                                    setOpen("SETTINGS");
+                                    if (setData) setData(rows.find((r) => r.id === row.id));
+                                    if (setOpen) setOpen("SETTINGS");
                                   }}
                                 >
                                   <IconButton

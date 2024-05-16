@@ -26,10 +26,9 @@ export function UpdateProductPriceBySupplier() {
   const { auth } = useContext(AuthContext);
 
   const navigate = useNavigate()
-  const { suppliers, loadingSuppliers, setOpen, handleSubmitMassive } = useSuppliers()
+  const { suppliers, loadingSuppliers, handleSubmitMassive } = useSuppliers()
   const {
     formData,
-    setFormData,
     handleChange,
     disabled,
     setDisabled,
@@ -195,8 +194,6 @@ export function UpdateProductPriceBySupplier() {
           <DataGrid
             headCells={headCells}
             rows={suppliers.find(s => s.id === parseInt(formData.id))?.products || []}
-            setOpen={setOpen}
-            setData={setFormData}
             contentHeader={''}
           />
         </>
