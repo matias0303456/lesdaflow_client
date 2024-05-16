@@ -1,4 +1,5 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Box,
   Button,
@@ -9,20 +10,18 @@ import {
   InputLabel,
   LinearProgress,
   Typography,
+  Tooltip,
+  IconButton,
 } from "@mui/material";
-import { CLIENT_URL, USER_URL, SUPPLIER_URL } from "../utils/urls";
+import CloseIcon from "@mui/icons-material/Close";
 
 import { AuthContext } from "../providers/AuthProvider";
-import { MessageContext } from "../providers/MessageProvider";
-import { useApi } from "../hooks/useApi";
 import { useForm } from "../hooks/useForm";
-import { useSuppliers } from "../hooks/useSuppliers";
-import { useClients } from "../hooks/useClients";
+import { useProducts } from "../hooks/useProducts";
 
 import { Layout } from "../components/Layout";
-
 import { DataGrid } from "../components/DataGrid";
-import { useNavigate } from "react-router-dom";
+import { getProductNewSalePriceByPercentage, getProductSalePrice } from "../utils/helpers";
 
 export function UpdateProductPriceByProduct() {
 
@@ -30,177 +29,189 @@ export function UpdateProductPriceByProduct() {
 
   const navigate = useNavigate()
 
-  const {
-    formData,
-    setFormData,
-    handleChange,
-    disabled,
-    setDisabled,
-    validate,
-    reset,
-    errors,
-  } = useForm({
-    defaultData: {},
-    rules: {},
-  });
+  const { products, loadingProducts, massiveEdit, setMassiveEdit, handleSubmitMassive } = useProducts()
+  const { reset, formData, validate, errors, handleChange } = useForm({
+    defaultData: { product_id: '', percentage: 0.00 },
+    rules: { product_id: { required: true }, percentage: { required: true } }
+  })
 
   useEffect(() => {
     if (auth?.user.role !== "ADMINISTRADOR") navigate("/productos");
   }, []);
 
+  const handleAddProduct = () => {
+    if (validate()) {
+      setMassiveEdit([formData, ...massiveEdit])
+      reset()
+    }
+  }
+
   const headCells = [
     {
-      id: "cod",
+      id: "code",
       numeric: false,
       disablePadding: true,
       label: "Cod.",
-      accessor: "cod",
+      accessor: "code",
     },
     {
-      id: "product",
+      id: "details",
       numeric: false,
       disablePadding: true,
       label: "Producto",
-      accessor: "product",
+      accessor: "details",
     },
     {
-      id: "actual_price",
+      id: "sale_price",
       numeric: false,
       disablePadding: true,
-      label: "Precio Actual",
-      accessor: "actual_price",
+      label: "Precio Actual (venta)",
+      accessor: (row) => `$${getProductSalePrice(row).toFixed(2)}`
     },
     {
       id: "new_price",
       numeric: false,
       disablePadding: true,
-      label: "Precio Nuevo",
-      accessor: "new_price",
+      label: "Precio Nuevo (venta)",
+      accessor: (row) => `$${getProductNewSalePriceByPercentage(row, massiveEdit.find(me => me.product_id === row.id).percentage).toFixed(2)}`
     },
-  ];
-  return (
-    <Layout title="Actualizar Precio Producto">
-      <Box className="w-[50%] mb-3 px-2 py-4 bg-white rounded-md">
-        <Typography
-          variant="h6"
-          sx={{
-            width: "100%",
-            fontSize: "14px",
-            color: "white",
-            paddingX: "10px",
-            paddingY: "5px",
-            backgroundColor: "#078BCD",
-            borderRadius: "2px",
-            fontWeight: "bold",
-          }}
+    {
+      id: "actions",
+      numeric: false,
+      disablePadding: true,
+      label: "",
+      accessor: (row) => (
+        <Tooltip
+          title="Borrar"
+          onClick={() => setMassiveEdit([...massiveEdit.filter(me => me.product_id !== row.id)])}
         >
-          Información General
-        </Typography>
+          <IconButton className="rounded-full bg-black/20 opacity-50 hover:bg-[#288bcd] hover:text-white">
+            <CloseIcon className="w-4 h-4" />
+          </IconButton>
+        </Tooltip>
+      )
+    },
+  ]
 
-        {loadingClients || loadingUsers ? (
-          <Box sx={{ width: "100%" }}>
-            <LinearProgress />
-          </Box>
-        ) : (
-          <form onChange={handleChange} onSubmit={handleSubmit}>
-            <Box
+  return (
+    <Layout title="Actualizar Precios Productos">
+      {loadingProducts ?
+        <Box sx={{ width: "100%" }}>
+          <LinearProgress />
+        </Box> :
+        <>
+          <Box className="w-[50%] mb-3 bg-white rounded-md">
+            <Typography
+              variant="h6"
               sx={{
+                width: "100%",
+                fontSize: "14px",
+                color: "white",
+                backgroundColor: "#078BCD",
+                padding: 1,
+                borderRadius: "2px",
+                fontWeight: "bold",
+              }}
+            >
+              Información General
+            </Typography>
+            <form>
+              <Box sx={{
                 display: "flex",
                 alignItems: "center",
                 flexDirection: "column",
                 justifyContent: "start",
-                gap: 1,
+                padding: 1,
+                paddingBottom: 2,
+                gap: 1
               }}
-            >
-              {/* suppliers select */}
-              <FormControl
-                variant="standard"
-                sx={{
-                  minWidth: "100%",
-                  color: "#59656b",
-                  display: "flex",
-                  alignItems: "start",
-                  justifyContent: "center",
-                  marginTop: "2rem",
-                }}
               >
-                <InputLabel
-                  id="demo-simple-select-standard-label"
-                  className="font-semibold text-gray-400 text-sm"
-                >
-                  Proveedor
-                </InputLabel>
-                <Select
-                  labelId="demo-simple-select-standard-label"
-                  id="demo-simple-select-standard"
-                  sx={{
-                    width: "100%",
-                  }}
-                  // value={suppliers}
-                  onChange={handleChange}
-                  label="Proveedor"
-                >
-                  {suppliers.length > 0 ? (
-                    suppliers.map((supplier) => (
-                      <MenuItem key={supplier.id} value={supplier}>
-                        {supplier.name}
-                      </MenuItem>
-                    ))
-                  ) : (
-                    <MenuItem>No se encontraron resultados</MenuItem>
-                  )}
-                </Select>
-              </FormControl>
-              {/* stock select */}
-              <Box className="w-[100%] flex items-center justify-start gap-2">
                 <FormControl
                   variant="standard"
-                  sx={{
-                    width: "40%",
-                    color: "#59656b",
-                    display: "flex",
-                    alignItems: "start",
-                    justifyContent: "center",
-                  }}
+                  sx={{ minWidth: "100%", color: "#59656b", display: "flex", alignItems: "start", justifyContent: "center" }}
                 >
-                  <InputLabel
-                    className="font-semibold text-gray-400 text-sm"
-                    id="demo-simple-select-standard-label"
-                  >
-                    Porcentaje*
+                  <InputLabel className="font-semibold text-gray-400 text-sm">
+                    Producto
                   </InputLabel>
-                  <Input className="w-full"
-                    placeholder="0,00"
-                  />
+                  <Select
+                    labelId="product-select"
+                    id="product_id"
+                    value={formData.product_id}
+                    name="product_id"
+                    onChange={handleChange}
+                    sx={{ width: "100%" }}
+                    label="Producto"
+                    disabled={products.filter(p => !massiveEdit.map(me => me.product_id).includes(p.id)).length === 0}
+                  >
+                    {products.filter(p => !massiveEdit.map(me => me.product_id).includes(p.id)).map((p) => (
+                      <MenuItem key={p.id} value={p.id}>
+                        {p.details}
+                      </MenuItem>
+                    ))
+                    }
+                  </Select>
+                  {errors.product_id?.type === 'required' &&
+                    <Typography variant="caption" color="red" marginTop={1}>
+                      * El producto es requerido.
+                    </Typography>
+                  }
                 </FormControl>
-                <Button variant="contained" size="small">
-                  Calcular
-                </Button>
+                <Box className="w-[100%] flex items-center justify-start gap-2">
+                  <FormControl
+                    variant="standard"
+                    sx={{
+                      width: "40%",
+                      color: "#59656b",
+                      display: "flex",
+                      alignItems: "start",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <InputLabel htmlFor="percentage" className="font-semibold text-gray-400 text-sm">
+                      Porcentaje
+                    </InputLabel>
+                    <Input
+                      className="w-full"
+                      type="number"
+                      value={formData.percentage}
+                      disabled={products.filter(p => !massiveEdit.map(me => me.product_id).includes(p.id)).length === 0}
+                      onChange={(e) => handleChange({ target: { name: 'percentage', value: e.target.value } })}
+                    />
+                    {errors.percentage?.type === 'required' &&
+                      <Typography variant="caption" color="red" marginTop={1}>
+                        * El porcentaje es requerido.
+                      </Typography>
+                    }
+                  </FormControl>
+                  <Button
+                    variant="contained"
+                    size="small"
+                    onClick={handleAddProduct}
+                    disabled={products.filter(p => !massiveEdit.map(me => me.product_id).includes(p.id)).length === 0}
+                  >
+                    Agregar
+                  </Button>
+                </Box>
               </Box>
-            </Box>
-          </form>
-        )}
-      </Box>
-      {/* button section */}
-      <Box className="w-[50%] flex items-center justify-start gap-2  mb-4">
-        <Button variant="contained" size="medium">
-          imprimir
-        </Button>
-        <Button variant="outlined" size="medium">
-          Volver
-        </Button>
-      </Box>
-
-      {/* Datagrid */}
-      <DataGrid
-        headCells={headCells}
-        rows={suppliers}
-        setOpen={setOpen}
-        setData={setFormData}
-        contentHeader={''}
-      >
-
-      </DataGrid>
+            </form>
+          </Box>
+          <DataGrid
+            headCells={headCells}
+            rows={products.filter(p => massiveEdit.map(me => me.product_id).includes(p.id))}
+          />
+          <Box className="w-[50%] flex items-center justify-start gap-2 mt-4">
+            <Button variant="outlined" size="medium" onClick={() => navigate('/productos')}>
+              Volver
+            </Button>
+            <Button variant="outlined" size="medium" onClick={() => setMassiveEdit([])}>
+              Limpiar
+            </Button>
+            <Button variant="contained" size="medium" disabled={massiveEdit.length === 0} onClick={handleSubmitMassive}>
+              Confirmar
+            </Button>
+          </Box>
+        </>
+      }
     </Layout>
   );
 }

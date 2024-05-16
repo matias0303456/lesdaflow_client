@@ -18,9 +18,9 @@ import { visuallyHidden } from '@mui/utils';
 import SearchSharpIcon from '@mui/icons-material/SearchSharp';
 import PictureAsPdfSharpIcon from '@mui/icons-material/PictureAsPdfSharp';
 import { SiMicrosoftexcel } from "react-icons/si";
+import CloseIcon from "@mui/icons-material/Close";
 
 import { deadlineIsPast, getStock } from '../utils/helpers';
-import CloseIcon from "@mui/icons-material/Close";
 
 function descendingComparator(a, b, orderBy, sorter) {
   if ((b[orderBy] ? b[orderBy] : sorter(b)) < (a[orderBy] ? a[orderBy] : sorter(a))) {

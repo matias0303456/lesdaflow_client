@@ -37,7 +37,7 @@ export function UpdateProductPriceBySupplier() {
     reset,
     errors,
   } = useForm({
-    defaultData: { id: '', percentage: 0, products: [] },
+    defaultData: { id: '', percentage: 0.00, products: [] },
     rules: { id: { required: true }, percentage: { required: true } },
   });
 
@@ -73,7 +73,7 @@ export function UpdateProductPriceBySupplier() {
       disablePadding: true,
       label: "Precio Nuevo (venta)",
       accessor: (row) => `$${getProductNewSalePriceByPercentage(row, formData.percentage).toFixed(2)}`
-    },
+    }
   ]
 
   return (
@@ -83,16 +83,15 @@ export function UpdateProductPriceBySupplier() {
           <LinearProgress />
         </Box> :
         <>
-          <Box className="w-[50%] mb-3 px-2 py-4 bg-white rounded-md">
+          <Box className="w-[50%] mb-3 bg-white rounded-md">
             <Typography
               variant="h6"
               sx={{
                 width: "100%",
                 fontSize: "14px",
                 color: "white",
-                paddingX: "10px",
-                paddingY: "5px",
                 backgroundColor: "#078BCD",
+                padding: 1,
                 borderRadius: "2px",
                 fontWeight: "bold",
               }}
@@ -106,7 +105,9 @@ export function UpdateProductPriceBySupplier() {
                   alignItems: "center",
                   flexDirection: "column",
                   justifyContent: "start",
-                  gap: 1,
+                  padding: 1,
+                  paddingBottom: 2,
+                  gap: 1
                 }}
               >
                 <FormControl
@@ -116,8 +117,7 @@ export function UpdateProductPriceBySupplier() {
                     color: "#59656b",
                     display: "flex",
                     alignItems: "start",
-                    justifyContent: "center",
-                    marginTop: "2rem",
+                    justifyContent: "center"
                   }}
                 >
                   <InputLabel htmlFor="id" className="font-semibold text-gray-400 text-sm">
@@ -188,7 +188,7 @@ export function UpdateProductPriceBySupplier() {
             >
               Confirmar
             </Button>
-            <Button variant="outlined" size="medium">
+            <Button variant="outlined" size="medium" onClick={() => navigate('/productos')}>
               Volver
             </Button>
           </Box>

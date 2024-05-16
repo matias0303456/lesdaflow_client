@@ -15,7 +15,6 @@ export function useProducts() {
     const [products, setProducts] = useState([])
     const [open, setOpen] = useState(null)
     const [massiveEdit, setMassiveEdit] = useState([])
-    const [massiveEditPercentage, setMassiveEditPercentage] = useState(0)
     const [earnPrice, setEarnPrice] = useState(0)
 
     useEffect(() => {
@@ -55,23 +54,22 @@ export function useProducts() {
         }
     }
 
-    async function handleSubmitMassive(reset, setDisabled) {
+    async function handleSubmitMassive() {
         const body = {
-            products: massiveEdit.map(me => ({ id: me.id, buy_price: me.buy_price })),
-            percentage: parseInt(massiveEditPercentage)
+            products: massiveEdit.map(me => {
+                const product = products.find(p => p.id === me.product_id)
+                return { ...me, buy_price: product.buy_price }
+            })
         }
         const { status, data } = await putMassive(body)
         if (status === 200) {
             setProducts([...data, ...products.filter(p => !data.map(d => d.id).includes(p.id))])
             setMessage('Precios actualizados correctamente.')
             setSeverity('success')
-            reset(setOpen)
             setMassiveEdit([])
-            setMassiveEditPercentage(0)
         } else {
             setMessage(data.message)
             setSeverity('error')
-            setDisabled(false)
         }
         setOpenMessage(true)
     }
@@ -108,8 +106,6 @@ export function useProducts() {
         handleSubmitMassive,
         massiveEdit,
         setMassiveEdit,
-        massiveEditPercentage,
-        setMassiveEditPercentage,
         earnPrice,
         setEarnPrice
     }
