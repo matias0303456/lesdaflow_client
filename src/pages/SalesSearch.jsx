@@ -1,5 +1,9 @@
-import { useContext, useEffect, useState } from "react";
-import dayjs from 'dayjs';
+import { useContext, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import es from 'date-fns/locale/es';
 import {
   Box,
   FormControl,
@@ -10,287 +14,182 @@ import {
   Select,
   Typography,
 } from "@mui/material";
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { CLIENT_URL, USER_URL } from "../utils/urls";
+
 import { AuthContext } from "../providers/AuthProvider";
-import { MessageContext } from "../providers/MessageProvider";
-import { useApi } from "../hooks/useApi";
 import { useForm } from "../hooks/useForm";
-import { useClients } from "../hooks/useClients";
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { useSellers } from "../hooks/useSellers";
+import { useSales } from "../hooks/useSales";
+
 import { Layout } from "../components/Layout";
 import { DataGrid } from "../components/DataGrid";
-
-import { useNavigate } from "react-router-dom";
+import { format } from "date-fns";
 
 export function SalesSearch() {
-  const { auth } = useContext(AuthContext);
-  const { setMessage, setOpenMessage, setSeverity } =
-    useContext(MessageContext);
-  // clients import
-  const { get, post, put } = useApi(CLIENT_URL);
-  const { clients, setClients, loadingClients, setLoadingClients } =
-    useClients();
-  // users import
-  const { get: getUsers } = useApi(USER_URL);
 
-  const navigate = useNavigate();
-//    date data
-const today = dayjs();
-const tomorrow = dayjs().add(1, 'day');
-  
-const {
-    formData,
-    setFormData,
-    handleChange,
-    disabled,
-    setDisabled,
-    validate,
-    reset,
-    errors,
-  } = useForm({
-    defaultData: {},
-    rules: {},
+  const { auth } = useContext(AuthContext);
+
+  const navigate = useNavigate()
+
+  const { sellers, loadingSellers } = useSellers()
+  const { sales, loadingSales } = useSales()
+  const { formData, handleChange } = useForm({
+    defaultData: { from: new Date(Date.now()), to: new Date(Date.now()), code: '', seller_id: '' }
   });
 
-  const [open, setOpen] = useState(null);
-  const [loadingUsers, setLoadingUsers] = useState(true);
-  const [users, setUsers] = useState([]);
-
   useEffect(() => {
-    if (auth?.user.role.name !== "ADMINISTRADOR") navigate("/productos");
+    if (auth?.user.role !== "ADMINISTRADOR") navigate("/productos");
   }, []);
-
-  useEffect(() => {
-    (async () => {
-      const { status, data } = await getUsers();
-      if (status === 200) {
-        setUsers(data);
-        setLoadingUsers(false);
-      }
-    })();
-  }, []);
-
-
-  async function handleSubmit(e) {
-    e.preventDefault();
-    if (validate()) {
-      const { status, data } =
-        open === "NEW" ? await post(formData) : await put(formData);
-      if (status === 200) {
-        if (open === "NEW") {
-          setClients([data, ...clients]);
-          setMessage("Cliente creado correctamente.");
-        } else {
-          setClients([data, ...clients.filter((c) => c.id !== formData.id)]);
-          setMessage("Cliente editado correctamente.");
-        }
-        setSeverity("success");
-        reset(setOpen);
-      } else {
-        setMessage(data.message);
-        setSeverity("error");
-        setDisabled(false);
-      }
-      setOpenMessage(true);
-    }
-  }
 
   const headCells = [
     {
-      id: "sale code",
-      numeric: false,
-      disablePadding: true,
+      id: "id",
+      numeric: true,
+      disablePadding: false,
       label: "Cod. Venta",
-      accessor: "sale code",
+      accessor: "id",
     },
     {
       id: "date",
       numeric: false,
       disablePadding: true,
       label: "Fecha",
-      // sorter: (row) => format(new Date(getDeadline(row.date, row.installments)), 'dd/MM/yy'),
-      // accessor: (row) => format(new Date(getDeadline(row.date, row.installments)), 'dd/MM/yy')
+      accessor: (row) => format(new Date(row.date), 'dd/MM/yy')
     },
     {
       id: 'hour',
       numeric: false,
       disablePadding: true,
       label: 'Hora',
-      // sorter: (row) => format(new Date(getDeadline(row.date, row.installments)), 'dd/MM/yy'),
-      // accessor: (row) => format(new Date(getDeadline(row.date, row.installments)), 'dd/MM/yy')
-  },
-  {
-    id: "receipt kind",
-    numeric: false,
-    disablePadding: true,
-    label: "Tipo de Comprobante",
-    accessor: "receipt kind",
-  },
+      accessor: (row) => format(new Date(row.date), 'hh:mm')
+    },
+    {
+      id: "type",
+      numeric: false,
+      disablePadding: true,
+      label: "Tipo de Comprobante",
+      accessor: "type"
+    },
   ];
 
   return (
     <Layout title="Búsqueda de Ventas">
-      {/* sales search */}
-      <Box className="w-[100%]">
-        <Typography
-          variant="h6"
-          sx={{
-            width: "100%",
-            fontSize: "14px",
-            color: "white",
-            paddingX: "10px",
-            paddingY: "5px",
-            backgroundColor: "#078BCD",
-            borderRadius: "2px",
-            fontWeight: "bold",
-          }}
-        >
-         Búsqueda de Ventas
-        </Typography>
-
-        {loadingClients || loadingUsers ? (
-          <Box sx={{ width: "100%" }}>
-            <LinearProgress />
-          </Box>
-        ) : (
-          <form onChange={handleChange} onSubmit={handleSubmit}
-          className="gridContainer mb-5"
-          >
-        <Box 
-        sx={{ display: "flex", alignItems: "end", justifyContent: "start", gap: 2 }}>
-            <LocalizationProvider
-            dateAdapter={AdapterDayjs}>
-           
-           {/* start date */}
-            <FormControl variant="standard"
-            sx={{
-                width: "16.5%",
-                color: "#59656b"
-            }}
+      {loadingSales || loadingSellers ? <Box sx={{ width: "100%" }}><LinearProgress /></Box> :
+        <>
+          <Box className="w-[100%]" sx={{ backgroundColor: '#fff' }}>
+            <Typography
+              variant="h6"
+              sx={{
+                width: "100%",
+                fontSize: "14px",
+                color: "white",
+                paddingX: "10px",
+                paddingY: "5px",
+                backgroundColor: "#078BCD",
+                borderRadius: "2px",
+                fontWeight: "bold",
+              }}
             >
-                <DatePicker
-                label="Fecha Inicio*"
-                sx={{
-                    marginTop: "3rem",
-                }}
-                    defaultValue={today}
-                    minDate={tomorrow}
-                    views={['year', 'month', 'day']}
-                />
-            </FormControl>
-           
-           {/* end date */}
-           <FormControl variant="standard"
-            sx={{
-                width: "16.5%",
-                color: "#59656b"
-            }}
-            >
-                <DatePicker
-               label="Fecha Fin*"
-                    defaultValue={today}
-                    minDate={tomorrow}
-                    views={['year', 'month', 'day']}
-                />
-            </FormControl>
-            
-            </LocalizationProvider>
-
-               {/* sale code input */}
-               <FormControl variant="standard"
-               className="focus:text-black"
-               sx={{
+              Búsqueda de Ventas
+            </Typography>
+            <form className="gridContainer mb-1">
+              <Box sx={{ display: "flex", alignItems: "end", justifyContent: "start", gap: 2, padding: 2 }}>
+                <FormControl variant="standard" sx={{ width: "16.5%", color: "#59656b" }}>
+                  <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
+                    <DatePicker
+                      label="Fecha Inicio"
+                      value={new Date(formData.from)}
+                      onChange={value => handleChange({
+                        target: {
+                          name: 'from',
+                          value: new Date(value.toISOString())
+                        }
+                      })}
+                    />
+                  </LocalizationProvider>
+                </FormControl>
+                <FormControl variant="standard" sx={{ width: "16.5%", color: "#59656b" }}>
+                  <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
+                    <DatePicker
+                      label="Fecha Fin"
+                      value={new Date(formData.to)}
+                      onChange={value => handleChange({
+                        target: {
+                          name: 'to',
+                          value: new Date(value.toISOString())
+                        }
+                      })}
+                    />
+                  </LocalizationProvider>
+                </FormControl>
+                <FormControl
+                  variant="standard"
+                  className="focus:text-black"
+                  sx={{
                     width: "16.5%",
                     color: "#59656b",
                     display: "flex",
                     alignItems: "start",
                     justifyContent: "center"
-                }}>
-                <InputLabel 
-                className="focus:text-black"
-                id="demo-simple-select-standard-label">
-                  Cod. Venta
-                </InputLabel>
-                <Input
-                onFocus={disabled}
-                />
-              </FormControl>
-
-                  {/* seller select */}
-            <FormControl variant="standard" sx={{
+                  }}
+                >
+                  <InputLabel className="focus:text-black">Cod. Venta</InputLabel>
+                  <Input value={formData.code} id="code" name="code" onChange={handleChange} />
+                </FormControl>
+                <FormControl
+                  variant="standard"
+                  sx={{
                     minWidth: "50%",
                     color: "#59656b",
                     display: "flex",
                     alignItems: "start",
                     justifyContent: "center"
-                }}>
-                <InputLabel id="demo-simple-select-standard-label">
-                  Vendedor
-                </InputLabel>
-                <Select
-                  labelId="demo-simple-select-standard-label"
-                  id="demo-simple-select-standard"
-                  sx={{
-                    width: "100%"
                   }}
-                  // value={age}
-                  onChange={handleChange}
-                  label="Vendedor"
                 >
-                  {users.length > 0 ? (
-                    users.map((user) => (
-                      <MenuItem key={user.id} value={user}>
-                        {`${user.first_name} ${user.last_name}`.toUpperCase()}
+                  <InputLabel>Vendedor</InputLabel>
+                  <Select
+                    labelId="seller-select"
+                    id="seller_id"
+                    value={formData.seller_id}
+                    label="Vendedor"
+                    name="seller_id"
+                    onChange={handleChange}
+                    sx={{ width: "100%" }}
+                  >
+                    {sellers.map((s) => (
+                      <MenuItem key={s.id} value={s.id}>
+                        {`${s.first_name} ${s.last_name}`.toUpperCase()}
                       </MenuItem>
-                    ))
-                  ) : (
-                    <MenuItem>No se encontraron resultados</MenuItem>
-                  )}
-                </Select>
-              </FormControl>
-        </Box>
-          </form>
-        )}
-      </Box>
-
-      {/* sales info */}
-      <Box className="w-[100%] mt-3">
-        <Typography
-          variant="h6"
-          sx={{
-            width: "100%",
-            fontSize: "14px",
-            color: "white",
-            paddingX: "10px",
-            paddingY: "5px",
-            backgroundColor: "#078BCD",
-            borderRadius: "2px",
-            fontWeight: "bold",
-          }}
-        >
-         Información de Ventas
-        </Typography>
-
-        {loadingClients || loadingUsers ? (
-          <Box sx={{ width: "100%" }}>
-            <LinearProgress />
+                    ))}
+                  </Select>
+                </FormControl>
+              </Box>
+            </form>
           </Box>
-        ) : (
-          <form onChange={handleChange} onSubmit={handleSubmit}
-          className="gridContainer mb-5"
-          >
+          <Box className="w-[100%]">
+            <Typography
+              variant="h6"
+              sx={{
+                width: "100%",
+                fontSize: "14px",
+                color: "white",
+                paddingX: "10px",
+                paddingY: "5px",
+                backgroundColor: "#078BCD",
+                borderRadius: "2px",
+                fontWeight: "bold",
+              }}
+            >
+              Información de Ventas
+            </Typography>
             <DataGrid
-            headCells={headCells}
-            rows={clients}
-            setOpen={setOpen}
-            setData={setFormData}
-            contentHeader={""}
-            ></DataGrid>
-          </form>
-        )}
-      </Box>
+              headCells={headCells}
+              rows={sales.filter(s => (formData.code.length === 0 || s.id.toString().includes(formData.id)) &&
+              (formData.seller_id.length === 0 || s.user_id.toString().includes(formData.seller_id)) && 
+              new Date() &&)}
+            />
+          </Box>
+        </>
+      }
     </Layout>
   );
 }

@@ -27,11 +27,10 @@ export function SalesReport() {
 
   const navigate = useNavigate()
 
-  const { formData, handleChange, validate, errors } = useForm({
+  const { formData, handleChange, validate, errors, reset } = useForm({
     defaultData: { from: new Date(Date.now()), to: new Date(Date.now()), seller_id: '' },
     rules: { seller_id: { required: true } }
   })
-
   const { sellers, loadingSellers } = useSellers()
 
   useEffect(() => {
@@ -42,6 +41,7 @@ export function SalesReport() {
     e.preventDefault()
     if (validate()) {
       console.log(formData)
+      reset()
     }
   }
 
@@ -113,7 +113,7 @@ export function SalesReport() {
                     labelId="seller-select"
                     id="seller_id"
                     value={formData.seller_id}
-                    label="Proveedor"
+                    label="Vendedor"
                     name="seller_id"
                     onChange={handleChange}
                     sx={{ width: "100%" }}
