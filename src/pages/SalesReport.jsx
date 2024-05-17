@@ -1,6 +1,5 @@
 import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import dayjs from 'dayjs';
 import {
   Box,
   Button,
@@ -11,18 +10,16 @@ import {
   Select,
   Typography,
 } from "@mui/material";
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import es from 'date-fns/locale/es';
 
 import { AuthContext } from "../providers/AuthProvider";
 import { useForm } from "../hooks/useForm";
 import { useSellers } from "../hooks/useSellers";
 
 import { Layout } from "../components/Layout";
-
-const today = dayjs();
-const tomorrow = dayjs().add(1, 'day');
 
 export function SalesReport() {
 
@@ -31,8 +28,8 @@ export function SalesReport() {
   const navigate = useNavigate()
 
   const { formData, handleChange, validate, errors } = useForm({
-    defaultData: {},
-    rules: {},
+    defaultData: { from: new Date(Date.now()), to: new Date(Date.now()), seller_id: '' },
+    rules: { seller_id: { required: true } }
   })
 
   const { sellers, loadingSellers } = useSellers()
@@ -43,6 +40,9 @@ export function SalesReport() {
 
   const handleSubmit = e => {
     e.preventDefault()
+    if (validate()) {
+      console.log(formData)
+    }
   }
 
   return (
@@ -50,7 +50,7 @@ export function SalesReport() {
       {loadingSellers ?
         <Box sx={{ width: "100%" }}><LinearProgress /></Box> :
         <>
-          <Box className="w-[50%]" sx={{ backgroundColor: '#fff'}}>
+          <Box className="w-[50%]" sx={{ backgroundColor: '#fff' }}>
             <Typography
               variant="h6"
               sx={{
@@ -66,26 +66,36 @@ export function SalesReport() {
             >
               Informacion General
             </Typography>
-            <form onChange={handleChange} onSubmit={handleSubmit}>
+            <form>
               <Box sx={{ display: "flex", alignItems: "center", justifyContent: "start", flexDirection: "column", gap: 2, margin: 2 }}>
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <FormControl variant="standard" sx={{ width: "100%", color: "#59656b" }}>
+                <FormControl variant="standard" sx={{ width: "100%", color: "#59656b" }}>
+                  <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
                     <DatePicker
                       label="Fecha Desde"
-                      defaultValue={today}
-                      minDate={tomorrow}
-                      views={['year', 'month', 'day']}
+                      value={new Date(formData.from)}
+                      onChange={value => handleChange({
+                        target: {
+                          name: 'from',
+                          value: new Date(value.toISOString())
+                        }
+                      })}
                     />
-                  </FormControl>
-                  <FormControl variant="standard" sx={{ width: "100%", color: "#59656b" }}>
+                  </LocalizationProvider>
+                </FormControl>
+                <FormControl variant="standard" sx={{ width: "100%", color: "#59656b" }}>
+                  <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
                     <DatePicker
                       label="Fecha Hasta"
-                      defaultValue={today}
-                      minDate={tomorrow}
-                      views={['year', 'month', 'day']}
+                      value={new Date(formData.to)}
+                      onChange={value => handleChange({
+                        target: {
+                          name: 'to',
+                          value: new Date(value.toISOString())
+                        }
+                      })}
                     />
-                  </FormControl>
-                </LocalizationProvider>
+                  </LocalizationProvider>
+                </FormControl>
                 <FormControl
                   variant="standard"
                   sx={{
@@ -100,31 +110,34 @@ export function SalesReport() {
                     Vendedor
                   </InputLabel>
                   <Select
-                    labelId="demo-simple-select-standard-label"
-                    id="demo-simple-select-standard"
-                    sx={{ width: "100%" }}
+                    labelId="seller-select"
+                    id="seller_id"
+                    value={formData.seller_id}
+                    label="Proveedor"
+                    name="seller_id"
                     onChange={handleChange}
-                    label="Vendedor"
+                    sx={{ width: "100%" }}
                   >
-                    {sellers.length > 0 ? (
-                      sellers.map((s) => (
-                        <MenuItem key={s.id} value={s.id}>
-                          {`${s.first_name} ${s.last_name}`.toUpperCase()}
-                        </MenuItem>
-                      ))
-                    ) : (
-                      <MenuItem>No se encontraron resultados</MenuItem>
-                    )}
+                    {sellers.map((s) => (
+                      <MenuItem key={s.id} value={s.id}>
+                        {`${s.first_name} ${s.last_name}`.toUpperCase()}
+                      </MenuItem>
+                    ))}
                   </Select>
+                  {errors.seller_id?.type === 'required' &&
+                    <Typography variant="caption" color="red" marginTop={1}>
+                      * El vendedor es requerido.
+                    </Typography>
+                  }
                 </FormControl>
               </Box>
             </form>
           </Box>
-          <Button type="button" variant="contained">
+          <Button type="button" variant="contained" onClick={e => handleSubmit(e)}>
             Imprimir
           </Button>
         </>
       }
     </Layout>
-  );
+  )
 }
