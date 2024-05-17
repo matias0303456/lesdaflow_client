@@ -37,7 +37,7 @@ export function SalesSearch() {
   });
 
   useEffect(() => {
-    if (auth?.user.role !== "ADMINISTRADOR") navigate("/productos");
+    if (auth?.user.role !== "ADMINISTRADOR") navigate("/ventas");
   }, []);
 
   useEffect(() => {

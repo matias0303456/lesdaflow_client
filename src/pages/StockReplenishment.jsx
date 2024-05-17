@@ -27,8 +27,7 @@ import { CLIENT_URL, PRODUCT_URL } from "../utils/urls";
 import { ProductFilter } from "../components/filters/ProductFilter";
 
 export function StockReplenishment() {
-  const { setMessage, setOpenMessage, setSeverity } =
-    useContext(MessageContext);
+
   const { auth } = useContext(AuthContext);
 
   const navigate = useNavigate();
@@ -47,51 +46,12 @@ export function StockReplenishment() {
     rules: {},
   });
 
-  const [open, setOpen] = useState(null);
-  const { get, post, put } = useApi(CLIENT_URL);
-  const { clients, setClients, loadingClients, setLoadingClients } =
-    useClients();
-const { putMassive } = useApi(PRODUCT_URL);
-const { products, setProducts, loadingProducts, setLoadingProducts } =
-  useProducts();
-const { suppliers, loadingSuppliers } = useSuppliers();
-  useEffect(() => {
-    if (auth?.user.role.name !== "ADMINISTRADOR") navigate("/productos");
-  }, []);
+  const { products, setProducts, loadingProducts, setLoadingProducts, setOpen } = useProducts()
+  const { suppliers, loadingSuppliers } = useSuppliers()
 
   useEffect(() => {
-    (async () => {
-      const { status, data } = await get();
-      if (status === 200) {
-        setClients(data);
-        setLoadingClients(false);
-      }
-    })();
+    if (auth?.user.role !== "ADMINISTRADOR") navigate("/productos");
   }, []);
-
-  async function handleSubmit(e) {
-    e.preventDefault();
-    if (validate()) {
-      const { status, data } =
-        open === "NEW" ? await post(formData) : await put(formData);
-      if (status === 200) {
-        if (open === "NEW") {
-          setUsers([data, ...users]);
-          setMessage("Usuario creado correctamente.");
-        } else {
-          setUsers([data, ...users.filter((u) => u.id !== formData.id)]);
-          setMessage("Usuario editado correctamente.");
-        }
-        setSeverity("success");
-        reset(setOpen);
-      } else {
-        setMessage(data.message);
-        setSeverity("error");
-        setDisabled(false);
-      }
-      setOpenMessage(true);
-    }
-  }
 
   const headCells = [
     {
@@ -133,14 +93,14 @@ const { suppliers, loadingSuppliers } = useSuppliers();
 
   return (
     <Layout title="Reposicion Stock">
-      {loadingClients ? (
+      {loadingProducts || loadingSuppliers ? (
         <Box sx={{ width: "100%" }}>
           <LinearProgress />
         </Box>
       ) : (
         <DataGrid
           headCells={headCells}
-          rows={clients}
+          rows={[]}
           setOpen={setOpen}
           setData={setFormData}
           contentHeader={
@@ -167,11 +127,11 @@ const { suppliers, loadingSuppliers } = useSuppliers();
                   Pdf
                 </Button>
               </Box>
-              <ProductFilter
+              {/* <ProductFilter
                 products={products}
                 setProducts={setProducts}
                 suppliers={suppliers}
-              />
+              /> */}
             </Box>
           }
         ></DataGrid>

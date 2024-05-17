@@ -34,7 +34,7 @@ export function SalesReport() {
   const { sellers, loadingSellers } = useSellers()
 
   useEffect(() => {
-    if (auth?.user.role !== "ADMINISTRADOR") navigate("/productos")
+    if (auth?.user.role !== "ADMINISTRADOR") navigate("/ventas")
   }, [])
 
   const handleSubmit = e => {
