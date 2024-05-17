@@ -40,6 +40,10 @@ export function SalesSearch() {
     if (auth?.user.role !== "ADMINISTRADOR") navigate("/productos");
   }, []);
 
+  useEffect(() => {
+    console.log(formData)
+  }, [formData])
+
   const headCells = [
     {
       id: "id",
@@ -183,9 +187,7 @@ export function SalesSearch() {
             </Typography>
             <DataGrid
               headCells={headCells}
-              rows={sales.filter(s => (formData.code.length === 0 || s.id.toString().includes(formData.id)) &&
-              (formData.seller_id.length === 0 || s.user_id.toString().includes(formData.seller_id)) && 
-              new Date() &&)}
+              rows={sales}
             />
           </Box>
         </>
