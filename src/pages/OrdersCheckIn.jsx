@@ -14,18 +14,22 @@ import { AuthContext } from "../providers/AuthProvider";
 import { MessageContext } from "../providers/MessageProvider";
 import { useApi } from "../hooks/useApi";
 import { useForm } from "../hooks/useForm";
-import {useSuppliers} from "../hooks/useSuppliers"
+import { useSuppliers } from "../hooks/useSuppliers"
 import { useClients } from "../hooks/useClients";
 
 import { Layout } from "../components/Layout";
 
 import { DataGrid } from "../components/DataGrid";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { useNavigate } from "react-router-dom";
 
 
 
 export function OrdersCheckIn() {
+  
   const { auth } = useContext(AuthContext);
+  
+  const navigate = useNavigate()
   const { setMessage, setOpenMessage, setSeverity } =
     useContext(MessageContext);
   // clients import
@@ -48,10 +52,10 @@ export function OrdersCheckIn() {
     defaultData: {},
     rules: {},
   });
-  
-//suppliers imports
-const { post, put, destroy, putMassive } = useApi(SUPPLIER_URL)
-const { suppliers, setSuppliers, loadingSuppliers, setLoadingSuppliers } = useSuppliers()
+
+  //suppliers imports
+  const { post, put, destroy, putMassive } = useApi(SUPPLIER_URL)
+  const { suppliers, setSuppliers, loadingSuppliers, setLoadingSuppliers } = useSuppliers()
 
 
   const [open, setOpen] = useState(null);
@@ -59,14 +63,14 @@ const { suppliers, setSuppliers, loadingSuppliers, setLoadingSuppliers } = useSu
   const [users, setUsers] = useState([]);
 
   useEffect(() => {
-    if (auth?.user.role.name !== "ADMINISTRADOR") navigate("/productos");
+    if (auth?.user.role !== "ADMINISTRADOR") navigate("/productos");
   }, []);
 
   useEffect(() => {
     (async () => {
       const { status, data } = await getUsers();
       if (status === 200) {
-        setUsers(data);
+        setUsers(data[0]);
         setLoadingUsers(false);
       }
     })();
@@ -76,7 +80,7 @@ const { suppliers, setSuppliers, loadingSuppliers, setLoadingSuppliers } = useSu
     (async () => {
       const { status, data } = await get();
       if (status === 200) {
-        setClients(data);
+        setClients(data[0]);
         setLoadingClients(false);
       }
     })();
@@ -106,14 +110,13 @@ const { suppliers, setSuppliers, loadingSuppliers, setLoadingSuppliers } = useSu
     }
   }
 
-
   const headCells = [
     {
-        id: 'order',
-        numeric: true,
-        disablePadding: false,
-        label: 'Orden',
-        accessor: 'order'
+      id: 'order',
+      numeric: true,
+      disablePadding: false,
+      label: 'Orden',
+      accessor: 'order'
     },
     {
       id: 'code',
@@ -121,13 +124,13 @@ const { suppliers, setSuppliers, loadingSuppliers, setLoadingSuppliers } = useSu
       disablePadding: false,
       label: 'Cod.',
       accessor: 'code'
-  },
+    },
     {
-        id: 'product',
-        numeric: false,
-        disablePadding: true,
-        label: 'Producto',
-        accessor: 'product'
+      id: 'product',
+      numeric: false,
+      disablePadding: true,
+      label: 'Producto',
+      accessor: 'product'
     },
     {
       id: 'current_stock',
@@ -135,21 +138,21 @@ const { suppliers, setSuppliers, loadingSuppliers, setLoadingSuppliers } = useSu
       disablePadding: true,
       label: 'Stock Actual',
       accessor: 'current_stock'
-  },
-  {
-    id: 'amount',
-    numeric: false,
-    disablePadding: true,
-    label: 'Cantidad',
-    accessor: 'amount'
-},
-]
+    },
+    {
+      id: 'amount',
+      numeric: false,
+      disablePadding: true,
+      label: 'Cantidad',
+      accessor: 'amount'
+    },
+  ]
 
 
   return (
     <Layout title="Ingreso de Pedidos">
 
-        {/* product search */}
+      {/* product search */}
       <Box className="w-[100%] mb-3 px-2 py-4 bg-white rounded-md">
         <Typography
           variant="h6"
@@ -164,7 +167,7 @@ const { suppliers, setSuppliers, loadingSuppliers, setLoadingSuppliers } = useSu
             fontWeight: "bold",
           }}
         >
-        Buscar Pedido
+          Buscar Pedido
         </Typography>
 
         {loadingClients || loadingUsers ? (
@@ -173,35 +176,35 @@ const { suppliers, setSuppliers, loadingSuppliers, setLoadingSuppliers } = useSu
           </Box>
         ) : (
           <form onChange={handleChange} onSubmit={handleSubmit}
-          className="w-[50%] flex items-center justify-start"
+            className="w-[50%] flex items-center justify-start"
           >
 
-             <Box 
-        sx={{ display: "flex", alignItems: "center",flexDirection: "column", justifyContent: "start", gap: 1 }}>
-        
-            {/* search input */}
-            <FormControl variant="standard" sx={{
-                    minWidth: "100%",
-                    color: "#59656b",
-                    display: "flex",                    alignItems: "start",
-                    justifyContent: "start",
-                    marginTop: "2rem"
-                }}>
-              <Box
-              className="w-[100%] flex items-center justify-around gap-2"
-              >
-              <InputLabel id="demo-simple-select-standard-label"
-                className="w-[50%] font-semibold text-gray-400 text-sm"
+            <Box
+              sx={{ display: "flex", alignItems: "center", flexDirection: "column", justifyContent: "start", gap: 1 }}>
+
+              {/* search input */}
+              <FormControl variant="standard" sx={{
+                minWidth: "100%",
+                color: "#59656b",
+                display: "flex", alignItems: "start",
+                justifyContent: "start",
+                marginTop: "2rem"
+              }}>
+                <Box
+                  className="w-[100%] flex items-center justify-around gap-2"
                 >
-                  Pedidos nro:
-                </InputLabel>
-                <Input
-                className="w-[100%] flex items-center justify-start"
-                type="number"/>
-                 <Button variant="contained" size="small">
-                  Buscar
-                </Button>
-              </Box>
+                  <InputLabel id="demo-simple-select-standard-label"
+                    className="w-[50%] font-semibold text-gray-400 text-sm"
+                  >
+                    Pedidos nro:
+                  </InputLabel>
+                  <Input
+                    className="w-[100%] flex items-center justify-start"
+                    type="number" />
+                  <Button variant="contained" size="small">
+                    Buscar
+                  </Button>
+                </Box>
               </FormControl>
             </Box>
 
@@ -224,38 +227,38 @@ const { suppliers, setSuppliers, loadingSuppliers, setLoadingSuppliers } = useSu
             fontWeight: "bold",
           }}
         >
-        Datos del Pedido
+          Datos del Pedido
         </Typography>
 
-          <form onChange={handleChange} onSubmit={handleSubmit}
+        <form onChange={handleChange} onSubmit={handleSubmit}
           className="w-[100%] flex items-center justify-start"
+        >
+          {/* search input */}
+          <Box
+            className="w-[50%] flex items-center justify-start gap-6"
           >
-            {/* search input */}  
-              <Box
-              className="w-[50%] flex items-center justify-start gap-6"
-              >
-             <FormControl
-             className="w-[50%] mt-4"
-             >
-             <InputLabel id="demo-simple-select-standard-label"
+            <FormControl
+              className="w-[50%] mt-4"
+            >
+              <InputLabel id="demo-simple-select-standard-label"
                 className="font-semibold text-gray-400 text-sm flex items-center justify-start"
-                >
-                  Estado
-                </InputLabel>
-                <Input
+              >
+                Estado
+              </InputLabel>
+              <Input
                 className="w-[100%] flex items-center justify-start"
-                type="text"/>
-             </FormControl>
+                type="text" />
+            </FormControl>
             {/* reception date */}
             <Box className="w-[50%] flex flex-col mt-4">
-                 <LocalizationProvider dateAdapter={AdapterDayjs}>
-                 <DatePicker
-                 label="Fecha Recepción"
-                 />
-                 </LocalizationProvider>
-                </Box>
-              </Box> 
-          </form>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DatePicker
+                  label="Fecha Recepción"
+                />
+              </LocalizationProvider>
+            </Box>
+          </Box>
+        </form>
       </Box>
 
       {/* seller details */}
@@ -273,40 +276,40 @@ const { suppliers, setSuppliers, loadingSuppliers, setLoadingSuppliers } = useSu
             fontWeight: "bold",
           }}
         >
-        Datos del Vendedor
+          Datos del Vendedor
         </Typography>
 
-          <form onChange={handleChange} onSubmit={handleSubmit}
+        <form onChange={handleChange} onSubmit={handleSubmit}
           className="w-[100%] flex items-center justify-start"
+        >
+          <Box
+            className="w-[50%] flex items-center justify-start mt-4 gap-2"
           >
-             <Box
-             className="w-[50%] flex items-center justify-start mt-4 gap-2"
-             >
-              {/* lastname */}
+            {/* lastname */}
             <FormControl className="w-[50%]">
-            <InputLabel id="demo-simple-select-standard-label"
+              <InputLabel id="demo-simple-select-standard-label"
                 className="font-semibold text-gray-400 text-sm flex items-center justify-start"
-                >
-                  Apellidos
-                </InputLabel>
-                <Input
+              >
+                Apellidos
+              </InputLabel>
+              <Input
                 className="w-[100%] flex items-center justify-start"
-                type="text"/>
+                type="text" />
             </FormControl>
-                {/* name */}
-                <FormControl className="w-[50%]">
-                <InputLabel id="demo-simple-select-standard-label"
+            {/* name */}
+            <FormControl className="w-[50%]">
+              <InputLabel id="demo-simple-select-standard-label"
                 className="font-semibold text-gray-400 text-sm flex items-center justify-start"
-                >
-                  Nombres
-                </InputLabel>
-                <Input
+              >
+                Nombres
+              </InputLabel>
+              <Input
                 className="w-[100%] flex items-center justify-start"
-                type="text"/>
-                </FormControl>
-             </Box>
-           
-          </form>
+                type="text" />
+            </FormControl>
+          </Box>
+
+        </form>
       </Box>
 
       {/* provider details */}
@@ -324,40 +327,40 @@ const { suppliers, setSuppliers, loadingSuppliers, setLoadingSuppliers } = useSu
             fontWeight: "bold",
           }}
         >
-        Datos del Proveedor
+          Datos del Proveedor
         </Typography>
 
-          <form onChange={handleChange} onSubmit={handleSubmit}
+        <form onChange={handleChange} onSubmit={handleSubmit}
           className="w-[100%] flex items-center justify-start"
+        >
+          <Box
+            className="w-[50%] flex items-center justify-start mt-4 gap-2"
           >
-             <Box
-             className="w-[50%] flex items-center justify-start mt-4 gap-2"
-             >
-              {/* supplier */}
+            {/* supplier */}
             <FormControl className="w-[50%]">
-            <InputLabel id="demo-simple-select-standard-label"
+              <InputLabel id="demo-simple-select-standard-label"
                 className="font-semibold text-gray-400 text-sm flex items-center justify-start"
-                >
-                  Proveedor
-                </InputLabel>
-                <Input
+              >
+                Proveedor
+              </InputLabel>
+              <Input
                 className="w-[100%] flex items-center justify-start"
-                type="text"/>
+                type="text" />
             </FormControl>
-                {/* supplier cod */}
-                <FormControl className="w-[50%]">
-                <InputLabel id="demo-simple-select-standard-label"
+            {/* supplier cod */}
+            <FormControl className="w-[50%]">
+              <InputLabel id="demo-simple-select-standard-label"
                 className="font-semibold text-gray-400 text-sm flex items-center justify-start"
-                >
-                  Razón Social
-                </InputLabel>
-                <Input
+              >
+                Razón Social
+              </InputLabel>
+              <Input
                 className="w-[100%] flex items-center justify-start"
-                type="text"/>
-                </FormControl>
-             </Box>
-           
-          </form>
+                type="text" />
+            </FormControl>
+          </Box>
+
+        </form>
       </Box>
 
       {/* details */}
@@ -375,38 +378,38 @@ const { suppliers, setSuppliers, loadingSuppliers, setLoadingSuppliers } = useSu
             fontWeight: "bold",
           }}
         >
-        Detalles
+          Detalles
         </Typography>
         <DataGrid
-                        headCells={headCells}
-                        rows={clients}
-                        setOpen={setOpen}
-                        setData={setFormData}
-                        contentHeader={
-                            <Box sx={{
-                                display: 'flex',
-                                flexWrap: 'wrap',
-                                alignItems: 'center',
-                                gap: 2
-                            }}>
-                                {/* <SaleFilter sales={sales} setSales={setSales} /> */}
-                            </Box>
-                        }
-                    >
-                        
-                    </DataGrid>
-          
+          headCells={headCells}
+          rows={clients}
+          setOpen={setOpen}
+          setData={setFormData}
+          contentHeader={
+            <Box sx={{
+              display: 'flex',
+              flexWrap: 'wrap',
+              alignItems: 'center',
+              gap: 2
+            }}>
+              {/* <SaleFilter sales={sales} setSales={setSales} /> */}
+            </Box>
+          }
+        >
+
+        </DataGrid>
+
       </Box>
-      
+
       {/* down button section */}
-     <Box className="w-[50%] flex items-center justify-start gap-2">
-     <Button variant="contained" size="medium">
-            confirmar
+      <Box className="w-[50%] flex items-center justify-start gap-2">
+        <Button variant="contained" size="medium">
+          confirmar
         </Button>
         <Button variant="outlined" size="medium">
-            cancelar
+          cancelar
         </Button>
-     </Box>
+      </Box>
     </Layout>
   );
 }

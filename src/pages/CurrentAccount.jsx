@@ -35,67 +35,6 @@ export function CurrentAccount() {
     rules: {},
   });
 
-  const [open, setOpen] = useState(null);
-
-  useEffect(() => {
-    (async () => {
-      const { status, data } = await get();
-      if (status === 200) {
-        setClients(data[0]);
-        setLoadingClients(false);
-      }
-    })();
-  }, []);
-
-  async function handleSubmit(e) {
-    e.preventDefault();
-    if (validate()) {
-      const { status, data } =
-        open === "NEW" ? await post(formData) : await put(formData);
-      if (status === 200) {
-        if (open === "NEW") {
-          setClients([data, ...clients]);
-          setMessage("Cliente creado correctamente.");
-        } else {
-          setClients([data, ...clients.filter((c) => c.id !== formData.id)]);
-          setMessage("Cliente editado correctamente.");
-        }
-        setSeverity("success");
-        reset(setOpen);
-      } else {
-        setMessage(data.message);
-        setSeverity("error");
-        setDisabled(false);
-      }
-      setOpenMessage(true);
-    }
-  }
-
-  async function handleDelete(elements) {
-    setLoadingClients(true);
-    const result = await Promise.all(elements.map((e) => destroy(e)));
-    if (result.every((r) => r.status === 200)) {
-      const ids = result.map((r) => r.data.id);
-      setClients([...clients.filter((c) => !ids.includes(c.id))]);
-      setMessage(
-        `${
-          result.length === 1 ? "Cliente eliminado" : "Clientes eliminados"
-        } correctamente.`
-      );
-      setSeverity("success");
-    } else {
-      if (result.some((r) => r.status === 300)) {
-        setMessage("Existen clientes con datos asociados.");
-      } else {
-        setMessage("Ocurrió un error. Actualice la página.");
-      }
-      setSeverity("error");
-    }
-    setOpenMessage(true);
-    setLoadingClients(false);
-    setOpen(null);
-  }
-
   const headCells = [
     {
       id: "cta-cte",
@@ -185,9 +124,7 @@ export function CurrentAccount() {
                   },
                 ]
           }
-          rows={clients}
-          setOpen={setOpen}
-          setData={setFormData}
+          rows={[]}
           contentHeader={
             <Box
               sx={{
@@ -198,14 +135,13 @@ export function CurrentAccount() {
               }}
             >
               <Box sx={{ display: "flex", gap: 1 }}>
-                <Button variant="outlined" onClick={() => setOpen("NEW")}>
+                <Button variant="outlined">
                   Agregar
                 </Button>
                 <Button variant="outlined" color="success">
                   Excel
                 </Button>
               </Box>
-              <ClientFilter clients={clients} setClients={setClients} />
             </Box>
           }
         ></DataGrid>

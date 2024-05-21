@@ -8,7 +8,7 @@ import { AuthProvider } from "./providers/AuthProvider";
 
 import { Login } from "./pages/Login";
 import { Clients } from './pages/Clients'
-import { Visits } from "./pages/Visits";
+// import { Visits } from "./pages/Visits";
 import { AccountsReport } from "./pages/AccountsReport";
 import { Users } from './pages/Users'
 import { Suppliers } from "./pages/Suppliers";
@@ -58,7 +58,7 @@ function App() {
               <Route path="/" element={<Login />} />
               <Route path="/login" element={<Login />} />
               <Route path="/clientes" element={<Clients />} />
-              <Route path="/visitas" element={<Visits />} />
+              {/* <Route path="/visitas" element={<Visits />} /> */}
               <Route path="/cta-cte" element={<CurrentAccount />} />
               <Route path="/reporte-cta-cte" element={<AccountsReport />} />
               <Route path="/clientes-vendedor" element={<ClientsBySeller />} />

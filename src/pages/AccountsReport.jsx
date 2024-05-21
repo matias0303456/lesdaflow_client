@@ -18,16 +18,17 @@ import { useForm } from "../hooks/useForm";
 import { useClients } from "../hooks/useClients";
 
 import { Layout } from "../components/Layout";
+import { useNavigate } from "react-router-dom";
 
 export function AccountsReport() {
+
   const { auth } = useContext(AuthContext);
+
+  const navigate = useNavigate()
   const { setMessage, setOpenMessage, setSeverity } =
     useContext(MessageContext);
   // clients import
   const { get, post, put } = useApi(CLIENT_URL);
-  const { clients, setClients, loadingClients, setLoadingClients } =
-    useClients();
-  // users import
   const { get: getUsers } = useApi(USER_URL);
 
   const {
@@ -47,54 +48,11 @@ export function AccountsReport() {
   const [open, setOpen] = useState(null);
   const [loadingUsers, setLoadingUsers] = useState(true);
   const [users, setUsers] = useState([]);
+  const {clients, loadingClients} = useClients()
 
   useEffect(() => {
-    if (auth?.user.role.name !== "ADMINISTRADOR") navigate("/productos");
+    if (auth?.user.role !== "ADMINISTRADOR") navigate("/clientes");
   }, []);
-
-  useEffect(() => {
-    (async () => {
-      const { status, data } = await getUsers();
-      if (status === 200) {
-        setUsers(data);
-        setLoadingUsers(false);
-      }
-    })();
-  }, []);
-
-  useEffect(() => {
-    (async () => {
-      const { status, data } = await get();
-      if (status === 200) {
-        setClients(data);
-        setLoadingClients(false);
-      }
-    })();
-  }, []);
-
-  async function handleSubmit(e) {
-    e.preventDefault();
-    if (validate()) {
-      const { status, data } =
-        open === "NEW" ? await post(formData) : await put(formData);
-      if (status === 200) {
-        if (open === "NEW") {
-          setClients([data, ...clients]);
-          setMessage("Cliente creado correctamente.");
-        } else {
-          setClients([data, ...clients.filter((c) => c.id !== formData.id)]);
-          setMessage("Cliente editado correctamente.");
-        }
-        setSeverity("success");
-        reset(setOpen);
-      } else {
-        setMessage(data.message);
-        setSeverity("error");
-        setDisabled(false);
-      }
-      setOpenMessage(true);
-    }
-  }
 
   return (
     <Layout title="Reporte Cuenta Corriente">
@@ -116,12 +74,12 @@ export function AccountsReport() {
           Informacion General
         </Typography>
 
-        {loadingClients || loadingUsers ? (
+        {loadingClients ? (
           <Box sx={{ width: "100%" }}>
             <LinearProgress />
           </Box>
         ) : (
-          <form onChange={handleChange} onSubmit={handleSubmit}>
+          <form onChange={handleChange}>
             <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
               {/* vendor select */}
               <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>

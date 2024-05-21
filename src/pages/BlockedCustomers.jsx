@@ -22,13 +22,17 @@ import { useClients } from "../hooks/useClients";
 
 import { Layout } from "../components/Layout";
 import dayjs from 'dayjs';
+import { useNavigate } from "react-router-dom";
 //    date data
 const today = dayjs();
 const tomorrow = dayjs().add(1, 'day');
 
 
 export function BlockedCustomers() {
+
   const { auth } = useContext(AuthContext);
+  
+  const navigate = useNavigate()
   const { setMessage, setOpenMessage, setSeverity } =
     useContext(MessageContext);
   // clients import
@@ -57,14 +61,14 @@ export function BlockedCustomers() {
   const [users, setUsers] = useState([]);
 
   useEffect(() => {
-    if (auth?.user.role.name !== "ADMINISTRADOR") navigate("/productos");
+    if (auth?.user.role !== "ADMINISTRADOR") navigate("/productos");
   }, []);
 
   useEffect(() => {
     (async () => {
       const { status, data } = await getUsers();
       if (status === 200) {
-        setUsers(data);
+        setUsers(data[0]);
         setLoadingUsers(false);
       }
     })();
@@ -74,7 +78,7 @@ export function BlockedCustomers() {
     (async () => {
       const { status, data } = await get();
       if (status === 200) {
-        setClients(data);
+        setClients(data[0]);
         setLoadingClients(false);
       }
     })();
