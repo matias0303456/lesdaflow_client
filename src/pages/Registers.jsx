@@ -91,7 +91,7 @@ export function Registers() {
                     headCells={headCells}
                     rows={registers}
                     setOpen={setOpen}
-                    setData={setFormData}
+                    setFormData={setFormData}
                     showViewAction
                     showSettingsAction
                     contentHeader={<Box sx={{

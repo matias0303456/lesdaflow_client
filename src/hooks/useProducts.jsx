@@ -1,18 +1,19 @@
 import { useContext, useEffect, useState } from "react"
 
-import { useApi } from "./useApi"
 import { MessageContext } from "../providers/MessageProvider"
+import { DataContext } from "../providers/DataProvider"
+import { useApi } from "./useApi"
 
 import { PRODUCT_URL } from "../utils/urls"
 
 export function useProducts() {
 
+    const { state, dispatch } = useContext(DataContext)
     const { setMessage, setOpenMessage, setSeverity } = useContext(MessageContext)
 
     const { get, post, put, putMassive, destroy } = useApi(PRODUCT_URL)
 
     const [loadingProducts, setLoadingProducts] = useState(true)
-    const [products, setProducts] = useState([])
     const [open, setOpen] = useState(null)
     const [massiveEdit, setMassiveEdit] = useState([])
     const [earnPrice, setEarnPrice] = useState(0)
@@ -26,7 +27,10 @@ export function useProducts() {
     async function getProducts(params) {
         const { status, data } = await get(params)
         if (status === 200) {
-            setProducts(data[0])
+            dispatch({
+                type: 'PRODUCTS',
+                payload: { ...state.products, data: data[0], count: data[1] }
+            })
             setLoadingProducts(false)
         } else {
             setMessage(data.message)
@@ -41,10 +45,19 @@ export function useProducts() {
             const { status, data } = open === 'NEW' ? await post(formData) : await put(formData)
             if (status === 200) {
                 if (open === 'NEW') {
-                    setProducts([data, ...products])
+                    dispatch({ type: 'PRODUCTS', payload: { ...state.products, data: [data, ...state.products] } })
                     setMessage('Producto creado correctamente.')
                 } else {
-                    setProducts([data, ...products.filter(p => p.id !== formData.id)])
+                    dispatch({
+                        type: 'PRODUCTS',
+                        payload: {
+                            ...state.products,
+                            data: [
+                                data,
+                                ...state.products.filter(p => p.id !== formData.id)
+                            ]
+                        }
+                    })
                     setMessage('Producto editado correctamente.')
                 }
                 setSeverity('success')
@@ -61,13 +74,22 @@ export function useProducts() {
     async function handleSubmitMassive() {
         const body = {
             products: massiveEdit.map(me => {
-                const product = products.find(p => p.id === me.product_id)
+                const product = state.products.find(p => p.id === me.product_id)
                 return { ...me, buy_price: product.buy_price }
             })
         }
         const { status, data } = await putMassive(body)
         if (status === 200) {
-            setProducts([...data, ...products.filter(p => !data.map(d => d.id).includes(p.id))])
+            dispatch({
+                type: 'PRODUCTS',
+                payload: {
+                    ...state.products,
+                    data: [
+                        data,
+                        ...state.products.filter(p => !data.map(d => d.id).includes(p.id))
+                    ]
+                }
+            })
             setMessage('Precios actualizados correctamente.')
             setSeverity('success')
             setMassiveEdit([])
@@ -82,7 +104,16 @@ export function useProducts() {
         setLoadingProducts(true)
         const { status, data } = await destroy(formData)
         if (status === 200) {
-            setProducts([...products.filter(p => p.id !== data.id)])
+            dispatch({
+                type: 'PRODUCTS',
+                payload: {
+                    ...state.products,
+                    data: [
+                        data,
+                        ...state.products.filter(p => p.id !== data.id)
+                    ]
+                }
+            })
             setMessage('Producto eliminado correctamente.')
             setSeverity('success')
         } else {
@@ -99,8 +130,6 @@ export function useProducts() {
     }
 
     return {
-        products,
-        setProducts,
         loadingProducts,
         setLoadingProducts,
         open,

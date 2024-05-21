@@ -214,7 +214,7 @@ export function Orders() {
                     headCells={headCells}
                     rows={products}
                     setOpen={setOpen}
-                    setData={setFormData}
+                    setFormData={setFormData}
                     deadlineColor="pedidos"
                     contentHeader={
                         <Box sx={{

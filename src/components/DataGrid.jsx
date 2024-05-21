@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useContext } from 'react';
 import Box from '@mui/material/Box';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -21,6 +21,7 @@ import { SiMicrosoftexcel } from "react-icons/si";
 import CloseIcon from "@mui/icons-material/Close";
 
 import { deadlineIsPast, getStock } from '../utils/helpers';
+import { DataContext } from '../providers/DataProvider';
 
 function descendingComparator(a, b, orderBy, sorter) {
   if ((b[orderBy] ? b[orderBy] : sorter(b)) < (a[orderBy] ? a[orderBy] : sorter(a))) {
@@ -100,7 +101,8 @@ export function DataGrid({
   headCells,
   rows,
   setOpen,
-  setData,
+  setFormData,
+  entityKey,
   contentHeader,
   deadlineColor = false,
   disableSorting = false,
@@ -113,14 +115,13 @@ export function DataGrid({
   showPDFAction = false,
   showExcelAction = false,
   openPdfUrl = '',
-  openExcelUrl = '',
-  getter = undefined
+  openExcelUrl = ''
 }) {
+
+  const { state, dispatch } = useContext(DataContext)
 
   const [order, setOrder] = useState(defaultOrder);
   const [orderBy, setOrderBy] = useState(defaultOrderBy);
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
 
   const handleRequestSort = (event, property) => {
     if (disableSorting) return
@@ -130,32 +131,27 @@ export function DataGrid({
   };
 
   const handleChangePage = (event, newPage) => {
-    setPage(newPage);
+    dispatch({
+      type: entityKey.toUpperCase(),
+      payload: { ...state[entityKey.toLowerCase()], page: newPage }
+    })
   };
 
   const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
+    dispatch({
+      type: entityKey.toUpperCase(),
+      payload: { ...state[entityKey.toLowerCase()], page: 0, offset: parseInt(event.target.value, 10) }
+    })
   };
-
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
 
   const visibleRows = useMemo(
     () =>
       stableSort(rows, getComparator(order, orderBy, headCells.find(hc => hc.id === orderBy)?.sorter)).slice(
-        page * rowsPerPage,
-        page * rowsPerPage + rowsPerPage,
+        state[entityKey].page * state[entityKey].offset,
+        state[entityKey].page * state[entityKey].offset + state[entityKey].offset,
       ),
-    [order, orderBy, page, rowsPerPage, rows],
+    [order, orderBy, state[entityKey].page, state[entityKey].offset, rows],
   );
-
-  useEffect(() => {
-    if (page > 0 && getter) getter(`?page=${page}&offset=${rowsPerPage}`)
-  }, [page, rowsPerPage])
-
-  useEffect(() => {
-    console.log(rows)
-  }, [rows])
 
   return (
     <div className='gridContainer'>
@@ -225,7 +221,7 @@ export function DataGrid({
                                 <Tooltip
                                   title="Visualizar"
                                   onClick={() => {
-                                    if (setData) setData(rows.find((r) => r.id === row.id));
+                                    if (setFormData) setFormData(rows.find((r) => r.id === row.id));
                                     if (setOpen) setOpen("VIEW");
                                   }}
                                 >
@@ -238,7 +234,7 @@ export function DataGrid({
                                 <Tooltip
                                   title="Editar"
                                   onClick={() => {
-                                    if (setData) setData(rows.find((r) => r.id === row.id));
+                                    if (setFormData) setFormData(rows.find((r) => r.id === row.id));
                                     if (setOpen) setOpen("EDIT");
                                   }}
                                 >
@@ -251,7 +247,7 @@ export function DataGrid({
                                 <Tooltip
                                   title="Borrar"
                                   onClick={() => {
-                                    if (setData) setData(rows.find((r) => r.id === row.id));
+                                    if (setFormData) setFormData(rows.find((r) => r.id === row.id));
                                     if (setOpen) setOpen("DELETE");
                                   }}
                                 >
@@ -267,7 +263,7 @@ export function DataGrid({
                                 <Tooltip
                                   title="Configuracion"
                                   onClick={() => {
-                                    if (setData) setData(rows.find((r) => r.id === row.id));
+                                    if (setFormData) setFormData(rows.find((r) => r.id === row.id));
                                     if (setOpen) setOpen("SETTINGS");
                                   }}
                                 >
@@ -327,22 +323,17 @@ export function DataGrid({
                     </TableRow>
                   )
                 }
-                {emptyRows > 0 && (
-                  <TableRow style={{ height: 33 * emptyRows }}>
-                    <TableCell colSpan={6} />
-                  </TableRow>
-                )}
               </TableBody>
             </Table>
           </TableContainer>
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={rows.length}
-            rowsPerPage={rowsPerPage}
+            count={state[entityKey].count}
+            rowsPerPage={state[entityKey].offset}
             labelRowsPerPage="Registros por página"
-            labelDisplayedRows={({ from, to, count }) => `${from}–${to} de ${count}`}
-            page={page}
+            labelDisplayedRows={({ from, to }) => `${from}–${to} de ${state[entityKey].count}`}
+            page={state[entityKey].page}
             onPageChange={handleChangePage}
             onRowsPerPageChange={handleChangeRowsPerPage}
           />

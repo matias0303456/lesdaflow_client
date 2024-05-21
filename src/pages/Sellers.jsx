@@ -120,7 +120,7 @@ export function Sellers() {
                     headCells={headCells}
                     rows={sellers}
                     setOpen={setOpen}
-                    setData={setFormData}
+                    setFormData={setFormData}
                     showEditAction
                     showDeleteAction
                     showViewAction

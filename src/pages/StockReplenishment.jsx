@@ -102,7 +102,7 @@ export function StockReplenishment() {
           headCells={headCells}
           rows={[]}
           setOpen={setOpen}
-          setData={setFormData}
+          setFormData={setFormData}
           contentHeader={
             <Box
               sx={{

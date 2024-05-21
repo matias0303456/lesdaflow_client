@@ -170,7 +170,7 @@ export function Roles() {
           headCells={headCells}
           rows={roles}
           setOpen={setOpen}
-          setData={setFormData}
+          setFormData={setFormData}
           showViewAction
           showEditAction
           showDeleteAction

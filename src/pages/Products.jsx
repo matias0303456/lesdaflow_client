@@ -1,6 +1,7 @@
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { Box, Button, Checkbox, FormControl, FormControlLabel, Input, InputLabel, LinearProgress, MenuItem, Paper, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
 
+import { DataContext } from "../providers/DataProvider";
 import { useProducts } from '../hooks/useProducts'
 import { useSuppliers } from "../hooks/useSuppliers";
 import { useForm } from "../hooks/useForm";
@@ -14,8 +15,9 @@ import { getNewPrice, getStock } from "../utils/helpers";
 
 export function Products() {
 
+    const { state } = useContext(DataContext)
+
     const {
-        products,
         loadingProducts,
         setEarnPrice,
         open,
@@ -148,10 +150,10 @@ export function Products() {
                 </Box> :
                 <DataGrid
                     headCells={headCells}
-                    rows={products}
+                    rows={state.products.data}
                     setOpen={setOpen}
-                    setData={setFormData}
-                    getter={getProducts}
+                    setFormData={setFormData}
+                    entityKey="products"
                     deadlineColor="products"
                     showDeleteAction
                     showViewAction

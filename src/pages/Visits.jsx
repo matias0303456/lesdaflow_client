@@ -182,7 +182,7 @@ export function Visits() {
           }
           rows={clients}
           setOpen={setOpen}
-          setData={setFormData}
+          setFormData={setFormData}
           contentHeader={
             <Box
               sx={{

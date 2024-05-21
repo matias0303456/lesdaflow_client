@@ -172,7 +172,7 @@ export function Payments({ sale, setSale, loading, setLoading }) {
                         open={open}
                         setOpen={setOpen}
                         data={formData}
-                        setData={setFormData}
+                        setFormData={setFormData}
                         handleDelete={handleDelete}
                         defaultOrder="asc"
                         disableSorting

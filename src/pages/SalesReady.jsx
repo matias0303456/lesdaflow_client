@@ -228,7 +228,7 @@ export function SalesReady() {
             headCells={headCells}
             rows={suppliers}
             setOpen={setOpen}
-            setData={setFormData}
+            setFormData={setFormData}
             contentHeader={
               <Box
                 sx={{

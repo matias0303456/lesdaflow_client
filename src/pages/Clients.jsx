@@ -139,7 +139,7 @@ export function Clients() {
                     }
                     rows={clients}
                     setOpen={setOpen}
-                    setData={setFormData}
+                    setFormData={setFormData}
                     showEditAction
                     showDeleteAction
                     showViewAction

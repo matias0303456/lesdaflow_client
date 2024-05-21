@@ -186,7 +186,7 @@ export function Users() {
           headCells={headCells}
           rows={users}
           setOpen={setOpen}
-          setData={setFormData}
+          setFormData={setFormData}
           showEditAction
           showDeleteAction
           showViewAction

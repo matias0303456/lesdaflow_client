@@ -175,7 +175,7 @@ export function Sales() {
                     headCells={headCells}
                     rows={sales}
                     setOpen={setOpen}
-                    setData={setFormData}
+                    setFormData={setFormData}
                     showEditAction
                     showViewAction
                     showDeleteAction
