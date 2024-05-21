@@ -153,6 +153,10 @@ export function DataGrid({
     if (page > 0 && getter) getter(`?page=${page}&offset=${rowsPerPage}`)
   }, [page, rowsPerPage])
 
+  useEffect(() => {
+    console.log(rows)
+  }, [rows])
+
   return (
     <div className='gridContainer'>
       <Box sx={{ width: '100%', backgroundColor: '#fff', padding: 1 }}>

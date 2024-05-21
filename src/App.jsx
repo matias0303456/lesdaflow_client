@@ -5,6 +5,7 @@ import { createTheme, ThemeProvider } from "@mui/material";
 
 import { MessageProvider } from "./providers/MessageProvider";
 import { AuthProvider } from "./providers/AuthProvider";
+import { DataProvider } from "./providers/DataProvider";
 
 import { Login } from "./pages/Login";
 import { Clients } from './pages/Clients'
@@ -50,54 +51,56 @@ function App() {
 
   return (
     <ThemeProvider theme={theme}>
-      <MessageProvider>
-        <AuthProvider>
-          <CssBaseline />
-          <BrowserRouter basename="distribuidora-mga">
-            <Routes>
-              <Route path="/" element={<Login />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/clientes" element={<Clients />} />
-              {/* <Route path="/visitas" element={<Visits />} /> */}
-              <Route path="/cta-cte" element={<CurrentAccount />} />
-              <Route path="/reporte-cta-cte" element={<AccountsReport />} />
-              <Route path="/clientes-vendedor" element={<ClientsBySeller />} />
-              <Route path="/usuarios" element={<Users />} />
-              {/* <Route path="/roles" element={<Roles />} /> */}
-              <Route path="/proveedores" element={<Suppliers />} />
-              <Route path="/vendedores" element={<Sellers />} />
-              <Route path="/ventas" element={<Sales />} />
-              <Route path="/ventas-busqueda" element={<SalesSearch />} />
-              <Route path="/reporte-ventas" element={<SalesReport />} />
-              <Route path="/prep-ventas" element={<SalesReady />} />
-              <Route path="/entrega-ventas" element={<SalesToDeliver />} />
-              <Route path="/productos" element={<Products />} />
-              <Route path="/lista-precios" element={<ProductsPriceList />} />
-              <Route path="/reporte-productos" element={<ProductsReport />} />
-              <Route
-                path="/producto-actualiza-precio-proveedor"
-                element={<UpdateProductPriceBySupplier />}
-              />
-              <Route
-                path="/reposicion-stock"
-                element={<StockReplenishment />}
-              />
-              <Route
-                path="/producto-actualiza-precio"
-                element={<UpdateProductPriceByProduct />}
-              />
-              <Route path="/pedidos" element={<Orders />} />
-              <Route path="/ingreso-pedidos" element={<OrdersCheckIn />} />
-              <Route path="/presupuestos" element={<Budgets />} />
-              <Route path="/movimientos-caja" element={<Registers />} />
-              <Route path="/reporte-movimientos-caja" element={<RegisterMovements />} />
-              <Route path="/reporte-movimientos-caja" element={<RegisterMovements />} />
-              <Route path="/reportes-clientes-bloqueados" element={<BlockedCustomers />} />
-              <Route path="*" element={<Error />} />
-            </Routes>
-          </BrowserRouter>
-        </AuthProvider>
-      </MessageProvider>
+      <DataProvider>
+        <MessageProvider>
+          <AuthProvider>
+            <CssBaseline />
+            <BrowserRouter basename="distribuidora-mga">
+              <Routes>
+                <Route path="/" element={<Login />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/clientes" element={<Clients />} />
+                {/* <Route path="/visitas" element={<Visits />} /> */}
+                <Route path="/cta-cte" element={<CurrentAccount />} />
+                <Route path="/reporte-cta-cte" element={<AccountsReport />} />
+                <Route path="/clientes-vendedor" element={<ClientsBySeller />} />
+                <Route path="/usuarios" element={<Users />} />
+                {/* <Route path="/roles" element={<Roles />} /> */}
+                <Route path="/proveedores" element={<Suppliers />} />
+                <Route path="/vendedores" element={<Sellers />} />
+                <Route path="/ventas" element={<Sales />} />
+                <Route path="/ventas-busqueda" element={<SalesSearch />} />
+                <Route path="/reporte-ventas" element={<SalesReport />} />
+                <Route path="/prep-ventas" element={<SalesReady />} />
+                <Route path="/entrega-ventas" element={<SalesToDeliver />} />
+                <Route path="/productos" element={<Products />} />
+                <Route path="/lista-precios" element={<ProductsPriceList />} />
+                <Route path="/reporte-productos" element={<ProductsReport />} />
+                <Route
+                  path="/producto-actualiza-precio-proveedor"
+                  element={<UpdateProductPriceBySupplier />}
+                />
+                <Route
+                  path="/reposicion-stock"
+                  element={<StockReplenishment />}
+                />
+                <Route
+                  path="/producto-actualiza-precio"
+                  element={<UpdateProductPriceByProduct />}
+                />
+                <Route path="/pedidos" element={<Orders />} />
+                <Route path="/ingreso-pedidos" element={<OrdersCheckIn />} />
+                <Route path="/presupuestos" element={<Budgets />} />
+                <Route path="/movimientos-caja" element={<Registers />} />
+                <Route path="/reporte-movimientos-caja" element={<RegisterMovements />} />
+                <Route path="/reporte-movimientos-caja" element={<RegisterMovements />} />
+                <Route path="/reportes-clientes-bloqueados" element={<BlockedCustomers />} />
+                <Route path="*" element={<Error />} />
+              </Routes>
+            </BrowserRouter>
+          </AuthProvider>
+        </MessageProvider>
+      </DataProvider>
     </ThemeProvider>
   );
 }
