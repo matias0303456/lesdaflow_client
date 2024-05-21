@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react"
+import { useContext, useState } from "react"
 
 import { MessageContext } from "../providers/MessageProvider"
 import { DataContext } from "../providers/DataProvider"
@@ -13,16 +13,9 @@ export function useProducts() {
 
     const { get, post, put, putMassive, destroy } = useApi(PRODUCT_URL)
 
-    const [loadingProducts, setLoadingProducts] = useState(true)
     const [open, setOpen] = useState(null)
     const [massiveEdit, setMassiveEdit] = useState([])
     const [earnPrice, setEarnPrice] = useState(0)
-
-    useEffect(() => {
-        (async () => {
-            getProducts()
-        })()
-    }, [])
 
     async function getProducts(params) {
         const { status, data } = await get(params)
@@ -31,7 +24,6 @@ export function useProducts() {
                 type: 'PRODUCTS',
                 payload: { ...state.products, data: data[0], count: data[1] }
             })
-            setLoadingProducts(false)
         } else {
             setMessage(data.message)
             setSeverity('error')
@@ -101,7 +93,6 @@ export function useProducts() {
     }
 
     async function handleDelete(formData) {
-        setLoadingProducts(true)
         const { status, data } = await destroy(formData)
         if (status === 200) {
             dispatch({
@@ -125,13 +116,10 @@ export function useProducts() {
             setSeverity('error')
         }
         setOpenMessage(true)
-        setLoadingProducts(false)
         setOpen(null)
     }
 
     return {
-        loadingProducts,
-        setLoadingProducts,
         open,
         setOpen,
         handleDelete,

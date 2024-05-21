@@ -144,7 +144,7 @@ export function Products() {
 
     return (
         <Layout title="Productos">
-            {loadingProducts || loadingSuppliers || disabled ?
+            {loadingSuppliers || disabled ?
                 <Box sx={{ width: '100%' }}>
                     <LinearProgress />
                 </Box> :
@@ -154,6 +154,7 @@ export function Products() {
                     setOpen={setOpen}
                     setFormData={setFormData}
                     entityKey="products"
+                    getter={getProducts}
                     deadlineColor="products"
                     showDeleteAction
                     showViewAction

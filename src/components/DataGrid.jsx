@@ -1,54 +1,54 @@
 /* eslint-disable react/prop-types */
-import { useState, useMemo, useContext } from 'react';
-import Box from '@mui/material/Box';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TablePagination from '@mui/material/TablePagination';
-import TableRow from '@mui/material/TableRow';
-import TableSortLabel from '@mui/material/TableSortLabel';
-import Paper from '@mui/material/Paper';
-import IconButton from '@mui/material/IconButton';
-import Tooltip from '@mui/material/Tooltip';
-import EditIcon from '@mui/icons-material/Edit';
-import SettingsIcon from "@mui/icons-material/Settings";
-import { visuallyHidden } from '@mui/utils';
-import SearchSharpIcon from '@mui/icons-material/SearchSharp';
-import PictureAsPdfSharpIcon from '@mui/icons-material/PictureAsPdfSharp';
-import { SiMicrosoftexcel } from "react-icons/si";
-import CloseIcon from "@mui/icons-material/Close";
+import { useState, useMemo, useContext, useEffect } from 'react'
+import Box from '@mui/material/Box'
+import Table from '@mui/material/Table'
+import TableBody from '@mui/material/TableBody'
+import TableCell from '@mui/material/TableCell'
+import TableContainer from '@mui/material/TableContainer'
+import TableHead from '@mui/material/TableHead'
+import TablePagination from '@mui/material/TablePagination'
+import TableRow from '@mui/material/TableRow'
+import TableSortLabel from '@mui/material/TableSortLabel'
+import Paper from '@mui/material/Paper'
+import IconButton from '@mui/material/IconButton'
+import Tooltip from '@mui/material/Tooltip'
+import EditIcon from '@mui/icons-material/Edit'
+import SettingsIcon from "@mui/icons-material/Settings"
+import { visuallyHidden } from '@mui/utils'
+import SearchSharpIcon from '@mui/icons-material/SearchSharp'
+import PictureAsPdfSharpIcon from '@mui/icons-material/PictureAsPdfSharp'
+import { SiMicrosoftexcel } from "react-icons/si"
+import CloseIcon from "@mui/icons-material/Close"
 
-import { deadlineIsPast, getStock } from '../utils/helpers';
-import { DataContext } from '../providers/DataProvider';
+import { deadlineIsPast, getStock } from '../utils/helpers'
+import { DataContext } from '../providers/DataProvider'
 
 function descendingComparator(a, b, orderBy, sorter) {
   if ((b[orderBy] ? b[orderBy] : sorter(b)) < (a[orderBy] ? a[orderBy] : sorter(a))) {
-    return -1;
+    return -1
   }
   if ((b[orderBy] ? b[orderBy] : sorter(b)) > (a[orderBy] ? a[orderBy] : sorter(a))) {
-    return 1;
+    return 1
   }
-  return 0;
+  return 0
 }
 
 function getComparator(order, orderBy, sorter) {
   return order === 'desc'
     ? (a, b) => descendingComparator(a, b, orderBy, sorter)
-    : (a, b) => -descendingComparator(a, b, orderBy, sorter);
+    : (a, b) => -descendingComparator(a, b, orderBy, sorter)
 }
 
 function stableSort(array, comparator) {
-  const stabilizedThis = array.map((el, index) => [el, index]);
+  const stabilizedThis = array.map((el, index) => [el, index])
   stabilizedThis.sort((a, b) => {
-    const order = comparator(a[0], b[0]);
+    const order = comparator(a[0], b[0])
     if (order !== 0) {
-      return order;
+      return order
     }
-    return a[1] - b[1];
-  });
-  return stabilizedThis.map((el) => el[0]);
+    return a[1] - b[1]
+  })
+  return stabilizedThis.map((el) => el[0])
 }
 
 function EnhancedTableHead({
@@ -60,8 +60,8 @@ function EnhancedTableHead({
 }) {
 
   const createSortHandler = (property) => (event) => {
-    onRequestSort(event, property);
-  };
+    onRequestSort(event, property)
+  }
 
   return (
     <TableHead>
@@ -93,7 +93,7 @@ function EnhancedTableHead({
         ))}
       </TableRow>
     </TableHead>
-  );
+  )
 }
 
 export function DataGrid({
@@ -103,6 +103,7 @@ export function DataGrid({
   setOpen,
   setFormData,
   entityKey,
+  getter,
   contentHeader,
   deadlineColor = false,
   disableSorting = false,
@@ -120,38 +121,38 @@ export function DataGrid({
 
   const { state, dispatch } = useContext(DataContext)
 
-  const [order, setOrder] = useState(defaultOrder);
-  const [orderBy, setOrderBy] = useState(defaultOrderBy);
+  const [order, setOrder] = useState(defaultOrder)
+  const [orderBy, setOrderBy] = useState(defaultOrderBy)
 
   const handleRequestSort = (event, property) => {
     if (disableSorting) return
-    const isAsc = orderBy === property && order === 'asc';
-    setOrder(isAsc ? 'desc' : 'asc');
-    setOrderBy(property);
-  };
+    const isAsc = orderBy === property && order === 'asc'
+    setOrder(isAsc ? 'desc' : 'asc')
+    setOrderBy(property)
+  }
 
   const handleChangePage = (event, newPage) => {
     dispatch({
       type: entityKey.toUpperCase(),
       payload: { ...state[entityKey.toLowerCase()], page: newPage }
     })
-  };
+  }
 
   const handleChangeRowsPerPage = (event) => {
     dispatch({
       type: entityKey.toUpperCase(),
       payload: { ...state[entityKey.toLowerCase()], page: 0, offset: parseInt(event.target.value, 10) }
     })
-  };
+  }
 
   const visibleRows = useMemo(
-    () =>
-      stableSort(rows, getComparator(order, orderBy, headCells.find(hc => hc.id === orderBy)?.sorter)).slice(
-        state[entityKey].page * state[entityKey].offset,
-        state[entityKey].page * state[entityKey].offset + state[entityKey].offset,
-      ),
-    [order, orderBy, state[entityKey].page, state[entityKey].offset, rows],
-  );
+    () => stableSort(rows, getComparator(order, orderBy, headCells.find(hc => hc.id === orderBy)?.sorter)),
+    [order, orderBy, state[entityKey].page, state[entityKey].offset, rows, headCells]
+  )
+
+  useEffect(() => {
+    getter(`?page=${state[entityKey].page}&offset=${state[entityKey].offset}`)
+  }, [state[entityKey].page, state[entityKey].offset])
 
   return (
     <div className='gridContainer'>
@@ -221,8 +222,8 @@ export function DataGrid({
                                 <Tooltip
                                   title="Visualizar"
                                   onClick={() => {
-                                    if (setFormData) setFormData(rows.find((r) => r.id === row.id));
-                                    if (setOpen) setOpen("VIEW");
+                                    if (setFormData) setFormData(rows.find((r) => r.id === row.id))
+                                    if (setOpen) setOpen("VIEW")
                                   }}
                                 >
                                   <IconButton className="rounded-full bg-black/20 opacity-50 hover:bg-[#288bcd] hover:text-white">
@@ -234,8 +235,8 @@ export function DataGrid({
                                 <Tooltip
                                   title="Editar"
                                   onClick={() => {
-                                    if (setFormData) setFormData(rows.find((r) => r.id === row.id));
-                                    if (setOpen) setOpen("EDIT");
+                                    if (setFormData) setFormData(rows.find((r) => r.id === row.id))
+                                    if (setOpen) setOpen("EDIT")
                                   }}
                                 >
                                   <IconButton className="rounded-full bg-black/20 opacity-50 hover:bg-[#288bcd] hover:text-white">
@@ -247,8 +248,8 @@ export function DataGrid({
                                 <Tooltip
                                   title="Borrar"
                                   onClick={() => {
-                                    if (setFormData) setFormData(rows.find((r) => r.id === row.id));
-                                    if (setOpen) setOpen("DELETE");
+                                    if (setFormData) setFormData(rows.find((r) => r.id === row.id))
+                                    if (setOpen) setOpen("DELETE")
                                   }}
                                 >
                                   <IconButton
@@ -263,8 +264,8 @@ export function DataGrid({
                                 <Tooltip
                                   title="Configuracion"
                                   onClick={() => {
-                                    if (setFormData) setFormData(rows.find((r) => r.id === row.id));
-                                    if (setOpen) setOpen("SETTINGS");
+                                    if (setFormData) setFormData(rows.find((r) => r.id === row.id))
+                                    if (setOpen) setOpen("SETTINGS")
                                   }}
                                 >
                                   <IconButton
@@ -306,7 +307,7 @@ export function DataGrid({
                               </TableCell>
                             ))}
                         </TableRow>
-                      );
+                      )
                     })
                   ) : (
                     <TableRow>
@@ -329,17 +330,24 @@ export function DataGrid({
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={state[entityKey].count}
+            count={-1}
             rowsPerPage={state[entityKey].offset}
             labelRowsPerPage="Registros por página"
             labelDisplayedRows={({ from, to }) => `${from}–${to} de ${state[entityKey].count}`}
             page={state[entityKey].page}
             onPageChange={handleChangePage}
             onRowsPerPageChange={handleChangeRowsPerPage}
+            slotProps={{
+              actions: {
+                nextButton: {
+                  disabled: ((state[entityKey].page + 1) * state[entityKey].offset) >= state[entityKey].count
+                }
+              }
+            }}
           />
         </Paper>
         {children}
       </Box>
     </div>
-  );
+  )
 }

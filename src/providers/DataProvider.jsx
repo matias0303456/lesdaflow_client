@@ -24,73 +24,45 @@ const reducer = (state, action) => {
 const initialState = {
     'clients': {
         count: 0,
-        setCount: () => { },
         data: [],
-        setData: () => { },
         page: 0,
-        setPage: () => { },
-        offset: 5,
-        setOffset: () => { }
+        offset: 5
     },
     'products': {
         count: 0,
-        setCount: () => { },
         data: [],
-        setData: () => { },
         page: 0,
-        setPage: () => { },
-        offset: 5,
-        setOffset: () => { }
+        offset: 5
     },
     'sales': {
         count: 0,
-        setCount: () => { },
         data: [],
-        setData: () => { },
         page: 0,
-        setPage: () => { },
-        offset: 5,
-        setOffset: () => { }
+        offset: 5
     },
     'users': {
         count: 0,
-        setCount: () => { },
         data: [],
-        setData: () => { },
         page: 0,
-        setPage: () => { },
-        offset: 5,
-        setOffset: () => { }
+        offset: 5
     },
     'sellers': {
         count: 0,
-        setCount: () => { },
         data: [],
-        setData: () => { },
         page: 0,
-        setPage: () => { },
-        offset: 5,
-        setOffset: () => { }
+        offset: 5
     },
     'registers': {
         count: 0,
-        setCount: () => { },
         data: [],
-        setData: () => { },
         page: 0,
-        setPage: () => { },
-        offset: 5,
-        setOffset: () => { }
+        offset: 5
     },
     'suppliers': {
         count: 0,
-        setCount: () => { },
         data: [],
-        setData: () => { },
         page: 0,
-        setPage: () => { },
-        offset: 5,
-        setOffset: () => { }
+        offset: 5
     }
 }
 
