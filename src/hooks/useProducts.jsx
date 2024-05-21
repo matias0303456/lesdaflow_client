@@ -19,17 +19,21 @@ export function useProducts() {
 
     useEffect(() => {
         (async () => {
-            const { status, data } = await get()
-            if (status === 200) {
-                setProducts(data[0])
-                setLoadingProducts(false)
-            } else {
-                setMessage(data.message)
-                setSeverity('error')
-                setOpenMessage(true)
-            }
+            getProducts()
         })()
     }, [])
+
+    async function getProducts(params) {
+        const { status, data } = await get(params)
+        if (status === 200) {
+            setProducts(data[0])
+            setLoadingProducts(false)
+        } else {
+            setMessage(data.message)
+            setSeverity('error')
+            setOpenMessage(true)
+        }
+    }
 
     async function handleSubmit(e, validate, formData, reset, setDisabled) {
         e.preventDefault()
@@ -107,6 +111,7 @@ export function useProducts() {
         massiveEdit,
         setMassiveEdit,
         earnPrice,
-        setEarnPrice
+        setEarnPrice,
+        getProducts
     }
 }

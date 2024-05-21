@@ -27,7 +27,8 @@ export function Products() {
         setMassiveEdit,
         setMassiveEditPercentage,
         handleSubmitMassive,
-        handleDelete
+        handleDelete,
+        getProducts
     } = useProducts()
     const { suppliers, loadingSuppliers } = useSuppliers()
     const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
@@ -150,6 +151,7 @@ export function Products() {
                     rows={products}
                     setOpen={setOpen}
                     setData={setFormData}
+                    getter={getProducts}
                     deadlineColor="products"
                     showDeleteAction
                     showViewAction

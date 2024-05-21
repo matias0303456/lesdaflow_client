@@ -8,9 +8,9 @@ export function useApi(url) {
     const { auth } = useContext(AuthContext)
     const { setOpenMessage, setSeverity, setMessage } = useContext(MessageContext)
 
-    async function get() {
+    async function get(params) {
         try {
-            const res = await fetch(url, {
+            const res = await fetch(url + (params ? params : ''), {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
