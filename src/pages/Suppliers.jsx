@@ -9,7 +9,7 @@ import { useSuppliers } from "../hooks/useSuppliers";
 
 import { Layout } from "../components/Layout";
 import { ModalComponent } from "../components/ModalComponent";
-import { SupplierFilter } from "../components/filters/SupplierFilter";
+// import { SupplierFilter } from "../components/filters/SupplierFilter";
 import { DataGridWithBackendPagination } from "../components/DataGridWithBackendPagination";
 
 export function Suppliers() {
@@ -19,7 +19,7 @@ export function Suppliers() {
 
     const navigate = useNavigate()
 
-    const { setSuppliers, loadingSuppliers, handleSubmit, handleDelete, setOpen, open, getSuppliers } = useSuppliers()
+    const { loadingSuppliers, handleSubmit, handleDelete, setOpen, open, getSuppliers } = useSuppliers()
     const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
         defaultData: {
             id: '',
@@ -155,7 +155,7 @@ export function Suppliers() {
                                 Excel
                             </Button>
                         </Box>
-                        <SupplierFilter suppliers={state.suppliers.data} setSuppliers={setSuppliers} />
+                        {/* <SupplierFilter suppliers={state.suppliers.data} setSuppliers={setSuppliers} /> */}
                     </Box>
                 }
             >

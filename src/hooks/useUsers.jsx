@@ -13,8 +13,9 @@ export function useUsers() {
 
     const [loadingUsers, setLoadingUsers] = useState(true)
     const [open, setOpen] = useState(null)
+    const [newPwd, setNewPwd] = useState('')
 
-    const { get, post, put, destroy } = useApi(USER_URL)
+    const { get, post, put, destroy, changeVendorPwd } = useApi(USER_URL)
 
     async function getUsers(params) {
         setLoadingUsers(true)
@@ -92,5 +93,32 @@ export function useUsers() {
         setOpen(null)
     }
 
-    return { loadingUsers, setLoadingUsers, open, setOpen, handleSubmit, handleDelete, getUsers }
+    async function handleSubmitNewPwd(e, formData, reset, setDisabled) {
+        e.preventDefault()
+        setLoadingUsers(true)
+        const { status, data } = await changeVendorPwd(formData.id, { password: newPwd })
+        if (status === 200) {
+            setSeverity('success')
+            reset(setOpen)
+            setNewPwd('')
+        } else {
+            setSeverity('error')
+            setDisabled(false)
+        }
+        setMessage(data.message)
+        setOpenMessage(true)
+        setLoadingUsers(false)
+    }
+
+    return {
+        loadingUsers,
+        setLoadingUsers,
+        open,
+        setOpen,
+        handleSubmit,
+        handleDelete,
+        getUsers,
+        handleSubmitNewPwd,
+        newPwd, setNewPwd
+    }
 }

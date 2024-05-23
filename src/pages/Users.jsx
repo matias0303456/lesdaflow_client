@@ -1,27 +1,26 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Box, Button, FormControl, Input, InputLabel, Typography } from "@mui/material";
 
 import { AuthContext } from "../providers/AuthProvider";
-import { MessageContext } from "../providers/MessageProvider";
-import { useApi } from "../hooks/useApi";
+import { DataContext } from "../providers/DataProvider";
 import { useForm } from "../hooks/useForm";
 
 import { Layout } from "../components/Layout";
 import { ModalComponent } from "../components/ModalComponent";
-import { UserFilter } from "../components/filters/UserFilter";
+// import { UserFilter } from "../components/filters/UserFilter";
 import { DataGridWithBackendPagination } from "../components/DataGridWithBackendPagination";
 
-import { USER_URL } from "../utils/urls";
+import { useUsers } from "../hooks/useUsers";
 
 export function Users() {
 
-  const { setMessage, setOpenMessage, setSeverity } = useContext(MessageContext)
   const { auth } = useContext(AuthContext)
+  const { state } = useContext(DataContext)
 
   const navigate = useNavigate()
 
-  const { get: getUsers, post, put, changeVendorPwd, destroy } = useApi(USER_URL)
+  const { loadingUsers, getUsers, setOpen, handleSubmit, newPwd, setNewPwd, handleSubmitNewPwd } = useUsers()
   const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
     defaultData: {
       id: '',
@@ -57,85 +56,9 @@ export function Users() {
     }
   })
 
-  const [loadingUsers, setLoadingUsers] = useState(true)
-  const [users, setUsers] = useState([])
-  const [open, setOpen] = useState(null)
-  const [newPwd, setNewPwd] = useState('')
-
   useEffect(() => {
     if (auth?.user.role !== 'ADMINISTRADOR') navigate('/productos')
   }, [])
-
-  useEffect(() => {
-    (async () => {
-      const { status, data } = await getUsers()
-      if (status === 200) {
-        setUsers(data[0])
-        setLoadingUsers(false)
-      }
-    })()
-  }, [])
-
-  async function handleSubmit(e) {
-    e.preventDefault()
-    if (validate()) {
-      const { status, data } = open === 'NEW' ? await post(formData) : await put(formData)
-      if (status === 200) {
-        if (open === 'NEW') {
-          setUsers([data, ...users])
-          setMessage('Usuario creado correctamente.')
-        } else {
-          setUsers([data, ...users.filter(u => u.id !== formData.id)])
-          setMessage('Usuario editado correctamente.')
-        }
-        setSeverity('success')
-        reset(setOpen)
-      } else {
-        setMessage(data.message)
-        setSeverity('error')
-        setDisabled(false)
-      }
-      setOpenMessage(true)
-    }
-  }
-
-  async function handleSubmitNewPwd(e) {
-    e.preventDefault()
-    setLoadingUsers(true)
-    const { status, data } = await changeVendorPwd(formData.id, { password: newPwd })
-    if (status === 200) {
-      setSeverity('success')
-      reset(setOpen)
-      setNewPwd('')
-    } else {
-      setSeverity('error')
-      setDisabled(false)
-    }
-    setMessage(data.message)
-    setOpenMessage(true)
-    setLoadingUsers(false)
-  }
-
-  async function handleDelete(elements) {
-    setLoadingUsers(true)
-    const result = await Promise.all(elements.map(e => destroy(e)))
-    if (result.every(r => r.status === 200)) {
-      const ids = result.map(r => r.data.id)
-      setUsers([...users.filter(u => !ids.includes(u.id))])
-      setMessage(`${result.length === 1 ? 'Usuario eliminado' : 'Usuarios eliminados'} correctamente.`)
-      setSeverity('success')
-    } else {
-      if (result.some(r => r.status === 300)) {
-        setMessage('Existen usuarios con datos asociados.')
-      } else {
-        setMessage('Ocurrió un error. Actualice la página.')
-      }
-      setSeverity('error')
-    }
-    setOpenMessage(true)
-    setLoadingUsers(false)
-    setOpen(null)
-  }
 
   const headCells = [
     {
@@ -180,7 +103,7 @@ export function Users() {
       <DataGridWithBackendPagination
         loading={loadingUsers || disabled}
         headCells={headCells}
-        rows={users}
+        rows={state.users.data}
         entityKey="users"
         getter={getUsers}
         setOpen={setOpen}
@@ -208,8 +131,7 @@ export function Users() {
                 Pdf
               </Button>
             </Box>
-            <UserFilter users={users} setUsers={setUsers} />
-
+            {/* <UserFilter users={state.users.data} setUsers={state.users.setD} /> */}
           </Box>
         }
       >
@@ -222,7 +144,7 @@ export function Users() {
             {open === "EDIT" && "Editar usuario"}
             {open === "VIEW" && `Usuario ${formData.username}`}
           </Typography>
-          <form onChange={handleChange} onSubmit={handleSubmit}>
+          <form onChange={handleChange} onSubmit={(e) => handleSubmit(e, validate, formData, reset, setDisabled)}>
             <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
               <FormControl>
                 <InputLabel htmlFor="first_name">Nombre</InputLabel>
@@ -416,7 +338,7 @@ export function Users() {
               variant="contained"
               disabled={newPwd.length < 8}
               sx={{ width: "50%" }}
-              onClick={handleSubmitNewPwd}
+              onClick={(e) => handleSubmitNewPwd(e, formData, reset, setDisabled)}
             >
               Guardar
             </Button>

@@ -32,7 +32,7 @@ export function Products() {
         handleDelete,
         getProducts
     } = useProducts()
-    const { suppliers, loadingSuppliers, getSuppliers } = useSuppliers()
+    const { loadingSuppliers, getSuppliers } = useSuppliers()
     const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
         defaultData: {
             id: '',
@@ -252,7 +252,7 @@ export function Products() {
                                             onChange={handleChange}
                                             disabled={open === 'VIEW'}
                                         >
-                                            {suppliers.map(s => (
+                                            {state.suppliers.data.map(s => (
                                                 <MenuItem key={s.id} value={s.id}>{s.name}</MenuItem>
                                             ))}
                                         </Select>

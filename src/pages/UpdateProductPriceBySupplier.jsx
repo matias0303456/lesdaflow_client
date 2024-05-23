@@ -25,7 +25,8 @@ export function UpdateProductPriceBySupplier() {
   const { auth } = useContext(AuthContext);
 
   const navigate = useNavigate()
-  const { suppliers, loadingSuppliers, handleSubmitMassive } = useSuppliers()
+
+  const { getSuppliers, loadingSuppliers, handleSubmitMassive } = useSuppliers()
   const {
     formData,
     handleChange,
@@ -42,6 +43,10 @@ export function UpdateProductPriceBySupplier() {
   useEffect(() => {
     if (auth?.user.role !== "ADMINISTRADOR") navigate("/productos");
   }, []);
+
+  useEffect(() => {
+    getSuppliers()
+  }, [])
 
   const headCells = [
     {

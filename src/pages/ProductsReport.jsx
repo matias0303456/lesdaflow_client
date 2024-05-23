@@ -12,6 +12,7 @@ import {
 } from "@mui/material";
 
 import { AuthContext } from "../providers/AuthProvider";
+import { DataContext } from "../providers/DataProvider";
 import { useForm } from "../hooks/useForm";
 import { useSuppliers } from "../hooks/useSuppliers"
 
@@ -20,6 +21,7 @@ import { Layout } from "../components/Layout";
 export function ProductsReport() {
 
   const { auth } = useContext(AuthContext);
+  const { state } = useContext(DataContext)
 
   const navigate = useNavigate()
 
@@ -27,11 +29,15 @@ export function ProductsReport() {
     defaultData: { supplier_id: '', stock: '' },
     rules: { supplier_id: { required: true }, stock: { required: true } }
   })
-  const { suppliers, loadingSuppliers } = useSuppliers()
+  const { loadingSuppliers, getSuppliers } = useSuppliers()
 
   useEffect(() => {
     if (auth?.user.role !== "ADMINISTRADOR") navigate("/productos");
-  }, []);
+  }, [])
+
+  useEffect(() => {
+    getSuppliers()
+  }, [])
 
   const handleSubmit = e => {
     e.preventDefault()
@@ -110,7 +116,7 @@ export function ProductsReport() {
                     label="Existencia"
                     name="stock"
                     onChange={handleChange}
-                    disabled={suppliers.length === 0}
+                    disabled={state.suppliers.data.length === 0}
                     sx={{ width: "100%" }}
                   >
                     <MenuItem value="CON STOCK">CON STOCK</MenuItem>

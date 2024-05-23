@@ -26,7 +26,7 @@ export function Orders() {
 
     const { post, put, putMassive, destroy } = useApi(PRODUCT_URL)
     const { setProducts, loadingProducts, setLoadingProducts } = useProducts()
-    const { suppliers, loadingSuppliers, getSuppliers } = useSuppliers()
+    const { loadingSuppliers, getSuppliers } = useSuppliers()
     const [open, setOpen] = useState(null)
     const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
         defaultData: {
