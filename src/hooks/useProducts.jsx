@@ -1,4 +1,4 @@
-import { useContext, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 
 import { MessageContext } from "../providers/MessageProvider"
 import { DataContext } from "../providers/DataProvider"
@@ -14,6 +14,7 @@ export function useProducts() {
     const { get, post, put, putMassive, destroy } = useApi(PRODUCT_URL)
 
     const [open, setOpen] = useState(null)
+    const [loadingProducts, setLoadingProducts] = useState(true)
     const [massiveEdit, setMassiveEdit] = useState([])
     const [earnPrice, setEarnPrice] = useState(0)
 
@@ -24,6 +25,7 @@ export function useProducts() {
                 type: 'PRODUCTS',
                 payload: { ...state.products, data: data[0], count: data[1] }
             })
+            setLoadingProducts(false)
         } else {
             setMessage(data.message)
             setSeverity('error')
@@ -129,6 +131,8 @@ export function useProducts() {
         setMassiveEdit,
         earnPrice,
         setEarnPrice,
-        getProducts
+        getProducts,
+        loadingProducts,
+        setLoadingProducts
     }
 }
