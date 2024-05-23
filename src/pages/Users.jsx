@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Box, Button, FormControl, Input, InputLabel, LinearProgress, MenuItem, Select, Typography } from "@mui/material";
+import { Box, Button, FormControl, Input, InputLabel, Typography } from "@mui/material";
 
 import { AuthContext } from "../providers/AuthProvider";
 import { MessageContext } from "../providers/MessageProvider";
@@ -177,255 +177,250 @@ export function Users() {
 
   return (
     <Layout title="Personal">
-      {loadingUsers || disabled ? (
-        <Box sx={{ width: "100%" }}>
-          <LinearProgress />
-        </Box>
-      ) : (
-        <DataGrid
-          headCells={headCells}
-          rows={users}
-          setOpen={setOpen}
-          setFormData={setFormData}
-          showEditAction
-          showDeleteAction
-          showViewAction
-          contentHeader={
-            <Box
-              sx={{
-                display: "flex",
-                flexWrap: "wrap",
-                alignItems: "center",
-                gap: 2,
-              }}
-            >
-              <Box sx={{ display: "flex", gap: 1 }}>
-                <Button variant="outlined" size="medium" onClick={() => setOpen("NEW")}>
-                  Agregar
-                </Button>
-                <Button variant="outlined" size="medium" color="success">
-                  Excel
-                </Button>
-                <Button variant="outlined" size="medium" color="error">
-                  Pdf
-                </Button>
-              </Box>
-              <UserFilter users={users} setUsers={setUsers} />
-
-            </Box>
-          }
-        >
-          <ModalComponent
-            open={open === "NEW" || open === "EDIT" || open === "VIEW"}
-            onClose={() => reset(setOpen)}
+      <DataGrid
+        loading={loadingUsers || disabled}
+        headCells={headCells}
+        rows={users}
+        setOpen={setOpen}
+        setFormData={setFormData}
+        showEditAction
+        showDeleteAction
+        showViewAction
+        contentHeader={
+          <Box
+            sx={{
+              display: "flex",
+              flexWrap: "wrap",
+              alignItems: "center",
+              gap: 2,
+            }}
           >
-            <Typography variant="h6" sx={{ marginBottom: 2 }}>
-              {open === "NEW" && "Nuevo usuario"}
-              {open === "EDIT" && "Editar usuario"}
-              {open === "VIEW" && `Usuario ${formData.username}`}
-            </Typography>
-            <form onChange={handleChange} onSubmit={handleSubmit}>
-              <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
-                <FormControl>
-                  <InputLabel htmlFor="first_name">Nombre</InputLabel>
-                  <Input
-                    id="first_name"
-                    type="text"
-                    name="first_name"
-                    value={formData.first_name}
-                    disabled={open === "VIEW"}
-                  />
-                  {errors.first_name?.type === "required" && (
-                    <Typography variant="caption" color="red" marginTop={1}>
-                      * El nombre es requerido.
-                    </Typography>
-                  )}
-                  {errors.first_name?.type === "maxLength" && (
-                    <Typography variant="caption" color="red" marginTop={1}>
-                      * El nombre es demasiado largo.
-                    </Typography>
-                  )}
-                </FormControl>
-                <FormControl>
-                  <InputLabel htmlFor="last_name">Apellido</InputLabel>
-                  <Input
-                    id="last_name"
-                    type="text"
-                    name="last_name"
-                    value={formData.last_name}
-                    disabled={open === "VIEW"}
-                  />
-                  {errors.last_name?.type === "required" && (
-                    <Typography variant="caption" color="red" marginTop={1}>
-                      * El apellido es requerido.
-                    </Typography>
-                  )}
-                  {errors.last_name?.type === "maxLength" && (
-                    <Typography variant="caption" color="red" marginTop={1}>
-                      * El apellido es demasiado largo.
-                    </Typography>
-                  )}
-                </FormControl>
-                <FormControl>
-                  <InputLabel htmlFor="username">Usuario</InputLabel>
-                  <Input
-                    id="username"
-                    type="text"
-                    name="username"
-                    value={formData.username}
-                    disabled={open === "VIEW"}
-                  />
-                  {errors.username?.type === "required" && (
-                    <Typography variant="caption" color="red" marginTop={1}>
-                      * El nombre de usuario es requerido.
-                    </Typography>
-                  )}
-                  {errors.username?.type === "maxLength" && (
-                    <Typography variant="caption" color="red" marginTop={1}>
-                      * El nombre de usuario es demasiado largo.
-                    </Typography>
-                  )}
-                </FormControl>
-                <FormControl>
-                  <InputLabel htmlFor="email">Email</InputLabel>
-                  <Input
-                    id="email"
-                    type="email"
-                    name="email"
-                    value={formData.email}
-                    disabled={open === "VIEW"}
-                  />
-                  {errors.email?.type === "required" && (
-                    <Typography variant="caption" color="red" marginTop={1}>
-                      * El email es requerido.
-                    </Typography>
-                  )}
-                  {errors.email?.type === "maxLength" && (
-                    <Typography variant="caption" color="red" marginTop={1}>
-                      * El email es demasiado largo.
-                    </Typography>
-                  )}
-                </FormControl>
-                {open === "NEW" && (
-                  <FormControl>
-                    <InputLabel htmlFor="password">Contraseña</InputLabel>
-                    <Input
-                      id="password"
-                      type="password"
-                      name="password"
-                      value={formData.password}
-                    />
-                    {errors.password?.type === "required" && (
-                      <Typography variant="caption" color="red" marginTop={1}>
-                        * La contraseña es requerida.
-                      </Typography>
-                    )}
-                    {errors.password?.type === "minLength" && (
-                      <Typography variant="caption" color="red" marginTop={1}>
-                        * La contraseña es demasiado corta.
-                      </Typography>
-                    )}
-                    {errors.password?.type === "maxLength" && (
-                      <Typography variant="caption" color="red" marginTop={1}>
-                        * La contraseña es demasiado larga.
-                      </Typography>
-                    )}
-                  </FormControl>
+            <Box sx={{ display: "flex", gap: 1 }}>
+              <Button variant="outlined" size="medium" onClick={() => setOpen("NEW")}>
+                Agregar
+              </Button>
+              <Button variant="outlined" size="medium" color="success">
+                Excel
+              </Button>
+              <Button variant="outlined" size="medium" color="error">
+                Pdf
+              </Button>
+            </Box>
+            <UserFilter users={users} setUsers={setUsers} />
+
+          </Box>
+        }
+      >
+        <ModalComponent
+          open={open === "NEW" || open === "EDIT" || open === "VIEW"}
+          onClose={() => reset(setOpen)}
+        >
+          <Typography variant="h6" sx={{ marginBottom: 2 }}>
+            {open === "NEW" && "Nuevo usuario"}
+            {open === "EDIT" && "Editar usuario"}
+            {open === "VIEW" && `Usuario ${formData.username}`}
+          </Typography>
+          <form onChange={handleChange} onSubmit={handleSubmit}>
+            <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
+              <FormControl>
+                <InputLabel htmlFor="first_name">Nombre</InputLabel>
+                <Input
+                  id="first_name"
+                  type="text"
+                  name="first_name"
+                  value={formData.first_name}
+                  disabled={open === "VIEW"}
+                />
+                {errors.first_name?.type === "required" && (
+                  <Typography variant="caption" color="red" marginTop={1}>
+                    * El nombre es requerido.
+                  </Typography>
                 )}
-                <FormControl
+                {errors.first_name?.type === "maxLength" && (
+                  <Typography variant="caption" color="red" marginTop={1}>
+                    * El nombre es demasiado largo.
+                  </Typography>
+                )}
+              </FormControl>
+              <FormControl>
+                <InputLabel htmlFor="last_name">Apellido</InputLabel>
+                <Input
+                  id="last_name"
+                  type="text"
+                  name="last_name"
+                  value={formData.last_name}
+                  disabled={open === "VIEW"}
+                />
+                {errors.last_name?.type === "required" && (
+                  <Typography variant="caption" color="red" marginTop={1}>
+                    * El apellido es requerido.
+                  </Typography>
+                )}
+                {errors.last_name?.type === "maxLength" && (
+                  <Typography variant="caption" color="red" marginTop={1}>
+                    * El apellido es demasiado largo.
+                  </Typography>
+                )}
+              </FormControl>
+              <FormControl>
+                <InputLabel htmlFor="username">Usuario</InputLabel>
+                <Input
+                  id="username"
+                  type="text"
+                  name="username"
+                  value={formData.username}
+                  disabled={open === "VIEW"}
+                />
+                {errors.username?.type === "required" && (
+                  <Typography variant="caption" color="red" marginTop={1}>
+                    * El nombre de usuario es requerido.
+                  </Typography>
+                )}
+                {errors.username?.type === "maxLength" && (
+                  <Typography variant="caption" color="red" marginTop={1}>
+                    * El nombre de usuario es demasiado largo.
+                  </Typography>
+                )}
+              </FormControl>
+              <FormControl>
+                <InputLabel htmlFor="email">Email</InputLabel>
+                <Input
+                  id="email"
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  disabled={open === "VIEW"}
+                />
+                {errors.email?.type === "required" && (
+                  <Typography variant="caption" color="red" marginTop={1}>
+                    * El email es requerido.
+                  </Typography>
+                )}
+                {errors.email?.type === "maxLength" && (
+                  <Typography variant="caption" color="red" marginTop={1}>
+                    * El email es demasiado largo.
+                  </Typography>
+                )}
+              </FormControl>
+              {open === "NEW" && (
+                <FormControl>
+                  <InputLabel htmlFor="password">Contraseña</InputLabel>
+                  <Input
+                    id="password"
+                    type="password"
+                    name="password"
+                    value={formData.password}
+                  />
+                  {errors.password?.type === "required" && (
+                    <Typography variant="caption" color="red" marginTop={1}>
+                      * La contraseña es requerida.
+                    </Typography>
+                  )}
+                  {errors.password?.type === "minLength" && (
+                    <Typography variant="caption" color="red" marginTop={1}>
+                      * La contraseña es demasiado corta.
+                    </Typography>
+                  )}
+                  {errors.password?.type === "maxLength" && (
+                    <Typography variant="caption" color="red" marginTop={1}>
+                      * La contraseña es demasiado larga.
+                    </Typography>
+                  )}
+                </FormControl>
+              )}
+              <FormControl
+                sx={{
+                  display: "flex",
+                  flexDirection: "row",
+                  gap: 1,
+                  justifyContent: "center",
+                  margin: "0 auto",
+                  marginTop: 1,
+                  width: "50%",
+                }}
+              >
+                <Button
+                  type="button"
+                  variant="outlined"
+                  onClick={() => reset(setOpen)}
                   sx={{
-                    display: "flex",
-                    flexDirection: "row",
-                    gap: 1,
-                    justifyContent: "center",
-                    margin: "0 auto",
-                    marginTop: 1,
                     width: "50%",
                   }}
                 >
+                  {open === "VIEW" ? "Cerrar" : "Cancelar"}
+                </Button>
+                {(open === "NEW" || open === "EDIT") && (
                   <Button
-                    type="button"
-                    variant="outlined"
-                    onClick={() => reset(setOpen)}
+                    type="submit"
+                    variant="contained"
+                    disabled={disabled}
                     sx={{
                       width: "50%",
                     }}
                   >
-                    {open === "VIEW" ? "Cerrar" : "Cancelar"}
+                    Guardar
                   </Button>
-                  {(open === "NEW" || open === "EDIT") && (
-                    <Button
-                      type="submit"
-                      variant="contained"
-                      disabled={disabled}
-                      sx={{
-                        width: "50%",
-                      }}
-                    >
-                      Guardar
-                    </Button>
-                  )}
-                </FormControl>
-              </Box>
-            </form>
-          </ModalComponent>
-          <ModalComponent
-            open={open === "PWD-EDIT"}
-            onClose={() => {
-              reset(setOpen);
-              setNewPwd("");
+                )}
+              </FormControl>
+            </Box>
+          </form>
+        </ModalComponent>
+        <ModalComponent
+          open={open === "PWD-EDIT"}
+          onClose={() => {
+            reset(setOpen);
+            setNewPwd("");
+          }}
+        >
+          <Typography variant="h6" sx={{ marginBottom: 2 }}>
+            {`Cambiar la contraseña del vendedor ${formData.username}`}
+          </Typography>
+          <FormControl>
+            <InputLabel htmlFor="password">Nueva contraseña</InputLabel>
+            <Input
+              id="password"
+              type="password"
+              name="password"
+              value={newPwd}
+              onChange={(e) => setNewPwd(e.target.value)}
+            />
+          </FormControl>
+          <FormControl
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              gap: 1,
+              justifyContent: "center",
+              margin: "0 auto",
+              marginTop: 2,
+              width: "50%",
             }}
           >
-            <Typography variant="h6" sx={{ marginBottom: 2 }}>
-              {`Cambiar la contraseña del vendedor ${formData.username}`}
-            </Typography>
-            <FormControl>
-              <InputLabel htmlFor="password">Nueva contraseña</InputLabel>
-              <Input
-                id="password"
-                type="password"
-                name="password"
-                value={newPwd}
-                onChange={(e) => setNewPwd(e.target.value)}
-              />
-            </FormControl>
-            <FormControl
+            <Button
+              type="button"
+              variant="outlined"
+              onClick={() => {
+                reset(setOpen);
+                setNewPwd("");
+              }}
               sx={{
-                display: "flex",
-                flexDirection: "row",
-                gap: 1,
-                justifyContent: "center",
-                margin: "0 auto",
-                marginTop: 2,
                 width: "50%",
               }}
             >
-              <Button
-                type="button"
-                variant="outlined"
-                onClick={() => {
-                  reset(setOpen);
-                  setNewPwd("");
-                }}
-                sx={{
-                  width: "50%",
-                }}
-              >
-                Cancelar
-              </Button>
-              <Button
-                type="submit"
-                variant="contained"
-                disabled={newPwd.length < 8}
-                sx={{ width: "50%" }}
-                onClick={handleSubmitNewPwd}
-              >
-                Guardar
-              </Button>
-            </FormControl>
-          </ModalComponent>
-        </DataGrid>
-      )}
+              Cancelar
+            </Button>
+            <Button
+              type="submit"
+              variant="contained"
+              disabled={newPwd.length < 8}
+              sx={{ width: "50%" }}
+              onClick={handleSubmitNewPwd}
+            >
+              Guardar
+            </Button>
+          </FormControl>
+        </ModalComponent>
+      </DataGrid>
     </Layout>
   );
 }

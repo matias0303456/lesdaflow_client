@@ -1,5 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+
 import { useClients } from "../hooks/useClients";
 import { useProducts } from "../hooks/useProducts";
 import { useSuppliers } from "../hooks/useSuppliers";
@@ -9,7 +10,6 @@ import {
   FormControl,
   Input,
   InputLabel,
-  LinearProgress,
   MenuItem,
   Select,
   Typography,
@@ -93,49 +93,44 @@ export function StockReplenishment() {
 
   return (
     <Layout title="Reposicion Stock">
-      {loadingProducts || loadingSuppliers ? (
-        <Box sx={{ width: "100%" }}>
-          <LinearProgress />
-        </Box>
-      ) : (
-        <DataGrid
-          headCells={headCells}
-          rows={[]}
-          setOpen={setOpen}
-          setFormData={setFormData}
-          contentHeader={
-            <Box
-              sx={{
-                display: "flex",
-                flexWrap: "wrap",
-                alignItems: "center",
-                gap: 2,
-              }}
-            >
-              <Box sx={{ display: "flex", gap: 1 }}>
-                <Button
-                  variant="outlined"
-                  size="medium"
-                  onClick={() => setOpen("NEW")}
-                >
-                  Agregar
-                </Button>
-                <Button variant="outlined" size="medium" color="success">
-                  Excel
-                </Button>
-                <Button variant="outlined" size="medium" color="error">
-                  Pdf
-                </Button>
-              </Box>
-              {/* <ProductFilter
+      <DataGrid
+        loading={loadingProducts || loadingSuppliers}
+        headCells={headCells}
+        rows={[]}
+        setOpen={setOpen}
+        setFormData={setFormData}
+        contentHeader={
+          <Box
+            sx={{
+              display: "flex",
+              flexWrap: "wrap",
+              alignItems: "center",
+              gap: 2,
+            }}
+          >
+            <Box sx={{ display: "flex", gap: 1 }}>
+              <Button
+                variant="outlined"
+                size="medium"
+                onClick={() => setOpen("NEW")}
+              >
+                Agregar
+              </Button>
+              <Button variant="outlined" size="medium" color="success">
+                Excel
+              </Button>
+              <Button variant="outlined" size="medium" color="error">
+                Pdf
+              </Button>
+            </Box>
+            {/* <ProductFilter
                 products={products}
                 setProducts={setProducts}
                 suppliers={suppliers}
               /> */}
-            </Box>
-          }
-        ></DataGrid>
-      )}
+          </Box>
+        }
+      ></DataGrid>
     </Layout>
   );
 }

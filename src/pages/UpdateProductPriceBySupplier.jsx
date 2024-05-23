@@ -8,7 +8,6 @@ import {
   Input,
   FormControl,
   InputLabel,
-  LinearProgress,
   Typography
 } from "@mui/material";
 
@@ -77,127 +76,121 @@ export function UpdateProductPriceBySupplier() {
 
   return (
     <Layout title="Actualizar Precios Productos">
-      {loadingSuppliers ?
-        <Box sx={{ width: "100%" }}>
-          <LinearProgress />
-        </Box> :
-        <>
-          <Box className="w-[50%] mb-3 bg-white rounded-md">
-            <Typography
-              variant="h6"
+      <Box className="w-[50%] mb-3 bg-white rounded-md">
+        <Typography
+          variant="h6"
+          sx={{
+            width: "100%",
+            fontSize: "14px",
+            color: "white",
+            backgroundColor: "#078BCD",
+            padding: 1,
+            borderRadius: "2px",
+            fontWeight: "bold",
+          }}
+        >
+          Información General
+        </Typography>
+        <form>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              flexDirection: "column",
+              justifyContent: "start",
+              padding: 1,
+              paddingBottom: 2,
+              gap: 1
+            }}
+          >
+            <FormControl
+              variant="standard"
               sx={{
-                width: "100%",
-                fontSize: "14px",
-                color: "white",
-                backgroundColor: "#078BCD",
-                padding: 1,
-                borderRadius: "2px",
-                fontWeight: "bold",
+                minWidth: "100%",
+                color: "#59656b",
+                display: "flex",
+                alignItems: "start",
+                justifyContent: "center"
               }}
             >
-              Información General
-            </Typography>
-            <form>
-              <Box
+              <InputLabel htmlFor="id" className="font-semibold text-gray-400 text-sm">
+                Proveedor
+              </InputLabel>
+              <Select
+                labelId="supplier-select"
+                id="id"
+                value={formData.id}
+                label="Proveedor"
+                name="id"
+                sx={{ width: "100%" }}
+                onChange={(e) => handleChange({ target: { name: 'id', value: e.target.value } })}
+              >
+                {suppliers.length > 0 ? (
+                  suppliers.map((supplier) => (
+                    <MenuItem key={supplier.id} value={supplier.id}>
+                      {supplier.name}
+                    </MenuItem>
+                  ))
+                ) : (
+                  <MenuItem>No se encontraron resultados</MenuItem>
+                )}
+              </Select>
+              {errors.id?.type === 'required' &&
+                <Typography variant="caption" color="red" marginTop={1}>
+                  * El proveedor es requerido.
+                </Typography>
+              }
+            </FormControl>
+            <Box className="w-[100%] flex items-center justify-start gap-2">
+              <FormControl
+                variant="standard"
                 sx={{
+                  width: "40%",
+                  color: "#59656b",
                   display: "flex",
-                  alignItems: "center",
-                  flexDirection: "column",
-                  justifyContent: "start",
-                  padding: 1,
-                  paddingBottom: 2,
-                  gap: 1
+                  alignItems: "start",
+                  justifyContent: "center",
+                  marginTop: "2rem",
                 }}
               >
-                <FormControl
-                  variant="standard"
-                  sx={{
-                    minWidth: "100%",
-                    color: "#59656b",
-                    display: "flex",
-                    alignItems: "start",
-                    justifyContent: "center"
-                  }}
-                >
-                  <InputLabel htmlFor="id" className="font-semibold text-gray-400 text-sm">
-                    Proveedor
-                  </InputLabel>
-                  <Select
-                    labelId="supplier-select"
-                    id="id"
-                    value={formData.id}
-                    label="Proveedor"
-                    name="id"
-                    sx={{ width: "100%" }}
-                    onChange={(e) => handleChange({ target: { name: 'id', value: e.target.value } })}
-                  >
-                    {suppliers.length > 0 ? (
-                      suppliers.map((supplier) => (
-                        <MenuItem key={supplier.id} value={supplier.id}>
-                          {supplier.name}
-                        </MenuItem>
-                      ))
-                    ) : (
-                      <MenuItem>No se encontraron resultados</MenuItem>
-                    )}
-                  </Select>
-                  {errors.id?.type === 'required' &&
-                    <Typography variant="caption" color="red" marginTop={1}>
-                      * El proveedor es requerido.
-                    </Typography>
-                  }
-                </FormControl>
-                <Box className="w-[100%] flex items-center justify-start gap-2">
-                  <FormControl
-                    variant="standard"
-                    sx={{
-                      width: "40%",
-                      color: "#59656b",
-                      display: "flex",
-                      alignItems: "start",
-                      justifyContent: "center",
-                      marginTop: "2rem",
-                    }}
-                  >
-                    <InputLabel htmlFor="percentage" className="font-semibold text-gray-400 text-sm">
-                      Porcentaje
-                    </InputLabel>
-                    <Input
-                      className="w-full"
-                      type="number"
-                      value={formData.percentage}
-                      onChange={(e) => handleChange({ target: { name: 'percentage', value: e.target.value } })}
-                    />
-                    {errors.percentage?.type === 'required' &&
-                      <Typography variant="caption" color="red" marginTop={1}>
-                        * El porcentaje es requerido.
-                      </Typography>
-                    }
-                  </FormControl>
-                </Box>
-              </Box>
-            </form>
+                <InputLabel htmlFor="percentage" className="font-semibold text-gray-400 text-sm">
+                  Porcentaje
+                </InputLabel>
+                <Input
+                  className="w-full"
+                  type="number"
+                  value={formData.percentage}
+                  onChange={(e) => handleChange({ target: { name: 'percentage', value: e.target.value } })}
+                />
+                {errors.percentage?.type === 'required' &&
+                  <Typography variant="caption" color="red" marginTop={1}>
+                    * El porcentaje es requerido.
+                  </Typography>
+                }
+              </FormControl>
+            </Box>
           </Box>
-          <Box className="w-[50%] flex items-center justify-start gap-2  mb-4">
-            <Button
-              variant="contained"
-              size="medium"
-              disabled={disabled}
-              onClick={(e) => handleSubmitMassive(e, validate, formData, reset, setDisabled)}
-            >
-              Confirmar
-            </Button>
-            <Button variant="outlined" size="medium" onClick={() => navigate('/productos')}>
-              Volver
-            </Button>
-          </Box>
-          <DataGrid
-            headCells={headCells}
-            rows={suppliers.find(s => s.id === parseInt(formData.id))?.products || []}
-            contentHeader={''}
-          />
-        </>
-      }
+        </form>
+      </Box>
+      <Box className="w-[50%] flex items-center justify-start gap-2  mb-4">
+        <Button
+          variant="contained"
+          size="medium"
+          disabled={disabled}
+          onClick={(e) => handleSubmitMassive(e, validate, formData, reset, setDisabled)}
+        >
+          Confirmar
+        </Button>
+        <Button variant="outlined" size="medium" onClick={() => navigate('/productos')}>
+          Volver
+        </Button>
+      </Box>
+      <DataGrid
+        loading={loadingSuppliers}
+        headCells={headCells}
+        rows={suppliers.find(s => s.id === parseInt(formData.id))?.products || []}
+        contentHeader={''}
+      />
     </Layout>
   );
 }

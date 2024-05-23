@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { Box, Button, FormControl, Input, InputLabel, LinearProgress, MenuItem, Paper, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
+import { Box, Button, FormControl, Input, InputLabel, MenuItem, Paper, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
 
 import { MessageContext } from "../providers/MessageProvider";
 import { useProducts } from '../hooks/useProducts'
@@ -206,39 +206,33 @@ export function Orders() {
 
     return (
         <Layout title="Pedidos">
-            {loadingProducts || loadingSuppliers || disabled ?
-                <Box sx={{ width: '100%' }}>
-                    <LinearProgress />
-                </Box> :
-                <DataGrid
-                    headCells={headCells}
-                    rows={products}
-                    setOpen={setOpen}
-                    setFormData={setFormData}
-                    deadlineColor="pedidos"
-                    contentHeader={
-                        <Box sx={{
-                            display: 'flex',
-                            flexWrap: 'wrap',
-                            alignItems: 'center',
-                            justifyContent:'space-between',
-                            gap: 2
-                        }}>
-                            <Box sx={{ display: 'flex', gap: 1 }}>
-                                <Button variant="outlined" onClick={() => setOpen('NEW')}>
-                                    Agregar
-                                </Button>
-                                <Button variant="outlined" color='success'>
-                                    Excel
-                                </Button>
-                            </Box>
-                           <OrderFilter/>
+            <DataGrid
+                loading={loadingProducts || loadingSuppliers || disabled}
+                headCells={headCells}
+                rows={products}
+                setOpen={setOpen}
+                setFormData={setFormData}
+                deadlineColor="pedidos"
+                contentHeader={
+                    <Box sx={{
+                        display: 'flex',
+                        flexWrap: 'wrap',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        gap: 2
+                    }}>
+                        <Box sx={{ display: 'flex', gap: 1 }}>
+                            <Button variant="outlined" onClick={() => setOpen('NEW')}>
+                                Agregar
+                            </Button>
+                            <Button variant="outlined" color='success'>
+                                Excel
+                            </Button>
                         </Box>
-                    }
-                >
-                   
-                </DataGrid>
-            }
+                        <OrderFilter />
+                    </Box>
+                }
+            />
         </Layout>
     )
 }

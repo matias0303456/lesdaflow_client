@@ -1,14 +1,6 @@
 import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  Box,
-  Button,
-  Input,
-  FormControl,
-  InputLabel,
-  LinearProgress,
-  Typography,
-} from "@mui/material";
+import { Box, Button, Input, FormControl, InputLabel, Typography } from "@mui/material";
 
 import { AuthContext } from "../providers/AuthProvider";
 import { useProducts } from "../hooks/useProducts";
@@ -67,83 +59,79 @@ export function ProductsPriceList() {
 
   return (
     <Layout title="Lista de Precios">
-      {loadingProducts ?
-        <Box sx={{ width: "100%" }}><LinearProgress /></Box> :
-        <>
-          <Box className="w-[100%] mb-3 px-2 py-4 bg-white rounded-md">
-            <Typography
-              variant="h6"
-              sx={{
-                width: "100%",
-                fontSize: "14px",
-                color: "white",
-                paddingX: "10px",
-                paddingY: "5px",
-                backgroundColor: "#078BCD",
-                borderRadius: "2px",
-                fontWeight: "bold",
-              }}
-            >
-              Productos
-            </Typography>
-            <form onChange={handleChange}>
-              <Box
-                sx={{ display: "flex", alignItems: "center", justifyContent: "start", gap: 1 }}>
-                <FormControl variant="standard" sx={{
-                  width: "20%",
-                  color: "#59656b",
-                  display: "flex", alignItems: "start",
-                  justifyContent: "center",
-                  marginTop: "2rem"
-                }}>
-                  <InputLabel id="demo-simple-select-standard-label">
-                    Cód.
-                  </InputLabel>
-                  <Input name="code" />
-                </FormControl>
-                <FormControl variant="standard" sx={{
-                  width: "100%",
-                  color: "#59656b",
-                  display: "flex", alignItems: "start",
-                  justifyContent: "center",
-                  marginTop: "2rem"
-                }}>
-                  <InputLabel id="demo-simple-select-standard-label">
-                    Producto
-                  </InputLabel>
-                  <Input
-                    sx={{ width: "100%" }} name="details" />
-                </FormControl>
-              </Box>
-            </form>
+      <Box className="w-[100%] mb-3 px-2 py-4 bg-white rounded-md">
+        <Typography
+          variant="h6"
+          sx={{
+            width: "100%",
+            fontSize: "14px",
+            color: "white",
+            paddingX: "10px",
+            paddingY: "5px",
+            backgroundColor: "#078BCD",
+            borderRadius: "2px",
+            fontWeight: "bold",
+          }}
+        >
+          Productos
+        </Typography>
+        <form onChange={handleChange}>
+          <Box
+            sx={{ display: "flex", alignItems: "center", justifyContent: "start", gap: 1 }}>
+            <FormControl variant="standard" sx={{
+              width: "20%",
+              color: "#59656b",
+              display: "flex", alignItems: "start",
+              justifyContent: "center",
+              marginTop: "2rem"
+            }}>
+              <InputLabel id="demo-simple-select-standard-label">
+                Cód.
+              </InputLabel>
+              <Input name="code" />
+            </FormControl>
+            <FormControl variant="standard" sx={{
+              width: "100%",
+              color: "#59656b",
+              display: "flex", alignItems: "start",
+              justifyContent: "center",
+              marginTop: "2rem"
+            }}>
+              <InputLabel id="demo-simple-select-standard-label">
+                Producto
+              </InputLabel>
+              <Input
+                sx={{ width: "100%" }} name="details" />
+            </FormControl>
           </Box>
-          <Box className="w-[100%] px-2 py-4 bg-white rounded-md">
-            <Typography
-              variant="h6"
-              sx={{
-                width: "100%",
-                fontSize: "14px",
-                color: "white",
-                paddingX: "10px",
-                paddingY: "5px",
-                backgroundColor: "#078BCD",
-                borderRadius: "2px",
-                fontWeight: "bold",
-              }}
-            >
-              Precios
-            </Typography>
-            <DataGrid
-              headCells={headCells}
-              rows={products.filter(p => (formData.code.length === 0 || p.code.includes(formData.code)) &&
-                (formData.details.length === 0 || p.details.includes(formData.details)))}
-            />
-            <Button variant="outlined" size="medium" color="info" onClick={() => navigate('/productos')}>
-              Salir
-            </Button>
-          </Box>
-        </>
-      }
+        </form>
+      </Box>
+      <Box className="w-[100%] px-2 py-4 bg-white rounded-md">
+        <Typography
+          variant="h6"
+          sx={{
+            width: "100%",
+            fontSize: "14px",
+            color: "white",
+            paddingX: "10px",
+            paddingY: "5px",
+            backgroundColor: "#078BCD",
+            borderRadius: "2px",
+            fontWeight: "bold",
+          }}
+        >
+          Precios
+        </Typography>
+        <DataGrid
+          loading={loadingProducts}
+          headCells={headCells}
+          rows={products.filter(p => (formData.code.length === 0 || p.code.includes(formData.code)) &&
+            (formData.details.length === 0 || p.details.includes(formData.details)))}
+        />
+        <Button variant="outlined" size="medium" color="info" onClick={() => navigate('/productos')}>
+          Salir
+        </Button>
+      </Box>
     </Layout>
   );
 }

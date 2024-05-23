@@ -3,9 +3,7 @@ import { useNavigate } from "react-router-dom";
 import {
   Box,
   Button,
-  LinearProgress,
   FormControl,
-  Input,
   InputLabel,
   MenuItem,
   Select,
@@ -161,167 +159,162 @@ export function Roles() {
 
   return (
     <Layout title="Role">
-      {loadingRoles ? (
-        <Box sx={{ width: "100%" }}>
-          <LinearProgress />
-        </Box>
-      ) : (
-        <DataGrid
-          headCells={headCells}
-          rows={roles}
-          setOpen={setOpen}
-          setFormData={setFormData}
-          showViewAction
-          showEditAction
-          showDeleteAction
-          contentHeader={
-            <Box
-              sx={{
-                display: "flex",
-                flexWrap: "wrap",
-                alignItems: "center",
-                gap: 2,
-              }}
-            >
-              <Box sx={{ display: "flex", gap: 1 }}>
-                <Button
-                  variant="outlined"
-                  size="medium"
-                  onClick={() => setOpen("NEW")}
-                >
-                  Agregar
-                </Button>
-                <Button variant="outlined" size="medium" color="success">
-                  Excel
-                </Button>
-                <Button variant="outlined" size="medium" color="error">
-                  Pdf
-                </Button>
-              </Box>
-              {/* user filter implementation */}
-              {/* <UserFilter users={users} setUsers={setUsers} /> */}
-              {/* by search box approach  */}
-            </Box>
-          }
-        >
-          {/* edit modal */}
-          <ModalComponent
-            open={open === "NEW" || open === "EDIT" || open === "VIEW"}
-            onClose={() => reset(setOpen)}
+      <DataGrid
+        loading={loadingRoles}
+        headCells={headCells}
+        rows={roles}
+        setOpen={setOpen}
+        setFormData={setFormData}
+        showViewAction
+        showEditAction
+        showDeleteAction
+        contentHeader={
+          <Box
+            sx={{
+              display: "flex",
+              flexWrap: "wrap",
+              alignItems: "center",
+              gap: 2,
+            }}
           >
-            <Typography
-              variant="h6"
-              sx={{
-                width: "100%",
-                fontSize: "14px",
-                color: "white",
-                paddingX: "10px",
-                paddingY: "5px",
-                backgroundColor: "#078BCD",
-                borderRadius: "2px",
-                fontWeight: "bold",
-                marginBottom: "1.5rem",
-              }}
-            >
-              {open === "EDIT" && "Información General"}
-              {open === "VIEW" && `Usuario ${formData.username}`}
-            </Typography>
+            <Box sx={{ display: "flex", gap: 1 }}>
+              <Button
+                variant="outlined"
+                size="medium"
+                onClick={() => setOpen("NEW")}
+              >
+                Agregar
+              </Button>
+              <Button variant="outlined" size="medium" color="success">
+                Excel
+              </Button>
+              <Button variant="outlined" size="medium" color="error">
+                Pdf
+              </Button>
+            </Box>
+            {/* user filter implementation */}
+            {/* <UserFilter users={users} setUsers={setUsers} /> */}
+            {/* by search box approach  */}
+          </Box>
+        }
+      >
+        {/* edit modal */}
+        <ModalComponent
+          open={open === "NEW" || open === "EDIT" || open === "VIEW"}
+          onClose={() => reset(setOpen)}
+        >
+          <Typography
+            variant="h6"
+            sx={{
+              width: "100%",
+              fontSize: "14px",
+              color: "white",
+              paddingX: "10px",
+              paddingY: "5px",
+              backgroundColor: "#078BCD",
+              borderRadius: "2px",
+              fontWeight: "bold",
+              marginBottom: "1.5rem",
+            }}
+          >
+            {open === "EDIT" && "Información General"}
+            {open === "VIEW" && `Usuario ${formData.username}`}
+          </Typography>
 
-            <form onChange={handleChange} onSubmit={handleSubmit}>
-              <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
-                <FormControl fullWidth>
-                  <InputLabel id="role-select">Rol</InputLabel>
-                  <Select
-                    labelId="role-select"
-                    id="role_id"
-                    value={formData.name}
-                    label="Rol"
-                    name="name"
-                    onChange={handleChange}
-                    disabled={open === "VIEW"}
-                  >
-                    {roles.map((r) => (
-                      <MenuItem key={r.id} value={r.name}>
-                        {r.name}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
+          <form onChange={handleChange} onSubmit={handleSubmit}>
+            <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
+              <FormControl fullWidth>
+                <InputLabel id="role-select">Rol</InputLabel>
+                <Select
+                  labelId="role-select"
+                  id="role_id"
+                  value={formData.name}
+                  label="Rol"
+                  name="name"
+                  onChange={handleChange}
+                  disabled={open === "VIEW"}
+                >
+                  {roles.map((r) => (
+                    <MenuItem key={r.id} value={r.name}>
+                      {r.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
 
-                <FormControl fullWidth>
-                  <InputLabel htmlFor="role">Descripcion</InputLabel>
-                  <Select
-                    labelId="demo-simple-select-label"
-                    value={formData.description}
-                    label="Descripcion"
-                    onChange={handleChange}
-                    disabled={open === "VIEW"}
-                  >
-                    {roles.map((r) => (
-                      <MenuItem key={r.id} value={r.name}>
-                        {r.name}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
+              <FormControl fullWidth>
+                <InputLabel htmlFor="role">Descripcion</InputLabel>
+                <Select
+                  labelId="demo-simple-select-label"
+                  value={formData.description}
+                  label="Descripcion"
+                  onChange={handleChange}
+                  disabled={open === "VIEW"}
+                >
+                  {roles.map((r) => (
+                    <MenuItem key={r.id} value={r.name}>
+                      {r.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
 
-                {/* is Admin Checkbox */}
-                <Box
+              {/* is Admin Checkbox */}
+              <Box
+                sx={{
+                  width: "50%",
+                  display: "flex",
+                  alignItems: "start",
+                  justifyItems: "start",
+                  flexDirection: "column",
+                }}
+              >
+                <label>Es Administrador</label>
+                <Checkbox
+                  checked={formData.isAdmin}
+                  onChange={handleChange}
+                  inputProps={{ "aria-label": "controlled" }}
+                />
+              </Box>
+
+              {/* Button section */}
+              <FormControl
+                sx={{
+                  display: "flex",
+                  flexDirection: "row",
+                  gap: 1,
+                  justifyContent: "start",
+                  marginTop: 1,
+                  width: "50%",
+                }}
+              >
+                <Button
+                  type="button"
+                  variant="outlined"
+                  onClick={() => reset(setOpen)}
                   sx={{
-                    width: "50%",
-                    display: "flex",
-                    alignItems: "start",
-                    justifyItems: "start",
-                    flexDirection: "column",
+                    width: "25%",
                   }}
                 >
-                  <label>Es Administrador</label>
-                  <Checkbox
-                    checked={formData.isAdmin}
-                    onChange={handleChange}
-                    inputProps={{ "aria-label": "controlled" }}
-                  />
-                </Box>
-
-                {/* Button section */}
-                <FormControl
-                  sx={{
-                    display: "flex",
-                    flexDirection: "row",
-                    gap: 1,
-                    justifyContent: "start",
-                    marginTop: 1,
-                    width: "50%",
-                  }}
-                >
+                  {open === "VIEW" ? "Cerrar" : "Cancelar"}
+                </Button>
+                {(open === "NEW" || open === "EDIT") && (
                   <Button
-                    type="button"
-                    variant="outlined"
-                    onClick={() => reset(setOpen)}
+                    type="submit"
+                    variant="contained"
+                    disabled={disabled}
                     sx={{
                       width: "25%",
                     }}
                   >
-                    {open === "VIEW" ? "Cerrar" : "Cancelar"}
+                    Confirmar
                   </Button>
-                  {(open === "NEW" || open === "EDIT") && (
-                    <Button
-                      type="submit"
-                      variant="contained"
-                      disabled={disabled}
-                      sx={{
-                        width: "25%",
-                      }}
-                    >
-                      Confirmar
-                    </Button>
-                  )}
-                </FormControl>
-              </Box>
-            </form>
-          </ModalComponent>
-        </DataGrid>
-      )}
+                )}
+              </FormControl>
+            </Box>
+          </form>
+        </ModalComponent>
+      </DataGrid>
     </Layout>
   );
 }

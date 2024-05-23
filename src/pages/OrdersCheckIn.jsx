@@ -26,9 +26,9 @@ import { useNavigate } from "react-router-dom";
 
 
 export function OrdersCheckIn() {
-  
+
   const { auth } = useContext(AuthContext);
-  
+
   const navigate = useNavigate()
   const { setMessage, setOpenMessage, setSeverity } =
     useContext(MessageContext);
@@ -381,6 +381,7 @@ export function OrdersCheckIn() {
           Detalles
         </Typography>
         <DataGrid
+          loading={false}
           headCells={headCells}
           rows={clients}
           setOpen={setOpen}

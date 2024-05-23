@@ -1,5 +1,5 @@
-import { useContext, useEffect, useState } from "react";
-import { Box, Button, LinearProgress } from "@mui/material";
+import { useContext } from "react";
+import { Box, Button } from "@mui/material";
 
 import { AuthContext } from "../providers/AuthProvider";
 import { MessageContext } from "../providers/MessageProvider";
@@ -103,49 +103,44 @@ export function CurrentAccount() {
 
   return (
     <Layout title="Cuentas Corrientes">
-      {loadingClients || disabled ? (
-        <Box sx={{ width: "100%" }}>
-          <LinearProgress />
-        </Box>
-      ) : (
-        <DataGrid
-          headCells={
-            auth.user.role !== "ADMINISTRADOR"
-              ? headCells
-              : [
-                  ...headCells,
-                  {
-                    id: "seller",
-                    numeric: false,
-                    disablePadding: true,
-                    label: "Vendedor",
-                    sorter: (row) => row.user.username.toLowerCase(),
-                    accessor: (row) => row.user.username,
-                  },
-                ]
-          }
-          rows={[]}
-          contentHeader={
-            <Box
-              sx={{
-                display: "flex",
-                flexWrap: "wrap",
-                alignItems: "center",
-                gap: 2,
-              }}
-            >
-              <Box sx={{ display: "flex", gap: 1 }}>
-                <Button variant="outlined">
-                  Agregar
-                </Button>
-                <Button variant="outlined" color="success">
-                  Excel
-                </Button>
-              </Box>
+      <DataGrid
+        loading={loadingClients || disabled}
+        headCells={
+          auth.user.role !== "ADMINISTRADOR"
+            ? headCells
+            : [
+              ...headCells,
+              {
+                id: "seller",
+                numeric: false,
+                disablePadding: true,
+                label: "Vendedor",
+                sorter: (row) => row.user.username.toLowerCase(),
+                accessor: (row) => row.user.username,
+              },
+            ]
+        }
+        rows={[]}
+        contentHeader={
+          <Box
+            sx={{
+              display: "flex",
+              flexWrap: "wrap",
+              alignItems: "center",
+              gap: 2,
+            }}
+          >
+            <Box sx={{ display: "flex", gap: 1 }}>
+              <Button variant="outlined">
+                Agregar
+              </Button>
+              <Button variant="outlined" color="success">
+                Excel
+              </Button>
             </Box>
-          }
-        ></DataGrid>
-      )}
+          </Box>
+        }
+      />
     </Layout>
   );
 }

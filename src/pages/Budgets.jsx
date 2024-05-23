@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Box, Button, LinearProgress } from "@mui/material";
+import { Box, Button } from "@mui/material";
 import { format } from "date-fns";
 import { useApi } from "../hooks/useApi";
 import { useProducts } from "../hooks/useProducts";
@@ -117,38 +117,32 @@ export function Budgets() {
 
     return (
         <Layout title="Presupuesto">
-            {loadingClients || loadingSales || loadingProducts || disabled ?
-                <Box sx={{ width: '100%' }}>
-                    <LinearProgress />
-                </Box> :
-                <>
-                    <DataGrid
-                        headCells={headCells}
-                        rows={[]}
-                        contentHeader={
-                            <Box sx={{
-                                display: 'flex',
-                                flexWrap: 'wrap',
-                                alignItems: 'center',
-                                gap: 2
-                            }}>
-                                <Box sx={{ display: 'flex', gap: 1 }}>
-                                    <Button variant="outlined" onClick={() => setOpen('NEW')}>
-                                        Agregar
-                                    </Button>
-                                    <Button variant="outlined" color='success'>
-                                        Excel
-                                    </Button>
-                                    <Button variant="outlined" color='error'>
-                                        pdf
-                                    </Button>
-                                </Box>
-                                {/* <SaleFilter sales={sales} setSales={setSales} /> */}
-                            </Box>
-                        }
-                    />
-                </>
-            }
+            <DataGrid
+                headCells={headCells}
+                loading={loadingClients || loadingSales || loadingProducts || disabled}
+                rows={[]}
+                contentHeader={
+                    <Box sx={{
+                        display: 'flex',
+                        flexWrap: 'wrap',
+                        alignItems: 'center',
+                        gap: 2
+                    }}>
+                        <Box sx={{ display: 'flex', gap: 1 }}>
+                            <Button variant="outlined" onClick={() => setOpen('NEW')}>
+                                Agregar
+                            </Button>
+                            <Button variant="outlined" color='success'>
+                                Excel
+                            </Button>
+                            <Button variant="outlined" color='error'>
+                                pdf
+                            </Button>
+                        </Box>
+                        {/* <SaleFilter sales={sales} setSales={setSales} /> */}
+                    </Box>
+                }
+            />
         </Layout>
     )
 }

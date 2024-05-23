@@ -1,5 +1,5 @@
 import { useContext, useState } from "react";
-import { Box, Button, FormControl, Input, InputLabel, LinearProgress, MenuItem, Select, Typography } from "@mui/material";
+import { Box, Button, FormControl, Input, InputLabel, MenuItem, Select, Typography } from "@mui/material";
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
@@ -159,120 +159,113 @@ export function Payments({ sale, setSale, loading, setLoading }) {
 
     return (
         <>
-            {disabled || loading ?
-                <Box sx={{ width: '100%' }}>
-                    <LinearProgress />
-                </Box> :
-                <>
-                    <PaymentFilter sale={sale} setSale={setSale} />
-                    <DataGrid
-                        title=""
-                        headCells={headCells}
-                        rows={sale.payments}
-                        open={open}
-                        setOpen={setOpen}
-                        data={formData}
-                        setFormData={setFormData}
-                        handleDelete={handleDelete}
-                        defaultOrder="asc"
-                        disableSorting
-                    >
-                        <ModalComponent open={open === 'NEW' || open === 'EDIT'} onClose={() => reset(setOpen)} reduceWidth={600}>
-                            <Typography variant="h6" sx={{ marginBottom: 2 }}>
-                                {open === 'NEW' && 'Nuevo pago'}
-                                {open === 'EDIT' && 'Editar pago'}
-                            </Typography>
-                            <form onChange={handleChange} onSubmit={handleSubmit}>
-                                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-                                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 3 }}>
-                                        <FormControl sx={{ width: '70%' }}>
-                                            <InputLabel htmlFor="amount">Monto</InputLabel>
-                                            <Input
-                                                id="amount"
-                                                type="number"
-                                                name="amount"
-                                                value={formData.amount}
-                                                disabled={auth.user.role !== 'ADMINISTRADOR' && open === 'EDIT'}
-                                            />
-                                            {errors.amount?.type === 'required' &&
-                                                <Typography variant="caption" color="red" marginTop={1}>
-                                                    * La cantidad es requerida.
-                                                </Typography>
-                                            }
-                                        </FormControl>
-                                        <Typography sx={{ width: '30%', fontWeight: 'bold' }}>
-                                            Saldo: {getSaleDifference(sale)}
+            <PaymentFilter sale={sale} setSale={setSale} />
+            <DataGrid
+                loading={disabled || loading}
+                headCells={headCells}
+                rows={sale.payments}
+                open={open}
+                setOpen={setOpen}
+                data={formData}
+                setFormData={setFormData}
+                handleDelete={handleDelete}
+                defaultOrder="asc"
+                disableSorting
+            >
+                <ModalComponent open={open === 'NEW' || open === 'EDIT'} onClose={() => reset(setOpen)} reduceWidth={600}>
+                    <Typography variant="h6" sx={{ marginBottom: 2 }}>
+                        {open === 'NEW' && 'Nuevo pago'}
+                        {open === 'EDIT' && 'Editar pago'}
+                    </Typography>
+                    <form onChange={handleChange} onSubmit={handleSubmit}>
+                        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 3 }}>
+                                <FormControl sx={{ width: '70%' }}>
+                                    <InputLabel htmlFor="amount">Monto</InputLabel>
+                                    <Input
+                                        id="amount"
+                                        type="number"
+                                        name="amount"
+                                        value={formData.amount}
+                                        disabled={auth.user.role !== 'ADMINISTRADOR' && open === 'EDIT'}
+                                    />
+                                    {errors.amount?.type === 'required' &&
+                                        <Typography variant="caption" color="red" marginTop={1}>
+                                            * La cantidad es requerida.
                                         </Typography>
-                                    </Box>
-                                    <FormControl>
-                                        <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
-                                            <DatePicker
-                                                label="Fecha"
-                                                value={new Date(formData.date)}
-                                                onChange={value => handleChange({
-                                                    target: {
-                                                        name: 'date',
-                                                        value: new Date(value.toISOString())
-                                                    }
-                                                })}
-                                                disabled={auth.user.role !== 'ADMINISTRADOR' && open === 'EDIT'}
-                                            />
-                                        </LocalizationProvider>
-                                        {errors.date?.type === 'required' &&
-                                            <Typography variant="caption" color="red" marginTop={1}>
-                                                * La fecha es requerida.
-                                            </Typography>
-                                        }
-                                    </FormControl>
-                                    <FormControl>
-                                        <InputLabel id="type-select">Tipo</InputLabel>
-                                        <Select
-                                            labelId="type-select"
-                                            id="type"
-                                            value={formData.type}
-                                            label="Tipo"
-                                            name="type"
-                                            onChange={handleChange}
-                                        >
-                                            <MenuItem value="EFECTIVO">EFECTIVO</MenuItem>
-                                            <MenuItem value="TRANSFERENCIA">TRANSFERENCIA</MenuItem>
-                                        </Select>
-                                    </FormControl>
-                                    <FormControl>
-                                        <InputLabel htmlFor="observations">Observaciones</InputLabel>
-                                        <Input id="observations" type="text" name="observations" value={formData.observations} />
-                                        {errors.observations?.type === 'maxLength' &&
-                                            <Typography variant="caption" color="red" marginTop={1}>
-                                                * Las observaciones son demasiado largas.
-                                            </Typography>
-                                        }
-                                    </FormControl>
-                                    <FormControl sx={{
-                                        display: 'flex',
-                                        flexDirection: 'row',
-                                        gap: 1,
-                                        justifyContent: 'center',
-                                        margin: '0 auto',
-                                        marginTop: 1,
-                                        width: '50%'
-                                    }}>
-                                        <Button type="button" variant="outlined" onClick={() => reset(setOpen)} sx={{
-                                            width: '50%'
-                                        }}>
-                                            Cancelar
-                                        </Button>
-                                        <Button type="submit" variant="contained" disabled={disabled} sx={{
-                                            width: '50%'
-                                        }}>
-                                            Guardar
-                                        </Button>
-                                    </FormControl>
-                                </Box>
-                            </form>
-                        </ModalComponent>
-                    </DataGrid>
-                </>
-            }
+                                    }
+                                </FormControl>
+                                <Typography sx={{ width: '30%', fontWeight: 'bold' }}>
+                                    Saldo: {getSaleDifference(sale)}
+                                </Typography>
+                            </Box>
+                            <FormControl>
+                                <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
+                                    <DatePicker
+                                        label="Fecha"
+                                        value={new Date(formData.date)}
+                                        onChange={value => handleChange({
+                                            target: {
+                                                name: 'date',
+                                                value: new Date(value.toISOString())
+                                            }
+                                        })}
+                                        disabled={auth.user.role !== 'ADMINISTRADOR' && open === 'EDIT'}
+                                    />
+                                </LocalizationProvider>
+                                {errors.date?.type === 'required' &&
+                                    <Typography variant="caption" color="red" marginTop={1}>
+                                        * La fecha es requerida.
+                                    </Typography>
+                                }
+                            </FormControl>
+                            <FormControl>
+                                <InputLabel id="type-select">Tipo</InputLabel>
+                                <Select
+                                    labelId="type-select"
+                                    id="type"
+                                    value={formData.type}
+                                    label="Tipo"
+                                    name="type"
+                                    onChange={handleChange}
+                                >
+                                    <MenuItem value="EFECTIVO">EFECTIVO</MenuItem>
+                                    <MenuItem value="TRANSFERENCIA">TRANSFERENCIA</MenuItem>
+                                </Select>
+                            </FormControl>
+                            <FormControl>
+                                <InputLabel htmlFor="observations">Observaciones</InputLabel>
+                                <Input id="observations" type="text" name="observations" value={formData.observations} />
+                                {errors.observations?.type === 'maxLength' &&
+                                    <Typography variant="caption" color="red" marginTop={1}>
+                                        * Las observaciones son demasiado largas.
+                                    </Typography>
+                                }
+                            </FormControl>
+                            <FormControl sx={{
+                                display: 'flex',
+                                flexDirection: 'row',
+                                gap: 1,
+                                justifyContent: 'center',
+                                margin: '0 auto',
+                                marginTop: 1,
+                                width: '50%'
+                            }}>
+                                <Button type="button" variant="outlined" onClick={() => reset(setOpen)} sx={{
+                                    width: '50%'
+                                }}>
+                                    Cancelar
+                                </Button>
+                                <Button type="submit" variant="contained" disabled={disabled} sx={{
+                                    width: '50%'
+                                }}>
+                                    Guardar
+                                </Button>
+                            </FormControl>
+                        </Box>
+                    </form>
+                </ModalComponent>
+            </DataGrid>
         </>
     )
 }

@@ -5,7 +5,6 @@ import {
   FormControl,
   Input,
   InputLabel,
-  LinearProgress,
   Typography,
 } from "@mui/material";
 
@@ -86,8 +85,7 @@ export function Visits() {
       const ids = result.map((r) => r.data.id);
       setClients([...clients.filter((c) => !ids.includes(c.id))]);
       setMessage(
-        `${
-          result.length === 1 ? "Cliente eliminado" : "Clientes eliminados"
+        `${result.length === 1 ? "Cliente eliminado" : "Clientes eliminados"
         } correctamente.`
       );
       setSeverity("success");
@@ -159,52 +157,47 @@ export function Visits() {
 
   return (
     <Layout title="Visitas a Clientes">
-      {loadingClients || disabled ? (
-        <Box sx={{ width: "100%" }}>
-          <LinearProgress />
-        </Box>
-      ) : (
-        <DataGrid
-          headCells={
-            auth.user.role !== "ADMINISTRADOR"
-              ? headCells
-              : [
-                  ...headCells,
-                  {
-                    id: "seller",
-                    numeric: false,
-                    disablePadding: true,
-                    label: "Vendedor",
-                    sorter: (row) => row.user.username.toLowerCase(),
-                    accessor: (row) => row.user.username,
-                  },
-                ]
-          }
-          rows={clients}
-          setOpen={setOpen}
-          setFormData={setFormData}
-          contentHeader={
-            <Box
-              sx={{
-                display: "flex",
-                flexWrap: "wrap",
-                alignItems: "center",
-                gap: 2,
-              }}
-            >
-              <Box sx={{ display: "flex", gap: 1 }}>
-                <Button variant="outlined" onClick={() => setOpen("NEW")}>
-                  Agregar
-                </Button>
-                <Button variant="outlined" color="success">
-                  Excel
-                </Button>
-              </Box>
-              <ClientFilter clients={clients} setClients={setClients} />
+      <DataGrid
+        loading={loadingClients || disabled}
+        headCells={
+          auth.user.role !== "ADMINISTRADOR"
+            ? headCells
+            : [
+              ...headCells,
+              {
+                id: "seller",
+                numeric: false,
+                disablePadding: true,
+                label: "Vendedor",
+                sorter: (row) => row.user.username.toLowerCase(),
+                accessor: (row) => row.user.username,
+              },
+            ]
+        }
+        rows={clients}
+        setOpen={setOpen}
+        setFormData={setFormData}
+        contentHeader={
+          <Box
+            sx={{
+              display: "flex",
+              flexWrap: "wrap",
+              alignItems: "center",
+              gap: 2,
+            }}
+          >
+            <Box sx={{ display: "flex", gap: 1 }}>
+              <Button variant="outlined" onClick={() => setOpen("NEW")}>
+                Agregar
+              </Button>
+              <Button variant="outlined" color="success">
+                Excel
+              </Button>
             </Box>
-          }
-        ></DataGrid>
-      )}
+            <ClientFilter clients={clients} setClients={setClients} />
+          </Box>
+        }
+      ></DataGrid>
     </Layout>
   );
 }

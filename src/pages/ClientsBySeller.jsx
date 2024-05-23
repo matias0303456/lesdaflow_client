@@ -1,13 +1,6 @@
 import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  Box,
-  FormControl,
-  InputLabel,
-  LinearProgress,
-  MenuItem,
-  Select
-} from "@mui/material";
+import { Box, FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 
 import { AuthContext } from "../providers/AuthProvider";
 import { useForm } from "../hooks/useForm";
@@ -73,44 +66,40 @@ export function ClientsBySeller() {
 
   return (
     <Layout title="Clientes por Vendedor">
-      {loadingSellers ?
-        <Box sx={{ width: "100%" }}><LinearProgress /></Box> :
-        <>
-          <Box sx={{ width: '100%', backgroundColor: '#fff' }}>
-            <Box sx={{ width: "100%", color: "white", paddingX: "10px", paddingY: "5px", backgroundColor: "#078BCD", borderRadius: "2px" }} />
-            <form className="mb-2">
-              <Box sx={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "start", gap: 3 }}>
-                <FormControl variant="standard" sx={{ m: 1, minWidth: 300 }}>
-                  <InputLabel id="demo-simple-select-standard-label">Vendedor</InputLabel>
-                  <Select
-                    labelId="seller-select"
-                    id="id"
-                    value={formData.id}
-                    label="Vendedor"
-                    name="id"
-                    sx={{ width: "100%" }}
-                    onChange={(e) => setFormData(e.target.value)}
-                  >
-                    {sellers.length > 0 ? (
-                      sellers.map((s) => (
-                        <MenuItem key={s.id} value={s}>
-                          {`${s.first_name} ${s.last_name}`.toUpperCase()}
-                        </MenuItem>
-                      ))
-                    ) : (
-                      <MenuItem>No se encontraron resultados</MenuItem>
-                    )}
-                  </Select>
-                </FormControl>
-              </Box>
-            </form>
-            <DataGrid
-              headCells={headCells}
-              rows={formData.clients ?? []}
-            />
+      <Box sx={{ width: '100%', backgroundColor: '#fff' }}>
+        <Box sx={{ width: "100%", color: "white", paddingX: "10px", paddingY: "5px", backgroundColor: "#078BCD", borderRadius: "2px" }} />
+        <form className="mb-2">
+          <Box sx={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "start", gap: 3 }}>
+            <FormControl variant="standard" sx={{ m: 1, minWidth: 300 }}>
+              <InputLabel id="demo-simple-select-standard-label">Vendedor</InputLabel>
+              <Select
+                labelId="seller-select"
+                id="id"
+                value={formData.id}
+                label="Vendedor"
+                name="id"
+                sx={{ width: "100%" }}
+                onChange={(e) => setFormData(e.target.value)}
+              >
+                {sellers.length > 0 ? (
+                  sellers.map((s) => (
+                    <MenuItem key={s.id} value={s}>
+                      {`${s.first_name} ${s.last_name}`.toUpperCase()}
+                    </MenuItem>
+                  ))
+                ) : (
+                  <MenuItem>No se encontraron resultados</MenuItem>
+                )}
+              </Select>
+            </FormControl>
           </Box>
-        </>
-      }
+        </form>
+        <DataGrid
+          headCells={headCells}
+          rows={formData.clients ?? []}
+          loading={loadingSellers}
+        />
+      </Box>
     </Layout>
   );
 }

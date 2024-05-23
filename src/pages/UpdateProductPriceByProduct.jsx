@@ -8,7 +8,6 @@ import {
   Input,
   FormControl,
   InputLabel,
-  LinearProgress,
   Typography,
   Tooltip,
   IconButton,
@@ -95,123 +94,117 @@ export function UpdateProductPriceByProduct() {
 
   return (
     <Layout title="Actualizar Precios Productos">
-      {loadingProducts ?
-        <Box sx={{ width: "100%" }}>
-          <LinearProgress />
-        </Box> :
-        <>
-          <Box className="w-[50%] mb-3 bg-white rounded-md">
-            <Typography
-              variant="h6"
-              sx={{
-                width: "100%",
-                fontSize: "14px",
-                color: "white",
-                backgroundColor: "#078BCD",
-                padding: 1,
-                borderRadius: "2px",
-                fontWeight: "bold",
-              }}
+      <Box className="w-[50%] mb-3 bg-white rounded-md">
+        <Typography
+          variant="h6"
+          sx={{
+            width: "100%",
+            fontSize: "14px",
+            color: "white",
+            backgroundColor: "#078BCD",
+            padding: 1,
+            borderRadius: "2px",
+            fontWeight: "bold",
+          }}
+        >
+          Información General
+        </Typography>
+        <form>
+          <Box sx={{
+            display: "flex",
+            alignItems: "center",
+            flexDirection: "column",
+            justifyContent: "start",
+            padding: 1,
+            paddingBottom: 2,
+            gap: 1
+          }}
+          >
+            <FormControl
+              variant="standard"
+              sx={{ minWidth: "100%", color: "#59656b", display: "flex", alignItems: "start", justifyContent: "center" }}
             >
-              Información General
-            </Typography>
-            <form>
-              <Box sx={{
-                display: "flex",
-                alignItems: "center",
-                flexDirection: "column",
-                justifyContent: "start",
-                padding: 1,
-                paddingBottom: 2,
-                gap: 1
-              }}
+              <InputLabel className="font-semibold text-gray-400 text-sm">
+                Producto
+              </InputLabel>
+              <Select
+                labelId="product-select"
+                id="product_id"
+                value={formData.product_id}
+                name="product_id"
+                onChange={handleChange}
+                sx={{ width: "100%" }}
+                label="Producto"
+                disabled={products.filter(p => !massiveEdit.map(me => me.product_id).includes(p.id)).length === 0}
               >
-                <FormControl
-                  variant="standard"
-                  sx={{ minWidth: "100%", color: "#59656b", display: "flex", alignItems: "start", justifyContent: "center" }}
-                >
-                  <InputLabel className="font-semibold text-gray-400 text-sm">
-                    Producto
-                  </InputLabel>
-                  <Select
-                    labelId="product-select"
-                    id="product_id"
-                    value={formData.product_id}
-                    name="product_id"
-                    onChange={handleChange}
-                    sx={{ width: "100%" }}
-                    label="Producto"
-                    disabled={products.filter(p => !massiveEdit.map(me => me.product_id).includes(p.id)).length === 0}
-                  >
-                    {products.filter(p => !massiveEdit.map(me => me.product_id).includes(p.id)).map((p) => (
-                      <MenuItem key={p.id} value={p.id}>
-                        {p.details}
-                      </MenuItem>
-                    ))
-                    }
-                  </Select>
-                  {errors.product_id?.type === 'required' &&
-                    <Typography variant="caption" color="red" marginTop={1}>
-                      * El producto es requerido.
-                    </Typography>
-                  }
-                </FormControl>
-                <Box className="w-[100%] flex items-center justify-start gap-2">
-                  <FormControl
-                    variant="standard"
-                    sx={{
-                      width: "40%",
-                      color: "#59656b",
-                      display: "flex",
-                      alignItems: "start",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <InputLabel htmlFor="percentage" className="font-semibold text-gray-400 text-sm">
-                      Porcentaje
-                    </InputLabel>
-                    <Input
-                      className="w-full"
-                      type="number"
-                      value={formData.percentage}
-                      disabled={products.filter(p => !massiveEdit.map(me => me.product_id).includes(p.id)).length === 0}
-                      onChange={(e) => handleChange({ target: { name: 'percentage', value: e.target.value } })}
-                    />
-                    {errors.percentage?.type === 'required' &&
-                      <Typography variant="caption" color="red" marginTop={1}>
-                        * El porcentaje es requerido.
-                      </Typography>
-                    }
-                  </FormControl>
-                  <Button
-                    variant="contained"
-                    size="small"
-                    onClick={handleAddProduct}
-                    disabled={products.filter(p => !massiveEdit.map(me => me.product_id).includes(p.id)).length === 0}
-                  >
-                    Agregar
-                  </Button>
-                </Box>
-              </Box>
-            </form>
+                {products.filter(p => !massiveEdit.map(me => me.product_id).includes(p.id)).map((p) => (
+                  <MenuItem key={p.id} value={p.id}>
+                    {p.details}
+                  </MenuItem>
+                ))
+                }
+              </Select>
+              {errors.product_id?.type === 'required' &&
+                <Typography variant="caption" color="red" marginTop={1}>
+                  * El producto es requerido.
+                </Typography>
+              }
+            </FormControl>
+            <Box className="w-[100%] flex items-center justify-start gap-2">
+              <FormControl
+                variant="standard"
+                sx={{
+                  width: "40%",
+                  color: "#59656b",
+                  display: "flex",
+                  alignItems: "start",
+                  justifyContent: "center",
+                }}
+              >
+                <InputLabel htmlFor="percentage" className="font-semibold text-gray-400 text-sm">
+                  Porcentaje
+                </InputLabel>
+                <Input
+                  className="w-full"
+                  type="number"
+                  value={formData.percentage}
+                  disabled={products.filter(p => !massiveEdit.map(me => me.product_id).includes(p.id)).length === 0}
+                  onChange={(e) => handleChange({ target: { name: 'percentage', value: e.target.value } })}
+                />
+                {errors.percentage?.type === 'required' &&
+                  <Typography variant="caption" color="red" marginTop={1}>
+                    * El porcentaje es requerido.
+                  </Typography>
+                }
+              </FormControl>
+              <Button
+                variant="contained"
+                size="small"
+                onClick={handleAddProduct}
+                disabled={products.filter(p => !massiveEdit.map(me => me.product_id).includes(p.id)).length === 0}
+              >
+                Agregar
+              </Button>
+            </Box>
           </Box>
-          <DataGrid
-            headCells={headCells}
-            rows={products.filter(p => massiveEdit.map(me => me.product_id).includes(p.id))}
-          />
-          <Box className="w-[50%] flex items-center justify-start gap-2 mt-4">
-            <Button variant="outlined" size="medium" onClick={() => navigate('/productos')}>
-              Volver
-            </Button>
-            <Button variant="outlined" size="medium" onClick={() => setMassiveEdit([])}>
-              Limpiar
-            </Button>
-            <Button variant="contained" size="medium" disabled={massiveEdit.length === 0} onClick={handleSubmitMassive}>
-              Confirmar
-            </Button>
-          </Box>
-        </>
-      }
+        </form>
+      </Box>
+      <DataGrid
+        loading={loadingProducts}
+        headCells={headCells}
+        rows={products.filter(p => massiveEdit.map(me => me.product_id).includes(p.id))}
+      />
+      <Box className="w-[50%] flex items-center justify-start gap-2 mt-4">
+        <Button variant="outlined" size="medium" onClick={() => navigate('/productos')}>
+          Volver
+        </Button>
+        <Button variant="outlined" size="medium" onClick={() => setMassiveEdit([])}>
+          Limpiar
+        </Button>
+        <Button variant="contained" size="medium" disabled={massiveEdit.length === 0} onClick={handleSubmitMassive}>
+          Confirmar
+        </Button>
+      </Box>
     </Layout>
   );
 }
