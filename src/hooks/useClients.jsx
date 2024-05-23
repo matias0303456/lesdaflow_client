@@ -18,6 +18,7 @@ export function useClients() {
     const { get } = useApi(CLIENT_URL)
 
     async function getClients() {
+        setLoadingClients(true)
         const { status, data } = await get()
         if (status === 200) {
             setClients(data[0])

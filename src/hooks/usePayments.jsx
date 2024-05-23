@@ -15,6 +15,7 @@ export function usePayments() {
     const { get } = useApi(PAYMENT_URL)
 
     async function getPayments() {
+        setLoadingPayments(true)
         const { status, data } = await get()
         if (status === 200) {
             setPayments(data)

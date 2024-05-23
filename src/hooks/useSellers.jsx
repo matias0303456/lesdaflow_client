@@ -17,6 +17,7 @@ export function useSellers() {
     const { post, put, destroy } = useApi(USER_URL)
 
     async function getSellers() {
+        setLoadingSellers(true)
         const { status, data } = await get()
         if (status === 200) {
             setSellers(data[0])

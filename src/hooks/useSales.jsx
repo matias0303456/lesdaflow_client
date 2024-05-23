@@ -20,6 +20,7 @@ export function useSales() {
     const [missing, setMissing] = useState(false)
 
     async function getSales() {
+        setLoadingSales(true)
         const { status, data } = await get()
         if (status === 200) {
             setSales(data[0])

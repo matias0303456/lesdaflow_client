@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react"
+import { useContext, useState } from "react"
 
 import { MessageContext } from "../providers/MessageProvider"
 import { DataContext } from "../providers/DataProvider"
@@ -19,6 +19,7 @@ export function useProducts() {
     const [earnPrice, setEarnPrice] = useState(0)
 
     async function getProducts(params) {
+        setLoadingProducts(true)
         const { status, data } = await get(params)
         if (status === 200) {
             dispatch({

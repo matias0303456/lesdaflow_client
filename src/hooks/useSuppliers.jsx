@@ -18,6 +18,7 @@ export function useSuppliers() {
     const { get } = useApi(SUPPLIER_URL)
 
     async function getSuppliers() {
+        setLoadingSuppliers(true)
         const { status, data } = await get()
         if (status === 200) {
             setSuppliers(data[0])
