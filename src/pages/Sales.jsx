@@ -7,6 +7,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import es from 'date-fns/locale/es';
 
 import { AuthContext } from "../providers/AuthProvider";
+import { DataContext } from "../providers/DataProvider";
 import { useProducts } from "../hooks/useProducts";
 import { useClients } from '../hooks/useClients'
 import { useForm } from "../hooks/useForm";
@@ -24,11 +25,11 @@ import { getCurrentSubtotal, getCurrentTotal, getInstallmentsAmount, getSaleTota
 export function Sales() {
 
     const { auth } = useContext(AuthContext)
+    const { state } = useContext(DataContext)
 
     const {
         loadingSales,
         setSaleProducts,
-        sales,
         open,
         setOpen,
         setMissing,
@@ -176,7 +177,7 @@ export function Sales() {
             <DataGridWithBackendPagination
                 loading={loadingClients || loadingSales || loadingProducts || disabled}
                 headCells={headCells}
-                rows={sales}
+                rows={state.sales.data}
                 entityKey="sales"
                 getter={getSales}
                 setOpen={setOpen}

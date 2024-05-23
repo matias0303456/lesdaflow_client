@@ -8,6 +8,7 @@ import { useSuppliers } from "../hooks/useSuppliers";
 import { useApi } from "../hooks/useApi";
 
 import { AuthContext } from "../providers/AuthProvider";
+import { DataContext } from "../providers/DataProvider";
 import { Layout } from "../components/Layout";
 import { ModalComponent } from "../components/ModalComponent";
 import { ProductFilter } from "../components/filters/ProductFilter";
@@ -20,10 +21,11 @@ import { getNewPrice, getStock } from "../utils/helpers";
 export function Orders() {
 
     const { auth } = useContext(AuthContext)
+    const { state } = useContext(DataContext)
     const { setMessage, setOpenMessage, setSeverity } = useContext(MessageContext)
 
     const { post, put, putMassive, destroy } = useApi(PRODUCT_URL)
-    const { products, setProducts, loadingProducts, setLoadingProducts } = useProducts()
+    const { setProducts, loadingProducts, setLoadingProducts } = useProducts()
     const { suppliers, loadingSuppliers, getSuppliers } = useSuppliers()
     const [open, setOpen] = useState(null)
     const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
@@ -87,73 +89,6 @@ export function Orders() {
         setEarnPrice(`$${(buy_price + ((buy_price / 100) * earn)).toFixed(2)}`)
     }, [formData])
 
-    async function handleSubmit(e) {
-        e.preventDefault()
-        if (validate()) {
-            const { status, data } = open === 'NEW' ? await post(formData) : await put(formData)
-            if (status === 200) {
-                if (open === 'NEW') {
-                    setProducts([data, ...products])
-                    setMessage('Producto creado correctamente.')
-                } else {
-                    setProducts([data, ...products.filter(p => p.id !== formData.id)])
-                    setMessage('Producto editado correctamente.')
-                }
-                setSeverity('success')
-                reset(setOpen)
-            } else {
-                setMessage(data.message)
-                setSeverity('error')
-                setDisabled(false)
-            }
-            setOpenMessage(true)
-        }
-    }
-
-    async function handleSubmitMassive() {
-        setLoadingProducts(true)
-        const body = {
-            products: massiveEdit.map(me => ({ id: me.id, buy_price: me.buy_price })),
-            percentage: parseInt(massiveEditPercentage)
-        }
-        const { status, data } = await putMassive(body)
-        if (status === 200) {
-            setProducts([...data, ...products.filter(p => !data.map(d => d.id).includes(p.id))])
-            setMessage('Precios actualizados correctamente.')
-            setSeverity('success')
-            reset(setOpen)
-            setMassiveEdit([])
-            setMassiveEditPercentage(0)
-        } else {
-            setMessage(data.message)
-            setSeverity('error')
-            setDisabled(false)
-        }
-        setLoadingProducts(false)
-        setOpenMessage(true)
-    }
-
-    async function handleDelete(elements) {
-        setLoadingProducts(true)
-        const result = await Promise.all(elements.map(e => destroy(e)))
-        if (result.every(r => r.status === 200)) {
-            const ids = result.map(r => r.data.id)
-            setProducts([...products.filter(p => !ids.includes(p.id))])
-            setMessage(`${result.length === 1 ? 'Producto eliminado' : 'Productos eliminados'} correctamente.`)
-            setSeverity('success')
-        } else {
-            if (result.some(r => r.status === 300)) {
-                setMessage('Existen productos con datos asociados.')
-            } else {
-                setMessage('Ocurrió un error. Actualice la página.')
-            }
-            setSeverity('error')
-        }
-        setOpenMessage(true)
-        setLoadingProducts(false)
-        setOpen(null)
-    }
-
     const headCells = [
         {
             id: 'order_code',
@@ -213,7 +148,7 @@ export function Orders() {
             <DataGridWithBackendPagination
                 loading={loadingProducts || loadingSuppliers || disabled}
                 headCells={headCells}
-                rows={products}
+                rows={state.products.data}
                 setOpen={setOpen}
                 setFormData={setFormData}
                 deadlineColor="pedidos"

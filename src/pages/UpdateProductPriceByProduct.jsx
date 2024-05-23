@@ -19,7 +19,7 @@ import { useForm } from "../hooks/useForm";
 import { useProducts } from "../hooks/useProducts";
 
 import { Layout } from "../components/Layout";
-import { DataGridWithBackendPagination } from "../components/DataGridWithBackendPagination";
+import { DataGridWithFrontendPagination } from "../components/DataGridWithFrontendPagination";
 
 import { getProductNewSalePriceByPercentage, getProductSalePrice } from "../utils/helpers";
 
@@ -190,7 +190,7 @@ export function UpdateProductPriceByProduct() {
           </Box>
         </form>
       </Box>
-      <DataGridWithBackendPagination
+      <DataGridWithFrontendPagination
         loading={loadingProducts}
         headCells={headCells}
         rows={products.filter(p => massiveEdit.map(me => me.product_id).includes(p.id))}

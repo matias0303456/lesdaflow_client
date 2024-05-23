@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Box, Button, FormControl, Input, InputLabel, Typography } from "@mui/material";
 
 import { AuthContext } from "../providers/AuthProvider";
+import { DataContext } from "../providers/DataProvider";
 import { useForm } from "../hooks/useForm";
 import { useSuppliers } from "../hooks/useSuppliers";
 
@@ -14,10 +15,11 @@ import { DataGridWithBackendPagination } from "../components/DataGridWithBackend
 export function Suppliers() {
 
     const { auth } = useContext(AuthContext)
+    const { state } = useContext(DataContext)
 
     const navigate = useNavigate()
 
-    const { suppliers, setSuppliers, loadingSuppliers, handleSubmit, handleDelete, setOpen, open, getSuppliers } = useSuppliers()
+    const { setSuppliers, loadingSuppliers, handleSubmit, handleDelete, setOpen, open, getSuppliers } = useSuppliers()
     const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
         defaultData: {
             id: '',
@@ -130,7 +132,7 @@ export function Suppliers() {
             <DataGridWithBackendPagination
                 loading={loadingSuppliers || disabled}
                 headCells={headCells}
-                rows={suppliers}
+                rows={state.suppliers.data}
                 entityKey="suppliers"
                 getter={getSuppliers}
                 setOpen={setOpen}
@@ -153,7 +155,7 @@ export function Suppliers() {
                                 Excel
                             </Button>
                         </Box>
-                        <SupplierFilter suppliers={suppliers} setSuppliers={setSuppliers} />
+                        <SupplierFilter suppliers={state.suppliers.data} setSuppliers={setSuppliers} />
                     </Box>
                 }
             >

@@ -3,6 +3,7 @@ import { Box, Button, FormControl, Paper, Table, TableBody, TableCell, TableCont
 import { format } from "date-fns";
 
 import { AuthContext } from "../providers/AuthProvider";
+import { DataContext } from "../providers/DataProvider";
 import { useForm } from "../hooks/useForm";
 import { usePayments } from "../hooks/usePayments";
 import { useRegisters } from "../hooks/useRegisters";
@@ -16,8 +17,9 @@ import { getRegisterTotal, setLocalDate } from "../utils/helpers";
 export function Registers() {
 
     const { auth } = useContext(AuthContext)
+    const { state } = useContext(DataContext)
 
-    const { registers, loadingRegisters, handleSubmit, open, setOpen, getRegisters } = useRegisters()
+    const { loadingRegisters, handleSubmit, open, setOpen, getRegisters } = useRegisters()
     const { payments, loadingPayments, getPayments } = usePayments()
     const { formData, setFormData, handleChange, disabled, setDisabled, reset } = useForm({
         defaultData: {
@@ -90,7 +92,7 @@ export function Registers() {
             <DataGridWithBackendPagination
                 loading={loadingRegisters || loadingPayments || disabled}
                 headCells={headCells}
-                rows={registers}
+                rows={state.registers.data}
                 entityKey="registers"
                 getter={getRegisters}
                 setOpen={setOpen}

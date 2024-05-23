@@ -8,6 +8,7 @@ import { Box, FormControl, Input, InputLabel, MenuItem, Select, Typography } fro
 import { format } from "date-fns";
 
 import { AuthContext } from "../providers/AuthProvider";
+import { DataContext } from "../providers/DataProvider";
 import { useForm } from "../hooks/useForm";
 import { useSellers } from "../hooks/useSellers";
 import { useSales } from "../hooks/useSales";
@@ -18,11 +19,12 @@ import { Layout } from "../components/Layout";
 export function SalesSearch() {
 
   const { auth } = useContext(AuthContext);
+  const { state } = useContext(DataContext)
 
   const navigate = useNavigate()
 
   const { sellers, loadingSellers, getSellers } = useSellers()
-  const { sales, loadingSales } = useSales()
+  const { loadingSales } = useSales()
   const { formData, handleChange } = useForm({
     defaultData: { from: new Date(Date.now()), to: new Date(Date.now()), code: '', seller_id: '' }
   });
@@ -177,7 +179,7 @@ export function SalesSearch() {
         <DataGridWithBackendPagination
           loading={loadingSales || loadingSellers}
           headCells={headCells}
-          rows={sales}
+          rows={state.sales.data}
         />
       </Box>
     </Layout>

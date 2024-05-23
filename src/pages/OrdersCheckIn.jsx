@@ -15,6 +15,7 @@ import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 
 import { AuthContext } from "../providers/AuthProvider";
 import { MessageContext } from "../providers/MessageProvider";
+import { DataContext } from "../providers/DataProvider";
 import { useApi } from "../hooks/useApi";
 import { useForm } from "../hooks/useForm";
 import { useSuppliers } from "../hooks/useSuppliers"
@@ -26,14 +27,14 @@ import { DataGridWithBackendPagination } from "../components/DataGridWithBackend
 export function OrdersCheckIn() {
 
   const { auth } = useContext(AuthContext);
+  const { state } = useContext(DataContext)
 
   const navigate = useNavigate()
   const { setMessage, setOpenMessage, setSeverity } =
     useContext(MessageContext);
   // clients import
   const { get, /* post, put */ } = useApi(CLIENT_URL);
-  const { clients, setClients, loadingClients, setLoadingClients } =
-    useClients();
+  const { clients, setClients, loadingClients, setLoadingClients } = useClients();
   // users import
   const { get: getUsers } = useApi(USER_URL);
 
@@ -381,7 +382,7 @@ export function OrdersCheckIn() {
         <DataGridWithBackendPagination
           loading={false}
           headCells={headCells}
-          rows={clients}
+          rows={state.clients.data}
           setOpen={setOpen}
           setData={setFormData}
           contentHeader={

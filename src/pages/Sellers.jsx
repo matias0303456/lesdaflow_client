@@ -1,8 +1,10 @@
+import { useContext } from "react";
 import { Box, Button, FormControl, Input, InputLabel, MenuItem, Select, Typography } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { es } from "date-fns/locale";
 
+import { DataContext } from "../providers/DataProvider";
 import { useSellers } from '../hooks/useSellers'
 import { useForm } from '../hooks/useForm'
 
@@ -12,7 +14,9 @@ import { DataGridWithBackendPagination } from "../components/DataGridWithBackend
 
 export function Sellers() {
 
-    const { loadingSellers, sellers, open, setOpen, handleSubmit, handleDelete, getSellers } = useSellers()
+    const { state } = useContext(DataContext)
+
+    const { loadingSellers, open, setOpen, handleSubmit, handleDelete, getSellers } = useSellers()
     const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
         defaultData: {
             id: '',
@@ -115,7 +119,7 @@ export function Sellers() {
             <DataGridWithBackendPagination
                 loading={loadingSellers}
                 headCells={headCells}
-                rows={sellers}
+                rows={state.sellers.data}
                 entityKey="sellers"
                 getter={getSellers}
                 setOpen={setOpen}

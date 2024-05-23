@@ -5,6 +5,7 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { es } from "date-fns/locale";
 
 import { AuthContext } from "../providers/AuthProvider";
+import { DataContext } from "../providers/DataProvider";
 import { useForm } from "../hooks/useForm";
 import { useClients } from "../hooks/useClients";
 import { useSellers } from "../hooks/useSellers";
@@ -17,8 +18,9 @@ import { DataGridWithBackendPagination } from "../components/DataGridWithBackend
 export function Clients() {
 
     const { auth } = useContext(AuthContext)
+    const { state } = useContext(DataContext)
 
-    const { clients, loadingClients, handleSubmit, handleDelete, open, setOpen, getClients } = useClients()
+    const { loadingClients, handleSubmit, handleDelete, open, setOpen, getClients } = useClients()
     const { sellers, loadingSellers, getSellers } = useSellers()
     const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
         defaultData: {
@@ -138,7 +140,7 @@ export function Clients() {
                     ]
                 }
                 loading={loadingClients || disabled || loadingSellers}
-                rows={clients}
+                rows={state.clients.data}
                 entityKey="clients"
                 getter={getClients}
                 setOpen={setOpen}

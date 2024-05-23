@@ -16,7 +16,7 @@ import { useForm } from "../hooks/useForm";
 import { useSuppliers } from "../hooks/useSuppliers";
 
 import { Layout } from "../components/Layout";
-import { DataGridWithBackendPagination } from "../components/DataGridWithBackendPagination";
+import { DataGridWithFrontendPagination } from "../components/DataGridWithFrontendPagination";
 
 import { getProductNewSalePriceByPercentage, getProductSalePrice } from "../utils/helpers";
 
@@ -185,7 +185,7 @@ export function UpdateProductPriceBySupplier() {
           Volver
         </Button>
       </Box>
-      <DataGridWithBackendPagination
+      <DataGridWithFrontendPagination
         loading={loadingSuppliers}
         headCells={headCells}
         rows={suppliers.find(s => s.id === parseInt(formData.id))?.products || []}
