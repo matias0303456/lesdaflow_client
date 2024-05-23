@@ -7,7 +7,7 @@ import { useForm } from "../hooks/useForm";
 import { useSellers } from "../hooks/useSellers";
 
 import { Layout } from "../components/Layout";
-import { DataGrid } from "../components/DataGrid";
+import { DataGridWithFrontendPagination } from "../components/DataGridWithFrontendPagination";
 
 export function ClientsBySeller() {
 
@@ -94,7 +94,7 @@ export function ClientsBySeller() {
             </FormControl>
           </Box>
         </form>
-        <DataGrid
+        <DataGridWithFrontendPagination
           headCells={headCells}
           rows={formData.clients ?? []}
           loading={loadingSellers}

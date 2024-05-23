@@ -1,4 +1,5 @@
 import { useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Box,
   Button,
@@ -10,6 +11,8 @@ import {
 } from "@mui/material";
 import { CLIENT_URL, USER_URL, SUPPLIER_URL } from "../utils/urls";
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+
 import { AuthContext } from "../providers/AuthProvider";
 import { MessageContext } from "../providers/MessageProvider";
 import { useApi } from "../hooks/useApi";
@@ -18,12 +21,7 @@ import { useSuppliers } from "../hooks/useSuppliers"
 import { useClients } from "../hooks/useClients";
 
 import { Layout } from "../components/Layout";
-
-import { DataGrid } from "../components/DataGrid";
-import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
-import { useNavigate } from "react-router-dom";
-
-
+import { DataGridWithBackendPagination } from "../components/DataGridWithBackendPagination";
 
 export function OrdersCheckIn() {
 
@@ -380,7 +378,7 @@ export function OrdersCheckIn() {
         >
           Detalles
         </Typography>
-        <DataGrid
+        <DataGridWithBackendPagination
           loading={false}
           headCells={headCells}
           rows={clients}
@@ -396,10 +394,7 @@ export function OrdersCheckIn() {
               {/* <SaleFilter sales={sales} setSales={setSales} /> */}
             </Box>
           }
-        >
-
-        </DataGrid>
-
+        />
       </Box>
 
       {/* down button section */}

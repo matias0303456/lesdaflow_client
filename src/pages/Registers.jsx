@@ -8,8 +8,8 @@ import { usePayments } from "../hooks/usePayments";
 import { useRegisters } from "../hooks/useRegisters";
 
 import { Layout } from "../components/Layout";
-import { DataGrid } from "../components/DataGrid";
 import { ModalComponent } from "../components/ModalComponent";
+import { DataGridWithBackendPagination } from "../components/DataGridWithBackendPagination";
 
 import { getRegisterTotal, setLocalDate } from "../utils/helpers";
 
@@ -17,7 +17,7 @@ export function Registers() {
 
     const { auth } = useContext(AuthContext)
 
-    const { registers, loadingRegisters, handleSubmit, open, setOpen } = useRegisters()
+    const { registers, loadingRegisters, handleSubmit, open, setOpen, getRegisters } = useRegisters()
     const { payments, loadingPayments, getPayments } = usePayments()
     const { formData, setFormData, handleChange, disabled, setDisabled, reset } = useForm({
         defaultData: {
@@ -87,10 +87,12 @@ export function Registers() {
 
     return (
         <Layout title="Movimientos Caja">
-            <DataGrid
+            <DataGridWithBackendPagination
                 loading={loadingRegisters || loadingPayments || disabled}
                 headCells={headCells}
                 rows={registers}
+                entityKey="registers"
+                getter={getRegisters}
                 setOpen={setOpen}
                 setFormData={setFormData}
                 showViewAction
@@ -186,7 +188,7 @@ export function Registers() {
                         </Box>
                     </form>
                 </ModalComponent>
-            </DataGrid>
+            </DataGridWithBackendPagination>
         </Layout >
     )
 }

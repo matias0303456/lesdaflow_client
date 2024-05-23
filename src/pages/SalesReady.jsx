@@ -9,12 +9,12 @@ import { useSuppliers } from "../hooks/useSuppliers";
 import { useNavigate } from "react-router-dom";
 
 import { Layout } from "../components/Layout";
-import { DataGrid } from "../components/DataGrid";
 import { ModalComponent } from "../components/ModalComponent";
+import { DataGridWithBackendPagination } from "../components/DataGridWithBackendPagination";
+import { SaleFilter } from "../components/filters/SaleFilter";
 
 import { SUPPLIER_URL, SALE_URL } from "../utils/urls";
 import { getNewPrice } from "../utils/helpers"
-import { SaleFilter } from "../components/filters/SaleFilter";
 
 export function SalesReady() {
 
@@ -219,7 +219,7 @@ export function SalesReady() {
 
   return (
     <Layout title="Ventas Pendientes Preparacion">
-      <DataGrid
+      <DataGridWithBackendPagination
         loading={loadingSuppliers || disabled}
         headCells={headCells}
         rows={suppliers}
@@ -470,7 +470,7 @@ export function SalesReady() {
             </Button>
           </Box>
         </ModalComponent>
-      </DataGrid>
+      </DataGridWithBackendPagination>
     </Layout>
   );
 }

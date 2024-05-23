@@ -7,10 +7,10 @@ import { MessageContext } from "../providers/MessageProvider";
 import { useApi } from "../hooks/useApi";
 import { useForm } from "../hooks/useForm";
 
-import { DataGrid } from "../components/DataGrid";
 import { Layout } from "../components/Layout";
 import { ModalComponent } from "../components/ModalComponent";
 import { UserFilter } from "../components/filters/UserFilter";
+import { DataGridWithBackendPagination } from "../components/DataGridWithBackendPagination";
 
 import { USER_URL } from "../utils/urls";
 
@@ -177,10 +177,12 @@ export function Users() {
 
   return (
     <Layout title="Personal">
-      <DataGrid
+      <DataGridWithBackendPagination
         loading={loadingUsers || disabled}
         headCells={headCells}
         rows={users}
+        entityKey="users"
+        getter={getUsers}
         setOpen={setOpen}
         setFormData={setFormData}
         showEditAction
@@ -420,7 +422,7 @@ export function Users() {
             </Button>
           </FormControl>
         </ModalComponent>
-      </DataGrid>
+      </DataGridWithBackendPagination>
     </Layout>
   );
 }

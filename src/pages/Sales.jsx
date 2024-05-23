@@ -13,10 +13,10 @@ import { useForm } from "../hooks/useForm";
 import { useSales } from "../hooks/useSales";
 
 import { Layout } from "../components/Layout";
-import { DataGrid } from "../components/DataGrid";
 import { ModalComponent } from "../components/ModalComponent";
 // import { SaleFilter } from "../components/filters/SaleFilter";
 import { AddProductsToSale } from "../components/AddProductsToSale";
+import { DataGridWithBackendPagination } from "../components/DataGridWithBackendPagination";
 
 import { REPORT_URL } from "../utils/urls";
 import { getCurrentSubtotal, getCurrentTotal, getInstallmentsAmount, getSaleTotal } from "../utils/helpers";
@@ -39,7 +39,8 @@ export function Sales() {
         saleSaved,
         setSaleSaved,
         handleSubmit,
-        handleDelete
+        handleDelete,
+        getSales
     } = useSales()
     const { products, loadingProducts, getProducts } = useProducts()
     const { clients, loadingClients, getClients } = useClients()
@@ -172,10 +173,12 @@ export function Sales() {
 
     return (
         <Layout title="Ventas">
-            <DataGrid
+            <DataGridWithBackendPagination
                 loading={loadingClients || loadingSales || loadingProducts || disabled}
                 headCells={headCells}
                 rows={sales}
+                entityKey="sales"
+                getter={getSales}
                 setOpen={setOpen}
                 setFormData={setFormData}
                 showEditAction
@@ -432,7 +435,7 @@ export function Sales() {
                         </Button>
                     </Box>
                 </ModalComponent>
-            </DataGrid>
+            </DataGridWithBackendPagination>
         </Layout>
     )
 }

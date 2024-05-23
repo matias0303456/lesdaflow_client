@@ -7,12 +7,12 @@ import { useSellers } from '../hooks/useSellers'
 import { useForm } from '../hooks/useForm'
 
 import { Layout } from "../components/Layout";
-import { DataGrid } from "../components/DataGrid";
 import { ModalComponent } from "../components/ModalComponent";
+import { DataGridWithBackendPagination } from "../components/DataGridWithBackendPagination";
 
 export function Sellers() {
 
-    const { loadingSellers, sellers, open, setOpen, handleSubmit, handleDelete } = useSellers()
+    const { loadingSellers, sellers, open, setOpen, handleSubmit, handleDelete, getSellers } = useSellers()
     const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
         defaultData: {
             id: '',
@@ -112,10 +112,12 @@ export function Sellers() {
 
     return (
         <Layout title="Personal">
-            <DataGrid
+            <DataGridWithBackendPagination
                 loading={loadingSellers}
                 headCells={headCells}
                 rows={sellers}
+                entityKey="sellers"
+                getter={getSellers}
                 setOpen={setOpen}
                 setFormData={setFormData}
                 showEditAction
@@ -351,7 +353,7 @@ export function Sellers() {
                         </Button>
                     </Box>
                 </ModalComponent>
-            </DataGrid>
+            </DataGridWithBackendPagination>
         </Layout>
     )
 }

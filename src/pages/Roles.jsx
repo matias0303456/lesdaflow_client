@@ -16,9 +16,9 @@ import { MessageContext } from "../providers/MessageProvider";
 import { useApi } from "../hooks/useApi";
 import { useForm } from "../hooks/useForm";
 
-import { DataGrid } from "../components/DataGrid";
 import { Layout } from "../components/Layout";
 import { ModalComponent } from "../components/ModalComponent";
+import { DataGridWithFrontendPagination } from "../components/DataGridWithFrontendPagination";
 // import { UserFilter } from "../components/filters/UserFilter";
 
 import { ROLE_URL /* USER_URL */ } from "../utils/urls";
@@ -159,7 +159,7 @@ export function Roles() {
 
   return (
     <Layout title="Role">
-      <DataGrid
+      <DataGridWithFrontendPagination
         loading={loadingRoles}
         headCells={headCells}
         rows={roles}
@@ -314,7 +314,7 @@ export function Roles() {
             </Box>
           </form>
         </ModalComponent>
-      </DataGrid>
+      </DataGridWithFrontendPagination>
     </Layout>
   );
 }

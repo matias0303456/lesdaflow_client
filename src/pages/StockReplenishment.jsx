@@ -20,11 +20,11 @@ import { MessageContext } from "../providers/MessageProvider";
 import { useApi } from "../hooks/useApi";
 import { useForm } from "../hooks/useForm";
 
-import { DataGrid } from "../components/DataGrid";
 import { Layout } from "../components/Layout";
+import { DataGridWithFrontendPagination } from "../components/DataGridWithFrontendPagination";
+import { ProductFilter } from "../components/filters/ProductFilter";
 
 import { CLIENT_URL, PRODUCT_URL } from "../utils/urls";
-import { ProductFilter } from "../components/filters/ProductFilter";
 
 export function StockReplenishment() {
 
@@ -93,7 +93,7 @@ export function StockReplenishment() {
 
   return (
     <Layout title="Reposicion Stock">
-      <DataGrid
+      <DataGridWithFrontendPagination
         loading={loadingProducts || loadingSuppliers}
         headCells={headCells}
         rows={[]}
@@ -130,7 +130,7 @@ export function StockReplenishment() {
               /> */}
           </Box>
         }
-      ></DataGrid>
+      ></DataGridWithFrontendPagination>
     </Layout>
   );
 }

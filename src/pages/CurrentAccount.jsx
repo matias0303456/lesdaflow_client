@@ -8,8 +8,8 @@ import { useForm } from "../hooks/useForm";
 import { useClients } from "../hooks/useClients";
 
 import { Layout } from "../components/Layout";
-import { DataGrid } from "../components/DataGrid";
 import { ClientFilter } from "../components/filters/ClientFilter";
+import { DataGridWithFrontendPagination } from "../components/DataGridWithFrontendPagination";
 
 import { CLIENT_URL } from "../utils/urls";
 
@@ -103,7 +103,7 @@ export function CurrentAccount() {
 
   return (
     <Layout title="Cuentas Corrientes">
-      <DataGrid
+      <DataGridWithFrontendPagination
         loading={loadingClients || disabled}
         headCells={
           auth.user.role !== "ADMINISTRADOR"

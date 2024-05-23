@@ -10,15 +10,15 @@ import { useClients } from "../hooks/useClients";
 import { useSellers } from "../hooks/useSellers";
 
 import { Layout } from "../components/Layout";
-import { DataGrid } from "../components/DataGrid";
 import { ModalComponent } from "../components/ModalComponent";
+import { DataGridWithBackendPagination } from "../components/DataGridWithBackendPagination";
 // import { ClientFilter } from "../components/filters/ClientFilter";
 
 export function Clients() {
 
     const { auth } = useContext(AuthContext)
 
-    const { clients, loadingClients, handleSubmit, handleDelete, open, setOpen } = useClients()
+    const { clients, loadingClients, handleSubmit, handleDelete, open, setOpen, getClients } = useClients()
     const { sellers, loadingSellers, getSellers } = useSellers()
     const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
         defaultData: {
@@ -122,7 +122,7 @@ export function Clients() {
 
     return (
         <Layout title="Clientes">
-            <DataGrid
+            <DataGridWithBackendPagination
                 headCells={auth.user.role !== 'ADMINISTRADOR' ?
                     headCells :
                     [
@@ -139,6 +139,8 @@ export function Clients() {
                 }
                 loading={loadingClients || disabled || loadingSellers}
                 rows={clients}
+                entityKey="clients"
+                getter={getClients}
                 setOpen={setOpen}
                 setFormData={setFormData}
                 showEditAction
@@ -384,7 +386,7 @@ export function Clients() {
                         </Button>
                     </Box>
                 </ModalComponent>
-            </DataGrid>
+            </DataGridWithBackendPagination>
         </Layout >
     )
 }

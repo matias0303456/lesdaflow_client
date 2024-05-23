@@ -7,9 +7,9 @@ import { useForm } from "../hooks/useForm";
 import { useSuppliers } from "../hooks/useSuppliers";
 
 import { Layout } from "../components/Layout";
-import { DataGrid } from "../components/DataGrid";
 import { ModalComponent } from "../components/ModalComponent";
 import { SupplierFilter } from "../components/filters/SupplierFilter";
+import { DataGridWithBackendPagination } from "../components/DataGridWithBackendPagination";
 
 export function Suppliers() {
 
@@ -17,7 +17,7 @@ export function Suppliers() {
 
     const navigate = useNavigate()
 
-    const { suppliers, setSuppliers, loadingSuppliers, handleSubmit, handleDelete, setOpen, open } = useSuppliers()
+    const { suppliers, setSuppliers, loadingSuppliers, handleSubmit, handleDelete, setOpen, open, getSuppliers } = useSuppliers()
     const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
         defaultData: {
             id: '',
@@ -127,10 +127,12 @@ export function Suppliers() {
 
     return (
         <Layout title="Proveedores">
-            <DataGrid
+            <DataGridWithBackendPagination
                 loading={loadingSuppliers || disabled}
                 headCells={headCells}
                 rows={suppliers}
+                entityKey="suppliers"
+                getter={getSuppliers}
                 setOpen={setOpen}
                 setFormData={setFormData}
                 showEditAction
@@ -294,7 +296,7 @@ export function Suppliers() {
                         </Button>
                     </Box>
                 </ModalComponent>
-            </DataGrid>
+            </DataGridWithBackendPagination>
         </Layout>
     )
 }

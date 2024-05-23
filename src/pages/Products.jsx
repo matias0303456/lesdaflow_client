@@ -7,8 +7,8 @@ import { useSuppliers } from "../hooks/useSuppliers";
 import { useForm } from "../hooks/useForm";
 
 import { Layout } from "../components/Layout";
-import { DataGrid } from "../components/DataGrid";
 import { ModalComponent } from "../components/ModalComponent";
+import { DataGridWithBackendPagination } from "../components/DataGridWithBackendPagination";
 // import { ProductFilter } from "../components/filters/ProductFilter";
 
 import { getNewPrice, getStock } from "../utils/helpers";
@@ -148,7 +148,7 @@ export function Products() {
 
     return (
         <Layout title="Productos">
-            <DataGrid
+            <DataGridWithBackendPagination
                 headCells={headCells}
                 rows={state.products.data}
                 setOpen={setOpen}
@@ -460,7 +460,7 @@ export function Products() {
                         </Button>
                     </Box>
                 </ModalComponent>
-            </DataGrid>
+            </DataGridWithBackendPagination>
         </Layout>
     )
 }

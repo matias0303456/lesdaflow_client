@@ -11,9 +11,9 @@ import { MessageContext } from "../providers/MessageProvider";
 import { useApi } from "../hooks/useApi";
 import { useForm } from "../hooks/useForm";
 
-import { DataGrid } from "./DataGrid";
 import { ModalComponent } from "./ModalComponent";
 import { PaymentFilter } from "../components/filters/PaymentFilter";
+import { DataGridWithFrontendPagination } from "./DataGridWithFrontendPagination";
 
 import { PAYMENT_URL } from "../utils/urls";
 import { getSaleDifference, getSaleDifferenceByPayment } from "../utils/helpers";
@@ -160,7 +160,7 @@ export function Payments({ sale, setSale, loading, setLoading }) {
     return (
         <>
             <PaymentFilter sale={sale} setSale={setSale} />
-            <DataGrid
+            <DataGridWithFrontendPagination
                 loading={disabled || loading}
                 headCells={headCells}
                 rows={sale.payments}
@@ -265,7 +265,7 @@ export function Payments({ sale, setSale, loading, setLoading }) {
                         </Box>
                     </form>
                 </ModalComponent>
-            </DataGrid>
+            </DataGridWithFrontendPagination>
         </>
     )
 }

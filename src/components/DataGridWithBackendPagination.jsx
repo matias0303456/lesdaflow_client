@@ -5,99 +5,27 @@ import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
 import TableContainer from '@mui/material/TableContainer'
-import TableHead from '@mui/material/TableHead'
 import TablePagination from '@mui/material/TablePagination'
 import TableRow from '@mui/material/TableRow'
-import TableSortLabel from '@mui/material/TableSortLabel'
 import Paper from '@mui/material/Paper'
 import IconButton from '@mui/material/IconButton'
 import Tooltip from '@mui/material/Tooltip'
 import EditIcon from '@mui/icons-material/Edit'
 import SettingsIcon from "@mui/icons-material/Settings"
-import { visuallyHidden } from '@mui/utils'
 import SearchSharpIcon from '@mui/icons-material/SearchSharp'
 import PictureAsPdfSharpIcon from '@mui/icons-material/PictureAsPdfSharp'
 import { SiMicrosoftexcel } from "react-icons/si"
 import CloseIcon from "@mui/icons-material/Close"
 import { LinearProgress } from '@mui/material'
 
-import { deadlineIsPast, getStock } from '../utils/helpers'
 import { DataContext } from '../providers/DataProvider'
 
-function descendingComparator(a, b, orderBy, sorter) {
-  if ((b[orderBy] ? b[orderBy] : sorter(b)) < (a[orderBy] ? a[orderBy] : sorter(a))) {
-    return -1
-  }
-  if ((b[orderBy] ? b[orderBy] : sorter(b)) > (a[orderBy] ? a[orderBy] : sorter(a))) {
-    return 1
-  }
-  return 0
-}
+import { EnhancedTableHead } from './EnhancedTableHead'
 
-function getComparator(order, orderBy, sorter) {
-  return order === 'desc'
-    ? (a, b) => descendingComparator(a, b, orderBy, sorter)
-    : (a, b) => -descendingComparator(a, b, orderBy, sorter)
-}
+import { deadlineIsPast, getStock } from '../utils/helpers'
+import { getComparator, stableSort } from '../utils/dataGrid'
 
-function stableSort(array, comparator) {
-  const stabilizedThis = array.map((el, index) => [el, index])
-  stabilizedThis.sort((a, b) => {
-    const order = comparator(a[0], b[0])
-    if (order !== 0) {
-      return order
-    }
-    return a[1] - b[1]
-  })
-  return stabilizedThis.map((el) => el[0])
-}
-
-function EnhancedTableHead({
-  headCells,
-  order,
-  orderBy,
-  onRequestSort,
-  disableSorting
-}) {
-
-  const createSortHandler = (property) => (event) => {
-    onRequestSort(event, property)
-  }
-
-  return (
-    <TableHead>
-      <TableRow>
-        <TableCell />
-        {headCells.map((headCell) => (
-          <TableCell
-            key={headCell.id}
-            className='font-bold flex-1 px-4 py-1'
-            align="inherit"
-            padding={headCell.disablePadding ? 'none' : 'normal'}
-            sortDirection={orderBy === headCell.id ? order : false}
-          >
-            {disableSorting ? headCell.label :
-              <TableSortLabel
-                active={orderBy === headCell.id}
-                direction={orderBy === headCell.id ? order : 'asc'}
-                onClick={createSortHandler(headCell.id)}
-              >
-                {headCell.label}
-                {orderBy === headCell.id ? (
-                  <Box component="span" sx={visuallyHidden}>
-                    {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                  </Box>
-                ) : null}
-              </TableSortLabel>
-            }
-          </TableCell>
-        ))}
-      </TableRow>
-    </TableHead>
-  )
-}
-
-export function DataGrid({
+export function DataGridWithBackendPagination({
   children,
   headCells,
   rows,

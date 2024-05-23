@@ -15,8 +15,8 @@ import { useForm } from "../hooks/useForm";
 import { useClients } from "../hooks/useClients";
 
 import { Layout } from "../components/Layout";
-import { DataGrid } from "../components/DataGrid";
 import { ClientFilter } from "../components/filters/ClientFilter";
+import { DataGridWithBackendPagination } from "../components/DataGridWithBackendPagination";
 
 import { CLIENT_URL } from "../utils/urls";
 
@@ -157,7 +157,7 @@ export function Visits() {
 
   return (
     <Layout title="Visitas a Clientes">
-      <DataGrid
+      <DataGridWithBackendPagination
         loading={loadingClients || disabled}
         headCells={
           auth.user.role !== "ADMINISTRADOR"
@@ -197,7 +197,7 @@ export function Visits() {
             <ClientFilter clients={clients} setClients={setClients} />
           </Box>
         }
-      ></DataGrid>
+      ></DataGridWithBackendPagination>
     </Layout>
   );
 }

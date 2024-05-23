@@ -9,13 +9,13 @@ import { useApi } from "../hooks/useApi";
 
 import { AuthContext } from "../providers/AuthProvider";
 import { Layout } from "../components/Layout";
-import { DataGrid } from "../components/DataGrid";
 import { ModalComponent } from "../components/ModalComponent";
 import { ProductFilter } from "../components/filters/ProductFilter";
+import { OrderFilter } from "../components/filters/OrderFilter";
+import { DataGridWithBackendPagination } from "../components/DataGridWithBackendPagination";
 
 import { PRODUCT_URL } from "../utils/urls";
 import { getNewPrice, getStock } from "../utils/helpers";
-import { OrderFilter } from "../components/filters/OrderFilter";
 
 export function Orders() {
 
@@ -210,7 +210,7 @@ export function Orders() {
 
     return (
         <Layout title="Pedidos">
-            <DataGrid
+            <DataGridWithBackendPagination
                 loading={loadingProducts || loadingSuppliers || disabled}
                 headCells={headCells}
                 rows={products}

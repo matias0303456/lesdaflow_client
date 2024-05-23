@@ -7,7 +7,7 @@ import { useClients } from '../hooks/useClients'
 import { useForm } from "../hooks/useForm";
 
 import { Layout } from "../components/Layout";
-import { DataGrid } from "../components/DataGrid";
+import { DataGridWithFrontendPagination } from "../components/DataGridWithFrontendPagination";
 
 import { SALE_URL } from "../utils/urls";
 
@@ -117,7 +117,7 @@ export function Budgets() {
 
     return (
         <Layout title="Presupuesto">
-            <DataGrid
+            <DataGridWithFrontendPagination
                 headCells={headCells}
                 // loading={loadingClients || loadingSales || loadingProducts || disabled}
                 loading={false}

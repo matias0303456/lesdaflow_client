@@ -5,15 +5,15 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import es from 'date-fns/locale/es';
 import { Box, FormControl, Input, InputLabel, MenuItem, Select, Typography } from "@mui/material";
+import { format } from "date-fns";
 
 import { AuthContext } from "../providers/AuthProvider";
 import { useForm } from "../hooks/useForm";
 import { useSellers } from "../hooks/useSellers";
 import { useSales } from "../hooks/useSales";
 
+import { DataGridWithBackendPagination } from "../components/DataGridWithBackendPagination";
 import { Layout } from "../components/Layout";
-import { DataGrid } from "../components/DataGrid";
-import { format } from "date-fns";
 
 export function SalesSearch() {
 
@@ -174,7 +174,7 @@ export function SalesSearch() {
         >
           Información de Ventas
         </Typography>
-        <DataGrid
+        <DataGridWithBackendPagination
           loading={loadingSales || loadingSellers}
           headCells={headCells}
           rows={sales}

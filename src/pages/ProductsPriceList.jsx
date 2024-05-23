@@ -4,12 +4,12 @@ import { Box, Button, Input, FormControl, InputLabel, Typography } from "@mui/ma
 
 import { AuthContext } from "../providers/AuthProvider";
 import { useProducts } from "../hooks/useProducts";
+import { useForm } from "../hooks/useForm";
 
 import { Layout } from "../components/Layout";
-import { DataGrid } from "../components/DataGrid";
+import { DataGridWithFrontendPagination } from "../components/DataGridWithFrontendPagination";
 
 import { getStock } from "../utils/helpers";
-import { useForm } from "../hooks/useForm";
 
 export function ProductsPriceList() {
 
@@ -122,7 +122,7 @@ export function ProductsPriceList() {
         >
           Precios
         </Typography>
-        <DataGrid
+        <DataGridWithFrontendPagination
           loading={loadingProducts}
           headCells={headCells}
           rows={products.filter(p => (formData.code.length === 0 || p.code.includes(formData.code)) &&
