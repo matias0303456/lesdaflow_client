@@ -119,7 +119,8 @@ export function Budgets() {
         <Layout title="Presupuesto">
             <DataGrid
                 headCells={headCells}
-                loading={loadingClients || loadingSales || loadingProducts || disabled}
+                // loading={loadingClients || loadingSales || loadingProducts || disabled}
+                loading={false}
                 rows={[]}
                 contentHeader={
                     <Box sx={{

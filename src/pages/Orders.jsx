@@ -24,7 +24,7 @@ export function Orders() {
 
     const { post, put, putMassive, destroy } = useApi(PRODUCT_URL)
     const { products, setProducts, loadingProducts, setLoadingProducts } = useProducts()
-    const { suppliers, loadingSuppliers } = useSuppliers()
+    const { suppliers, loadingSuppliers, getSuppliers } = useSuppliers()
     const [open, setOpen] = useState(null)
     const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
         defaultData: {
@@ -76,6 +76,10 @@ export function Orders() {
     const [massiveEdit, setMassiveEdit] = useState([])
     const [massiveEditPercentage, setMassiveEditPercentage] = useState(0)
     const [earnPrice, setEarnPrice] = useState(0)
+
+    useEffect(() => {
+        getSuppliers()
+    }, [])
 
     useEffect(() => {
         const buy_price = formData.buy_price.toString().length === 0 ? 0 : parseInt(formData.buy_price)

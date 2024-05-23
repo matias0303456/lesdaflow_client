@@ -41,8 +41,8 @@ export function Sales() {
         handleSubmit,
         handleDelete
     } = useSales()
-    const { products, loadingProducts } = useProducts(true)
-    const { clients, loadingClients } = useClients()
+    const { products, loadingProducts, getProducts } = useProducts()
+    const { clients, loadingClients, getClients } = useClients()
     const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
         defaultData: {
             id: '',
@@ -64,6 +64,11 @@ export function Sales() {
             }
         }
     })
+
+    useEffect(() => {
+        getClients()
+        getProducts()
+    }, [])
 
     useEffect(() => {
         if (open === 'EDIT' || open === 'VIEW') {

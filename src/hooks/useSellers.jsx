@@ -16,7 +16,7 @@ export function useSellers() {
     const { get } = useApi(SELLER_URL)
     const { post, put, destroy } = useApi(USER_URL)
 
-    async function useSellers() {
+    async function getSellers() {
         const { status, data } = await get()
         if (status === 200) {
             setSellers(data[0])
@@ -70,5 +70,5 @@ export function useSellers() {
         setOpen(null)
     }
 
-    return { sellers, setSellers, loadingSellers, setLoadingSellers, open, setOpen, handleSubmit, handleDelete, useSellers }
+    return { sellers, setSellers, loadingSellers, setLoadingSellers, open, setOpen, handleSubmit, handleDelete, getSellers }
 }

@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { Box, Button, FormControl, Input, InputLabel, MenuItem, Select, Typography } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
@@ -19,7 +19,7 @@ export function Clients() {
     const { auth } = useContext(AuthContext)
 
     const { clients, loadingClients, handleSubmit, handleDelete, open, setOpen } = useClients()
-    const { sellers, loadingSellers } = useSellers()
+    const { sellers, loadingSellers, getSellers } = useSellers()
     const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
         defaultData: {
             id: '',
@@ -68,6 +68,10 @@ export function Clients() {
             }
         }
     })
+
+    useEffect(() => {
+        getSellers()
+    }, [])
 
     const headCells = [
         {

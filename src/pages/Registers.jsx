@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { Box, Button, FormControl, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
 import { format } from "date-fns";
 
@@ -18,13 +18,17 @@ export function Registers() {
     const { auth } = useContext(AuthContext)
 
     const { registers, loadingRegisters, handleSubmit, open, setOpen } = useRegisters()
-    const { payments, loadingPayments } = usePayments()
+    const { payments, loadingPayments, getPayments } = usePayments()
     const { formData, setFormData, handleChange, disabled, setDisabled, reset } = useForm({
         defaultData: {
             id: '',
             user_id: auth.user.id
         }
     })
+
+    useEffect(() => {
+        getPayments()
+    }, [])
 
     const headCells = [
         {

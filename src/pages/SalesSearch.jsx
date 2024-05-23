@@ -21,7 +21,7 @@ export function SalesSearch() {
 
   const navigate = useNavigate()
 
-  const { sellers, loadingSellers } = useSellers()
+  const { sellers, loadingSellers, getSellers } = useSellers()
   const { sales, loadingSales } = useSales()
   const { formData, handleChange } = useForm({
     defaultData: { from: new Date(Date.now()), to: new Date(Date.now()), code: '', seller_id: '' }
@@ -32,8 +32,8 @@ export function SalesSearch() {
   }, []);
 
   useEffect(() => {
-    console.log(formData)
-  }, [formData])
+    getSellers()
+  }, [])
 
   const headCells = [
     {
