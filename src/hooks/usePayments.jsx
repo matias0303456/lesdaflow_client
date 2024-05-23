@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react"
+import { useContext, useState } from "react"
 
 import { useApi } from "./useApi"
 import { MessageContext } from "../providers/MessageProvider"
@@ -14,19 +14,17 @@ export function usePayments() {
 
     const { get } = useApi(PAYMENT_URL)
 
-    useEffect(() => {
-        (async () => {
-            const { status, data } = await get()
-            if (status === 200) {
-                setPayments(data)
-                setLoadingPayments(false)
-            } else {
-                setMessage(data.message)
-                setSeverity('error')
-                setOpenMessage(true)
-            }
-        })()
-    }, [])
+    async function getPayments() {
+        const { status, data } = await get()
+        if (status === 200) {
+            setPayments(data)
+            setLoadingPayments(false)
+        } else {
+            setMessage(data.message)
+            setSeverity('error')
+            setOpenMessage(true)
+        }
+    }
 
-    return { payments, setPayments, loadingPayments, setLoadingPayments }
+    return { payments, setPayments, loadingPayments, setLoadingPayments, getPayments }
 }

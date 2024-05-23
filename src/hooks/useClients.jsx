@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react"
+import { useContext, useState } from "react"
 
 import { useApi } from "./useApi"
 import { MessageContext } from "../providers/MessageProvider"
@@ -17,19 +17,17 @@ export function useClients() {
 
     const { get } = useApi(CLIENT_URL)
 
-    useEffect(() => {
-        (async () => {
-            const { status, data } = await get()
-            if (status === 200) {
-                setClients(data[0])
-                setLoadingClients(false)
-            } else {
-                setMessage(data.message)
-                setSeverity('error')
-                setOpenMessage(true)
-            }
-        })()
-    }, [])
+    async function getClients() {
+        const { status, data } = await get()
+        if (status === 200) {
+            setClients(data[0])
+            setLoadingClients(false)
+        } else {
+            setMessage(data.message)
+            setSeverity('error')
+            setOpenMessage(true)
+        }
+    }
 
     async function handleSubmit(e, validate, formData, reset, setDisabled) {
         e.preventDefault()
@@ -74,5 +72,5 @@ export function useClients() {
         setOpen(null)
     }
 
-    return { clients, setClients, loadingClients, setLoadingClients, handleSubmit, handleDelete, open, setOpen }
+    return { clients, setClients, loadingClients, setLoadingClients, handleSubmit, handleDelete, open, setOpen, getClients }
 }

@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react"
+import { useContext, useState } from "react"
 
 import { useApi } from "./useApi"
 import { MessageContext } from "../providers/MessageProvider"
@@ -16,20 +16,17 @@ export function useSellers() {
     const { get } = useApi(SELLER_URL)
     const { post, put, destroy } = useApi(USER_URL)
 
-    useEffect(() => {
-        (async () => {
-            const { status, data } = await get()
-            if (status === 200) {
-                setSellers(data[0])
-                setLoadingSellers(false)
-            } else {
-                setMessage(data.message)
-                setSeverity('error')
-                setOpenMessage(true)
-            }
-        })()
-    }, [])
-
+    async function useSellers() {
+        const { status, data } = await get()
+        if (status === 200) {
+            setSellers(data[0])
+            setLoadingSellers(false)
+        } else {
+            setMessage(data.message)
+            setSeverity('error')
+            setOpenMessage(true)
+        }
+    }
     async function handleSubmit(e, validate, formData, reset, setDisabled) {
         e.preventDefault()
         if (validate()) {
@@ -73,5 +70,5 @@ export function useSellers() {
         setOpen(null)
     }
 
-    return { sellers, setSellers, loadingSellers, setLoadingSellers, open, setOpen, handleSubmit, handleDelete }
+    return { sellers, setSellers, loadingSellers, setLoadingSellers, open, setOpen, handleSubmit, handleDelete, useSellers }
 }

@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react"
+import { useContext, useState } from "react"
 
 import { useApi } from "./useApi"
 import { MessageContext } from "../providers/MessageProvider"
@@ -17,19 +17,17 @@ export function useRegisters() {
 
     const { get } = useApi(REGISTER_URL)
 
-    useEffect(() => {
-        (async () => {
-            const { status, data } = await get()
-            if (status === 200) {
-                setRegisters(data[0])
-                setLoadingRegisters(false)
-            } else {
-                setMessage(data.message)
-                setSeverity('error')
-                setOpenMessage(true)
-            }
-        })()
-    }, [])
+    async function getRegisters() {
+        const { status, data } = await get()
+        if (status === 200) {
+            setRegisters(data[0])
+            setLoadingRegisters(false)
+        } else {
+            setMessage(data.message)
+            setSeverity('error')
+            setOpenMessage(true)
+        }
+    }
 
     async function handleSubmit(e, formData, reset, setDisabled) {
         e.preventDefault()
@@ -76,6 +74,7 @@ export function useRegisters() {
         handleSubmit,
         handleDelete,
         open,
-        setOpen
+        setOpen,
+        getRegisters
     }
 }

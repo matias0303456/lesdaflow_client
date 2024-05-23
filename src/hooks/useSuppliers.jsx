@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react"
+import { useContext, useState } from "react"
 
 import { useApi } from "./useApi"
 import { MessageContext } from "../providers/MessageProvider"
@@ -17,19 +17,17 @@ export function useSuppliers() {
 
     const { get } = useApi(SUPPLIER_URL)
 
-    useEffect(() => {
-        (async () => {
-            const { status, data } = await get()
-            if (status === 200) {
-                setSuppliers(data[0])
-                setLoadingSuppliers(false)
-            } else {
-                setMessage(data.message)
-                setSeverity('error')
-                setOpenMessage(true)
-            }
-        })()
-    }, [])
+    async function getSuppliers() {
+        const { status, data } = await get()
+        if (status === 200) {
+            setSuppliers(data[0])
+            setLoadingSuppliers(false)
+        } else {
+            setMessage(data.message)
+            setSeverity('error')
+            setOpenMessage(true)
+        }
+    }
 
     async function handleSubmit(e, validate, formData, reset, setDisabled) {
         e.preventDefault()
@@ -106,6 +104,7 @@ export function useSuppliers() {
         handleDelete,
         open,
         setOpen,
-        handleSubmitMassive
+        handleSubmitMassive,
+        getSuppliers
     }
 }

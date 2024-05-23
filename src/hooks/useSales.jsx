@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react"
+import { useContext, useState } from "react"
 
 import { useApi } from "./useApi"
 import { MessageContext } from "../providers/MessageProvider"
@@ -19,19 +19,17 @@ export function useSales() {
     const [saleSaved, setSaleSaved] = useState(null)
     const [missing, setMissing] = useState(false)
 
-    useEffect(() => {
-        (async () => {
-            const { status, data } = await get()
-            if (status === 200) {
-                setSales(data[0])
-                setLoadingSales(false)
-            } else {
-                setMessage(data.message)
-                setSeverity('error')
-                setOpenMessage(true)
-            }
-        })()
-    }, [])
+    async function getSales() {
+        const { status, data } = await get()
+        if (status === 200) {
+            setSales(data[0])
+            setLoadingSales(false)
+        } else {
+            setMessage(data.message)
+            setSeverity('error')
+            setOpenMessage(true)
+        }
+    }
 
     async function handleSubmit(e, formData, validate, reset, setDisabled) {
         e.preventDefault()
@@ -96,7 +94,7 @@ export function useSales() {
         setSales,
         loadingSales,
         setLoadingSales,
-        open, 
+        open,
         setOpen,
         saleProducts,
         setSaleProducts,
@@ -107,6 +105,7 @@ export function useSales() {
         missing,
         setMissing,
         handleSubmit,
-        handleDelete
+        handleDelete,
+        getSales
     }
 }
