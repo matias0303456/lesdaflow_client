@@ -4,24 +4,28 @@ import { useApi } from "./useApi"
 import { MessageContext } from "../providers/MessageProvider"
 
 import { REGISTER_URL } from "../utils/urls"
+import { DataContext } from "../providers/DataProvider"
 
 export function useRegisters() {
 
+    const { state, dispatch } = useContext(DataContext)
     const { setMessage, setOpenMessage, setSeverity } = useContext(MessageContext)
 
     const { post, put, destroy } = useApi(REGISTER_URL)
 
     const [loadingRegisters, setLoadingRegisters] = useState(true)
-    const [registers, setRegisters] = useState([])
     const [open, setOpen] = useState(null)
 
     const { get } = useApi(REGISTER_URL)
 
-    async function getRegisters() {
+    async function getRegisters(params) {
         setLoadingRegisters(true)
-        const { status, data } = await get()
+        const { status, data } = await get(params)
         if (status === 200) {
-            setRegisters(data[0])
+            dispatch({
+                type: 'REGISTERS',
+                payload: { ...state.registers, data: data[0], count: data[1] }
+            })
             setLoadingRegisters(false)
         } else {
             setMessage(data.message)
@@ -35,10 +39,19 @@ export function useRegisters() {
         const { status, data } = open === 'NEW' ? await post(formData) : await put(formData)
         if (status === 200) {
             if (open === 'NEW') {
-                setRegisters([data, ...registers])
+                dispatch({ type: 'REGISTERS', payload: { ...state.registers, data: [data, ...state.registers] } })
                 setMessage('Caja abierta correctamente.')
             } else {
-                setRegisters([data, ...registers.filter(r => r.id !== formData.id)])
+                dispatch({
+                    type: 'REGISTERS',
+                    payload: {
+                        ...state.registers,
+                        data: [
+                            data,
+                            ...state.registers.filter(r => r.id !== formData.id)
+                        ]
+                    }
+                })
                 setMessage('Caja cerrada correctamente.')
             }
             setSeverity('success')
@@ -55,7 +68,16 @@ export function useRegisters() {
         setLoadingRegisters(true)
         const { status, data } = await destroy(formData)
         if (status === 200) {
-            setRegisters([...registers.filter(r => r.id !== data.id)])
+            dispatch({
+                type: 'REGISTERS',
+                payload: {
+                    ...state.registers,
+                    data: [
+                        data,
+                        ...state.registers.filter(r => r.id !== data.id)
+                    ]
+                }
+            })
             setMessage('Caja eliminada correctamente.')
             setSeverity('success')
         } else {
@@ -68,8 +90,6 @@ export function useRegisters() {
     }
 
     return {
-        registers,
-        setRegisters,
         loadingRegisters,
         setLoadingRegisters,
         handleSubmit,

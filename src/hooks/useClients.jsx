@@ -4,24 +4,28 @@ import { useApi } from "./useApi"
 import { MessageContext } from "../providers/MessageProvider"
 
 import { CLIENT_URL } from "../utils/urls"
+import { DataContext } from "../providers/DataProvider"
 
 export function useClients() {
 
+    const { state, dispatch } = useContext(DataContext)
     const { setMessage, setOpenMessage, setSeverity } = useContext(MessageContext)
 
     const { post, put, destroy } = useApi(CLIENT_URL)
 
-    const [loadingClients, setLoadingClients] = useState(true)
-    const [clients, setClients] = useState([])
     const [open, setOpen] = useState(null)
+    const [loadingClients, setLoadingClients] = useState(true)
 
     const { get } = useApi(CLIENT_URL)
 
-    async function getClients() {
+    async function getClients(params) {
         setLoadingClients(true)
-        const { status, data } = await get()
+        const { status, data } = await get(params)
         if (status === 200) {
-            setClients(data[0])
+            dispatch({
+                type: 'CLIENTS',
+                payload: { ...state.clients, data: data[0], count: data[1] }
+            })
             setLoadingClients(false)
         } else {
             setMessage(data.message)
@@ -36,10 +40,19 @@ export function useClients() {
             const { status, data } = open === 'NEW' ? await post(formData) : await put(formData)
             if (status === 200) {
                 if (open === 'NEW') {
-                    setClients([data, ...clients])
+                    dispatch({ type: 'CLIENTS', payload: { ...state.clients, data: [data, ...state.clients] } })
                     setMessage('Cliente creado correctamente.')
                 } else {
-                    setClients([data, ...clients.filter(c => c.id !== formData.id)])
+                    dispatch({
+                        type: 'CLIENTS',
+                        payload: {
+                            ...state.clients,
+                            data: [
+                                data,
+                                ...state.clients.filter(c => c.id !== formData.id)
+                            ]
+                        }
+                    })
                     setMessage('Cliente editado correctamente.')
                 }
                 setSeverity('success')
@@ -57,7 +70,16 @@ export function useClients() {
         setLoadingClients(true)
         const { status, data } = await destroy(formData)
         if (status === 200) {
-            setClients([...clients.filter(c => c.id !== data.id)])
+            dispatch({
+                type: 'CLIENTS',
+                payload: {
+                    ...state.clients,
+                    data: [
+                        data,
+                        ...state.clients.filter(c => c.id !== data.id)
+                    ]
+                }
+            })
             setMessage('Cliente eliminado correctamente.')
             setSeverity('success')
         } else {
@@ -73,5 +95,5 @@ export function useClients() {
         setOpen(null)
     }
 
-    return { clients, setClients, loadingClients, setLoadingClients, handleSubmit, handleDelete, open, setOpen, getClients }
+    return { loadingClients, setLoadingClients, handleSubmit, handleDelete, open, setOpen, getClients }
 }

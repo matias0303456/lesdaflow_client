@@ -4,28 +4,27 @@ import { MessageContext } from "../providers/MessageProvider"
 import { DataContext } from "../providers/DataProvider"
 import { useApi } from "./useApi"
 
-import { SELLER_URL, USER_URL } from "../utils/urls"
+import { USER_URL } from "../utils/urls"
 
-export function useSellers() {
+export function useUsers() {
 
     const { state, dispatch } = useContext(DataContext)
     const { setMessage, setOpenMessage, setSeverity } = useContext(MessageContext)
 
-    const [loadingSellers, setLoadingSellers] = useState(true)
+    const [loadingUsers, setLoadingUsers] = useState(true)
     const [open, setOpen] = useState(null)
 
-    const { get } = useApi(SELLER_URL)
-    const { post, put, destroy } = useApi(USER_URL)
+    const { get, post, put, destroy } = useApi(USER_URL)
 
-    async function getSellers(params) {
-        setLoadingSellers(true)
+    async function getUsers(params) {
+        setLoadingUsers(true)
         const { status, data } = await get(params)
         if (status === 200) {
             dispatch({
-                type: 'SELLERS',
-                payload: { ...state.sellers, data: data[0], count: data[1] }
+                type: 'USERS',
+                payload: { ...state.users, data: data[0], count: data[1] }
             })
-            setLoadingSellers(false)
+            setLoadingUsers(false)
         } else {
             setMessage(data.message)
             setSeverity('error')
@@ -38,20 +37,20 @@ export function useSellers() {
             const { status, data } = open === 'NEW' ? await post(formData) : await put(formData)
             if (status === 200) {
                 if (open === 'NEW') {
-                    dispatch({ type: 'SELLERS', payload: { ...state.sellers, data: [data, ...state.sellers] } })
-                    setMessage('Vendedor creado correctamente.')
+                    dispatch({ type: 'USERS', payload: { ...state.users, data: [data, ...state.users] } })
+                    setMessage('Usuario creado correctamente.')
                 } else {
                     dispatch({
-                        type: 'SELLERS',
+                        type: 'USERS',
                         payload: {
-                            ...state.sellers,
+                            ...state.users,
                             data: [
                                 data,
-                                ...state.sellers.filter(s => s.id !== formData.id)
+                                ...state.users.filter(u => u.id !== formData.id)
                             ]
                         }
                     })
-                    setMessage('Vendedor editado correctamente.')
+                    setMessage('Usuario editado correctamente.')
                 }
                 setSeverity('success')
                 reset(setOpen)
@@ -65,33 +64,33 @@ export function useSellers() {
     }
 
     async function handleDelete(formData) {
-        setLoadingSellers(true)
+        setLoadingUsers(true)
         const { status, data } = await destroy(formData)
         if (status === 200) {
             dispatch({
-                type: 'SELLERS',
+                type: 'USERS',
                 payload: {
-                    ...state.sellers,
+                    ...state.users,
                     data: [
                         data,
-                        ...state.sellers.filter(s => s.id !== data.id)
+                        ...state.users.filter(u => u.id !== data.id)
                     ]
                 }
             })
-            setMessage('Vendedor eliminado correctamente.')
+            setMessage('Usuario eliminado correctamente.')
             setSeverity('success')
         } else {
             if (status === 300) {
-                setMessage('El vendedor tiene datos asociados.')
+                setMessage('El usuario tiene datos asociados.')
             } else {
                 setMessage('Ocurrió un error. Actualice la página.')
             }
             setSeverity('error')
         }
         setOpenMessage(true)
-        setLoadingSellers(false)
+        setLoadingUsers(false)
         setOpen(null)
     }
 
-    return { loadingSellers, setLoadingSellers, open, setOpen, handleSubmit, handleDelete, getSellers }
+    return { loadingUsers, setLoadingUsers, open, setOpen, handleSubmit, handleDelete, getUsers }
 }
