@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Box, FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 
 import { AuthContext } from "../providers/AuthProvider";
+import { DataContext } from "../providers/DataProvider";
 import { useForm } from "../hooks/useForm";
 import { useSellers } from "../hooks/useSellers";
 
@@ -12,19 +13,16 @@ import { DataGridWithFrontendPagination } from "../components/DataGridWithFronte
 export function ClientsBySeller() {
 
   const { auth } = useContext(AuthContext);
+  const { state } = useContext(DataContext)
 
   const navigate = useNavigate()
 
-  const { sellers, loadingSellers } = useSellers()
+  const { loadingSellers } = useSellers()
   const { formData, setFormData } = useForm({ defaultData: {} });
 
   useEffect(() => {
     if (auth?.user.role !== "ADMINISTRADOR") navigate("/productos");
   }, []);
-
-  useEffect(() => {
-    console.log(formData)
-  }, [formData])
 
   const headCells = [
     {
@@ -81,8 +79,8 @@ export function ClientsBySeller() {
                 sx={{ width: "100%" }}
                 onChange={(e) => setFormData(e.target.value)}
               >
-                {sellers.length > 0 ? (
-                  sellers.map((s) => (
+                {state.sellers.data.length > 0 ? (
+                  state.sellers.data.map((s) => (
                     <MenuItem key={s.id} value={s}>
                       {`${s.first_name} ${s.last_name}`.toUpperCase()}
                     </MenuItem>

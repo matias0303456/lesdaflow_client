@@ -12,6 +12,7 @@ import {
 } from "@mui/material";
 
 import { AuthContext } from "../providers/AuthProvider";
+import { DataContext } from "../providers/DataProvider";
 import { useForm } from "../hooks/useForm";
 import { useSuppliers } from "../hooks/useSuppliers";
 
@@ -22,7 +23,8 @@ import { getProductNewSalePriceByPercentage, getProductSalePrice } from "../util
 
 export function UpdateProductPriceBySupplier() {
 
-  const { auth } = useContext(AuthContext);
+  const { auth } = useContext(AuthContext)
+  const { state } = useContext(DataContext)
 
   const navigate = useNavigate()
 
@@ -130,8 +132,8 @@ export function UpdateProductPriceBySupplier() {
                 sx={{ width: "100%" }}
                 onChange={(e) => handleChange({ target: { name: 'id', value: e.target.value } })}
               >
-                {suppliers.length > 0 ? (
-                  suppliers.map((supplier) => (
+                {state.suppliers.data.length > 0 ? (
+                  state.suppliers.data.map((supplier) => (
                     <MenuItem key={supplier.id} value={supplier.id}>
                       {supplier.name}
                     </MenuItem>
@@ -193,7 +195,7 @@ export function UpdateProductPriceBySupplier() {
       <DataGridWithFrontendPagination
         loading={loadingSuppliers}
         headCells={headCells}
-        rows={suppliers.find(s => s.id === parseInt(formData.id))?.products || []}
+        rows={state.suppliers.data.find(s => s.id === parseInt(formData.id))?.products || []}
         contentHeader={''}
       />
     </Layout>

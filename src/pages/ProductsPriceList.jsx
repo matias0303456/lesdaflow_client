@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Box, Button, Input, FormControl, InputLabel, Typography } from "@mui/material";
 
 import { AuthContext } from "../providers/AuthProvider";
+import { DataContext } from "../providers/DataProvider";
 import { useProducts } from "../hooks/useProducts";
 import { useForm } from "../hooks/useForm";
 
@@ -14,10 +15,11 @@ import { getStock } from "../utils/helpers";
 export function ProductsPriceList() {
 
   const { auth } = useContext(AuthContext);
+  const { state } = useContext(DataContext)
 
   const navigate = useNavigate()
 
-  const { products, loadingProducts } = useProducts()
+  const { loadingProducts } = useProducts()
   const { formData, handleChange } = useForm({ defaultData: { code: '', details: '' } })
 
   useEffect(() => {
@@ -125,7 +127,7 @@ export function ProductsPriceList() {
         <DataGridWithFrontendPagination
           loading={loadingProducts}
           headCells={headCells}
-          rows={products.filter(p => (formData.code.length === 0 || p.code.includes(formData.code)) &&
+          rows={state.products.data.filter(p => (formData.code.length === 0 || p.code.includes(formData.code)) &&
             (formData.details.length === 0 || p.details.includes(formData.details)))}
         />
         <Button variant="outlined" size="medium" color="info" onClick={() => navigate('/productos')}>

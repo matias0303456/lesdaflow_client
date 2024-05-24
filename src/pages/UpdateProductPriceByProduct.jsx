@@ -15,6 +15,7 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 
 import { AuthContext } from "../providers/AuthProvider";
+import { DataContext } from "../providers/DataProvider";
 import { useForm } from "../hooks/useForm";
 import { useProducts } from "../hooks/useProducts";
 
@@ -26,10 +27,11 @@ import { getProductNewSalePriceByPercentage, getProductSalePrice } from "../util
 export function UpdateProductPriceByProduct() {
 
   const { auth } = useContext(AuthContext);
+  const { state } = useContext(DataContext)
 
   const navigate = useNavigate()
 
-  const { products, loadingProducts, massiveEdit, setMassiveEdit, handleSubmitMassive } = useProducts()
+  const { loadingProducts, massiveEdit, setMassiveEdit, handleSubmitMassive } = useProducts()
   const { reset, formData, validate, errors, handleChange } = useForm({
     defaultData: { product_id: '', percentage: 0.00 },
     rules: { product_id: { required: true }, percentage: { required: true } }
@@ -136,9 +138,9 @@ export function UpdateProductPriceByProduct() {
                 onChange={handleChange}
                 sx={{ width: "100%" }}
                 label="Producto"
-                disabled={products.filter(p => !massiveEdit.map(me => me.product_id).includes(p.id)).length === 0}
+                disabled={state.products.data.filter(p => !massiveEdit.map(me => me.product_id).includes(p.id)).length === 0}
               >
-                {products.filter(p => !massiveEdit.map(me => me.product_id).includes(p.id)).map((p) => (
+                {state.products.data.filter(p => !massiveEdit.map(me => me.product_id).includes(p.id)).map((p) => (
                   <MenuItem key={p.id} value={p.id}>
                     {p.details}
                   </MenuItem>
@@ -169,7 +171,7 @@ export function UpdateProductPriceByProduct() {
                   className="w-full"
                   type="number"
                   value={formData.percentage}
-                  disabled={products.filter(p => !massiveEdit.map(me => me.product_id).includes(p.id)).length === 0}
+                  disabled={state.products.data.filter(p => !massiveEdit.map(me => me.product_id).includes(p.id)).length === 0}
                   onChange={(e) => handleChange({ target: { name: 'percentage', value: e.target.value } })}
                 />
                 {errors.percentage?.type === 'required' &&
@@ -182,7 +184,7 @@ export function UpdateProductPriceByProduct() {
                 variant="contained"
                 size="small"
                 onClick={handleAddProduct}
-                disabled={products.filter(p => !massiveEdit.map(me => me.product_id).includes(p.id)).length === 0}
+                disabled={state.products.data.filter(p => !massiveEdit.map(me => me.product_id).includes(p.id)).length === 0}
               >
                 Agregar
               </Button>
@@ -193,7 +195,7 @@ export function UpdateProductPriceByProduct() {
       <DataGridWithFrontendPagination
         loading={loadingProducts}
         headCells={headCells}
-        rows={products.filter(p => massiveEdit.map(me => me.product_id).includes(p.id))}
+        rows={state.products.data.filter(p => massiveEdit.map(me => me.product_id).includes(p.id))}
       />
       <Box className="w-[50%] flex items-center justify-start gap-2 mt-4">
         <Button variant="outlined" size="medium" onClick={() => navigate('/productos')}>

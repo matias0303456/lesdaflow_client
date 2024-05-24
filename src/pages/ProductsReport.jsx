@@ -86,10 +86,10 @@ export function ProductsReport() {
                     label="Proveedor"
                     name="supplier_id"
                     onChange={handleChange}
-                    disabled={suppliers.length === 0}
+                    disabled={state.suppliers.data.length === 0}
                     sx={{ width: "100%" }}
                   >
-                    {suppliers.map((supplier) => (
+                    {state.suppliers.data.map((supplier) => (
                       <MenuItem key={supplier.id} value={supplier.id}>
                         {supplier.name}
                       </MenuItem>

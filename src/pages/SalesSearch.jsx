@@ -23,8 +23,8 @@ export function SalesSearch() {
 
   const navigate = useNavigate()
 
-  const { sellers, loadingSellers, getSellers } = useSellers()
-  const { loadingSales } = useSales()
+  const { loadingSellers, getSellers } = useSellers()
+  const { loadingSales, getSales } = useSales()
   const { formData, handleChange } = useForm({
     defaultData: { from: new Date(Date.now()), to: new Date(Date.now()), code: '', seller_id: '' }
   });
@@ -150,7 +150,7 @@ export function SalesSearch() {
                 onChange={handleChange}
                 sx={{ width: "100%" }}
               >
-                {sellers.map((s) => (
+                {state.sellers.data.map((s) => (
                   <MenuItem key={s.id} value={s.id}>
                     {`${s.first_name} ${s.last_name}`.toUpperCase()}
                   </MenuItem>
@@ -179,6 +179,8 @@ export function SalesSearch() {
         <DataGridWithBackendPagination
           loading={loadingSales || loadingSellers}
           headCells={headCells}
+          entityKey="sales"
+          getter={getSales}
           rows={state.sales.data}
         />
       </Box>

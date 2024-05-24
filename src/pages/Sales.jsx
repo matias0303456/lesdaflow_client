@@ -43,8 +43,8 @@ export function Sales() {
         handleDelete,
         getSales
     } = useSales()
-    const { products, loadingProducts, getProducts } = useProducts()
-    const { clients, loadingClients, getClients } = useClients()
+    const { loadingProducts, getProducts } = useProducts()
+    const { loadingClients, getClients } = useClients()
     const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
         defaultData: {
             id: '',
@@ -228,8 +228,8 @@ export function Sales() {
                                         <Autocomplete
                                             disablePortal
                                             id="client-autocomplete"
-                                            value={formData.client_id.toString().length > 0 ? `${clients.find(c => c.id === formData.client_id)?.first_name} - ${clients.find(c => c.id === formData.client_id)?.last_name}` : ''}
-                                            options={clients.map(c => ({ label: `${c.first_name} - ${c.last_name}`, id: c.id }))}
+                                            value={formData.client_id.toString().length > 0 ? `${state.clients.data.find(c => c.id === formData.client_id)?.first_name} - ${state.clients.data.find(c => c.id === formData.client_id)?.last_name}` : ''}
+                                            options={state.clients.data.map(c => ({ label: `${c.first_name} - ${c.last_name}`, id: c.id }))}
                                             noOptionsText="No hay clientes registrados."
                                             onChange={(e, value) => handleChange({ target: { name: 'client_id', value: value?.id ?? '' } })}
                                             renderInput={(params) => <TextField {...params} label="Cliente" />}
@@ -243,7 +243,7 @@ export function Sales() {
                                         }
                                     </FormControl>
                                     <AddProductsToSale
-                                        products={products}
+                                        products={state.products.data}
                                         saleProducts={saleProducts}
                                         setSaleProducts={setSaleProducts}
                                         missing={missing}
@@ -348,17 +348,17 @@ export function Sales() {
                             <Box sx={{ display: 'flex', justifyContent: 'end' }}>
                                 <FormControl>
                                     <InputLabel htmlFor="subtotal">Subtotal</InputLabel>
-                                    <Input value={getCurrentSubtotal(saleProducts, products)} id="subtotal" type="number" name="subtotal" disabled />
+                                    <Input value={getCurrentSubtotal(saleProducts, state.products.data)} id="subtotal" type="number" name="subtotal" disabled />
                                 </FormControl>
                                 <FormControl>
                                     <InputLabel htmlFor="total">Total</InputLabel>
-                                    <Input value={getCurrentTotal(formData, saleProducts, products)} id="total" type="number" name="total" disabled />
+                                    <Input value={getCurrentTotal(formData, saleProducts, state.products.data)} id="total" type="number" name="total" disabled />
                                 </FormControl>
                                 <FormControl>
                                     <InputLabel htmlFor="inst_amount">Monto por cuota</InputLabel>
                                     <Input
                                         id="inst_amount" type="number" name="total" disabled
-                                        value={getInstallmentsAmount(getCurrentTotal(formData, saleProducts, products), formData.installments)}
+                                        value={getInstallmentsAmount(getCurrentTotal(formData, saleProducts, state.products.data), formData.installments)}
                                     />
                                 </FormControl>
                             </Box>

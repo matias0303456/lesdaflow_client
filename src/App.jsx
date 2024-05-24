@@ -76,23 +76,13 @@ function App() {
                 <Route path="/productos" element={<Products />} />
                 <Route path="/lista-precios" element={<ProductsPriceList />} />
                 <Route path="/reporte-productos" element={<ProductsReport />} />
-                <Route
-                  path="/producto-actualiza-precio-proveedor"
-                  element={<UpdateProductPriceBySupplier />}
-                />
-                <Route
-                  path="/reposicion-stock"
-                  element={<StockReplenishment />}
-                />
-                <Route
-                  path="/producto-actualiza-precio"
-                  element={<UpdateProductPriceByProduct />}
-                />
+                <Route path="/producto-actualiza-precio-proveedor" element={<UpdateProductPriceBySupplier />} />
+                <Route path="/reposicion-stock" element={<StockReplenishment />} />
+                <Route path="/producto-actualiza-precio" element={<UpdateProductPriceByProduct />} />
                 <Route path="/pedidos" element={<Orders />} />
                 <Route path="/ingreso-pedidos" element={<OrdersCheckIn />} />
                 <Route path="/presupuestos" element={<Budgets />} />
                 <Route path="/movimientos-caja" element={<Registers />} />
-                <Route path="/reporte-movimientos-caja" element={<RegisterMovements />} />
                 <Route path="/reporte-movimientos-caja" element={<RegisterMovements />} />
                 <Route path="/reportes-clientes-bloqueados" element={<BlockedCustomers />} />
                 <Route path="*" element={<Error />} />

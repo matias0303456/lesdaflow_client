@@ -1,30 +1,26 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Box, Button, FormControl, Input, InputLabel, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
 
 import { AuthContext } from "../providers/AuthProvider";
-import { MessageContext } from "../providers/MessageProvider";
-import { useApi } from "../hooks/useApi";
+import { DataContext } from "../providers/DataProvider";
 import { useForm } from "../hooks/useForm";
 import { useSuppliers } from "../hooks/useSuppliers";
-import { useNavigate } from "react-router-dom";
 
 import { Layout } from "../components/Layout";
 import { ModalComponent } from "../components/ModalComponent";
 // import { SupplierFilter } from "../components/filters/SupplierFilter";
 import { DataGridWithBackendPagination } from "../components/DataGridWithBackendPagination";
 
-import { SUPPLIER_URL } from "../utils/urls";
-import { getNewPrice } from "../utils/helpers";
 
 export function SalesToDeliver() {
 
     const { auth } = useContext(AuthContext)
-    const { setMessage, setOpenMessage, setSeverity } = useContext(MessageContext)
+    const { state} = useContext(DataContext)
 
     const navigate = useNavigate()
 
-    const { post, put, destroy, putMassive } = useApi(SUPPLIER_URL)
-    const { suppliers, setSuppliers, loadingSuppliers, setLoadingSuppliers } = useSuppliers()
+    const { loadingSuppliers, setOpen, getSuppliers } = useSuppliers()
     const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
         defaultData: {
             id: '',
@@ -59,79 +55,9 @@ export function SalesToDeliver() {
         }
     })
 
-    const [open, setOpen] = useState(null)
-    const [massiveEditPercentage, setMassiveEditPercentage] = useState(0)
-
     useEffect(() => {
-        if (auth?.user.role.name !== 'ADMINISTRADOR') navigate('/productos')
+        if (auth?.user.role !== 'ADMINISTRADOR') navigate('/ventas')
     }, [])
-
-    async function handleSubmit(e) {
-        e.preventDefault()
-        if (validate()) {
-            const { status, data } = open === 'NEW' ? await post(formData) : await put(formData)
-            if (status === 200) {
-                if (open === 'NEW') {
-                    setSuppliers([data, ...suppliers])
-                    setMessage('Proveedor creado correctamente.')
-                } else {
-                    setSuppliers([data, ...suppliers.filter(s => s.id !== formData.id)])
-                    setMessage('Proveedor editado correctamente.')
-                }
-                setSeverity('success')
-                reset(setOpen)
-            } else {
-                setMessage(data.message)
-                setSeverity('error')
-                setDisabled(false)
-            }
-            setOpenMessage(true)
-        }
-    }
-
-    async function handleSubmitMassive() {
-        setLoadingSuppliers(true)
-        const body = {
-            supplier: formData.id,
-            products: formData.products.map(p => ({ id: p.id, buy_price: p.buy_price })),
-            percentage: parseInt(massiveEditPercentage)
-        }
-        const { status, data } = await putMassive(body)
-        if (status === 200) {
-            setSuppliers([data, ...suppliers.filter(s => s.id !== data.id)])
-            setMessage('Precios actualizados correctamente.')
-            setSeverity('success')
-            reset(setOpen)
-            setMassiveEditPercentage(0)
-        } else {
-            setMessage(data.message)
-            setSeverity('error')
-            setDisabled(false)
-        }
-        setLoadingSuppliers(false)
-        setOpenMessage(true)
-    }
-
-    async function handleDelete(elements) {
-        setLoadingSuppliers(true)
-        const result = await Promise.all(elements.map(e => destroy(e)))
-        if (result.every(r => r.status === 200)) {
-            const ids = result.map(r => r.data.id)
-            setSuppliers([...suppliers.filter(s => !ids.includes(s.id))])
-            setMessage(`${result.length === 1 ? 'Proveedor eliminado' : 'Proveedores eliminados'} correctamente.`)
-            setSeverity('success')
-        } else {
-            if (result.some(r => r.status === 300)) {
-                setMessage('Existen proveedores con datos asociados.')
-            } else {
-                setMessage('Ocurrió un error. Actualice la página.')
-            }
-            setSeverity('error')
-        }
-        setOpenMessage(true)
-        setLoadingSuppliers(false)
-        setOpen(null)
-    }
 
     const headCells = [
         {
@@ -208,29 +134,11 @@ export function SalesToDeliver() {
             <DataGridWithBackendPagination
                 loading={loadingSuppliers || disabled}
                 headCells={headCells}
-                rows={suppliers}
+                rows={state.suppliers.data}
+                entityKey="suppliers"
+                getter={getSuppliers}
                 setOpen={setOpen}
                 setFormData={setFormData}
-                contentHeader={
-                    <Box
-                        sx={{
-                            display: "flex",
-                            flexWrap: "wrap",
-                            alignItems: "center",
-                            gap: 2,
-                        }}
-                    >
-                        <Box sx={{ display: "flex", gap: 1 }}>
-                            <Button variant="outlined" size="medium" color="success">
-                                Excel
-                            </Button>
-                            <Button variant="outlined" size="medium" color="error">
-                                Pdf
-                            </Button>
-                        </Box>
-
-                    </Box>
-                }
             >
                 <ModalComponent open={open === 'NEW' || open === 'EDIT' || open === 'VIEW'} onClose={() => reset(setOpen)}>
                     <Typography variant="h6" sx={{ marginBottom: 2 }}>
@@ -238,7 +146,7 @@ export function SalesToDeliver() {
                         {open === 'EDIT' && 'Editar proveedor'}
                         {open === 'VIEW' && `Proveedor #${formData.id}`}
                     </Typography>
-                    <form onChange={handleChange} onSubmit={handleSubmit}>
+                    <form onChange={handleChange}>
                         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
                             <FormControl>
                                 <InputLabel htmlFor="name">Nombre</InputLabel>
@@ -347,13 +255,13 @@ export function SalesToDeliver() {
                                         <TableCell align="center">{p.code}</TableCell>
                                         <TableCell align="center">{p.details}</TableCell>
                                         <TableCell align="center">${p.buy_price.toFixed(2)}</TableCell>
-                                        <TableCell align="center">${getNewPrice(p, massiveEditPercentage)}</TableCell>
+                                        <TableCell align="center">$</TableCell>
                                     </TableRow>
                                 ))}
                             </TableBody>
                         </Table>
                     </TableContainer>
-                    <Box sx={{
+                    {/* <Box sx={{
                         display: 'flex',
                         flexDirection: 'row',
                         gap: 1,
@@ -373,7 +281,7 @@ export function SalesToDeliver() {
                         <Typography variant="h6">
                             %
                         </Typography>
-                    </Box>
+                    </Box> */}
                     <Box sx={{
                         display: 'flex',
                         flexDirection: 'row',
@@ -386,7 +294,6 @@ export function SalesToDeliver() {
                             sx={{ width: '50%' }}
                             onClick={() => {
                                 reset(setOpen)
-                                setMassiveEditPercentage(0)
                             }}
                         >
                             Cancelar
@@ -394,7 +301,6 @@ export function SalesToDeliver() {
                         <Button type="submit" variant="contained"
                             sx={{ width: '50%' }}
                             disabled={formData.products.length === 0}
-                            onClick={handleSubmitMassive}
                         >
                             Guardar
                         </Button>

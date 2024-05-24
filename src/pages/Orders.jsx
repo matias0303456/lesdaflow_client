@@ -1,34 +1,23 @@
 import { useContext, useEffect, useState } from "react";
-import { Box, Button, FormControl, Input, InputLabel, MenuItem, Paper, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
+import { Box, Button } from "@mui/material";
 
-import { MessageContext } from "../providers/MessageProvider";
 import { useProducts } from '../hooks/useProducts'
 import { useForm } from "../hooks/useForm";
 import { useSuppliers } from "../hooks/useSuppliers";
-import { useApi } from "../hooks/useApi";
 
-import { AuthContext } from "../providers/AuthProvider";
 import { DataContext } from "../providers/DataProvider";
 import { Layout } from "../components/Layout";
-import { ModalComponent } from "../components/ModalComponent";
-import { ProductFilter } from "../components/filters/ProductFilter";
 import { OrderFilter } from "../components/filters/OrderFilter";
 import { DataGridWithBackendPagination } from "../components/DataGridWithBackendPagination";
 
-import { PRODUCT_URL } from "../utils/urls";
-import { getNewPrice, getStock } from "../utils/helpers";
-
 export function Orders() {
 
-    const { auth } = useContext(AuthContext)
     const { state } = useContext(DataContext)
-    const { setMessage, setOpenMessage, setSeverity } = useContext(MessageContext)
 
-    const { post, put, putMassive, destroy } = useApi(PRODUCT_URL)
-    const { setProducts, loadingProducts, setLoadingProducts } = useProducts()
+    const { loadingProducts, getProducts } = useProducts()
     const { loadingSuppliers, getSuppliers } = useSuppliers()
     const [open, setOpen] = useState(null)
-    const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
+    const { setFormData, disabled } = useForm({
         defaultData: {
             id: '',
             code: '',
@@ -75,19 +64,9 @@ export function Orders() {
         }
     })
 
-    const [massiveEdit, setMassiveEdit] = useState([])
-    const [massiveEditPercentage, setMassiveEditPercentage] = useState(0)
-    const [earnPrice, setEarnPrice] = useState(0)
-
     useEffect(() => {
         getSuppliers()
     }, [])
-
-    useEffect(() => {
-        const buy_price = formData.buy_price.toString().length === 0 ? 0 : parseInt(formData.buy_price)
-        const earn = formData.earn.toString().length === 0 ? 0 : parseInt(formData.earn)
-        setEarnPrice(`$${(buy_price + ((buy_price / 100) * earn)).toFixed(2)}`)
-    }, [formData])
 
     const headCells = [
         {
@@ -149,6 +128,8 @@ export function Orders() {
                 loading={loadingProducts || loadingSuppliers || disabled}
                 headCells={headCells}
                 rows={state.products.data}
+                entityKey="products"
+                getter={getProducts}
                 setOpen={setOpen}
                 setFormData={setFormData}
                 deadlineColor="pedidos"

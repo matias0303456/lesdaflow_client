@@ -1,24 +1,12 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  Box,
-  Button,
-  Input,
-  FormControl,
-  InputLabel,
-  LinearProgress,
-  Typography,
-} from "@mui/material";
-import { CLIENT_URL, USER_URL, SUPPLIER_URL } from "../utils/urls";
+import { Box, Button, Input, FormControl, InputLabel, Typography } from "@mui/material";
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 
 import { AuthContext } from "../providers/AuthProvider";
-import { MessageContext } from "../providers/MessageProvider";
 import { DataContext } from "../providers/DataProvider";
-import { useApi } from "../hooks/useApi";
 import { useForm } from "../hooks/useForm";
-import { useSuppliers } from "../hooks/useSuppliers"
 import { useClients } from "../hooks/useClients";
 
 import { Layout } from "../components/Layout";
@@ -30,84 +18,16 @@ export function OrdersCheckIn() {
   const { state } = useContext(DataContext)
 
   const navigate = useNavigate()
-  const { setMessage, setOpenMessage, setSeverity } =
-    useContext(MessageContext);
-  // clients import
-  const { get, /* post, put */ } = useApi(CLIENT_URL);
-  const { clients, setClients, loadingClients, setLoadingClients } = useClients();
-  // users import
-  const { get: getUsers } = useApi(USER_URL);
 
-  const {
-    formData,
-    setFormData,
-    handleChange,
-    disabled,
-    setDisabled,
-    validate,
-    reset,
-    errors,
-  } = useForm({
+  const { getClients, setOpen } = useClients();
+  const { setFormData, handleChange } = useForm({
     defaultData: {},
     rules: {},
   });
 
-  //suppliers imports
-  const { post, put, destroy, putMassive } = useApi(SUPPLIER_URL)
-  const { suppliers, setSuppliers, loadingSuppliers, setLoadingSuppliers } = useSuppliers()
-
-
-  const [open, setOpen] = useState(null);
-  const [loadingUsers, setLoadingUsers] = useState(true);
-  const [users, setUsers] = useState([]);
-
   useEffect(() => {
     if (auth?.user.role !== "ADMINISTRADOR") navigate("/productos");
   }, []);
-
-  useEffect(() => {
-    (async () => {
-      const { status, data } = await getUsers();
-      if (status === 200) {
-        setUsers(data[0]);
-        setLoadingUsers(false);
-      }
-    })();
-  }, []);
-
-  useEffect(() => {
-    (async () => {
-      const { status, data } = await get();
-      if (status === 200) {
-        setClients(data[0]);
-        setLoadingClients(false);
-      }
-    })();
-  }, []);
-
-  async function handleSubmit(e) {
-    e.preventDefault();
-    if (validate()) {
-      const { status, data } =
-        open === "NEW" ? await post(formData) : await put(formData);
-      if (status === 200) {
-        if (open === "NEW") {
-          setClients([data, ...clients]);
-          setMessage("Cliente creado correctamente.");
-        } else {
-          setClients([data, ...clients.filter((c) => c.id !== formData.id)]);
-          setMessage("Cliente editado correctamente.");
-        }
-        setSeverity("success");
-        reset(setOpen);
-      } else {
-        setMessage(data.message);
-        setSeverity("error");
-        setDisabled(false);
-      }
-      setOpenMessage(true);
-    }
-  }
 
   const headCells = [
     {
@@ -150,8 +70,6 @@ export function OrdersCheckIn() {
 
   return (
     <Layout title="Ingreso de Pedidos">
-
-      {/* product search */}
       <Box className="w-[100%] mb-3 px-2 py-4 bg-white rounded-md">
         <Typography
           variant="h6"
@@ -168,50 +86,34 @@ export function OrdersCheckIn() {
         >
           Buscar Pedido
         </Typography>
-
-        {loadingClients || loadingUsers ? (
-          <Box sx={{ width: "100%" }}>
-            <LinearProgress />
-          </Box>
-        ) : (
-          <form onChange={handleChange} onSubmit={handleSubmit}
-            className="w-[50%] flex items-center justify-start"
-          >
-
-            <Box
-              sx={{ display: "flex", alignItems: "center", flexDirection: "column", justifyContent: "start", gap: 1 }}>
-
-              {/* search input */}
-              <FormControl variant="standard" sx={{
-                minWidth: "100%",
-                color: "#59656b",
-                display: "flex", alignItems: "start",
-                justifyContent: "start",
-                marginTop: "2rem"
-              }}>
-                <Box
-                  className="w-[100%] flex items-center justify-around gap-2"
+        <form onChange={handleChange} className="w-[50%] flex items-center justify-start">
+          <Box sx={{ display: "flex", alignItems: "center", flexDirection: "column", justifyContent: "start", gap: 1 }}>
+            <FormControl variant="standard" sx={{
+              minWidth: "100%",
+              color: "#59656b",
+              display: "flex", alignItems: "start",
+              justifyContent: "start",
+              marginTop: "2rem"
+            }}>
+              <Box
+                className="w-[100%] flex items-center justify-around gap-2"
+              >
+                <InputLabel id="demo-simple-select-standard-label"
+                  className="w-[50%] font-semibold text-gray-400 text-sm"
                 >
-                  <InputLabel id="demo-simple-select-standard-label"
-                    className="w-[50%] font-semibold text-gray-400 text-sm"
-                  >
-                    Pedidos nro:
-                  </InputLabel>
-                  <Input
-                    className="w-[100%] flex items-center justify-start"
-                    type="number" />
-                  <Button variant="contained" size="small">
-                    Buscar
-                  </Button>
-                </Box>
-              </FormControl>
-            </Box>
-
-          </form>
-        )}
+                  Pedidos nro:
+                </InputLabel>
+                <Input
+                  className="w-[100%] flex items-center justify-start"
+                  type="number" />
+                <Button variant="contained" size="small">
+                  Buscar
+                </Button>
+              </Box>
+            </FormControl>
+          </Box>
+        </form>
       </Box>
-
-      {/* orders details */}
       <Box className="w-[100%] mb-3 px-2 py-4 bg-white rounded-md">
         <Typography
           variant="h6"
@@ -228,10 +130,7 @@ export function OrdersCheckIn() {
         >
           Datos del Pedido
         </Typography>
-
-        <form onChange={handleChange} onSubmit={handleSubmit}
-          className="w-[100%] flex items-center justify-start"
-        >
+        <form onChange={handleChange} className="w-[100%] flex items-center justify-start">
           {/* search input */}
           <Box
             className="w-[50%] flex items-center justify-start gap-6"
@@ -259,8 +158,6 @@ export function OrdersCheckIn() {
           </Box>
         </form>
       </Box>
-
-      {/* seller details */}
       <Box className="w-[100%] mb-3 px-2 py-4 bg-white rounded-md">
         <Typography
           variant="h6"
@@ -277,14 +174,8 @@ export function OrdersCheckIn() {
         >
           Datos del Vendedor
         </Typography>
-
-        <form onChange={handleChange} onSubmit={handleSubmit}
-          className="w-[100%] flex items-center justify-start"
-        >
-          <Box
-            className="w-[50%] flex items-center justify-start mt-4 gap-2"
-          >
-            {/* lastname */}
+        <form onChange={handleChange} className="w-[100%] flex items-center justify-start">
+          <Box className="w-[50%] flex items-center justify-start mt-4 gap-2">
             <FormControl className="w-[50%]">
               <InputLabel id="demo-simple-select-standard-label"
                 className="font-semibold text-gray-400 text-sm flex items-center justify-start"
@@ -295,7 +186,6 @@ export function OrdersCheckIn() {
                 className="w-[100%] flex items-center justify-start"
                 type="text" />
             </FormControl>
-            {/* name */}
             <FormControl className="w-[50%]">
               <InputLabel id="demo-simple-select-standard-label"
                 className="font-semibold text-gray-400 text-sm flex items-center justify-start"
@@ -310,8 +200,6 @@ export function OrdersCheckIn() {
 
         </form>
       </Box>
-
-      {/* provider details */}
       <Box className="w-[100%] mb-3 px-2 py-4 bg-white rounded-md">
         <Typography
           variant="h6"
@@ -328,10 +216,7 @@ export function OrdersCheckIn() {
         >
           Datos del Proveedor
         </Typography>
-
-        <form onChange={handleChange} onSubmit={handleSubmit}
-          className="w-[100%] flex items-center justify-start"
-        >
+        <form onChange={handleChange} className="w-[100%] flex items-center justify-start">
           <Box
             className="w-[50%] flex items-center justify-start mt-4 gap-2"
           >
@@ -383,22 +268,12 @@ export function OrdersCheckIn() {
           loading={false}
           headCells={headCells}
           rows={state.clients.data}
+          entityKey="clients"
+          getter={getClients}
           setOpen={setOpen}
           setData={setFormData}
-          contentHeader={
-            <Box sx={{
-              display: 'flex',
-              flexWrap: 'wrap',
-              alignItems: 'center',
-              gap: 2
-            }}>
-              {/* <SaleFilter sales={sales} setSales={setSales} /> */}
-            </Box>
-          }
         />
       </Box>
-
-      {/* down button section */}
       <Box className="w-[50%] flex items-center justify-start gap-2">
         <Button variant="contained" size="medium">
           confirmar

@@ -21,7 +21,7 @@ export function Clients() {
     const { state } = useContext(DataContext)
 
     const { loadingClients, handleSubmit, handleDelete, open, setOpen, getClients } = useClients()
-    const { sellers, loadingSellers, getSellers } = useSellers()
+    const { loadingSellers, getSellers } = useSellers()
     const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
         defaultData: {
             id: '',
@@ -330,7 +330,7 @@ export function Clients() {
                                         onChange={handleChange}
                                         disabled={open === 'VIEW'}
                                     >
-                                        {sellers.map(s => (
+                                        {state.sellers.data.map(s => (
                                             <MenuItem key={s.id} value={s.id}>{`${s.first_name} ${s.last_name}`}</MenuItem>
                                         ))}
                                     </Select>
