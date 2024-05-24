@@ -39,7 +39,7 @@ export function useRegisters() {
         const { status, data } = open === 'NEW' ? await post(formData) : await put(formData)
         if (status === 200) {
             if (open === 'NEW') {
-                dispatch({ type: 'REGISTERS', payload: { ...state.registers, data: [data, ...state.registers] } })
+                dispatch({ type: 'REGISTERS', payload: { ...state.registers, data: [data, ...state.registers.data] } })
                 setMessage('Caja abierta correctamente.')
             } else {
                 dispatch({
@@ -48,7 +48,7 @@ export function useRegisters() {
                         ...state.registers,
                         data: [
                             data,
-                            ...state.registers.filter(r => r.id !== formData.id)
+                            ...state.registers.data.filter(r => r.id !== formData.id)
                         ]
                     }
                 })
@@ -72,10 +72,7 @@ export function useRegisters() {
                 type: 'REGISTERS',
                 payload: {
                     ...state.registers,
-                    data: [
-                        data,
-                        ...state.registers.filter(r => r.id !== data.id)
-                    ]
+                    data: [...state.registers.data.filter(r => r.id !== data.id)]
                 }
             })
             setMessage('Caja eliminada correctamente.')

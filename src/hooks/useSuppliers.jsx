@@ -38,7 +38,7 @@ export function useSuppliers() {
             const { status, data } = open === 'NEW' ? await post(formData) : await put(formData)
             if (status === 200) {
                 if (open === 'NEW') {
-                    dispatch({ type: 'SUPPLIERS', payload: { ...state.suppliers, data: [data, ...state.suppliers] } })
+                    dispatch({ type: 'SUPPLIERS', payload: { ...state.suppliers, data: [data, ...state.suppliers.data] } })
                     setMessage('Proveedor creado correctamente.')
                 } else {
                     dispatch({
@@ -47,7 +47,7 @@ export function useSuppliers() {
                             ...state.suppliers,
                             data: [
                                 data,
-                                ...state.suppliers.filter(s => s.id !== formData.id)
+                                ...state.suppliers.data.filter(s => s.id !== formData.id)
                             ]
                         }
                     })
@@ -72,10 +72,7 @@ export function useSuppliers() {
                 type: 'SUPPLIERS',
                 payload: {
                     ...state.suppliers,
-                    data: [
-                        data,
-                        ...state.suppliers.filter(s => s.id !== data.id)
-                    ]
+                    data: [...state.suppliers.data.filter(s => s.id !== data.id)]
                 }
             })
             setMessage('Proveedor eliminado correctamente.')
@@ -109,7 +106,7 @@ export function useSuppliers() {
                         ...state.suppliers,
                         data: [
                             data,
-                            ...state.suppliers.filter(s => s.id !== data.id)
+                            ...state.suppliers.data.filter(s => s.id !== data.id)
                         ]
                     }
                 })

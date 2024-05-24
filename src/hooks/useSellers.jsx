@@ -38,7 +38,7 @@ export function useSellers() {
             const { status, data } = open === 'NEW' ? await post(formData) : await put(formData)
             if (status === 200) {
                 if (open === 'NEW') {
-                    dispatch({ type: 'SELLERS', payload: { ...state.sellers, data: [data, ...state.sellers] } })
+                    dispatch({ type: 'SELLERS', payload: { ...state.sellers, data: [data, ...state.sellers.data] } })
                     setMessage('Vendedor creado correctamente.')
                 } else {
                     dispatch({
@@ -47,7 +47,7 @@ export function useSellers() {
                             ...state.sellers,
                             data: [
                                 data,
-                                ...state.sellers.filter(s => s.id !== formData.id)
+                                ...state.sellers.data.filter(s => s.id !== formData.id)
                             ]
                         }
                     })
@@ -72,10 +72,7 @@ export function useSellers() {
                 type: 'SELLERS',
                 payload: {
                     ...state.sellers,
-                    data: [
-                        data,
-                        ...state.sellers.filter(s => s.id !== data.id)
-                    ]
+                    data: [...state.sellers.data.filter(s => s.id !== data.id)]
                 }
             })
             setMessage('Vendedor eliminado correctamente.')

@@ -48,7 +48,7 @@ export function useSales() {
             const { status, data } = open === 'NEW' ? await post(submitData) : await put(submitData)
             if (status === 200) {
                 if (open === 'NEW') {
-                    dispatch({ type: 'SALES', payload: { ...state.sales, data: [data, ...state.sales] } })
+                    dispatch({ type: 'SALES', payload: { ...state.sales, data: [data, ...state.sales.data] } })
                     setMessage('Venta creada correctamente.')
                     setSaleSaved(data.id)
                 } else {
@@ -58,7 +58,7 @@ export function useSales() {
                             ...state.sales,
                             data: [
                                 data,
-                                ...state.sales.filter(s => s.id !== formData.id)
+                                ...state.sales.data.filter(s => s.id !== formData.id)
                             ]
                         }
                     })
@@ -92,10 +92,7 @@ export function useSales() {
                 type: 'SALES',
                 payload: {
                     ...state.sales,
-                    data: [
-                        data,
-                        ...state.sales.filter(s => s.id !== data.id)
-                    ]
+                    data: [...state.sales.data.filter(s => s.id !== data.id)]
                 }
             })
             setMessage('Venta eliminada correctamente.')

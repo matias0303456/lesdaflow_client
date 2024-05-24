@@ -40,7 +40,7 @@ export function useProducts() {
             const { status, data } = open === 'NEW' ? await post(formData) : await put(formData)
             if (status === 200) {
                 if (open === 'NEW') {
-                    dispatch({ type: 'PRODUCTS', payload: { ...state.products, data: [data, ...state.products] } })
+                    dispatch({ type: 'PRODUCTS', payload: { ...state.products, data: [data, ...state.products.data] } })
                     setMessage('Producto creado correctamente.')
                 } else {
                     dispatch({
@@ -49,7 +49,7 @@ export function useProducts() {
                             ...state.products,
                             data: [
                                 data,
-                                ...state.products.filter(p => p.id !== formData.id)
+                                ...state.products.data.filter(p => p.id !== formData.id)
                             ]
                         }
                     })
@@ -81,7 +81,7 @@ export function useProducts() {
                     ...state.products,
                     data: [
                         data,
-                        ...state.products.filter(p => !data.map(d => d.id).includes(p.id))
+                        ...state.products.data.filter(p => !data.map(d => d.id).includes(p.id))
                     ]
                 }
             })
@@ -102,10 +102,7 @@ export function useProducts() {
                 type: 'PRODUCTS',
                 payload: {
                     ...state.products,
-                    data: [
-                        data,
-                        ...state.products.filter(p => p.id !== data.id)
-                    ]
+                    data: [...state.products.data.filter(p => p.id !== data.id)]
                 }
             })
             setMessage('Producto eliminado correctamente.')

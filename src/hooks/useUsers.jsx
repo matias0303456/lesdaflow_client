@@ -38,7 +38,7 @@ export function useUsers() {
             const { status, data } = open === 'NEW' ? await post(formData) : await put(formData)
             if (status === 200) {
                 if (open === 'NEW') {
-                    dispatch({ type: 'USERS', payload: { ...state.users, data: [data, ...state.users] } })
+                    dispatch({ type: 'USERS', payload: { ...state.users, data: [data, ...state.users.data] } })
                     setMessage('Usuario creado correctamente.')
                 } else {
                     dispatch({
@@ -47,7 +47,7 @@ export function useUsers() {
                             ...state.users,
                             data: [
                                 data,
-                                ...state.users.filter(u => u.id !== formData.id)
+                                ...state.users.data.filter(u => u.id !== formData.id)
                             ]
                         }
                     })
@@ -72,10 +72,7 @@ export function useUsers() {
                 type: 'USERS',
                 payload: {
                     ...state.users,
-                    data: [
-                        data,
-                        ...state.users.filter(u => u.id !== data.id)
-                    ]
+                    data: [...state.users.data.filter(u => u.id !== data.id)]
                 }
             })
             setMessage('Usuario eliminado correctamente.')

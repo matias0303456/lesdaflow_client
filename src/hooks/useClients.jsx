@@ -40,7 +40,7 @@ export function useClients() {
             const { status, data } = open === 'NEW' ? await post(formData) : await put(formData)
             if (status === 200) {
                 if (open === 'NEW') {
-                    dispatch({ type: 'CLIENTS', payload: { ...state.clients, data: [data, ...state.clients] } })
+                    dispatch({ type: 'CLIENTS', payload: { ...state.clients, data: [data, ...state.clients.data] } })
                     setMessage('Cliente creado correctamente.')
                 } else {
                     dispatch({
@@ -49,7 +49,7 @@ export function useClients() {
                             ...state.clients,
                             data: [
                                 data,
-                                ...state.clients.filter(c => c.id !== formData.id)
+                                ...state.clients.data.filter(c => c.id !== formData.id)
                             ]
                         }
                     })
@@ -74,10 +74,7 @@ export function useClients() {
                 type: 'CLIENTS',
                 payload: {
                     ...state.clients,
-                    data: [
-                        data,
-                        ...state.clients.filter(c => c.id !== data.id)
-                    ]
+                    data: [...state.clients.data.filter(c => c.id !== data.id)]
                 }
             })
             setMessage('Cliente eliminado correctamente.')
