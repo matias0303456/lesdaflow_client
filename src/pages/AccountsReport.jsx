@@ -19,28 +19,26 @@ export function AccountsReport() {
 
   const { getUsers } = useUsers()
   const { getClients } = useClients()
-  const {
-    formData,
-    setFormData,
-    handleChange,
-    disabled,
-    setDisabled,
-    validate,
-    reset,
-    errors,
-  } = useForm({
-    defaultData: {},
-    rules: {},
-  });
+  const { formData, handleChange, validate, errors } = useForm({
+    defaultData: { user_id: '', client_id: '' },
+    rules: { user_id: { required: true }, client_id: { required: true } }
+  })
 
   useEffect(() => {
     if (auth?.user.role !== "ADMINISTRADOR") navigate("/productos");
-  }, []);
+  }, [])
 
   useEffect(() => {
     getClients()
     getUsers()
   }, [])
+
+  const handleSubmit = e => {
+    e.preventDefault()
+    if (validate()) {
+      console.log(formData)
+    }
+  }
 
   return (
     <Layout title="Reporte Cuenta Corriente">
@@ -60,39 +58,48 @@ export function AccountsReport() {
         <form onChange={handleChange}>
           <Box sx={{ display: "flex", flexDirection: "column", gap: 3, backgroundColor: '#fff', padding: 1 }}>
             <FormControl variant="standard" sx={{ margin: 1, minWidth: 120 }}>
-              <InputLabel id="demo-simple-select-standard-label">
+              <InputLabel id="user_id">
                 Vendedor
               </InputLabel>
               <Select
-                labelId="demo-simple-select-standard-label"
-                id="demo-simple-select-standard"
-                onChange={handleChange}
+                labelId="seller-select"
+                id="user_id"
+                value={formData.user_id}
                 label="Vendedor"
+                name="user_id"
+                onChange={handleChange}
               >
                 {state.users.data.length > 0 ? (
-                  state.users.data.map((c) => (
-                    <MenuItem key={c.id} value={c}>
-                      {`${c.first_name} ${c.last_name}`.toUpperCase()}
+                  state.users.data.map((u) => (
+                    <MenuItem key={u.id} value={u.id}>
+                      {`${u.first_name} ${u.last_name}`.toUpperCase()}
                     </MenuItem>
                   ))
                 ) : (
                   <MenuItem>No se encontraron resultados</MenuItem>
                 )}
               </Select>
+              {errors.user_id?.type === 'required' &&
+                <Typography variant="caption" color="red" marginTop={1}>
+                  * El vendedor es requerido.
+                </Typography>
+              }
             </FormControl>
             <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
-              <InputLabel id="demo-simple-select-standard-label">
+              <InputLabel id="client_id">
                 Cliente
               </InputLabel>
               <Select
-                labelId="demo-simple-select-standard-label"
-                id="demo-simple-select-standard"
-                onChange={handleChange}
+                labelId="client-select"
+                id="client_id"
+                value={formData.client_id}
                 label="Cliente"
+                name="client_id"
+                onChange={handleChange}
               >
-                {state.clients.data.length > 0 ? (
-                  state.clients.data.map((c) => (
-                    <MenuItem key={c.id} value={c}>
+                {state.clients.data.filter(c => c.user_id === parseInt(formData.user_id)).length > 0 ? (
+                  state.clients.data.filter(c => c.user_id === parseInt(formData.user_id)).map((c) => (
+                    <MenuItem key={c.id} value={c.id}>
                       {`${c.first_name} ${c.last_name}`.toUpperCase()}
                     </MenuItem>
                   ))
@@ -100,6 +107,11 @@ export function AccountsReport() {
                   <MenuItem>No se encontraron resultados</MenuItem>
                 )}
               </Select>
+              {errors.client_id?.type === 'required' &&
+                <Typography variant="caption" color="red" marginTop={1}>
+                  * El cliente es requerido.
+                </Typography>
+              }
             </FormControl>
           </Box>
         </form>
@@ -111,7 +123,7 @@ export function AccountsReport() {
           marginTop: 3,
           width: "70%",
         }}>
-          <Button type="button" variant="contained">
+          <Button type="button" variant="contained" onClick={handleSubmit}>
             Imprimir
           </Button>
         </FormControl>

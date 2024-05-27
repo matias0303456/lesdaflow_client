@@ -11,6 +11,8 @@ import { useSales } from "../hooks/useSales";
 import { Layout } from "../components/Layout";
 import { DataGridWithBackendPagination } from "../components/DataGridWithBackendPagination";
 
+import { getAccountStatus, getDeadline, getSaleDifference, getSaleTotal } from "../utils/helpers";
+
 export function CurrentAccount() {
 
   const { auth } = useContext(AuthContext)
@@ -57,11 +59,11 @@ export function CurrentAccount() {
       accessor: (row) => format(new Date(row.date), 'dd/MM/yy')
     },
     {
-      id: "expiration",
+      id: "deadline",
       numeric: false,
       disablePadding: true,
       label: "Vencimiento",
-      accessor: (row) => 'rtyrty',
+      accessor: (row) => getDeadline(row.date, row.installments)
     },
     {
       id: "seller",
@@ -75,21 +77,21 @@ export function CurrentAccount() {
       numeric: true,
       disablePadding: true,
       label: "Importe",
-      accessor: (row) => 'rtyrty'
+      accessor: (row) => getSaleTotal(row)
     },
     {
-      id: "money_balance",
+      id: "difference",
       numeric: true,
       disablePadding: true,
       label: "Saldo",
-      accessor: (row) => 'rtyrty'
+      accessor: (row) => getSaleDifference(row)
     },
     {
       id: "status",
       numeric: false,
       disablePadding: true,
       label: "Estado",
-      accessor: (row) => 'rtyrty'
+      accessor: (row) => getAccountStatus(row)
     },
   ];
 

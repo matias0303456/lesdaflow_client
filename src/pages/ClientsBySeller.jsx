@@ -73,7 +73,7 @@ export function ClientsBySeller() {
         <form className="mb-2">
           <Box sx={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "start", gap: 3 }}>
             <FormControl variant="standard" sx={{ m: 1, minWidth: 300 }}>
-              <InputLabel id="demo-simple-select-standard-label">Vendedor</InputLabel>
+              <InputLabel id="id">Vendedor</InputLabel>
               <Select
                 labelId="seller-select"
                 id="id"
