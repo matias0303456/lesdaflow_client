@@ -91,16 +91,12 @@ export const nav_items_user = [
 
 export const nav_items_admin = [
   {
-    title: "Security",
-    name: "security",
+    title: "Usuarios",
+    name: "users",
     submenu: [
       {
-        subtitle: "Usuarios",
+        subtitle: "ABM Usuarios",
         path: "/usuarios",
-      },
-      {
-        subtitle: "Roles",
-        path: "/roles",
       },
     ],
   },
@@ -127,16 +123,6 @@ export const nav_items_admin = [
       {
         subtitle: "Clientes por Vendedor",
         path: "/clientes-vendedor",
-      },
-    ],
-  },
-  {
-    title: "Vendedor",
-    name: "seller",
-    submenu: [
-      {
-        subtitle: "ABM Vendedor",
-        path: "/vendedores",
       },
     ],
   },
@@ -203,24 +189,6 @@ export const nav_items_admin = [
       {
         subtitle: "Actualizar Precios Por Producto",
         path: "/producto-actualiza-precio",
-      },
-    ],
-  },
-  {
-    title: "Pedidos",
-    name: "orders",
-    submenu: [
-      {
-        subtitle: "ABM de Pedidos",
-        path: "/pedidos",
-      },
-      {
-        subtitle: "Ingreso de Pedidos",
-        path: "/ingreso-pedidos",
-      },
-      {
-        subtitle: "Busqueda de Pedidos",
-        path: "/busqueda-pedidos",
       },
     ],
   },

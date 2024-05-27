@@ -10,7 +10,7 @@ import { format } from "date-fns";
 import { AuthContext } from "../providers/AuthProvider";
 import { DataContext } from "../providers/DataProvider";
 import { useForm } from "../hooks/useForm";
-import { useSellers } from "../hooks/useSellers";
+import { useUsers } from "../hooks/useUsers";
 import { useSales } from "../hooks/useSales";
 
 import { DataGridWithBackendPagination } from "../components/DataGridWithBackendPagination";
@@ -23,7 +23,7 @@ export function SalesSearch() {
 
   const navigate = useNavigate()
 
-  const { loadingSellers, getSellers } = useSellers()
+  const { loadingUsers, getUsers } = useUsers()
   const { loadingSales, getSales } = useSales()
   const { formData, handleChange } = useForm({
     defaultData: { from: new Date(Date.now()), to: new Date(Date.now()), code: '', seller_id: '' }
@@ -34,7 +34,7 @@ export function SalesSearch() {
   }, []);
 
   useEffect(() => {
-    getSellers()
+    getUsers()
   }, [])
 
   const headCells = [
@@ -150,9 +150,9 @@ export function SalesSearch() {
                 onChange={handleChange}
                 sx={{ width: "100%" }}
               >
-                {state.sellers.data.map((s) => (
-                  <MenuItem key={s.id} value={s.id}>
-                    {`${s.first_name} ${s.last_name}`.toUpperCase()}
+                {state.users.data.map((u) => (
+                  <MenuItem key={u.id} value={u.id}>
+                    {`${u.first_name} ${u.last_name}`.toUpperCase()}
                   </MenuItem>
                 ))}
               </Select>
@@ -177,7 +177,7 @@ export function SalesSearch() {
           Información de Ventas
         </Typography>
         <DataGridWithBackendPagination
-          loading={loadingSales || loadingSellers}
+          loading={loadingSales || loadingUsers}
           headCells={headCells}
           entityKey="sales"
           getter={getSales}

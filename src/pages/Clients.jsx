@@ -8,11 +8,11 @@ import { AuthContext } from "../providers/AuthProvider";
 import { DataContext } from "../providers/DataProvider";
 import { useForm } from "../hooks/useForm";
 import { useClients } from "../hooks/useClients";
-import { useSellers } from "../hooks/useSellers";
 
 import { Layout } from "../components/Layout";
 import { ModalComponent } from "../components/ModalComponent";
 import { DataGridWithBackendPagination } from "../components/DataGridWithBackendPagination";
+import { useUsers } from "../hooks/useUsers";
 // import { ClientFilter } from "../components/filters/ClientFilter";
 
 export function Clients() {
@@ -21,7 +21,7 @@ export function Clients() {
     const { state } = useContext(DataContext)
 
     const { loadingClients, handleSubmit, handleDelete, open, setOpen, getClients } = useClients()
-    const { loadingSellers, getSellers } = useSellers()
+    const { loadingUsers, getUsers } = useUsers()
     const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
         defaultData: {
             id: '',
@@ -72,7 +72,7 @@ export function Clients() {
     })
 
     useEffect(() => {
-        getSellers()
+        getUsers()
     }, [])
 
     const headCells = [
@@ -139,7 +139,7 @@ export function Clients() {
                         }
                     ]
                 }
-                loading={loadingClients || disabled || loadingSellers}
+                loading={loadingClients || disabled || loadingUsers}
                 rows={state.clients.data}
                 entityKey="clients"
                 getter={getClients}
@@ -330,8 +330,8 @@ export function Clients() {
                                         onChange={handleChange}
                                         disabled={open === 'VIEW'}
                                     >
-                                        {state.sellers.data.map(s => (
-                                            <MenuItem key={s.id} value={s.id}>{`${s.first_name} ${s.last_name}`}</MenuItem>
+                                        {state.users.data.map(u => (
+                                            <MenuItem key={u.id} value={u.id}>{`${u.first_name} ${u.last_name}`}</MenuItem>
                                         ))}
                                     </Select>
                                     {errors.user_id?.type === 'required' &&

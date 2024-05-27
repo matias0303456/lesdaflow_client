@@ -5,7 +5,7 @@ import { Box, FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import { AuthContext } from "../providers/AuthProvider";
 import { DataContext } from "../providers/DataProvider";
 import { useForm } from "../hooks/useForm";
-import { useSellers } from "../hooks/useSellers";
+import { useUsers } from "../hooks/useUsers";
 
 import { Layout } from "../components/Layout";
 import { DataGridWithFrontendPagination } from "../components/DataGridWithFrontendPagination";
@@ -17,12 +17,16 @@ export function ClientsBySeller() {
 
   const navigate = useNavigate()
 
-  const { loadingSellers } = useSellers()
+  const { loadingUsers, getUsers } = useUsers()
   const { formData, setFormData } = useForm({ defaultData: {} });
 
   useEffect(() => {
     if (auth?.user.role !== "ADMINISTRADOR") navigate("/productos");
   }, []);
+
+  useEffect(() => {
+    getUsers('?role=VENDEDOR')
+  }, [])
 
   const headCells = [
     {
@@ -79,10 +83,10 @@ export function ClientsBySeller() {
                 sx={{ width: "100%" }}
                 onChange={(e) => setFormData(e.target.value)}
               >
-                {state.sellers.data.length > 0 ? (
-                  state.sellers.data.map((s) => (
-                    <MenuItem key={s.id} value={s}>
-                      {`${s.first_name} ${s.last_name}`.toUpperCase()}
+                {state.users.data.length > 0 ? (
+                  state.users.data.map((u) => (
+                    <MenuItem key={u.id} value={u}>
+                      {`${u.first_name} ${u.last_name}`.toUpperCase()}
                     </MenuItem>
                   ))
                 ) : (
@@ -95,7 +99,7 @@ export function ClientsBySeller() {
         <DataGridWithFrontendPagination
           headCells={headCells}
           rows={formData.clients ?? []}
-          loading={loadingSellers}
+          loading={loadingUsers}
         />
       </Box>
     </Layout>

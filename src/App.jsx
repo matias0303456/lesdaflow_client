@@ -9,7 +9,6 @@ import { DataProvider } from "./providers/DataProvider";
 
 import { Login } from "./pages/Login";
 import { Clients } from './pages/Clients'
-// import { Visits } from "./pages/Visits";
 import { AccountsReport } from "./pages/AccountsReport";
 import { Users } from './pages/Users'
 import { Suppliers } from "./pages/Suppliers";
@@ -20,7 +19,6 @@ import { ProductsReport } from './pages/ProductsReport'
 import { Budgets } from "./pages/Budgets";
 import { Registers } from "./pages/Registers";
 import { Error } from './pages/Error'
-// import { Roles } from "./pages/Roles";
 import { CurrentAccount } from "./pages/CurrentAccount";
 import { ClientsBySeller } from "./pages/ClientsBySeller";
 import { SalesSearch } from "./pages/SalesSearch";
@@ -30,11 +28,8 @@ import { ProductsPriceList } from "./pages/ProductsPriceList"
 import { UpdateProductPriceByProduct } from "./pages/UpdateProductPriceByProduct";
 import { StockReplenishment } from "./pages/StockReplenishment";
 import { UpdateProductPriceBySupplier } from "./pages/UpdateProductPriceBySupplier";
-import { Orders } from "./pages/Orders";
-import { OrdersCheckIn } from "./pages/OrdersCheckIn";
 import { RegisterMovements } from "./pages/RegisterMovements";
 import { BlockedCustomers } from "./pages/BlockedCustomers";
-import { Sellers } from "./pages/Sellers";
 
 function App() {
 
@@ -60,14 +55,11 @@ function App() {
                 <Route path="/" element={<Login />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/clientes" element={<Clients />} />
-                {/* <Route path="/visitas" element={<Visits />} /> */}
                 <Route path="/cta-cte" element={<CurrentAccount />} />
                 <Route path="/reporte-cta-cte" element={<AccountsReport />} />
                 <Route path="/clientes-vendedor" element={<ClientsBySeller />} />
                 <Route path="/usuarios" element={<Users />} />
-                {/* <Route path="/roles" element={<Roles />} /> */}
                 <Route path="/proveedores" element={<Suppliers />} />
-                <Route path="/vendedores" element={<Sellers />} />
                 <Route path="/ventas" element={<Sales />} />
                 <Route path="/ventas-busqueda" element={<SalesSearch />} />
                 <Route path="/reporte-ventas" element={<SalesReport />} />
@@ -79,8 +71,6 @@ function App() {
                 <Route path="/producto-actualiza-precio-proveedor" element={<UpdateProductPriceBySupplier />} />
                 <Route path="/reposicion-stock" element={<StockReplenishment />} />
                 <Route path="/producto-actualiza-precio" element={<UpdateProductPriceByProduct />} />
-                <Route path="/pedidos" element={<Orders />} />
-                <Route path="/ingreso-pedidos" element={<OrdersCheckIn />} />
                 <Route path="/presupuestos" element={<Budgets />} />
                 <Route path="/movimientos-caja" element={<Registers />} />
                 <Route path="/reporte-movimientos-caja" element={<RegisterMovements />} />

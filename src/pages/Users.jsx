@@ -37,7 +37,7 @@ export function Users() {
       address: '',
       username: '',
       password: '',
-      role: 'ADMINISTRADOR'
+      role: 'VENDEDOR'
     },
     rules: {
       first_name: {
@@ -70,6 +70,9 @@ export function Users() {
       email: {
         required: true,
         maxLength: 255
+      },
+      role: {
+        required: true
       }
     }
   })
@@ -105,7 +108,7 @@ export function Users() {
       numeric: false,
       disablePadding: true,
       label: "Teléfono",
-      accessor: "cell_phone",
+      accessor: "local_phone",
     },
     {
       id: "email",
@@ -121,11 +124,18 @@ export function Users() {
       disablePadding: true,
       label: "Dirección",
       accessor: "address",
+    },
+    {
+      id: "role",
+      numeric: false,
+      disablePadding: true,
+      label: "Rol",
+      accessor: "role",
     }
   ];
 
   return (
-    <Layout title="Personal">
+    <Layout title="Usuarios">
       <DataGridWithBackendPagination
         loading={loadingUsers || disabled}
         headCells={headCells}
@@ -327,6 +337,21 @@ export function Users() {
                       * La dirección es demasiado larga.
                     </Typography>
                   }
+                </FormControl>
+                <FormControl sx={{ width: '50%' }}>
+                  <InputLabel id="role-select">Rol</InputLabel>
+                  <Select
+                    labelId="role-select"
+                    id="role"
+                    value={formData.role}
+                    label="Rol"
+                    name="role"
+                    onChange={handleChange}
+                  >
+                    <MenuItem value="ADMINISTRADOR">ADMINISTRADOR</MenuItem>
+                    <MenuItem value="VENDEDOR">VENDEDOR</MenuItem>
+                    <MenuItem value="CHOFER">CHOFER</MenuItem>
+                  </Select>
                 </FormControl>
               </Box>
             </Box>

@@ -17,7 +17,7 @@ import es from 'date-fns/locale/es';
 import { AuthContext } from "../providers/AuthProvider";
 import { DataContext } from "../providers/DataProvider";
 import { useForm } from "../hooks/useForm";
-import { useSellers } from "../hooks/useSellers";
+import { useUsers } from "../hooks/useUsers";
 
 import { Layout } from "../components/Layout";
 
@@ -32,7 +32,7 @@ export function SalesReport() {
     defaultData: { from: new Date(Date.now()), to: new Date(Date.now()), seller_id: '' },
     rules: { seller_id: { required: true } }
   })
-  useSellers()
+  useUsers()
 
   useEffect(() => {
     if (auth?.user.role !== "ADMINISTRADOR") navigate("/ventas")
@@ -116,9 +116,9 @@ export function SalesReport() {
                 onChange={handleChange}
                 sx={{ width: "100%" }}
               >
-                {state.sellers.data.map((s) => (
-                  <MenuItem key={s.id} value={s.id}>
-                    {`${s.first_name} ${s.last_name}`.toUpperCase()}
+                {state.users.data.map((u) => (
+                  <MenuItem key={u.id} value={u.id}>
+                    {`${u.first_name} ${u.last_name}`.toUpperCase()}
                   </MenuItem>
                 ))}
               </Select>

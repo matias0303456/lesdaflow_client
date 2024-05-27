@@ -10,8 +10,6 @@ const reducer = (state, action) => {
             return { ...state, sales: action.payload }
         case 'USERS':
             return { ...state, users: action.payload }
-        case 'SELLERS':
-            return { ...state, sellers: action.payload }
         case 'REGISTERS':
             return { ...state, registers: action.payload }
         case 'SUPPLIERS':
@@ -41,12 +39,6 @@ const initialState = {
         offset: 5
     },
     'users': {
-        count: 0,
-        data: [],
-        page: 0,
-        offset: 5
-    },
-    'sellers': {
         count: 0,
         data: [],
         page: 0,
