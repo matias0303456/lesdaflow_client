@@ -1,143 +1,115 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Box, Button } from "@mui/material";
+import { format } from "date-fns";
 
 import { AuthContext } from "../providers/AuthProvider";
-import { MessageContext } from "../providers/MessageProvider";
-import { useApi } from "../hooks/useApi";
+import { DataContext } from "../providers/DataProvider";
 import { useForm } from "../hooks/useForm";
-import { useClients } from "../hooks/useClients";
+import { useSales } from "../hooks/useSales";
 
 import { Layout } from "../components/Layout";
-import { ClientFilter } from "../components/filters/ClientFilter";
-import { DataGridWithFrontendPagination } from "../components/DataGridWithFrontendPagination";
-
-import { CLIENT_URL } from "../utils/urls";
+import { DataGridWithBackendPagination } from "../components/DataGridWithBackendPagination";
 
 export function CurrentAccount() {
-  const { auth } = useContext(AuthContext);
-  const { setMessage, setOpenMessage, setSeverity } =
-    useContext(MessageContext);
 
-  const { get, post, put, destroy } = useApi(CLIENT_URL);
-  const { clients, setClients, loadingClients, setLoadingClients } =
-    useClients();
-  const {
-    formData,
-    setFormData,
-    handleChange,
-    disabled,
-    setDisabled,
-    validate,
-    reset,
-    errors,
-  } = useForm({
-    defaultData: {},
-    rules: {},
-  });
+  const { auth } = useContext(AuthContext)
+  const { state } = useContext(DataContext)
+
+  const navigate = useNavigate()
+
+  const { loadingSales, setOpen, getSales } = useSales()
+  const { setFormData } = useForm({
+    defaultData: {}
+  })
+
+  useEffect(() => {
+    if (auth?.user.role !== 'ADMINISTRADOR') navigate('/productos')
+  }, [])
 
   const headCells = [
     {
-      id: "cta-cte",
-      numeric: true,
+      id: "id",
+      numeric: false,
       disablePadding: true,
-      label: "Cuenta Corriente",
-      accessor: "cta-cte",
-    },
-    {
-      id: "cod.venta",
-      numeric: true,
-      disablePadding: true,
-      label: "Cod.Venta",
-      accessor: "cod.venta",
+      label: "Cod. Venta",
+      accessor: "id",
     },
     {
       id: "client",
       numeric: false,
       disablePadding: true,
       label: "Cliente",
-      accessor: "client",
+      accessor: (row) => `${row.client.first_name} ${row.client.last_name}`
     },
     {
-      id: "commerce name",
+      id: "work_place",
       numeric: false,
       disablePadding: true,
       label: "Nombre Comercio",
-      accessor: "commerce name",
+      accessor: (row) => row.client.work_place,
     },
     {
       id: "date",
       numeric: false,
       disablePadding: true,
       label: "Fecha",
-      accessor: "date",
+      accessor: (row) => format(new Date(row.date), 'dd/MM/yy')
     },
     {
       id: "expiration",
       numeric: false,
       disablePadding: true,
       label: "Vencimiento",
-      accessor: "expiration",
+      accessor: (row) => 'rtyrty',
+    },
+    {
+      id: "seller",
+      numeric: false,
+      disablePadding: true,
+      label: "Vendedor",
+      accessor: (row) => `${row.client.user.first_name} ${row.client.user.last_name}`,
     },
     {
       id: "amount",
       numeric: true,
       disablePadding: true,
       label: "Importe",
-      accessor: "amount",
+      accessor: (row) => 'rtyrty'
     },
     {
-      id: "money-balance",
+      id: "money_balance",
       numeric: true,
       disablePadding: true,
       label: "Saldo",
-      accessor: "money-balance",
+      accessor: (row) => 'rtyrty'
     },
     {
       id: "status",
       numeric: false,
       disablePadding: true,
       label: "Estado",
-      accessor: "status",
+      accessor: (row) => 'rtyrty'
     },
   ];
 
   return (
     <Layout title="Cuentas Corrientes">
-      <DataGridWithFrontendPagination
-        loading={loadingClients || disabled}
-        headCells={
-          auth.user.role !== "ADMINISTRADOR"
-            ? headCells
-            : [
-              ...headCells,
-              {
-                id: "seller",
-                numeric: false,
-                disablePadding: true,
-                label: "Vendedor",
-                sorter: (row) => row.user.username.toLowerCase(),
-                accessor: (row) => row.user.username,
-              },
-            ]
-        }
-        rows={[]}
+      <DataGridWithBackendPagination
+        loading={loadingSales}
+        headCells={headCells}
+        rows={state.sales.data}
+        entityKey="sales"
+        getter={getSales}
+        setOpen={setOpen}
+        setFormData={setFormData}
+        showDeleteAction
+        showViewAction
         contentHeader={
-          <Box
-            sx={{
-              display: "flex",
-              flexWrap: "wrap",
-              alignItems: "center",
-              gap: 2,
-            }}
-          >
-            <Box sx={{ display: "flex", gap: 1 }}>
-              <Button variant="outlined">
-                Agregar
-              </Button>
-              <Button variant="outlined" color="success">
-                Excel
-              </Button>
-            </Box>
+          <Box>
+            <Button variant="outlined" color="success">
+              Excel
+            </Button>
           </Box>
         }
       />

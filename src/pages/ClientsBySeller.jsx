@@ -25,7 +25,7 @@ export function ClientsBySeller() {
   }, []);
 
   useEffect(() => {
-    getUsers('?role=VENDEDOR')
+    getUsers()
   }, [])
 
   const headCells = [

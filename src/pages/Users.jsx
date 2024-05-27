@@ -256,6 +256,7 @@ export function Users() {
                     value={formData.document_type}
                     label="Tipo documento"
                     name="document_type"
+                    disabled={open === 'VIEW'}
                     onChange={handleChange}
                   >
                     <MenuItem value="DNI">DNI</MenuItem>
@@ -294,6 +295,7 @@ export function Users() {
                     <DatePicker
                       label="Fecha nacimiento"
                       value={new Date(formData.birth)}
+                      disabled={open === 'VIEW'}
                       onChange={value => handleChange({
                         target: {
                           name: 'birth',
@@ -346,6 +348,7 @@ export function Users() {
                     value={formData.role}
                     label="Rol"
                     name="role"
+                    disabled={open === 'VIEW'}
                     onChange={handleChange}
                   >
                     <MenuItem value="ADMINISTRADOR">ADMINISTRADOR</MenuItem>

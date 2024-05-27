@@ -8,11 +8,11 @@ import { AuthContext } from "../providers/AuthProvider";
 import { DataContext } from "../providers/DataProvider";
 import { useForm } from "../hooks/useForm";
 import { useClients } from "../hooks/useClients";
+import { useUsers } from "../hooks/useUsers";
 
 import { Layout } from "../components/Layout";
 import { ModalComponent } from "../components/ModalComponent";
 import { DataGridWithBackendPagination } from "../components/DataGridWithBackendPagination";
-import { useUsers } from "../hooks/useUsers";
 // import { ClientFilter } from "../components/filters/ClientFilter";
 
 export function Clients() {
