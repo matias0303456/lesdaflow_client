@@ -6,6 +6,7 @@ import { AuthContext } from "../providers/AuthProvider";
 import { DataContext } from "../providers/DataProvider";
 import { useForm } from "../hooks/useForm";
 import { useUsers } from "../hooks/useUsers";
+import { useClients } from "../hooks/useClients";
 
 import { Layout } from "../components/Layout";
 import { DataGridWithFrontendPagination } from "../components/DataGridWithFrontendPagination";
@@ -18,7 +19,8 @@ export function ClientsBySeller() {
   const navigate = useNavigate()
 
   const { loadingUsers, getUsers } = useUsers()
-  const { formData, setFormData } = useForm({ defaultData: {} });
+  const { getClients, loadingClients } = useClients()
+  const { formData, handleChange } = useForm({ defaultData: { user_id: '' } });
 
   useEffect(() => {
     if (auth?.user.role !== "ADMINISTRADOR") navigate("/productos");
@@ -26,14 +28,15 @@ export function ClientsBySeller() {
 
   useEffect(() => {
     getUsers()
+    getClients()
   }, [])
 
   const headCells = [
     {
-      id: "clients",
+      id: "client",
       numeric: false,
       disablePadding: true,
-      label: "Clientes",
+      label: "Cliente",
       accessor: (row) => `${row.first_name} ${row.last_name}`
     },
     {
@@ -70,22 +73,22 @@ export function ClientsBySeller() {
     <Layout title="Clientes por Vendedor">
       <Box sx={{ width: '100%', backgroundColor: '#fff' }}>
         <Box sx={{ width: "100%", color: "white", paddingX: "10px", paddingY: "5px", backgroundColor: "#078BCD", borderRadius: "2px" }} />
-        <form className="mb-2">
+        <form className="mb-2" onChange={handleChange}>
           <Box sx={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "start", gap: 3 }}>
             <FormControl variant="standard" sx={{ m: 1, minWidth: 300 }}>
               <InputLabel id="id">Vendedor</InputLabel>
               <Select
                 labelId="seller-select"
-                id="id"
-                value={formData.id}
+                id="user_id"
+                value={formData.user_id}
                 label="Vendedor"
-                name="id"
+                name="user_id"
                 sx={{ width: "100%" }}
-                onChange={(e) => setFormData(e.target.value)}
+                onChange={handleChange}
               >
                 {state.users.data.length > 0 ? (
                   state.users.data.map((u) => (
-                    <MenuItem key={u.id} value={u}>
+                    <MenuItem key={u.id} value={u.id}>
                       {`${u.first_name} ${u.last_name}`.toUpperCase()}
                     </MenuItem>
                   ))
@@ -98,8 +101,8 @@ export function ClientsBySeller() {
         </form>
         <DataGridWithFrontendPagination
           headCells={headCells}
-          rows={formData.clients ?? []}
-          loading={loadingUsers}
+          rows={state.clients.data.filter(c => c.user_id === parseInt(formData.user_id))}
+          loading={loadingUsers || loadingClients}
         />
       </Box>
     </Layout>
