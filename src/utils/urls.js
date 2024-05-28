@@ -4,6 +4,7 @@ export const LOGIN_URL = `${BASE_URL}/auth/login`
 export const INCOME_URL = `${BASE_URL}/incomes`
 export const OUTCOME_URL = `${BASE_URL}/outcomes`
 export const SALE_URL = `${BASE_URL}/sales`
+export const BUDGET_URL = `${BASE_URL}/budgets`
 export const PRODUCT_URL = `${BASE_URL}/products`
 export const CLIENT_URL = `${BASE_URL}/clients`
 export const SELLER_URL = `${BASE_URL}/sellers`

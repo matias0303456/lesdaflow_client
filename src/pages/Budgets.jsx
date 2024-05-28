@@ -1,75 +1,46 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import { Box, Button } from "@mui/material";
 import { format } from "date-fns";
-import { useApi } from "../hooks/useApi";
-import { useProducts } from "../hooks/useProducts";
-import { useClients } from '../hooks/useClients'
+
+import { DataContext } from "../providers/DataProvider";
 import { useForm } from "../hooks/useForm";
+import { useBudgets } from "../hooks/useBudgets";
 
 import { Layout } from "../components/Layout";
-import { DataGridWithFrontendPagination } from "../components/DataGridWithFrontendPagination";
+import { DataGridWithBackendPagination } from "../components/DataGridWithBackendPagination";
 
-import { SALE_URL } from "../utils/urls";
+import { getSaleTotal } from "../utils/helpers";
 
 export function Budgets() {
 
-    const { get, post, put, destroy } = useApi(SALE_URL)
-    const { products, loadingProducts } = useProducts(true)
-    const { clients, loadingClients } = useClients()
+    const { state } = useContext(DataContext)
+
+    const { setBudgetProducts, loadingBudgets, open, setOpen, getBudgets } = useBudgets()
     const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
         defaultData: {
             id: '',
-            client_id: '',
-            discount: '',
-            installments: '',
-            observations: '',
-            type: 'CUENTA_CORRIENTE',
-            date: new Date(Date.now())
+            client_id: ''
         },
         rules: {
             client_id: {
                 required: true
-            },
-            date: {
-                required: true
-            },
-            installments: {
-                required: true
-            },
-            observations: {
-                maxLength: 55
             }
         }
     })
 
-    const [loadingSales, setLoadingSales] = useState(true)
-    const [sales, setSales] = useState([])
-    const [open, setOpen] = useState(null)
-    const [saleProducts, setSaleProducts] = useState([])
-
-    useEffect(() => {
-        (async () => {
-            const { status, data } = await get()
-            if (status === 200) {
-                setSales(data[0])
-                setLoadingSales(false)
-            }
-        })()
-    }, [])
-
     useEffect(() => {
         if (open === 'EDIT' || open === 'VIEW') {
-            setSaleProducts(formData.sale_products)
+            setBudgetProducts(formData.budget_products)
         }
     }, [formData])
 
     const headCells = [
         {
-            id: 'budget_code',
+            id: 'id',
             numeric: true,
             disablePadding: false,
             label: 'Cod. Pres.',
-            accessor: 'budget_code'
+            accessor: 'id'
         },
         {
             id: 'date',
@@ -83,45 +54,50 @@ export function Budgets() {
             numeric: false,
             disablePadding: true,
             label: 'Hora',
-            accessor: "hour"
+            accessor: (row) => format(new Date(row.date), 'hh:ss')
         },
         {
             id: 'seller',
             numeric: false,
             disablePadding: true,
             label: 'Vendedor',
-            accessor: "seller"
+            accessor: (row) => `${row.client.user.first_name} ${row.client.user.last_name}`
         },
         {
             id: 'client',
             numeric: false,
             disablePadding: true,
             label: 'Clientes',
-            accessor: "client"
+            accessor: (row) => `${row.client.first_name} ${row.client.last_name}`
         },
         {
             id: 'address',
             numeric: false,
             disablePadding: true,
             label: 'Dirección',
-            accessor: "address"
+            accessor: (row) => row.client.user.address
         },
         {
             id: 'total_amount',
             numeric: false,
             disablePadding: true,
             label: 'Total',
-            accessor: "total_amount"
+            accessor: (row) => getSaleTotal(row)
         },
     ]
 
     return (
-        <Layout title="Presupuesto">
-            <DataGridWithFrontendPagination
+        <Layout title="Presupuestos">
+            <DataGridWithBackendPagination
                 headCells={headCells}
-                // loading={loadingClients || loadingSales || loadingProducts || disabled}
-                loading={false}
-                rows={[]}
+                loading={loadingBudgets || disabled}
+                rows={state.budgets.data}
+                entityKey="budgets"
+                getter={getBudgets}
+                showPDFAction
+                showViewAction
+                showEditAction
+                showDeleteAction
                 contentHeader={
                     <Box sx={{
                         display: 'flex',
@@ -137,7 +113,7 @@ export function Budgets() {
                                 Excel
                             </Button>
                             <Button variant="outlined" color='error'>
-                                pdf
+                                PDF
                             </Button>
                         </Box>
                         {/* <SaleFilter sales={sales} setSales={setSales} /> */}

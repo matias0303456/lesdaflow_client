@@ -14,6 +14,8 @@ const reducer = (state, action) => {
             return { ...state, registers: action.payload }
         case 'SUPPLIERS':
             return { ...state, suppliers: action.payload }
+        case 'BUDGETS':
+            return { ...state, budgets: action.payload }
         default:
             return state
     }
@@ -51,6 +53,12 @@ const initialState = {
         offset: 5
     },
     'suppliers': {
+        count: 0,
+        data: [],
+        page: 0,
+        offset: 5
+    },
+    'budgets': {
         count: 0,
         data: [],
         page: 0,
