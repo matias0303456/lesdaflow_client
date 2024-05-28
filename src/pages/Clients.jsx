@@ -319,27 +319,29 @@ export function Clients() {
                                         </Typography>
                                     }
                                 </FormControl>
-                                <FormControl sx={{ width: '50%' }}>
-                                    <InputLabel id="seller-select">Vendedor</InputLabel>
-                                    <Select
-                                        labelId="seller-select"
-                                        id="user_id"
-                                        value={formData.user_id}
-                                        label="Vendedor"
-                                        name="user_id"
-                                        onChange={handleChange}
-                                        disabled={open === 'VIEW'}
-                                    >
-                                        {state.users.data.map(u => (
-                                            <MenuItem key={u.id} value={u.id}>{`${u.first_name} ${u.last_name}`}</MenuItem>
-                                        ))}
-                                    </Select>
-                                    {errors.user_id?.type === 'required' &&
-                                        <Typography variant="caption" color="red" marginTop={1}>
-                                            * El vendedor es requerido.
-                                        </Typography>
-                                    }
-                                </FormControl>
+                                {auth.user.role === 'ADMINISTRADOR' &&
+                                    <FormControl sx={{ width: '50%' }}>
+                                        <InputLabel id="seller-select">Vendedor</InputLabel>
+                                        <Select
+                                            labelId="seller-select"
+                                            id="user_id"
+                                            value={formData.user_id}
+                                            label="Vendedor"
+                                            name="user_id"
+                                            onChange={handleChange}
+                                            disabled={open === 'VIEW'}
+                                        >
+                                            {state.users.data.map(u => (
+                                                <MenuItem key={u.id} value={u.id}>{`${u.first_name} ${u.last_name}`}</MenuItem>
+                                            ))}
+                                        </Select>
+                                        {errors.user_id?.type === 'required' &&
+                                            <Typography variant="caption" color="red" marginTop={1}>
+                                                * El vendedor es requerido.
+                                            </Typography>
+                                        }
+                                    </FormControl>
+                                }
                             </Box>
                         </Box>
                         <FormControl sx={{
