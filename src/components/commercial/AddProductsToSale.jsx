@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Autocomplete, Button, FormControl, Input, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from "@mui/material";
 import CancelSharpIcon from '@mui/icons-material/CancelSharp';
 
-import { getStock } from "../../utils/helpers";
+import { getProductSalePrice, getStock } from "../../utils/helpers";
 
 export function AddProductsToSale({
     products,
@@ -124,9 +124,9 @@ export function AddProductsToSale({
                                                 })}
                                             />
                                         </TableCell>
-                                        <TableCell>${p.buy_price.toFixed(2)}</TableCell>
+                                        <TableCell>${getProductSalePrice(p)}</TableCell>
                                         <TableCell>{getStock(p)}</TableCell>
-                                        <TableCell>${(currentAmount * p.buy_price).toFixed(2)}</TableCell>
+                                        <TableCell>${(currentAmount * getProductSalePrice(p)).toFixed(2)}</TableCell>
                                         {(open === 'NEW' || open === 'EDIT') &&
                                             <TableCell align="center">
                                                 <Button type="button" onClick={() => handleDeleteProduct(sp.id, p.id)}>

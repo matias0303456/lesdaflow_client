@@ -12,28 +12,25 @@ export function getStock(product) {
 export function getCurrentSubtotal(saleProducts, products) {
     const total = saleProducts.reduce((prev, curr) => {
         const p = products.find(item => item.id === curr.product_id)
-        return prev + (p?.buy_price * (isNaN(parseInt(curr.amount)) ? 0 : parseInt(curr.amount)))
+        return prev + (((curr.buy_price ?? p.buy_price) + (((curr.buy_price ?? p.buy_price) / 100) * (curr.earn ?? p.earn))) * (isNaN(parseInt(curr.amount)) ? 0 : parseInt(curr.amount)))
     }, 0)
     return total.toFixed(2)
 }
 
 export function getCurrentTotal(formData, saleProducts, products) {
-    const total = saleProducts.reduce((prev, curr) => {
-        const p = products.find(item => item.id === curr.product_id)
-        return prev + (p.buy_price * (isNaN(parseInt(curr.amount)) ? 0 : parseInt(curr.amount)))
-    }, 0)
+    const subtotal = getCurrentSubtotal(saleProducts, products)
     const discount = formData.discount.length === 0 ? 0 : parseInt(formData.discount)
-    return (total - ((total / 100) * discount)).toFixed(2)
+    return (subtotal - ((subtotal / 100) * discount)).toFixed(2)
 }
 
 export function getSaleSubtotal(sale) {
-    const total = sale.sale_products.reduce((prev, curr) => prev + (curr.product.buy_price * curr.amount), 0)
-    return `$${total.toFixed(2)}`
+    const result = sale.sale_products.reduce((prev, curr) => prev + ((curr.buy_price + ((curr.buy_price / 100) * curr.earn)) * curr.amount), 0)
+    return `$${result.toFixed(2)}`
 }
 
 export function getSaleTotal(sale) {
-    const totalSaleProducts = sale.sale_products.reduce((prev, curr) => prev + (curr.product.buy_price * curr.amount), 0)
-    return `$${(totalSaleProducts - ((totalSaleProducts / 100) * sale.discount)).toFixed(2)}`
+    const subtotal = getSaleSubtotal(sale).replace('$', '')
+    return `$${(subtotal - ((subtotal / 100) * sale.discount)).toFixed(2)}`
 }
 
 export function getSaleDifference(sale) {
@@ -74,14 +71,27 @@ export function setToDate(date) {
 }
 
 export function getNewPrice(product, percentage) {
-    const price = parseFloat(product.buy_price)
-    const perc = percentage.toString().length === 0 ? 0 : parseInt(percentage)
+    const price = parseFloat((product.buy_price + ((product.buy_price / 100) * product.earn)).toFixed(2))
+    const perc = percentage.toString().length === 0 ? 0 : parseFloat(percentage)
     return (price + ((price / 100) * perc)).toFixed(2)
+}
+
+export function getNewCostAndEarnPrice(product, value, earn) {
+    if (parseFloat(earn) === 0 && parseFloat(value) === 0) {
+        return (product.buy_price + (product.buy_price / 100) * product.earn).toFixed(2)
+    }
+    if (parseFloat(value) === 0) {
+        return (product.buy_price + (product.buy_price / 100) * parseFloat(earn)).toFixed(2)
+    }
+    if (parseFloat(earn) === 0) {
+        return (parseFloat(value) + (parseFloat(value) / 100) * product.earn).toFixed(2)
+    }
+    return (parseFloat(value) + (parseFloat(value) / 100) * parseFloat(earn)).toFixed(2)
 }
 
 export function getInstallmentsAmount(total, installments) {
     const inst = installments.toString().length === 0 ? 1 : parseInt(installments)
-    return (total / inst).toFixed(2)
+    return (total.replace('$', '') / inst).toFixed(2)
 }
 
 export function getAccountStatus(sale) {
@@ -101,7 +111,7 @@ export function getRegisterTotal(register, payments, close = false) {
             new Date(p.date).getTime() > new Date(register.created_at).getTime() &&
             new Date(p.date).getTime() < (close ? Date.now() : new Date(register.updated_at).getTime())
     }).reduce((prev, curr) => prev + curr.amount, 0)
-    return `$${total}`
+    return `$${total.toFixed(2)}`
 }
 
 export function getAmountByInstallment(sale) {
@@ -115,15 +125,14 @@ export function getSaleDifferenceByPayment(sale, idx) {
     return `$${(total - totalTillPayment).toFixed(2)}`
 }
 
-export function getStockTillDate(product, date) {
-    if (!product) return
-    return product.incomes?.filter(inc => inc.created_at < date)
+export function getStockTillDate(row) {
+    return row.product.incomes?.filter(inc => inc.created_at < row.created_at)
         .reduce((prev, curr) => {
             return prev + curr.amount
-        }, 0) - product.sale_products?.filter(sp => sp.created_at < date)
+        }, 0) - row.product.sale_products?.filter(sp => sp.created_at < row.created_at)
             .reduce((prev, curr) => {
                 return prev + curr.amount
-            }, 0) - product.outcomes?.filter(out => out.created_at < date)
+            }, 0) - row.product.outcomes?.filter(out => out.created_at < row.created_at)
                 .reduce((prev, curr) => {
                     return prev + curr.amount
                 }, 0)
