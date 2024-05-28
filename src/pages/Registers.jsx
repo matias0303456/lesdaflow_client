@@ -98,7 +98,7 @@ export function Registers() {
                 setOpen={setOpen}
                 setFormData={setFormData}
                 showViewAction
-                showSettingsAction
+                showSettingsAction="Cerrar caja"
                 contentHeader={<Box sx={{
                     display: 'flex',
                     flexWrap: 'wrap',

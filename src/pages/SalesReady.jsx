@@ -55,7 +55,7 @@ export function SalesReady() {
   })
 
   useEffect(() => {
-    if (auth?.user.role !== 'ADMINISTRADOR') navigate('/ventas')
+    if (auth?.user.role !== 'ADMINISTRADOR' && auth?.user.role !== 'CHOFER') navigate('/ventas')
   }, [])
 
   const headCells = [
@@ -138,6 +138,8 @@ export function SalesReady() {
         getter={getSuppliers}
         setOpen={setOpen}
         setFormData={setFormData}
+        showSettingsAction="Preparar"
+        showPDFAction
       >
         <ModalComponent
           open={open === "NEW" || open === "EDIT" || open === "VIEW"}

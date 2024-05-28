@@ -197,7 +197,7 @@ export function DataGridWithBackendPagination({
                                   }
                                   {showSettingsAction &&
                                     <Tooltip
-                                      title="Configuracion"
+                                      title={showSettingsAction}
                                       onClick={() => {
                                         if (setFormData) setFormData(rows.find((r) => r.id === row.id))
                                         if (setOpen) setOpen("SETTINGS")

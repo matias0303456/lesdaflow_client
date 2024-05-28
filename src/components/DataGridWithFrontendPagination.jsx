@@ -168,7 +168,7 @@ export function DataGridWithFrontendPagination({
                                                             }
                                                             {showSettingsAction &&
                                                                 <Tooltip
-                                                                    title="Configuracion"
+                                                                    title={showSettingsAction}
                                                                     onClick={() => {
                                                                         setData(
                                                                             rows.find(

@@ -11,10 +11,10 @@ import { AuthContext } from "../providers/AuthProvider";
 import { DataContext } from "../providers/DataProvider";
 import { useForm } from "../hooks/useForm";
 import { useUsers } from "../hooks/useUsers";
-import { useSales } from "../hooks/useSales";
 
-import { DataGridWithBackendPagination } from "../components/DataGridWithBackendPagination";
 import { Layout } from "../components/Layout";
+import { DataGridWithFrontendPagination } from "../components/DataGridWithFrontendPagination";
+import { useSales } from "../hooks/useSales";
 
 export function SalesSearch() {
 
@@ -24,9 +24,9 @@ export function SalesSearch() {
   const navigate = useNavigate()
 
   const { loadingUsers, getUsers } = useUsers()
-  const { loadingSales, getSales } = useSales()
+  const { getSales } = useSales()
   const { formData, handleChange } = useForm({
-    defaultData: { from: new Date(Date.now()), to: new Date(Date.now()), code: '', seller_id: '' }
+    defaultData: { from: new Date(Date.now()), to: new Date(Date.now()), code: '', user: '' }
   });
 
   useEffect(() => {
@@ -36,6 +36,12 @@ export function SalesSearch() {
   useEffect(() => {
     getUsers()
   }, [])
+
+  useEffect(() => {
+    if (formData.code.length > 0 || formData.user.toString().length > 0) {
+      getSales(`?code=${formData.code}&user=${formData.user}`)
+    }
+  }, [formData])
 
   const headCells = [
     {
@@ -143,15 +149,16 @@ export function SalesSearch() {
               <InputLabel>Vendedor</InputLabel>
               <Select
                 labelId="seller-select"
-                id="seller_id"
-                value={formData.seller_id}
+                id="user"
+                value={formData.user}
                 label="Vendedor"
-                name="seller_id"
+                name="user"
                 onChange={handleChange}
                 sx={{ width: "100%" }}
               >
+                <MenuItem value="">Seleccione</MenuItem>
                 {state.users.data.map((u) => (
-                  <MenuItem key={u.id} value={u.id}>
+                  <MenuItem key={u.id} value={u.username}>
                     {`${u.first_name} ${u.last_name}`.toUpperCase()}
                   </MenuItem>
                 ))}
@@ -176,11 +183,9 @@ export function SalesSearch() {
         >
           Información de Ventas
         </Typography>
-        <DataGridWithBackendPagination
-          loading={loadingSales || loadingUsers}
+        <DataGridWithFrontendPagination
+          loading={loadingUsers}
           headCells={headCells}
-          entityKey="sales"
-          getter={getSales}
           rows={state.sales.data}
         />
       </Box>
