@@ -7,10 +7,10 @@ import { DataContext } from "../providers/DataProvider";
 import { useForm } from "../hooks/useForm";
 import { useSuppliers } from "../hooks/useSuppliers";
 
-import { Layout } from "../components/Layout";
-import { ModalComponent } from "../components/ModalComponent";
+import { Layout } from "../components/common/Layout";
+import { ModalComponent } from "../components/common/ModalComponent";
 // import { SupplierFilter } from "../components/filters/SupplierFilter";
-import { DataGridWithBackendPagination } from "../components/DataGridWithBackendPagination";
+import { DataGridWithBackendPagination } from "../components/datagrid/DataGridWithBackendPagination";
 
 export function Suppliers() {
 

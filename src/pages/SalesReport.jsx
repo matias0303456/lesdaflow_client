@@ -19,7 +19,7 @@ import { DataContext } from "../providers/DataProvider";
 import { useForm } from "../hooks/useForm";
 import { useUsers } from "../hooks/useUsers";
 
-import { Layout } from "../components/Layout";
+import { Layout } from "../components/common/Layout";
 
 export function SalesReport() {
 

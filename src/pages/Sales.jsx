@@ -13,11 +13,11 @@ import { useClients } from '../hooks/useClients'
 import { useForm } from "../hooks/useForm";
 import { useSales } from "../hooks/useSales";
 
-import { Layout } from "../components/Layout";
-import { ModalComponent } from "../components/ModalComponent";
+import { Layout } from "../components/common/Layout";
+import { ModalComponent } from "../components/common/ModalComponent";
 // import { SaleFilter } from "../components/filters/SaleFilter";
-import { AddProductsToSale } from "../components/AddProductsToSale";
-import { DataGridWithBackendPagination } from "../components/DataGridWithBackendPagination";
+import { AddProductsToSale } from "../components/commercial/AddProductsToSale";
+import { DataGridWithBackendPagination } from "../components/datagrid/DataGridWithBackendPagination";
 
 import { REPORT_URL } from "../utils/urls";
 import { getCurrentSubtotal, getCurrentTotal, getInstallmentsAmount, getSaleTotal } from "../utils/helpers";

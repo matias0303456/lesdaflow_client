@@ -16,8 +16,8 @@ import { DataContext } from "../providers/DataProvider";
 import { useForm } from "../hooks/useForm";
 import { useSuppliers } from "../hooks/useSuppliers";
 
-import { Layout } from "../components/Layout";
-import { DataGridWithFrontendPagination } from "../components/DataGridWithFrontendPagination";
+import { Layout } from "../components/common/Layout";
+import { DataGridWithFrontendPagination } from "../components/datagrid/DataGridWithFrontendPagination";
 
 import { getProductNewSalePriceByPercentage, getProductSalePrice } from "../utils/helpers";
 

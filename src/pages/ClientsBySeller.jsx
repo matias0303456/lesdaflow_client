@@ -8,8 +8,8 @@ import { useForm } from "../hooks/useForm";
 import { useUsers } from "../hooks/useUsers";
 import { useClients } from "../hooks/useClients";
 
-import { Layout } from "../components/Layout";
-import { DataGridWithFrontendPagination } from "../components/DataGridWithFrontendPagination";
+import { Layout } from "../components/common/Layout";
+import { DataGridWithFrontendPagination } from "../components/datagrid/DataGridWithFrontendPagination";
 
 export function ClientsBySeller() {
 

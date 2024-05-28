@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
-import logoImage from "../assets/logo.png"
-export const Logo = ({mobileOpen}) => {
+import logoImage from "../../assets/logo.png"
 
+export const Logo = ({mobileOpen}) => {
   return (
     <div className={`${mobileOpen ?'absolute z-30 h-[50%] right-[-100%] w-[100%] top-0':'logo flex items justify-center'}`}>
         <img

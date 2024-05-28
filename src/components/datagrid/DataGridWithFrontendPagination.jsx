@@ -17,8 +17,8 @@ import CloseIcon from "@mui/icons-material/Close";
 
 import { EnhancedTableHead } from './EnhancedTableHead';
 
-import { deadlineIsPast, getStock } from '../utils/helpers';
-import { getComparator, stableSort } from '../utils/dataGrid';
+import { deadlineIsPast, getStock } from '../../utils/helpers';
+import { getComparator, stableSort } from '../../utils/dataGrid';
 
 export function DataGridWithFrontendPagination({
     children,

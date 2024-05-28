@@ -18,12 +18,12 @@ import { SiMicrosoftexcel } from "react-icons/si"
 import CloseIcon from "@mui/icons-material/Close"
 import { LinearProgress } from '@mui/material'
 
-import { DataContext } from '../providers/DataProvider'
+import { DataContext } from '../../providers/DataProvider'
 
 import { EnhancedTableHead } from './EnhancedTableHead'
 
-import { deadlineIsPast, getStock } from '../utils/helpers'
-import { getComparator, stableSort } from '../utils/dataGrid'
+import { deadlineIsPast, getStock } from '../../utils/helpers'
+import { getComparator, stableSort } from '../../utils/dataGrid'
 
 export function DataGridWithBackendPagination({
   children,

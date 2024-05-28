@@ -10,7 +10,7 @@ import { AuthContext } from "../providers/AuthProvider";
 import { DataContext } from "../providers/DataProvider";
 import { useForm } from "../hooks/useForm";
 
-import { Layout } from "../components/Layout";
+import { Layout } from "../components/common/Layout";
 
 const today = dayjs();
 const tomorrow = dayjs().add(1, 'day');

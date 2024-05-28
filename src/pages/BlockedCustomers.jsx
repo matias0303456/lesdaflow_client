@@ -4,7 +4,7 @@ import {  Box,  Button,  Typography} from "@mui/material";
 
 import { AuthContext } from "../providers/AuthProvider";
 
-import { Layout } from "../components/Layout";
+import { Layout } from "../components/common/Layout";
 
 export function BlockedCustomers() {
 

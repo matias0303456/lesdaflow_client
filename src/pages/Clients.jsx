@@ -10,9 +10,9 @@ import { useForm } from "../hooks/useForm";
 import { useClients } from "../hooks/useClients";
 import { useUsers } from "../hooks/useUsers";
 
-import { Layout } from "../components/Layout";
-import { ModalComponent } from "../components/ModalComponent";
-import { DataGridWithBackendPagination } from "../components/DataGridWithBackendPagination";
+import { Layout } from "../components/common/Layout";
+import { ModalComponent } from "../components/common/ModalComponent";
+import { DataGridWithBackendPagination } from "../components/datagrid/DataGridWithBackendPagination";
 // import { ClientFilter } from "../components/filters/ClientFilter";
 
 export function Clients() {

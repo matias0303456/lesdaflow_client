@@ -8,8 +8,8 @@ import { DataContext } from "../providers/DataProvider";
 import { useForm } from "../hooks/useForm";
 import { useSales } from "../hooks/useSales";
 
-import { Layout } from "../components/Layout";
-import { DataGridWithBackendPagination } from "../components/DataGridWithBackendPagination";
+import { Layout } from "../components/common/Layout";
+import { DataGridWithBackendPagination } from "../components/datagrid/DataGridWithBackendPagination";
 
 import { getAccountStatus, getDeadline, getSaleDifference, getSaleTotal } from "../utils/helpers";
 

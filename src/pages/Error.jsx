@@ -1,6 +1,6 @@
 import Typography from '@mui/material/Typography';
 
-import { Layout } from "../components/Layout";
+import { Layout } from "../components/common/Layout";
 
 export function Error() {
     return (

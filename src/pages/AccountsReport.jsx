@@ -7,7 +7,7 @@ import { DataContext } from "../providers/DataProvider";
 import { useForm } from "../hooks/useForm";
 import { useClients } from "../hooks/useClients";
 
-import { Layout } from "../components/Layout";
+import { Layout } from "../components/common/Layout";
 import { useUsers } from "../hooks/useUsers";
 
 export function AccountsReport() {

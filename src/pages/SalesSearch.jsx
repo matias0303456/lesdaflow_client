@@ -12,8 +12,8 @@ import { DataContext } from "../providers/DataProvider";
 import { useForm } from "../hooks/useForm";
 import { useUsers } from "../hooks/useUsers";
 
-import { Layout } from "../components/Layout";
-import { DataGridWithFrontendPagination } from "../components/DataGridWithFrontendPagination";
+import { Layout } from "../components/common/Layout";
+import { DataGridWithFrontendPagination } from "../components/datagrid/DataGridWithFrontendPagination";
 import { useSales } from "../hooks/useSales";
 
 export function SalesSearch() {

@@ -6,9 +6,9 @@ import { useProducts } from '../hooks/useProducts'
 import { useSuppliers } from "../hooks/useSuppliers";
 import { useForm } from "../hooks/useForm";
 
-import { Layout } from "../components/Layout";
-import { ModalComponent } from "../components/ModalComponent";
-import { DataGridWithBackendPagination } from "../components/DataGridWithBackendPagination";
+import { Layout } from "../components/common/Layout";
+import { ModalComponent } from "../components/common/ModalComponent";
+import { DataGridWithBackendPagination } from "../components/datagrid/DataGridWithBackendPagination";
 // import { ProductFilter } from "../components/filters/ProductFilter";
 
 import { getNewPrice, getStock } from "../utils/helpers";

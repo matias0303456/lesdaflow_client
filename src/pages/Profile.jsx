@@ -7,7 +7,7 @@ import { MessageContext } from "../providers/MessageProvider";
 import { useForm } from "../hooks/useForm";
 import { useApi } from "../hooks/useApi";
 
-import { Layout } from "../components/Layout";
+import { Layout } from "../components/common/Layout";
 
 import { CHANGE_PASSWORD_URL, USER_URL } from "../utils/urls";
 

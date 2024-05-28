@@ -8,9 +8,9 @@ import { useForm } from "../hooks/useForm";
 import { usePayments } from "../hooks/usePayments";
 import { useRegisters } from "../hooks/useRegisters";
 
-import { Layout } from "../components/Layout";
-import { ModalComponent } from "../components/ModalComponent";
-import { DataGridWithBackendPagination } from "../components/DataGridWithBackendPagination";
+import { Layout } from "../components/common/Layout";
+import { ModalComponent } from "../components/common/ModalComponent";
+import { DataGridWithBackendPagination } from "../components/datagrid/DataGridWithBackendPagination";
 
 import { getRegisterTotal, setLocalDate } from "../utils/helpers";
 

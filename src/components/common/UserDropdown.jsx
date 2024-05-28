@@ -1,16 +1,14 @@
 /* eslint-disable react/prop-types */
 import { useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { AuthContext } from "../providers/AuthProvider";
-
-//components import
 import { Avatar } from "@mui/material";
-
-//icons import
 import SettingsIcon from "@mui/icons-material/Settings";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 
+import { AuthContext } from "../../providers/AuthProvider";
+
 export const UserDropdown = ({ children, sx, mobileOpen }) => {
+
   const { auth, setAuth } = useContext(AuthContext);
   const navigate = useNavigate();
 

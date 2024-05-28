@@ -7,8 +7,8 @@ import { DataContext } from "../providers/DataProvider";
 import { useProducts } from "../hooks/useProducts";
 import { useForm } from "../hooks/useForm";
 
-import { Layout } from "../components/Layout";
-import { DataGridWithFrontendPagination } from "../components/DataGridWithFrontendPagination";
+import { Layout } from "../components/common/Layout";
+import { DataGridWithFrontendPagination } from "../components/datagrid/DataGridWithFrontendPagination";
 
 import { getStock } from "../utils/helpers";
 

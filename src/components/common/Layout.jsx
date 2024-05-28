@@ -1,23 +1,21 @@
 /* eslint-disable react/prop-types */
 import { useContext, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-
-import { AuthContext } from "../providers/AuthProvider";
-import { Logo } from "./Logo";
-import { nav_items_admin, nav_items_user } from "../../data/navigation-items";
-
-//components imports
 import Avatar from "@mui/material/Avatar";
-import { Dropdown } from "./Dropdown";
-//icons import
 import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 
+import { AuthContext } from "../../providers/AuthProvider";
+import useScreenSize from "../../hooks/useScreenSize";
+
+import { Logo } from "./Logo";
+import { Dropdown } from "./Dropdown";
 import { UserDropdown } from "./UserDropdown";
-import useScreenSize from "../hooks/useScreenSize";
-import { stringAvatar } from "../utils/avatarName";
+
+import { nav_items_admin, nav_items_user } from "../../../data/navigation-items";
+import { stringAvatar } from "../../utils/avatarName";
 
 export function Layout({ children, title }) {
   const { auth } = useContext(AuthContext);

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Autocomplete, Button, FormControl, Input, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from "@mui/material";
 import CancelSharpIcon from '@mui/icons-material/CancelSharp';
 
-import { getStock } from "../utils/helpers";
+import { getStock } from "../../utils/helpers";
 
 export function AddProductsToSale({
     products,

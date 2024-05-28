@@ -14,7 +14,7 @@ import { useApi } from "../hooks/useApi";
 import { useForm } from "../hooks/useForm";
 import { useClients } from "../hooks/useClients";
 
-import { Layout } from "../components/Layout";
+import { Layout } from "../components/common/Layout";
 import { ClientFilter } from "../components/filters/ClientFilter";
 import { DataGridWithBackendPagination } from "../components/DataGridWithBackendPagination";
 

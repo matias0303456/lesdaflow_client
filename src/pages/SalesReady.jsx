@@ -7,9 +7,9 @@ import { useForm } from "../hooks/useForm";
 import { useSuppliers } from "../hooks/useSuppliers";
 import { useNavigate } from "react-router-dom";
 
-import { Layout } from "../components/Layout";
-import { ModalComponent } from "../components/ModalComponent";
-import { DataGridWithBackendPagination } from "../components/DataGridWithBackendPagination";
+import { Layout } from "../components/common/Layout";
+import { ModalComponent } from "../components/common/ModalComponent";
+import { DataGridWithBackendPagination } from "../components/datagrid/DataGridWithBackendPagination";
 
 
 export function SalesReady() {

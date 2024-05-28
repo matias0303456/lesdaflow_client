@@ -10,10 +10,10 @@ import { DataContext } from "../providers/DataProvider";
 import { useForm } from "../hooks/useForm";
 import { useUsers } from "../hooks/useUsers";
 
-import { Layout } from "../components/Layout";
-import { ModalComponent } from "../components/ModalComponent";
+import { Layout } from "../components/common/Layout";
+import { ModalComponent } from "../components/common/ModalComponent";
 // import { UserFilter } from "../components/filters/UserFilter";
-import { DataGridWithBackendPagination } from "../components/DataGridWithBackendPagination";
+import { DataGridWithBackendPagination } from "../components/datagrid/DataGridWithBackendPagination";
 
 export function Users() {
 
