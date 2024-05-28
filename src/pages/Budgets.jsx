@@ -14,12 +14,16 @@ import { DataGridWithBackendPagination } from "../components/datagrid/DataGridWi
 import { ModalComponent } from "../components/common/ModalComponent";
 import { AddProductsToBudget } from "../components/commercial/AddProductsToBudget";
 
-import { getCurrentSubtotal, getSaleTotal } from "../utils/helpers";
+import { getBudgetTotal } from "../utils/helpers";
+import { useProducts } from "../hooks/useProducts";
+import { useClients } from "../hooks/useClients";
 
 export function Budgets() {
 
     const { state } = useContext(DataContext)
 
+    const { getProducts } = useProducts()
+    const { getClients } = useClients()
     const {
         setBudgetProducts,
         loadingBudgets,
@@ -49,6 +53,11 @@ export function Budgets() {
             }
         }
     })
+
+    useEffect(() => {
+        getClients()
+        getProducts()
+    }, [])
 
     useEffect(() => {
         if (open === 'EDIT' || open === 'VIEW') {
@@ -97,14 +106,14 @@ export function Budgets() {
             numeric: false,
             disablePadding: true,
             label: 'Dirección',
-            accessor: (row) => row.client.user.address
+            accessor: (row) => row.client.address
         },
         {
             id: 'total_amount',
             numeric: false,
             disablePadding: true,
             label: 'Total',
-            accessor: (row) => getSaleTotal(row)
+            accessor: (row) => `$${getBudgetTotal(row.budget_products)}`
         },
     ]
 
@@ -212,12 +221,19 @@ export function Budgets() {
                         </Box>
                         <Box sx={{ display: 'flex', justifyContent: 'end', marginTop: 3 }}>
                             <FormControl>
-                                <InputLabel htmlFor="subtotal">Subtotal</InputLabel>
-                                <Input value={getCurrentSubtotal(budgetProducts, state.products.data)} id="subtotal" type="number" name="subtotal" disabled />
-                            </FormControl>
-                            <FormControl>
                                 <InputLabel htmlFor="total">Total</InputLabel>
-                                <Input value={0} id="total" type="number" name="total" disabled />
+                                <Input
+                                    value={getBudgetTotal(budgetProducts.map(bp => {
+                                        return {
+                                            ...bp,
+                                            product: state.products.data.find(p => p.id === bp.product_id)
+                                        }
+                                    }))}
+                                    id="total"
+                                    type="number"
+                                    name="total"
+                                    disabled
+                                />
                             </FormControl>
                         </Box>
                         <FormControl sx={{

@@ -138,3 +138,8 @@ export function getProductNewSalePriceByPercentage(product, percentage) {
     const currentPrice = getProductSalePrice(product)
     return currentPrice + ((currentPrice / 100) * perc)
 }
+
+export function getBudgetTotal(budget_products) {
+    const totalBudgetProducts = budget_products.reduce((prev, curr) => prev + (getProductSalePrice(curr.product) * curr.amount), 0)
+    return totalBudgetProducts.toFixed(2)
+}
