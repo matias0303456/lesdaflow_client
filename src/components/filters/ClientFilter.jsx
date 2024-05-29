@@ -1,19 +1,19 @@
-import { Box, Button, Checkbox, FormControl, FormControlLabel, Input, InputLabel } from "@mui/material";
+import { Box, FormControl, Input, InputLabel } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 
-import { AuthContext } from "../../providers/AuthProvider";
+import { DataContext } from "../../providers/DataProvider";
+import { useClients } from "../../hooks/useClients";
 
-export function ClientFilter({ clients, setClients }) {
+export function ClientFilter() {
 
-    const { auth } = useContext(AuthContext)
+    const { state, dispatch } = useContext(DataContext)
 
-    const [backup] = useState(clients)
-    const [users] = useState(Array.from(new Set(clients.map(c => c.user.username))))
+    const { getClients } = useClients()
 
     const [filter, setFilter] = useState({
-        name: '',
-        email: '',
-        username: ''
+        first_name: '',
+        last_name: '',
+        work_place: ''
     })
 
     const handleChange = e => {
@@ -23,42 +23,35 @@ export function ClientFilter({ clients, setClients }) {
         })
     }
 
-    const handleReset = () => {
-        setFilter({
-            name: '',
-            email: '',
-            username: ''
-        })
-        setClients(backup)
-    }
-
     useEffect(() => {
-        setClients(backup.filter(item =>
-            item.first_name.toLowerCase().includes(filter.first_name.toLowerCase()) &&
-            item.email.toLowerCase().includes(filter.email.toLowerCase()) &&
-            item.user.username.toLowerCase().includes(filter.username.toLowerCase())
-        ))
+        const { first_name, last_name, work_place } = filter
+        if (first_name.length > 0 || last_name.length > 0 || work_place.length > 0) {
+            dispatch({
+                type: 'CLIENTS',
+                payload: {
+                    ...state.clients,
+                    filters: `&first_name=${first_name}&last_name=${last_name}&work_place=${work_place}`
+                }
+            })
+        } else {
+            getClients(`?page=${state.clients.page}&offset=${state.clients.offset}`)
+        }
     }, [filter])
 
     return (
-        <Box sx={{
-            display: 'flex',
-            flexWrap: 'wrap',
-            alignItems: 'center',
-            gap: 2
-        }}>
-            <FormControl>
+        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, width: '50%' }}>
+            <FormControl sx={{ width: '30%' }}>
+                <InputLabel htmlFor="first_name">Nombre</InputLabel>
+                <Input id="first_name" type="text" name="first_name" value={filter.first_name} onChange={handleChange} />
+            </FormControl>
+            <FormControl sx={{ width: '30%' }}>
+                <InputLabel htmlFor="last_name">Apellido</InputLabel>
+                <Input id="last_name" type="text" name="last_name" value={filter.last_name} onChange={handleChange} />
+            </FormControl>
+            <FormControl sx={{ width: '30%' }}>
                 <InputLabel htmlFor="name">Comercio</InputLabel>
                 <Input id="work_place" type="text" name="work_place" value={filter.work_place} onChange={handleChange} />
             </FormControl>
-            <FormControl>
-                <InputLabel htmlFor="name">Nombre y Apellido</InputLabel>
-                <Input id="name" type="text" name="name" value={filter.name} onChange={handleChange} />
-            </FormControl>
-            <FormControlLabel control={<Checkbox />} label="Bloqueado" />
-            <Button variant="outlined" onClick={handleReset}>
-                Reiniciar Filtros
-            </Button>
         </Box>
     )
 }

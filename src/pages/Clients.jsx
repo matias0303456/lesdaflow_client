@@ -13,7 +13,7 @@ import { useUsers } from "../hooks/useUsers";
 import { Layout } from "../components/common/Layout";
 import { ModalComponent } from "../components/common/ModalComponent";
 import { DataGridWithBackendPagination } from "../components/datagrid/DataGridWithBackendPagination";
-// import { ClientFilter } from "../components/filters/ClientFilter";
+import { ClientFilter } from "../components/filters/ClientFilter";
 
 export function Clients() {
 
@@ -149,12 +149,7 @@ export function Clients() {
                 showDeleteAction
                 showViewAction
                 contentHeader={
-                    <Box sx={{
-                        display: 'flex',
-                        flexWrap: 'wrap',
-                        alignItems: 'center',
-                        gap: 2
-                    }}>
+                    <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: 2 }}>
                         <Box sx={{ display: 'flex', gap: 1 }}>
                             <Button variant="outlined" onClick={() => setOpen('NEW')}>
                                 Agregar
@@ -163,7 +158,7 @@ export function Clients() {
                                 PDF
                             </Button>
                         </Box>
-                        {/* <ClientFilter clients={clients} setClients={setClients} /> */}
+                        <ClientFilter />
                     </Box>
                 }
             >

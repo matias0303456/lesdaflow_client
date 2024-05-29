@@ -148,7 +148,7 @@ export function Users() {
         showDeleteAction
         showViewAction
         contentHeader={
-          <Box sx={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: 'space-between', gap: 2, }}>
+          <Box sx={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: 'space-between', gap: 2 }}>
             <Box sx={{ display: "flex", gap: 1 }}>
               <Button variant="outlined" size="medium" onClick={() => setOpen("NEW")}>
                 Agregar

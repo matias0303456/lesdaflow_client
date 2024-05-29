@@ -19,7 +19,6 @@ export function useClients() {
     const { get } = useApi(CLIENT_URL)
 
     async function getClients(params) {
-        setLoadingClients(true)
         const { status, data } = await get(params)
         if (status === 200) {
             dispatch({

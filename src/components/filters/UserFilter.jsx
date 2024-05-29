@@ -2,10 +2,13 @@ import { useContext, useEffect, useState } from "react";
 import { Box, FormControl, Input, InputLabel, MenuItem, Select } from "@mui/material";
 
 import { DataContext } from "../../providers/DataProvider";
+import { useUsers } from "../../hooks/useUsers";
 
 export function UserFilter() {
 
     const { state, dispatch } = useContext(DataContext)
+
+    const { getUsers } = useUsers()
 
     const [filter, setFilter] = useState({ first_name: '', last_name: '', role: '' })
 
@@ -18,13 +21,17 @@ export function UserFilter() {
 
     useEffect(() => {
         const { first_name, last_name, role } = filter
-        dispatch({
-            type: 'USERS',
-            payload: {
-                ...state.users,
-                filters: `&first_name=${first_name}&last_name=${last_name}&role=${role}`
-            }
-        })
+        if (first_name.length > 0 || last_name.length > 0 || role.length > 0) {
+            dispatch({
+                type: 'USERS',
+                payload: {
+                    ...state.users,
+                    filters: `&first_name=${first_name}&last_name=${last_name}&role=${role}`
+                }
+            })
+        } else {
+            getUsers(`?page=${state.users.page}&offset=${state.users.offset}`)
+        }
     }, [filter])
 
     return (
