@@ -10,17 +10,18 @@ export function UserFilter() {
 
     const { getUsers } = useUsers()
 
-    const [filter, setFilter] = useState({ first_name: '', last_name: '', role: '' })
+    const [filter, setFilter] = useState({ first_name: '', last_name: '', role: '', loaded: false })
 
     const handleChange = e => {
         setFilter({
             ...filter,
+            loaded: true,
             [e.target.name]: e.target.value
         })
     }
 
     useEffect(() => {
-        const { first_name, last_name, role } = filter
+        const { first_name, last_name, role, loaded } = filter
         if (first_name.length > 0 || last_name.length > 0 || role.length > 0) {
             dispatch({
                 type: 'USERS',
@@ -29,7 +30,7 @@ export function UserFilter() {
                     filters: `&first_name=${first_name}&last_name=${last_name}&role=${role}`
                 }
             })
-        } else {
+        } else if (loaded) {
             getUsers(`?page=${state.users.page}&offset=${state.users.offset}`)
         }
     }, [filter])

@@ -1,61 +1,54 @@
-import { Box, Button, FormControl, Input, InputLabel, MenuItem, Select, Typography } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { Box, FormControl, Input, InputLabel, MenuItem, Select } from "@mui/material";
 
-export function ProductFilter({ products, setProducts, suppliers }) {
+import { DataContext } from "../../providers/DataProvider";
+import { useProducts } from "../../hooks/useProducts";
 
-    const [backup] = useState(products)
+export function ProductFilter() {
+
+    const { state, dispatch } = useContext(DataContext)
+
+    const { getProducts } = useProducts()
 
     const [filter, setFilter] = useState({
         code: '',
         details: '',
-        size: '',
-        supplier_id: ''
+        supplier_id: '',
+        loaded: false
     })
 
     const handleChange = e => {
         setFilter({
             ...filter,
+            loaded: true,
             [e.target.name]: e.target.value
         })
     }
 
-    const handleReset = () => {
-        setFilter({
-            code: '',
-            details: '',
-            size: '',
-            supplier_id: ''
-        })
-        setProducts(backup)
-    }
-
     useEffect(() => {
-        setProducts(backup.filter(item =>
-            item.code.toLowerCase().includes(filter.code.toLowerCase()) &&
-            item.details.toLowerCase().includes(filter.details.toLowerCase()) &&
-            item.size.toString().toLowerCase().includes(filter.size.toLowerCase()) &&
-            (filter.supplier_id.length === 0 || parseInt(item.supplier.id) === parseInt(filter.supplier_id))
-        ))
+        const { code, details, supplier_id, loaded } = filter
+        if (code.length > 0 || details.length > 0 || supplier_id.length > 0) {
+            dispatch({
+                type: 'PRODUCTS',
+                payload: {
+                    ...state.products,
+                    filters: `&code=${code}&details=${details}&supplier_id=${supplier_id}`
+                }
+            })
+        } else if (loaded) {
+            getProducts(`?page=${state.products.page}&offset=${state.products.offset}`)
+        }
     }, [filter])
 
     return (
-        <Box sx={{
-            display: 'flex',
-            flexWrap: 'wrap',
-            alignItems: 'center',
-            gap: 2
-        }}>
+        <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 2 }}>
             <FormControl>
                 <InputLabel htmlFor="code">Código</InputLabel>
                 <Input id="code" type="text" name="code" value={filter.code} onChange={handleChange} />
             </FormControl>
             <FormControl>
-                <InputLabel htmlFor="details">Detalle</InputLabel>
+                <InputLabel htmlFor="details">Producto</InputLabel>
                 <Input id="details" type="text" name="details" value={filter.details} onChange={handleChange} />
-            </FormControl>
-            <FormControl>
-                <InputLabel htmlFor="size">Talle</InputLabel>
-                <Input id="size" type="text" name="size" value={filter.size} onChange={handleChange} />
             </FormControl>
             <FormControl>
                 <InputLabel id="supplier-select">Proveedor</InputLabel>
@@ -69,14 +62,11 @@ export function ProductFilter({ products, setProducts, suppliers }) {
                     onChange={handleChange}
                 >
                     <MenuItem value="">Seleccione</MenuItem>
-                    {suppliers.map(s => (
+                    {state.suppliers.data.map(s => (
                         <MenuItem key={s.id} value={s.id}>{s.name}</MenuItem>
                     ))}
                 </Select>
             </FormControl>
-            <Button variant="outlined" onClick={handleReset}>
-                Reiniciar
-            </Button>
         </Box>
     )
 }

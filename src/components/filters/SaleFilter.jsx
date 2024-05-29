@@ -13,17 +13,26 @@ export function SaleFilter({ showWorkPlace, showSeller, showDateAndType, width, 
 
     const { getSales } = useSales()
 
-    const [filter, setFilter] = useState({ client: '', work_place: '', id: '', user: '', date: '', type: '' })
+    const [filter, setFilter] = useState({
+        client: '',
+        work_place: '',
+        id: '',
+        user: '',
+        date: '',
+        type: '',
+        loaded: false
+    })
 
     const handleChange = e => {
         setFilter({
             ...filter,
+            loaded: true,
             [e.target.name]: e.target.value
         })
     }
 
     useEffect(() => {
-        const { client, work_place, id, user, date, type } = filter
+        const { client, work_place, id, user, date, type, loaded } = filter
         if (client.length > 0 || work_place.length > 0 || id.length > 0 ||
             user.length > 0 || date.length > 0 || type.length > 0) {
             dispatch({
@@ -33,7 +42,7 @@ export function SaleFilter({ showWorkPlace, showSeller, showDateAndType, width, 
                     filters: `&client=${client}&work_place=${work_place}&id=${id}&user=${user}&date=${date}&type=${type}`
                 }
             })
-        } else {
+        } else if (loaded) {
             getSales(`?page=${state.sales.page}&offset=${state.sales.offset}`)
         }
     }, [filter])

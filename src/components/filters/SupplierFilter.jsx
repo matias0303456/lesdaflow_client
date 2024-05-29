@@ -10,11 +10,12 @@ export function SupplierFilter() {
 
     const { getSuppliers } = useSuppliers()
 
-    const [filter, setFilter] = useState({ name: '' })
+    const [filter, setFilter] = useState({ name: '', loaded: false })
 
     const handleChange = e => {
         setFilter({
             ...filter,
+            laoded: true,
             [e.target.name]: e.target.value
         })
     }
@@ -28,7 +29,7 @@ export function SupplierFilter() {
                     filters: `&name=${filter.name}`
                 }
             })
-        } else {
+        } else if (filter.loaded) {
             getSuppliers(`?page=${state.clients.page}&offset=${state.clients.offset}`)
         }
     }, [filter])

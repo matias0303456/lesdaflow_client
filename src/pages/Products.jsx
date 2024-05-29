@@ -9,7 +9,7 @@ import { useForm } from "../hooks/useForm";
 import { Layout } from "../components/common/Layout";
 import { ModalComponent } from "../components/common/ModalComponent";
 import { DataGridWithBackendPagination } from "../components/datagrid/DataGridWithBackendPagination";
-// import { ProductFilter } from "../components/filters/ProductFilter";
+import { ProductFilter } from "../components/filters/ProductFilter";
 
 import { getNewPrice, getStock } from "../utils/helpers";
 
@@ -161,12 +161,7 @@ export function Products() {
                 showViewAction
                 showEditAction
                 contentHeader={
-                    <Box sx={{
-                        display: 'flex',
-                        flexWrap: 'wrap',
-                        alignItems: 'center',
-                        gap: 2
-                    }}>
+                    <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between' }}>
                         <Box sx={{ display: 'flex', gap: 1 }}>
                             <Button variant="outlined" onClick={() => setOpen('NEW')}>
                                 Agregar
@@ -178,11 +173,7 @@ export function Products() {
                                 Stock nulo
                             </Button>
                         </Box>
-                        {/* <ProductFilter
-                                products={products}
-                                setProducts={setProducts}
-                                suppliers={suppliers}
-                            /> */}
+                        <ProductFilter />
                     </Box>
                 }
             >

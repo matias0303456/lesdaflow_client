@@ -13,18 +13,20 @@ export function ClientFilter() {
     const [filter, setFilter] = useState({
         first_name: '',
         last_name: '',
-        work_place: ''
+        work_place: '',
+        loaded: false
     })
 
     const handleChange = e => {
         setFilter({
             ...filter,
+            loaded: true,
             [e.target.name]: e.target.value
         })
     }
 
     useEffect(() => {
-        const { first_name, last_name, work_place } = filter
+        const { first_name, last_name, work_place, loaded } = filter
         if (first_name.length > 0 || last_name.length > 0 || work_place.length > 0) {
             dispatch({
                 type: 'CLIENTS',
@@ -33,7 +35,7 @@ export function ClientFilter() {
                     filters: `&first_name=${first_name}&last_name=${last_name}&work_place=${work_place}`
                 }
             })
-        } else {
+        } else if (loaded) {
             getClients(`?page=${state.clients.page}&offset=${state.clients.offset}`)
         }
     }, [filter])
