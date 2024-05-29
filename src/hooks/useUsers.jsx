@@ -18,7 +18,6 @@ export function useUsers() {
     const { get, post, put, destroy, changeVendorPwd } = useApi(USER_URL)
 
     async function getUsers(params) {
-        setLoadingUsers(true)
         const { status, data } = await get(params)
         if (status === 200) {
             dispatch({

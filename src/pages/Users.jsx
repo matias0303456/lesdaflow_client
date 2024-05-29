@@ -12,7 +12,7 @@ import { useUsers } from "../hooks/useUsers";
 
 import { Layout } from "../components/common/Layout";
 import { ModalComponent } from "../components/common/ModalComponent";
-// import { UserFilter } from "../components/filters/UserFilter";
+import { UserFilter } from "../components/filters/UserFilter";
 import { DataGridWithBackendPagination } from "../components/datagrid/DataGridWithBackendPagination";
 
 export function Users() {
@@ -148,14 +148,7 @@ export function Users() {
         showDeleteAction
         showViewAction
         contentHeader={
-          <Box
-            sx={{
-              display: "flex",
-              flexWrap: "wrap",
-              alignItems: "center",
-              gap: 2,
-            }}
-          >
+          <Box sx={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: 'space-between', gap: 2, }}>
             <Box sx={{ display: "flex", gap: 1 }}>
               <Button variant="outlined" size="medium" onClick={() => setOpen("NEW")}>
                 Agregar
@@ -167,7 +160,7 @@ export function Users() {
                 Pdf
               </Button>
             </Box>
-            {/* <UserFilter users={state.users.data} setUsers={state.users.setD} /> */}
+            <UserFilter />
           </Box>
         }
       >

@@ -81,8 +81,8 @@ export function DataGridWithBackendPagination({
   )
 
   useEffect(() => {
-    getter(`?page=${state[entityKey].page}&offset=${state[entityKey].offset}`)
-  }, [state[entityKey].page, state[entityKey].offset])
+    getter(`?page=${state[entityKey].page}&offset=${state[entityKey].offset}${state[entityKey].filters}`)
+  }, [state[entityKey].page, state[entityKey].offset, state[entityKey].filters])
 
   return (
     <>

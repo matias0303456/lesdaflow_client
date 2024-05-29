@@ -26,43 +26,50 @@ const initialState = {
         count: 0,
         data: [],
         page: 0,
-        offset: 5
+        offset: 5,
+        filters: ''
     },
     'products': {
         count: 0,
         data: [],
         page: 0,
-        offset: 5
+        offset: 5,
+        filters: ''
     },
     'sales': {
         count: 0,
         data: [],
         page: 0,
-        offset: 5
+        offset: 5,
+        filters: ''
     },
     'users': {
         count: 0,
         data: [],
         page: 0,
-        offset: 5
+        offset: 5,
+        filters: ''
     },
     'registers': {
         count: 0,
         data: [],
         page: 0,
-        offset: 5
+        offset: 5,
+        filters: ''
     },
     'suppliers': {
         count: 0,
         data: [],
         page: 0,
-        offset: 5
+        offset: 5,
+        filters: ''
     },
     'budgets': {
         count: 0,
         data: [],
         page: 0,
-        offset: 5
+        offset: 5,
+        filters: ''
     }
 }
 
