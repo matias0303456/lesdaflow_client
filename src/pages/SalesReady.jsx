@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { Layout } from "../components/common/Layout";
 import { ModalComponent } from "../components/common/ModalComponent";
 import { DataGridWithBackendPagination } from "../components/datagrid/DataGridWithBackendPagination";
+import { SaleFilter } from "../components/filters/SaleFilter";
 
 
 export function SalesReady() {
@@ -140,6 +141,7 @@ export function SalesReady() {
         setFormData={setFormData}
         showSettingsAction="Preparar"
         showPDFAction
+        contentHeader={<SaleFilter showDateAndType width="100%" />}
       >
         <ModalComponent
           open={open === "NEW" || open === "EDIT" || open === "VIEW"}

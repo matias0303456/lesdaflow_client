@@ -113,7 +113,7 @@ export function CurrentAccount() {
             <Button variant="outlined" color="success">
               Excel
             </Button>
-            <SaleFilter />
+            <SaleFilter showWorkPlace justifyContent="end" />
           </Box>
         }
       />

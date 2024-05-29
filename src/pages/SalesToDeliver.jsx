@@ -9,6 +9,7 @@ import { useSales } from "../hooks/useSales";
 
 import { Layout } from "../components/common/Layout";
 import { DataGridWithBackendPagination } from "../components/datagrid/DataGridWithBackendPagination";
+import { SaleFilter } from "../components/filters/SaleFilter";
 
 import { getSaleTotal } from "../utils/helpers";
 
@@ -136,6 +137,7 @@ export function SalesToDeliver() {
                 setOpen={setOpen}
                 setFormData={setFormData}
                 showSettingsAction="Registrar entrega"
+                contentHeader={<SaleFilter showDateAndType width="100%" />}
             />
         </Layout>
     )

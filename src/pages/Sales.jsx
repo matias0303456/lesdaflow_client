@@ -15,7 +15,7 @@ import { useSales } from "../hooks/useSales";
 
 import { Layout } from "../components/common/Layout";
 import { ModalComponent } from "../components/common/ModalComponent";
-// import { SaleFilter } from "../components/filters/SaleFilter";
+import { SaleFilter } from "../components/filters/SaleFilter";
 import { AddProductsToSale } from "../components/commercial/AddProductsToSale";
 import { DataGridWithBackendPagination } from "../components/datagrid/DataGridWithBackendPagination";
 
@@ -187,12 +187,7 @@ export function Sales() {
                 showDeleteAction
                 showPDFAction
                 contentHeader={
-                    <Box sx={{
-                        display: 'flex',
-                        flexWrap: 'wrap',
-                        alignItems: 'center',
-                        gap: 2
-                    }}>
+                    <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between' }}>
                         <Box sx={{ display: 'flex', gap: 1 }}>
                             <Button variant="outlined" onClick={() => setOpen('NEW')}>
                                 Agregar
@@ -201,7 +196,7 @@ export function Sales() {
                                 Excel
                             </Button>
                         </Box>
-                        {/* <SaleFilter sales={sales} setSales={setSales} /> */}
+                        <SaleFilter showWorkPlace showSeller />
                     </Box>
                 }
             >
