@@ -17,7 +17,6 @@ export function useSuppliers() {
     const [open, setOpen] = useState(null)
 
     async function getSuppliers(params) {
-        setLoadingSuppliers(true)
         const { status, data } = await get(params)
         if (status === 200) {
             dispatch({

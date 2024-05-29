@@ -1,9 +1,14 @@
-import { useEffect, useState } from "react";
-import { Box, Button, FormControl, Input, InputLabel } from "@mui/material";
+import { useContext, useEffect, useState } from "react";
+import { FormControl, Input, InputLabel } from "@mui/material";
 
-export function SupplierFilter({ suppliers, setSuppliers }) {
+import { DataContext } from "../../providers/DataProvider";
+import { useSuppliers } from "../../hooks/useSuppliers";
 
-    const [backup] = useState(suppliers)
+export function SupplierFilter() {
+
+    const { state, dispatch } = useContext(DataContext)
+
+    const { getSuppliers } = useSuppliers()
 
     const [filter, setFilter] = useState({ name: '' })
 
@@ -14,29 +19,24 @@ export function SupplierFilter({ suppliers, setSuppliers }) {
         })
     }
 
-    const handleReset = () => {
-        setFilter({ name: '' })
-        setSuppliers(backup)
-    }
-
     useEffect(() => {
-        setSuppliers(backup.filter(item => item.name.toLowerCase().includes(filter.name.toLowerCase())))
+        if (filter.name.length > 0) {
+            dispatch({
+                type: 'SUPPLIERS',
+                payload: {
+                    ...state.suppliers,
+                    filters: `&name=${filter.name}`
+                }
+            })
+        } else {
+            getSuppliers(`?page=${state.clients.page}&offset=${state.clients.offset}`)
+        }
     }, [filter])
 
     return (
-        <Box sx={{
-            display: 'flex',
-            flexWrap: 'wrap',
-            alignItems: 'center',
-            gap: 2
-        }}>
-            <FormControl>
-                <InputLabel htmlFor="name">Nombre</InputLabel>
-                <Input id="name" type="text" name="name" value={filter.name} onChange={handleChange} />
-            </FormControl>
-            <Button variant="outlined" onClick={handleReset}>
-                Reiniciar
-            </Button>
-        </Box>
+        <FormControl>
+            <InputLabel htmlFor="name">Nombre</InputLabel>
+            <Input id="name" type="text" name="name" value={filter.name} onChange={handleChange} />
+        </FormControl>
     )
 }

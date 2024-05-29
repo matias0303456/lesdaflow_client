@@ -9,7 +9,7 @@ import { useSuppliers } from "../hooks/useSuppliers";
 
 import { Layout } from "../components/common/Layout";
 import { ModalComponent } from "../components/common/ModalComponent";
-// import { SupplierFilter } from "../components/filters/SupplierFilter";
+import { SupplierFilter } from "../components/filters/SupplierFilter";
 import { DataGridWithBackendPagination } from "../components/datagrid/DataGridWithBackendPagination";
 
 export function Suppliers() {
@@ -141,12 +141,7 @@ export function Suppliers() {
                 showDeleteAction
                 showViewAction
                 contentHeader={
-                    <Box sx={{
-                        display: 'flex',
-                        flexWrap: 'wrap',
-                        alignItems: 'center',
-                        gap: 2
-                    }}>
+                    <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between' }}>
                         <Box sx={{ display: 'flex', gap: 1 }}>
                             <Button variant="outlined" onClick={() => setOpen('NEW')}>
                                 Agregar
@@ -155,7 +150,7 @@ export function Suppliers() {
                                 Excel
                             </Button>
                         </Box>
-                        {/* <SupplierFilter suppliers={state.suppliers.data} setSuppliers={setSuppliers} /> */}
+                        <SupplierFilter />
                     </Box>
                 }
             >
