@@ -19,7 +19,6 @@ export function useRegisters() {
     const { get } = useApi(REGISTER_URL)
 
     async function getRegisters(params) {
-        setLoadingRegisters(true)
         const { status, data } = await get(params)
         if (status === 200) {
             dispatch({

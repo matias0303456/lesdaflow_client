@@ -11,6 +11,7 @@ import { useRegisters } from "../hooks/useRegisters";
 import { Layout } from "../components/common/Layout";
 import { ModalComponent } from "../components/common/ModalComponent";
 import { DataGridWithBackendPagination } from "../components/datagrid/DataGridWithBackendPagination";
+import { RegisterFilter } from "../components/filters/RegisterFilter";
 
 import { getRegisterTotal, setLocalDate } from "../utils/helpers";
 
@@ -99,21 +100,19 @@ export function Registers() {
                 setFormData={setFormData}
                 showViewAction
                 showSettingsAction="Cerrar caja"
-                contentHeader={<Box sx={{
-                    display: 'flex',
-                    flexWrap: 'wrap',
-                    alignItems: 'center',
-                    gap: 2
-                }}>
-                    <Box sx={{ display: 'flex', gap: 1 }}>
-                        <Button variant="outlined" onClick={() => setOpen('NEW')}>
-                            Apertura caja
-                        </Button>
-                        <Button variant="outlined" color='success'>
-                            Excel
-                        </Button>
+                contentHeader={
+                    <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 2, justifyContent: 'space-between' }}>
+                        <Box sx={{ display: 'flex', gap: 1 }}>
+                            <Button variant="outlined" onClick={() => setOpen('NEW')}>
+                                Apertura caja
+                            </Button>
+                            <Button variant="outlined" color='success'>
+                                Excel
+                            </Button>
+                        </Box>
+                        {auth.user.role === 'ADMINISTRADOR' && <RegisterFilter />}
                     </Box>
-                </Box>}
+                }
             >
                 <ModalComponent open={open === 'NEW' || open === 'SETTINGS' || open === 'VIEW'} onClose={() => reset(setOpen)}>
                     <Typography variant="h6" sx={{ marginBottom: 2 }}>
