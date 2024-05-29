@@ -8,15 +8,16 @@ import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { DataContext } from "../providers/DataProvider";
 import { useForm } from "../hooks/useForm";
 import { useBudgets } from "../hooks/useBudgets";
+import { useProducts } from "../hooks/useProducts";
+import { useClients } from "../hooks/useClients";
 
 import { Layout } from "../components/common/Layout";
 import { DataGridWithBackendPagination } from "../components/datagrid/DataGridWithBackendPagination";
 import { ModalComponent } from "../components/common/ModalComponent";
 import { AddProductsToBudget } from "../components/commercial/AddProductsToBudget";
+import { BudgetFilter } from "../components/filters/BudgetFilter";
 
 import { getBudgetTotal } from "../utils/helpers";
-import { useProducts } from "../hooks/useProducts";
-import { useClients } from "../hooks/useClients";
 
 export function Budgets() {
 
@@ -132,12 +133,7 @@ export function Budgets() {
                 showEditAction
                 showDeleteAction
                 contentHeader={
-                    <Box sx={{
-                        display: 'flex',
-                        flexWrap: 'wrap',
-                        alignItems: 'center',
-                        gap: 2
-                    }}>
+                    <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 2, justifyContent: 'space-between' }}>
                         <Box sx={{ display: 'flex', gap: 1 }}>
                             <Button variant="outlined" onClick={() => setOpen('NEW')}>
                                 Agregar
@@ -149,7 +145,7 @@ export function Budgets() {
                                 PDF
                             </Button>
                         </Box>
-                        {/* <SaleFilter sales={sales} setSales={setSales} /> */}
+                        <BudgetFilter />
                     </Box>
                 }
             >

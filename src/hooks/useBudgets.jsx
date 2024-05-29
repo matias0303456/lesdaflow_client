@@ -20,7 +20,6 @@ export function useBudgets() {
     const [missing, setMissing] = useState(false)
 
     async function getBudgets(params) {
-        setLoadingBudgets(true)
         const { status, data } = await get(params)
         if (status === 200) {
             dispatch({
