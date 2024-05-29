@@ -1,19 +1,16 @@
 import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Box, Button, FormControl, InputLabel, MenuItem, Select, Typography } from "@mui/material";
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import dayjs from 'dayjs';
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { es } from "date-fns/locale";
 
 import { AuthContext } from "../providers/AuthProvider";
 import { DataContext } from "../providers/DataProvider";
 import { useForm } from "../hooks/useForm";
 
 import { Layout } from "../components/common/Layout";
-
-const today = dayjs();
-const tomorrow = dayjs().add(1, 'day');
 
 export function RegisterMovements() {
 
@@ -22,18 +19,25 @@ export function RegisterMovements() {
 
   const navigate = useNavigate()
 
-  const { handleChange } = useForm({
-    defaultData: {},
-    rules: {},
-  });
+  const { handleChange, formData, errors, validate } = useForm({
+    defaultData: { from: new Date(Date.now()), to: new Date(Date.now()), register_id: '' },
+    rules: { register_id: { required: true } }
+  })
 
   useEffect(() => {
     if (auth?.user.role !== "ADMINISTRADOR") navigate("/productos");
-  }, []);
+  }, [])
+
+  const handleSubmit = e => {
+    e.preventDefault()
+    if (validate()) {
+      console.log(formData)
+    }
+  }
 
   return (
     <Layout title="Reporte Cuenta Corriente">
-      <Box className="w-[50%] p-2 bg-white rounded-md">
+      <Box className="w-[50%] bg-white rounded-md">
         <Typography
           variant="h6"
           sx={{
@@ -50,33 +54,44 @@ export function RegisterMovements() {
           Informacion General
         </Typography>
         <form onChange={handleChange}>
-          <Box sx={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "start", flexDirection: "column", gap: 2 }}>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <FormControl variant="standard" className="w-[100%]">
-                <DatePicker
-                  label="Fecha Desde"
-                  sx={{ marginTop: "3rem" }}
-                  defaultValue={today}
-                  minDate={tomorrow}
-                  views={['year', 'month', 'day']}
-                />
-              </FormControl>
-              <FormControl variant="standard" sx={{ width: "100%", color: "#59656b" }}>
-                <DatePicker
-                  label="Fecha Hasta"
-                  sx={{ marginTop: "3rem" }}
-                  defaultValue={today}
-                  minDate={tomorrow}
-                  views={['year', 'month', 'day']}
-                />
-              </FormControl>
+          <Box sx={{
+            width: "100%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "start",
+            flexDirection: "column",
+            gap: 3,
+            padding: 2
+          }}>
+            <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
+              <DatePicker
+                label="Fecha Desde"
+                value={new Date(formData.from)}
+                sx={{ width: '100%' }}
+                onChange={value => handleChange({
+                  target: {
+                    name: 'from',
+                    value: new Date(value.toISOString())
+                  }
+                })}
+              />
+              <DatePicker
+                label="Fecha Hasta"
+                value={new Date(formData.to)}
+                sx={{ width: '100%' }}
+                onChange={value => handleChange({
+                  target: {
+                    name: 'to',
+                    value: new Date(value.toISOString())
+                  }
+                })}
+              />
             </LocalizationProvider>
             <FormControl variant="standard" sx={{
               minWidth: "100%",
               color: "#59656b",
               display: "flex", alignItems: "start",
-              justifyContent: "center",
-              marginTop: "2rem"
+              justifyContent: "center"
             }}>
               <InputLabel id="demo-simple-select-standard-label">
                 Caja
@@ -98,12 +113,17 @@ export function RegisterMovements() {
                   <MenuItem>No se encontraron resultados</MenuItem>
                 )}
               </Select>
+              {errors.register_id?.type === 'required' &&
+                <Typography variant="caption" color="red" marginTop={1}>
+                  * La caja es requerida.
+                </Typography>
+              }
             </FormControl>
           </Box>
         </form>
       </Box>
       <Box className="mt-3">
-        <Button variant="contained" color="primary">Imprimir</Button>
+        <Button variant="contained" color="primary" type="button" onClick={handleSubmit}>Imprimir</Button>
       </Box>
     </Layout>
   );
