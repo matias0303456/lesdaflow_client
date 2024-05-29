@@ -21,7 +21,6 @@ export function useSales() {
     const [missing, setMissing] = useState(false)
 
     async function getSales(params) {
-        setLoadingSales(true)
         const { status, data } = await get(params)
         if (status === 200) {
             dispatch({

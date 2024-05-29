@@ -10,6 +10,7 @@ import { useSales } from "../hooks/useSales";
 
 import { Layout } from "../components/common/Layout";
 import { DataGridWithBackendPagination } from "../components/datagrid/DataGridWithBackendPagination";
+import { SaleFilter } from '../components/filters/SaleFilter'
 
 import { getAccountStatus, getDeadline, getSaleDifference, getSaleTotal } from "../utils/helpers";
 
@@ -108,10 +109,11 @@ export function CurrentAccount() {
         showDeleteAction
         showViewAction
         contentHeader={
-          <Box>
+          <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between' }}>
             <Button variant="outlined" color="success">
               Excel
             </Button>
+            <SaleFilter />
           </Box>
         }
       />

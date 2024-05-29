@@ -1,24 +1,16 @@
-import { Box, Button, Checkbox, FormControl, FormControlLabel, Input, InputLabel, MenuItem, Select } from "@mui/material";
+import { Box, FormControl, Input, InputLabel, MenuItem, Select } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 
-import { AuthContext } from "../../providers/AuthProvider";
+import { DataContext } from "../../providers/DataProvider";
+import { useSales } from "../../hooks/useSales";
 
-import { getAccountStatus } from "../../utils/helpers";
+export function SaleFilter({ showSeller }) {
 
-export function SaleFilter({ sales, setSales }) {
+    const { state, dispatch } = useContext(DataContext)
 
-    const { auth } = useContext(AuthContext)
+    const { getSales } = useSales()
 
-    const [backup] = useState(sales.sort((a, b) => new Date(b.date) - new Date(a.date)))
-    const [users] = useState(Array.from(new Set(sales.map(s => s.client.user.username))))
-
-    const [filter, setFilter] = useState({
-        id: '',
-        client: '',
-        type: 'ALL',
-        pending: true,
-        user: ''
-    })
+    const [filter, setFilter] = useState({ client: '', work_place: '', id: '', user: '' })
 
     const handleChange = e => {
         setFilter({
@@ -27,131 +19,53 @@ export function SaleFilter({ sales, setSales }) {
         })
     }
 
-    const handleReset = () => {
-        setFilter({
-            id: '',
-            client: '',
-            type: 'ALL',
-            pending: true,
-            user: ''
-        })
-        setSales(backup)
-    }
-
     useEffect(() => {
-        setSales(backup.filter(item => {
-            return (
-                item.client.code.toLowerCase().includes(filter.client.toLowerCase()) ||
-                item.client.name.toLowerCase().includes(filter.client.toLowerCase())
-            ) &&
-                item.client.user.username.toLowerCase().includes(filter.user.toLowerCase()) &&
-                (filter.type === 'ALL' || item.type === filter.type) &&
-                (filter.id.length === 0 || Math.abs(parseInt(filter.id)) === item.id) &&
-                (!filter.pending || getAccountStatus(item) === 'Pendiente')
-        }))
-    }, [backup, filter])
+        const { client, work_place, id, user } = filter
+        if (client.length > 0 || work_place.length > 0 || id.length > 0 || user.length > 0) {
+            dispatch({
+                type: 'SALES',
+                payload: {
+                    ...state.sales,
+                    filters: `&client=${client}&work_place=${work_place}&id=${id}&user=${user}`
+                }
+            })
+        } else {
+            getSales(`?page=${state.sales.page}&offset=${state.sales.offset}`)
+        }
+    }, [filter])
 
     return (
-        <Box sx={{
-            display: 'flex',
-            flexWrap: 'wrap',
-            alignItems: 'center',
-            gap: 2
-        }}>
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, justifyContent: 'center' }}>
-                <FormControl>
-                    <InputLabel htmlFor="id">N° venta</InputLabel>
-                    <Input id="id" type="number" name="id" value={filter.id} onChange={handleChange} />
+        <Box sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'end', gap: 2 }}>
+            <FormControl sx={{ width: '23%' }}>
+                <InputLabel htmlFor="client">Cliente</InputLabel>
+                <Input id="client" type="text" name="client" value={filter.client} onChange={handleChange} />
+            </FormControl>
+            <FormControl sx={{ width: '23%' }}>
+                <InputLabel htmlFor="work_place">Nombre Comercio</InputLabel>
+                <Input id="work_place" type="text" name="work_place" value={filter.work_place} onChange={handleChange} />
+            </FormControl>
+            <FormControl sx={{ width: '23%' }}>
+                <InputLabel htmlFor="id">N° venta</InputLabel>
+                <Input id="id" type="number" name="id" value={filter.id} onChange={handleChange} />
+            </FormControl>
+            {showSeller &&
+                <FormControl sx={{ width: '23%' }}>
+                    <InputLabel id="user-select">Vendedor</InputLabel>
+                    <Select
+                        labelId="user-select"
+                        id="user"
+                        value={filter.user}
+                        label="Vendedor"
+                        name="user"
+                        onChange={handleChange}
+                    >
+                        <MenuItem value="">Seleccione</MenuItem>
+                        {state.users.data.map(u => (
+                            <MenuItem key={u.id} value={u.username}>{`${u.first_name} ${u.last_name}`}</MenuItem>
+                        ))}
+                    </Select>
                 </FormControl>
-                <FormControl>
-                    <InputLabel htmlFor="client">Cliente</InputLabel>
-                    <Input id="client" type="text" name="client" value={filter.client} onChange={handleChange} />
-                </FormControl>
-            </Box>
-            <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-                <FormControlLabel
-                    control={<Checkbox />}
-                    label="Todas"
-                    checked={filter.type === 'ALL'}
-                    onChange={e => {
-                        if (e.target.checked) {
-                            handleChange({
-                                target: {
-                                    name: 'type',
-                                    value: 'ALL'
-                                }
-                            })
-                        }
-                    }}
-                />
-                <FormControlLabel
-                    control={<Checkbox />}
-                    label="Cuenta Corriente"
-                    checked={filter.type === 'CUENTA_CORRIENTE'}
-                    onChange={e => {
-                        if (e.target.checked) {
-                            handleChange({
-                                target: {
-                                    name: 'type',
-                                    value: 'CUENTA_CORRIENTE'
-                                }
-                            })
-                        }
-                    }}
-                />
-                <FormControlLabel
-                    control={<Checkbox />}
-                    label="Contado"
-                    checked={filter.type === 'CONTADO'}
-                    onChange={e => {
-                        if (e.target.checked) {
-                            handleChange({
-                                target: {
-                                    name: 'type',
-                                    value: 'CONTADO'
-                                }
-                            })
-                        }
-                    }}
-                />
-                <FormControlLabel
-                    control={<Checkbox />}
-                    label="Pendientes"
-                    checked={filter.pending}
-                    onChange={e => {
-                        handleChange({
-                            target: {
-                                name: 'pending',
-                                value: e.target.checked
-                            }
-                        })
-                    }}
-                />
-            </Box>
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, justifyContent: 'center' }}>
-                {auth?.user.role.name === 'ADMINISTRADOR' &&
-                    <FormControl>
-                        <InputLabel id="user-select">Vendedor</InputLabel>
-                        <Select
-                            labelId="user-select"
-                            id="user"
-                            value={filter.user}
-                            label="Vendedor"
-                            name="user"
-                            sx={{ width: { xs: '100%', md: 150 } }}
-                            onChange={handleChange}
-                        >
-                            <MenuItem value="">Seleccione</MenuItem>
-                            {users.map(u => (
-                                <MenuItem key={u} value={u}>{u}</MenuItem>
-                            ))}
-                        </Select>
-                    </FormControl>
-                }
-                <Button variant="outlined" onClick={handleReset}>
-                    Reiniciar Filtros
-                </Button>
-            </Box>
+            }
         </Box>
     )
 }
