@@ -16,8 +16,8 @@ export function BudgetFilter() {
     const [filter, setFilter] = useState({
         from: '',
         to: '',
-        created_by: '',
-        client_id: '',
+        user: '',
+        client: '',
         loaded: false
     })
 
@@ -30,15 +30,15 @@ export function BudgetFilter() {
     }
 
     useEffect(() => {
-        const { from, to, created_by, client_id, loaded } = filter
+        const { from, to, user, client, loaded } = filter
         const fromIsNotString = typeof from !== 'string'
         const toIsNotString = typeof to !== 'string'
-        if (fromIsNotString || toIsNotString || created_by.length > 0 || client_id.length > 0) {
+        if (fromIsNotString || toIsNotString || user.length > 0 || client.length > 0) {
             dispatch({
                 type: 'BUDGETS',
                 payload: {
                     ...state.budgets,
-                    filters: `&from=${fromIsNotString ? new Date(from).toISOString() : ''}&to=${toIsNotString ? new Date(to).toISOString() : ''}&created_by=${created_by}&client_id=${client_id}`
+                    filters: `&from=${fromIsNotString ? new Date(from).toISOString() : ''}&to=${toIsNotString ? new Date(to).toISOString() : ''}&user=${user}&client=${client}`
                 }
             })
         } else if (loaded) {
@@ -67,12 +67,12 @@ export function BudgetFilter() {
                 </LocalizationProvider>
             </FormControl>
             <FormControl>
-                <InputLabel htmlFor="client_id">Cliente</InputLabel>
-                <Input id="client_id" type="text" name="client_id" value={filter.client_id} onChange={handleChange} />
+                <InputLabel htmlFor="client">Cliente</InputLabel>
+                <Input id="client" type="text" name="client" value={filter.client} onChange={handleChange} />
             </FormControl>
             <FormControl>
-                <InputLabel htmlFor="created_by">Vendedor</InputLabel>
-                <Input id="created_by" type="text" name="created_by" value={filter.created_by} onChange={handleChange} />
+                <InputLabel htmlFor="user">Vendedor</InputLabel>
+                <Input id="user" type="text" name="user" value={filter.user} onChange={handleChange} />
             </FormControl>
         </Box>
     )

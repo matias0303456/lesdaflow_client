@@ -99,7 +99,7 @@ export function Budgets() {
             id: 'client',
             numeric: false,
             disablePadding: true,
-            label: 'Clientes',
+            label: 'Cliente',
             accessor: (row) => `${row.client.first_name} ${row.client.last_name}`
         },
         {
