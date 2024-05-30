@@ -122,8 +122,7 @@ export function SalesToDeliver() {
             disablePadding: true,
             label: 'Total',
             accessor: (row) => getSaleTotal(row)
-        },
-
+        }
     ]
 
     return (
@@ -137,7 +136,7 @@ export function SalesToDeliver() {
                 setOpen={setOpen}
                 setFormData={setFormData}
                 showSettingsAction="Registrar entrega"
-                contentHeader={<SaleFilter showDateAndType width="100%" />}
+                contentHeader={<SaleFilter showDateAndType />}
             />
         </Layout>
     )

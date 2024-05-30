@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { FormControl, Input, InputLabel } from "@mui/material";
+import { Box, Button, FormControl, Input, InputLabel } from "@mui/material";
 
 import { DataContext } from "../../providers/DataProvider";
 import { useRegisters } from "../../hooks/useRegisters";
@@ -20,6 +20,10 @@ export function RegisterFilter() {
         })
     }
 
+    const handleReset = () => {
+        if (filter.user.length > 0) setFilter({ user: '', loaded: true })
+    }
+
     useEffect(() => {
         if (filter.user.length > 0) {
             dispatch({
@@ -35,9 +39,14 @@ export function RegisterFilter() {
     }, [filter])
 
     return (
-        <FormControl>
-            <InputLabel htmlFor="user">Caja</InputLabel>
-            <Input id="user" type="text" name="user" value={filter.user} onChange={handleChange} />
-        </FormControl>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+            <FormControl>
+                <InputLabel htmlFor="user">Caja</InputLabel>
+                <Input id="user" type="text" name="user" value={filter.user} onChange={handleChange} />
+            </FormControl>
+            <Button type="button" variant="outlined" onClick={handleReset}>
+                Reiniciar filtro
+            </Button>
+        </Box>
     )
 }

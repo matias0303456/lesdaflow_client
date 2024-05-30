@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { FormControl, Input, InputLabel } from "@mui/material";
+import { Box, Button, FormControl, Input, InputLabel } from "@mui/material";
 
 import { DataContext } from "../../providers/DataProvider";
 import { useSuppliers } from "../../hooks/useSuppliers";
@@ -20,6 +20,10 @@ export function SupplierFilter() {
         })
     }
 
+    const handleReset = () => {
+        if (filter.name.length > 0) setFilter({ name: '', loaded: true })
+    }
+
     useEffect(() => {
         if (filter.name.length > 0) {
             dispatch({
@@ -35,9 +39,14 @@ export function SupplierFilter() {
     }, [filter])
 
     return (
-        <FormControl>
-            <InputLabel htmlFor="name">Nombre</InputLabel>
-            <Input id="name" type="text" name="name" value={filter.name} onChange={handleChange} />
-        </FormControl>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+            <FormControl>
+                <InputLabel htmlFor="name">Nombre</InputLabel>
+                <Input id="name" type="text" name="name" value={filter.name} onChange={handleChange} />
+            </FormControl>
+            <Button type="button" variant="outlined" onClick={handleReset}>
+                Reiniciar filtro
+            </Button>
+        </Box>
     )
 }

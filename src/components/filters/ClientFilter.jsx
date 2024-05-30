@@ -1,4 +1,4 @@
-import { Box, FormControl, Input, InputLabel } from "@mui/material";
+import { Box, Button, FormControl, Input, InputLabel } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 
 import { DataContext } from "../../providers/DataProvider";
@@ -16,6 +16,7 @@ export function ClientFilter() {
         work_place: '',
         loaded: false
     })
+    const [show, setShow] = useState(false)
 
     const handleChange = e => {
         setFilter({
@@ -24,6 +25,17 @@ export function ClientFilter() {
             [e.target.name]: e.target.value
         })
     }
+
+    const handleReset = () => {
+        setFilter({
+            first_name: '',
+            last_name: '',
+            work_place: '',
+            loaded: true
+        })
+    }
+
+    const handleToggleShow = () => setShow(!show)
 
     useEffect(() => {
         const { first_name, last_name, work_place, loaded } = filter
@@ -41,19 +53,36 @@ export function ClientFilter() {
     }, [filter])
 
     return (
-        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, width: '50%' }}>
-            <FormControl sx={{ width: '30%' }}>
-                <InputLabel htmlFor="first_name">Nombre</InputLabel>
-                <Input id="first_name" type="text" name="first_name" value={filter.first_name} onChange={handleChange} />
-            </FormControl>
-            <FormControl sx={{ width: '30%' }}>
-                <InputLabel htmlFor="last_name">Apellido</InputLabel>
-                <Input id="last_name" type="text" name="last_name" value={filter.last_name} onChange={handleChange} />
-            </FormControl>
-            <FormControl sx={{ width: '30%' }}>
-                <InputLabel htmlFor="name">Comercio</InputLabel>
-                <Input id="work_place" type="text" name="work_place" value={filter.work_place} onChange={handleChange} />
-            </FormControl>
-        </Box>
+        <>
+            {show ?
+                <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 2 }}>
+                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                        <FormControl>
+                            <InputLabel htmlFor="first_name">Nombre</InputLabel>
+                            <Input id="first_name" type="text" name="first_name" value={filter.first_name} onChange={handleChange} />
+                        </FormControl>
+                        <FormControl>
+                            <InputLabel htmlFor="last_name">Apellido</InputLabel>
+                            <Input id="last_name" type="text" name="last_name" value={filter.last_name} onChange={handleChange} />
+                        </FormControl>
+                        <FormControl>
+                            <InputLabel htmlFor="name">Comercio</InputLabel>
+                            <Input id="work_place" type="text" name="work_place" value={filter.work_place} onChange={handleChange} />
+                        </FormControl>
+                    </Box>
+                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                        <Button type="button" variant="outlined" onClick={handleReset}>
+                            Reiniciar filtros
+                        </Button>
+                        <Button type="button" variant="outlined" onClick={handleToggleShow}>
+                            Ocultar filtros
+                        </Button>
+                    </Box>
+                </Box> :
+                <Button type="button" variant="outlined" onClick={handleToggleShow}>
+                    Mostrar filtros
+                </Button>
+            }
+        </>
     )
 }
