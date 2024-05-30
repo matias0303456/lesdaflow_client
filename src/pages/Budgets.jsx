@@ -106,6 +106,10 @@ export function Budgets() {
         }
     }, [formData])
 
+    useEffect(() => {
+        console.log(idsToDelete)
+    }, [idsToDelete])
+
     const headCells = [
         {
             id: 'id',

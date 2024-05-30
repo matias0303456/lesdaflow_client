@@ -47,7 +47,7 @@ export function AddProductsToSale({
         setSaleProducts([
             ...saleProducts.filter(sp => sp.product_id !== pId),
         ])
-        if (open === 'EDIT') {
+        if (open === 'EDIT' || open === 'CONVERT') {
             setIdsToDelete([...idsToDelete, spId])
         }
     }
@@ -89,7 +89,7 @@ export function AddProductsToSale({
                             <TableCell align="center">Precio</TableCell>
                             <TableCell align="center">Stock</TableCell>
                             <TableCell align="center">Total det.</TableCell>
-                            {(open === 'NEW' || open === 'EDIT') && <TableCell align="center"></TableCell>}
+                            {(open === 'NEW' || open === 'EDIT' || open === 'CONVERT') && <TableCell align="center"></TableCell>}
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -127,7 +127,7 @@ export function AddProductsToSale({
                                         <TableCell>${getProductSalePrice(p)}</TableCell>
                                         <TableCell>{getStock(p)}</TableCell>
                                         <TableCell>${(currentAmount * getProductSalePrice(p)).toFixed(2)}</TableCell>
-                                        {(open === 'NEW' || open === 'EDIT') &&
+                                        {(open === 'NEW' || open === 'EDIT' || open === 'CONVERT') &&
                                             <TableCell align="center">
                                                 <Button type="button" onClick={() => handleDeleteProduct(sp.id, p.id)}>
                                                     <CancelSharpIcon />
