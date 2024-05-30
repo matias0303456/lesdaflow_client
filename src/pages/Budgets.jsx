@@ -1,9 +1,6 @@
 import { useContext, useEffect } from "react";
-import { Autocomplete, Box, Button, FormControl, InputLabel, TextField, Typography, Input } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import { format } from "date-fns";
-import { es } from "date-fns/locale";
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 
 import { DataContext } from "../providers/DataProvider";
 import { useForm } from "../hooks/useForm";
@@ -14,10 +11,12 @@ import { useClients } from "../hooks/useClients";
 import { Layout } from "../components/common/Layout";
 import { DataGridWithBackendPagination } from "../components/datagrid/DataGridWithBackendPagination";
 import { ModalComponent } from "../components/common/ModalComponent";
-import { AddProductsToBudget } from "../components/commercial/AddProductsToBudget";
 import { BudgetFilter } from "../components/filters/BudgetFilter";
+import { BudgetForm } from "../components/commercial/BudgetForm";
 
 import { getBudgetTotal } from "../utils/helpers";
+import { SaleForm } from "../components/commercial/SaleForm";
+import { useSales } from "../hooks/useSales";
 
 export function Budgets() {
 
@@ -40,9 +39,36 @@ export function Budgets() {
         missing
     } = useBudgets()
     const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
+        defaultData: { id: '', client_id: '', date: new Date(Date.now()) },
+        rules: { client_id: { required: true }, date: { required: true } }
+    })
+    const {
+        saleProducts,
+        setSaleProducts,
+        missing: missingNewSale,
+        setMissing: setMissingNewSale,
+        open: openNewSale,
+        setOpen: setOpenNewSale,
+        idsToDelete: idsToDeleteNewSale,
+        setIdsToDelete: setIdsToDeleteNewSale,
+        handleSubmit: handleSubmitNewSale
+    } = useSales()
+    const {
+        formData: newSale,
+        setFormData: setNewSale,
+        handleChange: handleChangeNewSale,
+        disabled: disabledNewSale,
+        setDisabled: setDisabledNewSale,
+        validate: validateNewSale,
+        reset: resetNewSale,
+        errors: errorsNewSale
+    } = useForm({
         defaultData: {
             id: '',
             client_id: '',
+            discount: '',
+            installments: '',
+            type: 'CUENTA_CORRIENTE',
             date: new Date(Date.now())
         },
         rules: {
@@ -50,6 +76,9 @@ export function Budgets() {
                 required: true
             },
             date: {
+                required: true
+            },
+            installments: {
                 required: true
             }
         }
@@ -63,6 +92,17 @@ export function Budgets() {
     useEffect(() => {
         if (open === 'EDIT' || open === 'VIEW') {
             setBudgetProducts(formData.budget_products)
+        }
+        if (openNewSale === 'CONVERT') {
+            setNewSale({
+                id: formData.id,
+                client_id: formData.client_id,
+                discount: '',
+                installments: '',
+                type: 'CUENTA_CORRIENTE',
+                date: new Date(Date.now())
+            })
+            setSaleProducts(formData.budget_products)
         }
     }, [formData])
 
@@ -127,11 +167,13 @@ export function Budgets() {
                 entityKey="budgets"
                 getter={getBudgets}
                 setOpen={setOpen}
+                setOpenNewSale={setOpenNewSale}
                 setFormData={setFormData}
                 showPDFAction
                 showViewAction
                 showEditAction
                 showDeleteAction
+                showConvertToSale="Convertir a venta"
                 contentHeader={
                     <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 2, justifyContent: 'space-between' }}>
                         <Box sx={{ display: 'flex', gap: 1 }}>
@@ -149,118 +191,43 @@ export function Budgets() {
                     </Box>
                 }
             >
-                <ModalComponent
-                    reduceWidth={500}
-                    open={open === 'NEW' || open === 'EDIT' || open === 'VIEW'}
-                    onClose={() => {
-                        setBudgetProducts([])
-                        setMissing(false)
-                        reset(setOpen)
-                        setIdsToDelete([])
-                    }}
-                >
-                    <Typography variant="h6" sx={{ marginBottom: 2 }}>
-                        {open === 'NEW' && 'Nuevo presupuesto'}
-                        {open === 'EDIT' && 'Editar presupuesto'}
-                        {open === 'VIEW' && `Presupuesto #${formData.id}`}
-                    </Typography>
-                    <form onChange={handleChange} onSubmit={(e) => handleSubmit(e, formData, validate, reset, setDisabled)}>
-                        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                            <FormControl>
-                                <Autocomplete
-                                    disablePortal
-                                    id="client-autocomplete"
-                                    value={formData.client_id.toString().length > 0 ? `${state.clients.data.find(c => c.id === formData.client_id)?.first_name} - ${state.clients.data.find(c => c.id === formData.client_id)?.last_name}` : ''}
-                                    options={state.clients.data.map(c => ({ label: `${c.first_name} - ${c.last_name}`, id: c.id }))}
-                                    noOptionsText="No hay clientes registrados."
-                                    onChange={(e, value) => handleChange({ target: { name: 'client_id', value: value?.id ?? '' } })}
-                                    renderInput={(params) => <TextField {...params} label="Cliente" />}
-                                    isOptionEqualToValue={(option, value) => option.code === value.code || value.length === 0}
-                                    disabled={open === 'VIEW'}
-                                />
-                                {errors.client_id?.type === 'required' &&
-                                    <Typography variant="caption" color="red" marginTop={1}>
-                                        * El cliente es requerido.
-                                    </Typography>
-                                }
-                            </FormControl>
-                            <FormControl>
-                                <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
-                                    <DatePicker
-                                        label="Fecha"
-                                        value={new Date(formData.date)}
-                                        onChange={value => handleChange({
-                                            target: {
-                                                name: 'date',
-                                                value: new Date(value.toISOString())
-                                            }
-                                        })}
-                                        disabled={open === 'VIEW'}
-                                    />
-                                </LocalizationProvider>
-                                {errors.date?.type === 'required' &&
-                                    <Typography variant="caption" color="red" marginTop={1}>
-                                        * La fecha es requerida.
-                                    </Typography>
-                                }
-                            </FormControl>
-                            <AddProductsToBudget
-                                products={state.products.data}
-                                budgetProducts={budgetProducts}
-                                setBudgetProducts={setBudgetProducts}
-                                missing={missing}
-                                setMissing={setMissing}
-                                idsToDelete={idsToDelete}
-                                setIdsToDelete={setIdsToDelete}
-                                open={open}
-                            />
-                        </Box>
-                        <Box sx={{ display: 'flex', justifyContent: 'end', marginTop: 3 }}>
-                            <FormControl>
-                                <InputLabel htmlFor="total">Total</InputLabel>
-                                <Input
-                                    value={getBudgetTotal(budgetProducts.map(bp => {
-                                        return {
-                                            ...bp,
-                                            product: state.products.data.find(p => p.id === bp.product_id)
-                                        }
-                                    }))}
-                                    id="total"
-                                    type="number"
-                                    name="total"
-                                    disabled
-                                />
-                            </FormControl>
-                        </Box>
-                        <FormControl sx={{
-                            display: 'flex',
-                            flexDirection: 'row',
-                            gap: 1,
-                            justifyContent: 'center',
-                            margin: '0 auto',
-                            marginTop: 2,
-                            width: '50%'
-                        }}>
-                            <Button type="button" variant="outlined" onClick={() => {
-                                setBudgetProducts([])
-                                setMissing(false)
-                                reset(setOpen)
-                                setIdsToDelete([])
-                            }} sx={{
-                                width: '50%'
-                            }}>
-                                {open === 'VIEW' ? 'Cerrar' : 'Cancelar'}
-                            </Button>
-                            {(open === 'NEW' || open === 'EDIT') &&
-                                <Button type="submit" variant="contained" disabled={disabled} sx={{
-                                    width: '50%'
-                                }}>
-                                    Guardar
-                                </Button>
-                            }
-                        </FormControl>
-                    </form>
-                </ModalComponent>
+                <BudgetForm
+                    budgetProducts={budgetProducts}
+                    setBudgetProducts={setBudgetProducts}
+                    missing={missing}
+                    setMissing={setMissing}
+                    reset={reset}
+                    open={open}
+                    setOpen={setOpen}
+                    idsToDelete={idsToDelete}
+                    setIdsToDelete={setIdsToDelete}
+                    handleChange={handleChange}
+                    formData={formData}
+                    handleSubmit={handleSubmit}
+                    validate={validate}
+                    disabled={disabled}
+                    setDisabled={setDisabled}
+                    errors={errors}
+                />
+                <SaleForm
+                    saleProducts={saleProducts}
+                    setSaleProducts={setSaleProducts}
+                    missing={missingNewSale}
+                    setMissing={setMissingNewSale}
+                    reset={resetNewSale}
+                    open={openNewSale}
+                    setOpen={setOpenNewSale}
+                    idsToDelete={idsToDeleteNewSale}
+                    setIdsToDelete={setIdsToDeleteNewSale}
+                    formData={newSale}
+                    setFormData={setNewSale}
+                    handleSubmit={handleSubmitNewSale}
+                    validate={validateNewSale}
+                    disabled={disabledNewSale}
+                    setDisabled={setDisabledNewSale}
+                    handleChange={handleChangeNewSale}
+                    errors={errorsNewSale}
+                />
                 <ModalComponent open={open === 'DELETE'} onClose={() => reset(setOpen)} reduceWidth={900}>
                     <Typography variant="h6" marginBottom={1} textAlign="center">
                         Confirmar eliminación de presupuesto

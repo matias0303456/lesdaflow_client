@@ -163,10 +163,6 @@ export const nav_items_admin = [
         path: "/producto-actualiza-precio-proveedor",
       },
       {
-        subtitle: "Reposicion de Stock",
-        path: "/reposicion-stock",
-      },
-      {
         subtitle: "Actualizar Precios Por Producto",
         path: "/producto-actualiza-precio",
       },

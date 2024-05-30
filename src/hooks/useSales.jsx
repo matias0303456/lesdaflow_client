@@ -1,8 +1,9 @@
 import { useContext, useState } from "react"
 
-import { useApi } from "./useApi"
-import { MessageContext } from "../providers/MessageProvider"
 import { DataContext } from "../providers/DataProvider"
+import { MessageContext } from "../providers/MessageProvider"
+import { useApi } from "./useApi"
+import { useBudgets } from "./useBudgets"
 
 import { SALE_URL } from "../utils/urls"
 
@@ -11,6 +12,7 @@ export function useSales() {
     const { state, dispatch } = useContext(DataContext)
     const { setMessage, setOpenMessage, setSeverity } = useContext(MessageContext)
 
+    const { handleDelete: deleteBudget } = useBudgets()
     const { get, post, put, destroy } = useApi(SALE_URL)
 
     const [loadingSales, setLoadingSales] = useState(true)
@@ -44,12 +46,16 @@ export function useSales() {
         }
         const spMissing = submitData.sale_products.length === 0 || submitData.sale_products.some(sp => !sp.amount || parseInt(sp.amount) <= 0)
         if (validate() && !spMissing) {
-            const { status, data } = open === 'NEW' ? await post(submitData) : await put(submitData)
+            const { status, data } = open === 'NEW' || open === 'CONVERT' ? await post(submitData) : await put(submitData)
             if (status === 200) {
-                if (open === 'NEW') {
+                if (open === 'NEW' || open === 'CONVERT') {
                     dispatch({ type: 'SALES', payload: { ...state.sales, data: [data, ...state.sales.data] } })
-                    setMessage('Venta creada correctamente.')
-                    setSaleSaved(data.id)
+                    if (open === 'NEW') {
+                        setMessage('Venta creada correctamente.')
+                        setSaleSaved(data.id)
+                    } else {
+                        deleteBudget(formData)
+                    }
                 } else {
                     dispatch({
                         type: 'SALES',

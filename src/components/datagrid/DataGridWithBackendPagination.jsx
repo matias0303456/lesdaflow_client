@@ -17,6 +17,7 @@ import PictureAsPdfSharpIcon from '@mui/icons-material/PictureAsPdfSharp'
 import { SiMicrosoftexcel } from "react-icons/si"
 import CloseIcon from "@mui/icons-material/Close"
 import { LinearProgress } from '@mui/material'
+import StorefrontSharpIcon from '@mui/icons-material/StorefrontSharp';
 
 import { DataContext } from '../../providers/DataProvider'
 
@@ -30,6 +31,7 @@ export function DataGridWithBackendPagination({
   headCells,
   rows,
   setOpen,
+  setOpenNewSale,
   setFormData,
   entityKey,
   getter,
@@ -45,6 +47,7 @@ export function DataGridWithBackendPagination({
   showDeleteAction = false,
   showPDFAction = false,
   showExcelAction = false,
+  showConvertToSale = false,
   openPdfUrl = '',
   openExcelUrl = ''
 }) {
@@ -187,10 +190,7 @@ export function DataGridWithBackendPagination({
                                         if (setOpen) setOpen("DELETE")
                                       }}
                                     >
-                                      <IconButton
-                                        className="rounded-full bg-black/20 opacity-50 hover:bg-[#288bcd] hover:text-white"
-                                        aria-label="delete"
-                                      >
+                                      <IconButton className="rounded-full bg-black/20 opacity-50 hover:bg-[#288bcd] hover:text-white">
                                         <CloseIcon className="w-4 h-4" />
                                       </IconButton>
                                     </Tooltip>
@@ -203,11 +203,21 @@ export function DataGridWithBackendPagination({
                                         if (setOpen) setOpen("SETTINGS")
                                       }}
                                     >
-                                      <IconButton
-                                        className="rounded-full bg-black/20 opacity-50 hover:bg-[#078BCD]"
-                                        aria-label="setting"
-                                      >
+                                      <IconButton className="rounded-full bg-black/20 opacity-50 hover:bg-[#078BCD]">
                                         <SettingsIcon className="w-4 h-4 hover:text-white" />
+                                      </IconButton>
+                                    </Tooltip>
+                                  }
+                                  {showConvertToSale &&
+                                    <Tooltip
+                                      title={showConvertToSale}
+                                      onClick={() => {
+                                        if (setFormData) setFormData(rows.find((r) => r.id === row.id))
+                                        if (setOpenNewSale) setOpenNewSale("CONVERT")
+                                      }}
+                                    >
+                                      <IconButton className="rounded-full bg-black/20 opacity-50 hover:bg-[#078BCD]">
+                                        <StorefrontSharpIcon className="w-4 h-4 hover:text-white" />
                                       </IconButton>
                                     </Tooltip>
                                   }
