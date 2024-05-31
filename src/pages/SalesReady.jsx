@@ -107,7 +107,7 @@ export function SalesReady() {
       numeric: false,
       disablePadding: true,
       label: 'Tipo Comp.',
-      accessor: 'type'
+      accessor: (row) => row.type.replaceAll('CUENTA_CORRIENTE', 'CTA CTE')
     },
     {
       id: 'already paid',
@@ -135,7 +135,7 @@ export function SalesReady() {
         getter={getSales}
         setOpen={setOpen}
         setFormData={setFormData}
-        showSettingsAction="Registrar entrega"
+        showSettingsAction="Preparar venta"
         contentHeader={<SaleFilter showDateAndType />}
       />
     </Layout>

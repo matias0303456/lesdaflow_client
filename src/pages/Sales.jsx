@@ -97,11 +97,11 @@ export function Sales() {
             accessor: (row) => format(new Date(row.date), 'hh:mm')
         },
         {
-            id: 'created_by',
+            id: 'seller',
             numeric: false,
             disablePadding: true,
             label: 'Vendedor',
-            accessor: 'created_by'
+            accessor: (row) => `${row.client.user.first_name} ${row.client.user.last_name}`
         },
         {
             id: 'client',
@@ -129,7 +129,7 @@ export function Sales() {
             numeric: false,
             disablePadding: true,
             label: 'Tipo Comprobante',
-            accessor: 'type'
+            accessor: (row) => row.type.replaceAll('CUENTA_CORRIENTE', 'CTA CTE')
         },
         {
             id: 'paid',
@@ -146,26 +146,12 @@ export function Sales() {
             accessor: (row) => getSaleTotal(row)
         },
         {
-            id: 'register',
-            numeric: false,
-            disablePadding: true,
-            label: 'Caja',
-            accessor: (row) => ''
-        },
-        {
             id: 'delivered',
             numeric: false,
             disablePadding: true,
             label: 'Entregado',
             accessor: (row) => ''
-        },
-        {
-            id: 'imp',
-            numeric: false,
-            disablePadding: true,
-            label: 'Imp',
-            accessor: (row) => ''
-        },
+        }
     ]
 
     return (

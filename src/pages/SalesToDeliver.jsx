@@ -107,7 +107,7 @@ export function SalesToDeliver() {
             numeric: false,
             disablePadding: true,
             label: 'Tipo Comp.',
-            accessor: 'type'
+            accessor: (row) => row.type.replaceAll('CUENTA_CORRIENTE', 'CTA CTE')
         },
         {
             id: 'already paid',

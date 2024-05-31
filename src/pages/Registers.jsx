@@ -39,7 +39,7 @@ export function Registers() {
             numeric: false,
             disablePadding: true,
             label: "Caja",
-            accessor: (row) => `${row.user.first_name} ${row.user.last_name}`,
+            accessor: (row) => row.user.username,
         },
         {
             id: "open_date",
