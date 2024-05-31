@@ -125,7 +125,7 @@ export function Clients() {
     return (
         <Layout title="Clientes">
             <DataGridWithBackendPagination
-                headCells={auth.user.role !== 'ADMINISTRADOR' ?
+                headCells={auth?.user.role !== 'ADMINISTRADOR' ?
                     headCells :
                     [
                         ...headCells,
@@ -314,7 +314,7 @@ export function Clients() {
                                         </Typography>
                                     }
                                 </FormControl>
-                                {auth.user.role === 'ADMINISTRADOR' &&
+                                {auth?.user.role === 'ADMINISTRADOR' &&
                                     <FormControl sx={{ width: '50%' }}>
                                         <InputLabel id="seller-select">Vendedor</InputLabel>
                                         <Select
@@ -386,6 +386,6 @@ export function Clients() {
                     </Box>
                 </ModalComponent>
             </DataGridWithBackendPagination>
-        </Layout >
+        </Layout>
     )
 }

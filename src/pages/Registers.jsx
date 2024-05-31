@@ -25,7 +25,7 @@ export function Registers() {
     const { formData, setFormData, handleChange, disabled, setDisabled, reset } = useForm({
         defaultData: {
             id: '',
-            user_id: auth.user.id
+            user_id: auth?.user.id
         }
     })
 
@@ -110,7 +110,7 @@ export function Registers() {
                                 Excel
                             </Button>
                         </Box>
-                        {auth.user.role === 'ADMINISTRADOR' && <RegisterFilter />}
+                        {auth?.user.role === 'ADMINISTRADOR' && <RegisterFilter />}
                     </Box>
                 }
             >

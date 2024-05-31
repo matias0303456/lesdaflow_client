@@ -28,12 +28,13 @@ export function Layout({ children, title }) {
   const [itemToShow, setItemToShow] = useState("")
   const [userDropdown, setUserDropdown] = useState(false)
 
-  const name = stringAvatar(`${auth.user.first_name} ${auth.user.last_name}`)
   const screenSize = useScreenSize()
 
   useEffect(() => {
     if (!auth) return navigate("/login")
   }, [])
+
+  const name = stringAvatar(`${auth?.user.first_name} ${auth?.user.last_name}`)
 
   useEffect(() => {
     if (screenSize.width >= 960) {
@@ -86,7 +87,7 @@ export function Layout({ children, title }) {
             : "hidden xl:flex w-[100%] static h-[100%] items-center justify-center gap-1"
             }`}
           >
-            {auth.user.role === "ADMINISTRADOR"
+            {auth?.user.role === "ADMINISTRADOR"
               ? nav_items_admin.map((item, index) => (
                 <li className={`${mobileOpen
                   ? "text-center px-0 py-1 h-[55px] w-[30%] mx-auto"
@@ -158,7 +159,7 @@ export function Layout({ children, title }) {
           : "hidden xl:flex"}`}
         >
           <button
-            title={`${auth.user.first_name} ${auth.user.last_name}`}
+            title={`${auth?.user.first_name} ${auth?.user.last_name}`}
             className={`${mobileOpen
               ? " justify-end mr-3"
               : "justify-center hover:bg-slate-400"
@@ -175,7 +176,7 @@ export function Layout({ children, title }) {
             <div className={`${mobileOpen ? "w-[100%] pl-2 h-auto ml-3 justify-start" : "justify-center"} mt-2 mx-auto flex items-center`}>
               <UserDropdown
                 {...stringAvatar(
-                  `${auth.user.first_name} ${auth.user.last_name} capitalize`
+                  `${auth?.user.first_name} ${auth?.user.last_name} capitalize`
                 )}
                 mobileOpen={mobileOpen}
               />

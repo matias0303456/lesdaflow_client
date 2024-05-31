@@ -14,7 +14,7 @@ export function useApi(url) {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': auth.token
+                    'Authorization': auth?.token
                 }
             })
             const json = await res.json()
@@ -32,7 +32,7 @@ export function useApi(url) {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': auth.token
+                    'Authorization': auth?.token
                 }
             })
             const json = await res.json()
@@ -46,7 +46,7 @@ export function useApi(url) {
 
     async function post(req, publicUrl = false) {
         let headers = { 'Content-Type': 'application/json' }
-        if (!publicUrl) headers = { ...headers, 'Authorization': auth.token }
+        if (!publicUrl) headers = { ...headers, 'Authorization': auth?.token }
         try {
             const res = await fetch(url, {
                 method: 'POST',
@@ -68,7 +68,7 @@ export function useApi(url) {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': auth.token
+                    'Authorization': auth?.token
                 },
                 body: JSON.stringify(req)
             })
@@ -87,7 +87,7 @@ export function useApi(url) {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': auth.token
+                    'Authorization': auth?.token
                 },
                 body: JSON.stringify(req)
             })
@@ -106,7 +106,7 @@ export function useApi(url) {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': auth.token
+                    'Authorization': auth?.token
                 },
                 body: JSON.stringify(req)
             })
@@ -125,7 +125,7 @@ export function useApi(url) {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': auth.token
+                    'Authorization': auth?.token
                 }
             })
             const json = await res.json()

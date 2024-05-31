@@ -34,12 +34,12 @@ export const UserDropdown = ({ children, sx, mobileOpen }) => {
         <Avatar sx={sx}>{children.toUpperCase()}</Avatar>
         {/* name section */}
         <div className="w-full h-auto flex items-center justify-center pt-2  font-semibold gap-1 capitalize">
-          <h2>{auth.user.first_name}</h2>
-          <h2>{auth.user.last_name}</h2>
+          <h2>{auth?.user.first_name}</h2>
+          <h2>{auth?.user.last_name}</h2>
         </div>
-        <small className="text-[10px] font-thin">{auth.user.role}</small>
+        <small className="text-[10px] font-thin">{auth?.user.role}</small>
         {/* email section */}
-        <p className="text-sm ">{auth.user.email}</p>
+        <p className="text-sm ">{auth?.user.email}</p>
       </div>
       {/* action menu */}
       <div

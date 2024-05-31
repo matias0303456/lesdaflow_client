@@ -164,8 +164,8 @@ export function Sales() {
                 getter={getSales}
                 setOpen={setOpen}
                 setFormData={setFormData}
-                showEditAction={auth.user.role === 'ADMINISTRADOR'}
-                showDeleteAction={auth.user.role === 'ADMINISTRADOR'}
+                showEditAction={auth?.user.role === 'ADMINISTRADOR'}
+                showDeleteAction={auth?.user.role === 'ADMINISTRADOR'}
                 showViewAction
                 showPDFAction
                 contentHeader={
@@ -216,7 +216,7 @@ export function Sales() {
                             margin: '0 auto'
                         }}
                         onClick={() => {
-                            window.open(`${REPORT_URL}/account-details/${auth.token}/${saleSaved}`, '_blank')
+                            window.open(`${REPORT_URL}/account-details/${auth?.token}/${saleSaved}`, '_blank')
                             setSaleSaved(null)
                         }}
                     >

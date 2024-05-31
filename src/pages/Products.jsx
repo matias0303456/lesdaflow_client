@@ -136,7 +136,7 @@ export function Products() {
     return (
         <Layout title="Productos">
             <DataGridWithBackendPagination
-                headCells={auth.user.role === 'CHOFER' ? headCells :
+                headCells={auth?.user.role === 'CHOFER' ? headCells :
                     [
                         ...headCells,
                         {
