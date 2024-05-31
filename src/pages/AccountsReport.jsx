@@ -69,6 +69,7 @@ export function AccountsReport() {
                 name="user_id"
                 onChange={handleChange}
               >
+                <MenuItem value="ALL">TODOS</MenuItem>
                 {state.users.data.length > 0 ? (
                   state.users.data.map((u) => (
                     <MenuItem key={u.id} value={u.id}>
@@ -97,6 +98,7 @@ export function AccountsReport() {
                 name="client_id"
                 onChange={handleChange}
               >
+                <MenuItem value="ALL">TODOS</MenuItem>
                 {state.clients.data.filter(c => c.user_id === parseInt(formData.user_id)).length > 0 ? (
                   state.clients.data.filter(c => c.user_id === parseInt(formData.user_id)).map((c) => (
                     <MenuItem key={c.id} value={c.id}>
