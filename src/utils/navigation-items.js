@@ -133,7 +133,7 @@ export const nav_items_admin = [
         path: "/reporte-ventas",
       },
       {
-        subtitle: "Preparacion de Ventas",
+        subtitle: "Preparación de Ventas",
         path: "/prep-ventas",
       },
       {

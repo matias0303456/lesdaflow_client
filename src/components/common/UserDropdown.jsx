@@ -1,13 +1,12 @@
 /* eslint-disable react/prop-types */
 import { useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Avatar } from "@mui/material";
 import SettingsIcon from "@mui/icons-material/Settings";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 
 import { AuthContext } from "../../providers/AuthProvider";
 
-export const UserDropdown = ({ children, sx, mobileOpen }) => {
+export const UserDropdown = () => {
 
   const { auth, setAuth } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -19,49 +18,21 @@ export const UserDropdown = ({ children, sx, mobileOpen }) => {
   };
 
   return (
-    <div
-      className={`${
-        mobileOpen
-          ? ""
-          : "w-[185px] h-[220px] flex items-center justify-center flex-col bg-black/80 absolute top-[70px] 2xl:top-[75px] right-2 2xl:right-3 rounded-lg py-4 text-start text-white gap-5"
-      }`}
-    >
-      <div
-        className={`${
-          mobileOpen ? "hidden" : "flex"
-        } w-full my-auto flex-col items-center justify-center gap-1`}
-      >
-        <Avatar sx={sx}>{children.toUpperCase()}</Avatar>
-        {/* name section */}
-        <div className="w-full h-auto flex items-center justify-center pt-2  font-semibold gap-1 capitalize">
-          <h2>{auth?.user.first_name}</h2>
-          <h2>{auth?.user.last_name}</h2>
+    <div className="absolute w-[185px] flex items-center justify-center flex-col bg-black top-[48px] right-0 rounded-lg text-start text-white z-10">
+      <div className="flex w-full my-auto flex-col items-center justify-center gap-1">
+        <div className="w-full h-auto pt-2 font-semibold text-center">
+          <h2>{`${auth?.user.first_name} ${auth?.user.last_name}`}</h2>
         </div>
         <small className="text-[10px] font-thin">{auth?.user.role}</small>
-        {/* email section */}
-        <p className="text-sm ">{auth?.user.email}</p>
       </div>
-      {/* action menu */}
-      <div
-        className={`${
-          mobileOpen
-            ? "w-[90%] gap-7 justify-start"
-            : "w-[90%] flex-col justify-center mx-auto  gap-1"
-        } flex items-center text-xs font-thin `}
-      >
-        <Link
-          to="/cambiar-contraseña"
-          className="w-[50%] h-auto flex items-center justify-center gap-1 hover:text-white"
-        >
-          <SettingsIcon className="w-5 h-5" />
-          <p className="w-[50%]">Cambiar contraseña</p>
+      <div className="text-xs font-thin p-3">
+        <Link to="/cambiar-contraseña" className="flex items-center gap-1 mb-3">
+          <SettingsIcon />
+          <p>Cambiar contraseña</p>
         </Link>
-        <button
-          className="w-[50%] h-auto flex items-center justify-center gap-1 hover:text-white"
-          onClick={handleLogout}
-        >
-          <ExitToAppIcon className="w-5 h-5" />
-          <p className="w-[50%]">Salir</p>
+        <button className="flex items-center gap-1" onClick={handleLogout}>
+          <ExitToAppIcon />
+          <p>Salir</p>
         </button>
       </div>
     </div>
