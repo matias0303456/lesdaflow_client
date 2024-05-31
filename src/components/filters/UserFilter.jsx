@@ -10,30 +10,41 @@ export function UserFilter() {
 
     const { getUsers } = useUsers()
 
-    const [filter, setFilter] = useState({ first_name: '', last_name: '', role: '', loaded: false })
-    const [show, setShow] = useState(false)
+    const [show, setShow] = useState(
+        state.users.filter_fields.first_name.length > 0 ||
+        state.users.filter_fields.last_name.length > 0 ||
+        state.users.filter_fields.role.length > 0
+    )
 
     const handleChange = e => {
-        setFilter({
-            ...filter,
-            loaded: true,
-            [e.target.name]: e.target.value
+        dispatch({
+            type: 'USERS',
+            payload: {
+                ...state.users,
+                filter_fields: {
+                    ...state.users.filter_fields,
+                    loaded: true,
+                    [e.target.name]: e.target.value
+                }
+            }
         })
     }
 
     const handleReset = () => {
-        setFilter({
-            first_name: '',
-            last_name: '',
-            role: '',
-            loaded: true
+        dispatch({
+            type: 'USERS',
+            payload: {
+                ...state.users,
+                filter_fields: { first_name: '', last_name: '', role: '', loaded: false },
+                filters: ''
+            }
         })
     }
 
     const handleToggleShow = () => setShow(!show)
 
     useEffect(() => {
-        const { first_name, last_name, role, loaded } = filter
+        const { first_name, last_name, role, loaded } = state.users.filter_fields
         if (first_name.length > 0 || last_name.length > 0 || role.length > 0) {
             dispatch({
                 type: 'USERS',
@@ -45,7 +56,7 @@ export function UserFilter() {
         } else if (loaded) {
             getUsers(`?page=${state.users.page}&offset=${state.users.offset}`)
         }
-    }, [filter])
+    }, [state.users.filter_fields])
 
     return (
         <>
@@ -54,18 +65,30 @@ export function UserFilter() {
                     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                         <FormControl>
                             <InputLabel htmlFor="first_name">Nombre</InputLabel>
-                            <Input id="first_name" type="text" name="first_name" value={filter.first_name} onChange={handleChange} />
+                            <Input
+                                id="first_name"
+                                type="text"
+                                name="first_name"
+                                value={state.users.filter_fields.first_name}
+                                onChange={handleChange}
+                            />
                         </FormControl>
                         <FormControl>
                             <InputLabel htmlFor="last_name">Apellido</InputLabel>
-                            <Input id="last_name" type="text" name="last_name" value={filter.last_name} onChange={handleChange} />
+                            <Input
+                                id="last_name"
+                                type="text"
+                                name="last_name"
+                                value={state.users.filter_fields.last_name}
+                                onChange={handleChange}
+                            />
                         </FormControl>
                         <FormControl>
                             <InputLabel id="role-select">Rol</InputLabel>
                             <Select
                                 labelId="role-select"
                                 id="role"
-                                value={filter.role}
+                                value={state.users.filter_fields.role}
                                 label="Rol"
                                 name="role"
                                 disabled={open === 'VIEW'}

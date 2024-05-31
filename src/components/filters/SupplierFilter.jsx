@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import { Box, Button, FormControl, Input, InputLabel } from "@mui/material";
 
 import { DataContext } from "../../providers/DataProvider";
@@ -10,39 +10,57 @@ export function SupplierFilter() {
 
     const { getSuppliers } = useSuppliers()
 
-    const [filter, setFilter] = useState({ name: '', loaded: false })
-
     const handleChange = e => {
-        setFilter({
-            ...filter,
-            laoded: true,
-            [e.target.name]: e.target.value
+        dispatch({
+            type: 'SUPPLIERS',
+            payload: {
+                ...state.suppliers,
+                filter_fields: {
+                    ...state.suppliers.filter_fields,
+                    loaded: true,
+                    [e.target.name]: e.target.value
+                }
+            }
         })
     }
 
     const handleReset = () => {
-        if (filter.name.length > 0) setFilter({ name: '', loaded: true })
+        dispatch({
+            type: 'SUPPLIERS',
+            payload: {
+                ...state.suppliers,
+                filter_fields: { name: '', loaded: false },
+                filters: ''
+            }
+        })
     }
 
     useEffect(() => {
-        if (filter.name.length > 0) {
+        const { name, loaded } = state.suppliers.filter_fields
+        if (name.length > 0) {
             dispatch({
                 type: 'SUPPLIERS',
                 payload: {
                     ...state.suppliers,
-                    filters: `&name=${filter.name}`
+                    filters: `&name=${name}`
                 }
             })
-        } else if (filter.loaded) {
-            getSuppliers(`?page=${state.clients.page}&offset=${state.clients.offset}`)
+        } else if (loaded) {
+            getSuppliers(`?page=${state.suppliers.page}&offset=${state.suppliers.offset}`)
         }
-    }, [filter])
+    }, [state.suppliers.filter_fields])
 
     return (
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
             <FormControl>
                 <InputLabel htmlFor="name">Nombre</InputLabel>
-                <Input id="name" type="text" name="name" value={filter.name} onChange={handleChange} />
+                <Input
+                    id="name"
+                    type="text"
+                    name="name"
+                    value={state.suppliers.filter_fields.name}
+                    onChange={handleChange}
+                />
             </FormControl>
             <Button type="button" variant="outlined" onClick={handleReset}>
                 Reiniciar filtro

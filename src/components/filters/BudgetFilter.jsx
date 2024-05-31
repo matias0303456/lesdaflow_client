@@ -13,37 +13,40 @@ export function BudgetFilter() {
 
     const { getBudgets } = useBudgets()
 
-    const [filter, setFilter] = useState({
-        from: '',
-        to: '',
-        user: '',
-        client: '',
-        loaded: false
-    })
-    const [show, setShow] = useState(false)
+    const [show, setShow] = useState(
+        typeof state.budgets.filter_fields.from !== 'string' || typeof state.budgets.filter_fields.to !== 'string' ||
+        state.budgets.filter_fields.user.length > 0 || state.budgets.filter_fields.client.length > 0
+    )
 
     const handleChange = e => {
-        setFilter({
-            ...filter,
-            loaded: true,
-            [e.target.name]: e.target.value
+        dispatch({
+            type: 'BUDGETS',
+            payload: {
+                ...state.budgets,
+                filter_fields: {
+                    ...state.budgets.filter_fields,
+                    loaded: true,
+                    [e.target.name]: e.target.value
+                }
+            }
         })
     }
 
     const handleReset = () => {
-        setFilter({
-            from: '',
-            to: '',
-            user: '',
-            client: '',
-            loaded: true
+        dispatch({
+            type: 'BUDGETS',
+            payload: {
+                ...state.budgets,
+                filter_fields: { from: '', to: '', user: '', client: '', loaded: false },
+                filters: ''
+            }
         })
     }
 
     const handleToggleShow = () => setShow(!show)
 
     useEffect(() => {
-        const { from, to, user, client, loaded } = filter
+        const { from, to, user, client, loaded } = state.budgets.filter_fields
         const fromIsNotString = typeof from !== 'string'
         const toIsNotString = typeof to !== 'string'
         if (fromIsNotString || toIsNotString || user.length > 0 || client.length > 0) {
@@ -57,7 +60,7 @@ export function BudgetFilter() {
         } else if (loaded) {
             getBudgets(`?page=${state.budgets.page}&offset=${state.budgets.offset}`)
         }
-    }, [filter])
+    }, [state.budgets.filter_fields])
 
     return (
         <>
@@ -68,7 +71,7 @@ export function BudgetFilter() {
                             <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
                                 <DatePicker
                                     label="Desde"
-                                    value={filter.from.length === 0 ? new Date(Date.now()) : new Date(filter.from)}
+                                    value={state.budgets.filter_fields.from.length === 0 ? new Date(Date.now()) : new Date(state.budgets.filter_fields.from)}
                                     onChange={value => handleChange({ target: { name: 'from', value: new Date(value.toISOString()) } })}
                                 />
                             </LocalizationProvider>
@@ -77,7 +80,7 @@ export function BudgetFilter() {
                             <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
                                 <DatePicker
                                     label="Hasta"
-                                    value={filter.to.length === 0 ? new Date(Date.now()) : new Date(filter.to)}
+                                    value={state.budgets.filter_fields.to.length === 0 ? new Date(Date.now()) : new Date(state.budgets.filter_fields.to)}
                                     onChange={value => handleChange({ target: { name: 'to', value: new Date(value.toISOString()) } })}
                                 />
                             </LocalizationProvider>
@@ -86,11 +89,23 @@ export function BudgetFilter() {
                     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                         <FormControl>
                             <InputLabel htmlFor="client">Cliente</InputLabel>
-                            <Input id="client" type="text" name="client" value={filter.client} onChange={handleChange} />
+                            <Input
+                                id="client"
+                                type="text"
+                                name="client"
+                                value={state.budgets.filter_fields.client}
+                                onChange={handleChange}
+                            />
                         </FormControl>
                         <FormControl>
                             <InputLabel htmlFor="user">Vendedor</InputLabel>
-                            <Input id="user" type="text" name="user" value={filter.user} onChange={handleChange} />
+                            <Input
+                                id="user"
+                                type="text"
+                                name="user"
+                                value={state.budgets.filter_fields.user}
+                                onChange={handleChange}
+                            />
                         </FormControl>
                     </Box>
                     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>

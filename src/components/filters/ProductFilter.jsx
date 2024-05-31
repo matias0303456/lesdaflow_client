@@ -10,35 +10,41 @@ export function ProductFilter() {
 
     const { getProducts } = useProducts()
 
-    const [filter, setFilter] = useState({
-        code: '',
-        details: '',
-        supplier_id: '',
-        loaded: false
-    })
-    const [show, setShow] = useState(false)
+    const [show, setShow] = useState(
+        state.products.filter_fields.code.length > 0 ||
+        state.products.filter_fields.details.length > 0 ||
+        state.products.filter_fields.supplier_id.length > 0
+    )
 
     const handleChange = e => {
-        setFilter({
-            ...filter,
-            loaded: true,
-            [e.target.name]: e.target.value
+        dispatch({
+            type: 'PRODUCTS',
+            payload: {
+                ...state.products,
+                filter_fields: {
+                    ...state.products.filter_fields,
+                    loaded: true,
+                    [e.target.name]: e.target.value
+                }
+            }
         })
     }
 
     const handleReset = () => {
-        setFilter({
-            code: '',
-            details: '',
-            supplier_id: '',
-            loaded: true
+        dispatch({
+            type: 'PRODUCTS',
+            payload: {
+                ...state.products,
+                filter_fields: { code: '', details: '', supplier_id: '', loaded: false },
+                filters: ''
+            }
         })
     }
 
     const handleToggleShow = () => setShow(!show)
 
     useEffect(() => {
-        const { code, details, supplier_id, loaded } = filter
+        const { code, details, supplier_id, loaded } = state.products.filter_fields
         if (code.length > 0 || details.length > 0 || supplier_id.length > 0) {
             dispatch({
                 type: 'PRODUCTS',
@@ -50,7 +56,7 @@ export function ProductFilter() {
         } else if (loaded) {
             getProducts(`?page=${state.products.page}&offset=${state.products.offset}`)
         }
-    }, [filter])
+    }, [state.products.filter_fields])
 
     return (
         <>
@@ -59,18 +65,30 @@ export function ProductFilter() {
                     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                         <FormControl>
                             <InputLabel htmlFor="code">Código</InputLabel>
-                            <Input id="code" type="text" name="code" value={filter.code} onChange={handleChange} />
+                            <Input
+                                id="code"
+                                type="text"
+                                name="code"
+                                value={state.products.filter_fields.code}
+                                onChange={handleChange}
+                            />
                         </FormControl>
                         <FormControl>
                             <InputLabel htmlFor="details">Producto</InputLabel>
-                            <Input id="details" type="text" name="details" value={filter.details} onChange={handleChange} />
+                            <Input
+                                id="details"
+                                type="text"
+                                name="details"
+                                value={state.products.filter_fields.details}
+                                onChange={handleChange}
+                            />
                         </FormControl>
                         <FormControl>
                             <InputLabel id="supplier-select">Proveedor</InputLabel>
                             <Select
                                 labelId="supplier-select"
                                 id="supplier_id"
-                                value={filter.supplier_id}
+                                value={state.products.filter_fields.supplier_id}
                                 label="Proveedor"
                                 name="supplier_id"
                                 sx={{ width: '100%' }}

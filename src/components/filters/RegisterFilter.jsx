@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import { Box, Button, FormControl, Input, InputLabel } from "@mui/material";
 
 import { DataContext } from "../../providers/DataProvider";
@@ -10,39 +10,57 @@ export function RegisterFilter() {
 
     const { getRegisters } = useRegisters()
 
-    const [filter, setFilter] = useState({ user: '' })
-
     const handleChange = e => {
-        setFilter({
-            ...filter,
-            loaded: true,
-            [e.target.name]: e.target.value
+        dispatch({
+            type: 'REGISTERS',
+            payload: {
+                ...state.registers,
+                filter_fields: {
+                    ...state.registers.filter_fields,
+                    loaded: true,
+                    [e.target.name]: e.target.value
+                }
+            }
         })
     }
 
     const handleReset = () => {
-        if (filter.user.length > 0) setFilter({ user: '', loaded: true })
+        dispatch({
+            type: 'REGISTERS',
+            payload: {
+                ...state.registers,
+                filter_fields: { user: '', loaded: false },
+                filters: ''
+            }
+        })
     }
 
     useEffect(() => {
-        if (filter.user.length > 0) {
+        const { user, loaded } = state.registers.filter_fields
+        if (user.length > 0) {
             dispatch({
                 type: 'REGISTERS',
                 payload: {
                     ...state.registers,
-                    filters: `&user=${filter.user}`
+                    filters: `&user=${user}`
                 }
             })
-        } else if (filter.loaded) {
+        } else if (loaded) {
             getRegisters(`?page=${state.registers.page}&offset=${state.registers.offset}`)
         }
-    }, [filter])
+    }, [state.registers.filter_fields])
 
     return (
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
             <FormControl>
                 <InputLabel htmlFor="user">Caja</InputLabel>
-                <Input id="user" type="text" name="user" value={filter.user} onChange={handleChange} />
+                <Input
+                    id="user"
+                    type="text"
+                    name="user"
+                    value={state.registers.filter_fields.user}
+                    onChange={handleChange}
+                />
             </FormControl>
             <Button type="button" variant="outlined" onClick={handleReset}>
                 Reiniciar filtro

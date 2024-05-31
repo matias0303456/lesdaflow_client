@@ -13,44 +13,43 @@ export function SaleFilter({ showWorkPlace, showSeller, showDateAndType }) {
 
     const { getSales } = useSales()
 
-    const [filter, setFilter] = useState({
-        client: '',
-        work_place: '',
-        id: '',
-        user: '',
-        date: '',
-        type: '',
-        loaded: false
-    })
-    const [show, setShow] = useState(false)
+    const [show, setShow] = useState(
+        state.sales.filter_fields.client.length > 0 || state.sales.filter_fields.work_place.length > 0 ||
+        state.sales.filter_fields.id.length > 0 || state.sales.filter_fields.user.length > 0 ||
+        typeof state.sales.filter_fields.date !== 'string' || state.sales.filter_fields.type.length > 0
+    )
 
     const handleChange = e => {
-        setFilter({
-            ...filter,
-            loaded: true,
-            [e.target.name]: e.target.value
+        dispatch({
+            type: 'SALES',
+            payload: {
+                ...state.sales,
+                loaded: true,
+                filter_fields: {
+                    ...state.sales.filter_fields,
+                    [e.target.name]: e.target.value
+                }
+            }
         })
     }
 
     const handleReset = () => {
-        setFilter({
-            client: '',
-            work_place: '',
-            id: '',
-            user: '',
-            date: '',
-            type: '',
-            loaded: true
+        dispatch({
+            type: 'SALES',
+            payload: {
+                ...state.sales,
+                filter_fields: { client: '', work_place: '', id: '', user: '', date: '', type: '', loaded: false },
+                filters: ''
+            }
         })
     }
 
     const handleToggleShow = () => setShow(!show)
 
     useEffect(() => {
-        const { client, work_place, id, user, date, type, loaded } = filter
+        const { client, work_place, id, user, date, type, loaded } = state.sales.filter_fields
         const dateIsNotString = typeof date !== 'string'
-        if (client.length > 0 || work_place.length > 0 || id.length > 0 ||
-            user.length > 0 || dateIsNotString || type.length > 0) {
+        if (client.length > 0 || work_place.length > 0 || id.length > 0 || user.length > 0 || dateIsNotString || type.length > 0) {
             dispatch({
                 type: 'SALES',
                 payload: {
@@ -61,7 +60,7 @@ export function SaleFilter({ showWorkPlace, showSeller, showDateAndType }) {
         } else if (loaded) {
             getSales(`?page=${state.sales.page}&offset=${state.sales.offset}`)
         }
-    }, [filter])
+    }, [state.sales.filter_fields])
 
     return (
         <>
@@ -70,17 +69,35 @@ export function SaleFilter({ showWorkPlace, showSeller, showDateAndType }) {
                     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                         <FormControl>
                             <InputLabel htmlFor="client">Cliente</InputLabel>
-                            <Input id="client" type="text" name="client" value={filter.client} onChange={handleChange} />
+                            <Input
+                                id="client"
+                                type="text"
+                                name="client"
+                                value={state.sales.filter_fields.client}
+                                onChange={handleChange}
+                            />
                         </FormControl>
                         {showWorkPlace &&
                             <FormControl>
                                 <InputLabel htmlFor="work_place">Nombre Comercio</InputLabel>
-                                <Input id="work_place" type="text" name="work_place" value={filter.work_place} onChange={handleChange} />
+                                <Input
+                                    id="work_place"
+                                    type="text"
+                                    name="work_place"
+                                    value={state.sales.filter_fields.work_place}
+                                    onChange={handleChange}
+                                />
                             </FormControl>
                         }
                         <FormControl>
                             <InputLabel htmlFor="id">N° venta</InputLabel>
-                            <Input id="id" type="number" name="id" value={filter.id} onChange={handleChange} />
+                            <Input
+                                id="id"
+                                type="number"
+                                name="id"
+                                value={state.sales.filter_fields.id}
+                                onChange={handleChange}
+                            />
                         </FormControl>
                         {showSeller &&
                             <FormControl>
@@ -88,7 +105,7 @@ export function SaleFilter({ showWorkPlace, showSeller, showDateAndType }) {
                                 <Select
                                     labelId="user-select"
                                     id="user"
-                                    value={filter.user}
+                                    value={state.sales.filter_fields.user}
                                     label="Vendedor"
                                     name="user"
                                     onChange={handleChange}
@@ -106,7 +123,7 @@ export function SaleFilter({ showWorkPlace, showSeller, showDateAndType }) {
                                     <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
                                         <DatePicker
                                             label="Fecha"
-                                            value={filter.date.length === 0 ? new Date(Date.now()) : new Date(filter.date)}
+                                            value={state.sales.filter_fields.date.length === 0 ? new Date(Date.now()) : new Date(state.sales.filter_fields.date)}
                                             onChange={value => handleChange({
                                                 target: {
                                                     name: 'date',
@@ -121,7 +138,7 @@ export function SaleFilter({ showWorkPlace, showSeller, showDateAndType }) {
                                     <Select
                                         labelId="type-select"
                                         id="type"
-                                        value={filter.type}
+                                        value={state.sales.filter_fields.type}
                                         label="Tipo Comp."
                                         name="type"
                                         onChange={handleChange}
