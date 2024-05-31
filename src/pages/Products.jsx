@@ -1,6 +1,7 @@
 import { useContext, useEffect } from "react";
 import { Box, Button, Checkbox, FormControl, FormControlLabel, Input, InputLabel, MenuItem, Paper, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
 
+import { AuthContext } from "../providers/AuthProvider";
 import { DataContext } from "../providers/DataProvider";
 import { useProducts } from '../hooks/useProducts'
 import { useSuppliers } from "../hooks/useSuppliers";
@@ -15,6 +16,7 @@ import { getNewPrice, getStock } from "../utils/helpers";
 
 export function Products() {
 
+    const { auth } = useContext(AuthContext)
     const { state } = useContext(DataContext)
 
     const {
@@ -122,21 +124,6 @@ export function Products() {
             accessor: (row) => `$${(row.buy_price + ((row.buy_price / 100) * row.earn)).toFixed(2)}`
         },
         {
-            id: 'stock',
-            numeric: false,
-            disablePadding: true,
-            label: 'Stock',
-            sorter: (row) => getStock(row),
-            accessor: (row) => getStock(row)
-        },
-        {
-            id: 'min_stock',
-            numeric: false,
-            disablePadding: true,
-            label: 'Stock mínimo',
-            accessor: 'min_stock'
-        },
-        {
             id: 'supplier',
             numeric: false,
             disablePadding: true,
@@ -149,7 +136,26 @@ export function Products() {
     return (
         <Layout title="Productos">
             <DataGridWithBackendPagination
-                headCells={headCells}
+                headCells={auth.user.role === 'CHOFER' ? headCells :
+                    [
+                        ...headCells,
+                        {
+                            id: 'stock',
+                            numeric: false,
+                            disablePadding: true,
+                            label: 'Stock',
+                            sorter: (row) => getStock(row),
+                            accessor: (row) => getStock(row)
+                        },
+                        {
+                            id: 'min_stock',
+                            numeric: false,
+                            disablePadding: true,
+                            label: 'Stock mínimo',
+                            accessor: 'min_stock'
+                        }
+                    ]
+                }
                 rows={state.products.data}
                 setOpen={setOpen}
                 setFormData={setFormData}

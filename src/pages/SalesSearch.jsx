@@ -92,7 +92,7 @@ export function SalesSearch() {
         >
           Búsqueda de Ventas
         </Typography>
-        <form className="gridContainer mb-1">
+        <form className="mb-1">
           <Box sx={{ display: "flex", alignItems: "end", justifyContent: "start", gap: 2, padding: 2 }}>
             <FormControl variant="standard" sx={{ width: "16.5%", color: "#59656b" }}>
               <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>

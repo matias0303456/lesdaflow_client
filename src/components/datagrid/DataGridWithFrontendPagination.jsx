@@ -69,193 +69,191 @@ export function DataGridWithFrontendPagination({
         [order, orderBy, page, rowsPerPage, rows],
     );
     return (
-        <div className='gridContainer'>
-            <Box sx={{ width: '100%', backgroundColor: '#fff', padding: 1 }}>
-                <Box sx={{ marginBottom: 3 }}>
-                    {contentHeader}
-                </Box>
-                <Paper sx={{ width: '100%', mb: 2 }}>
-                    <TableContainer>
-                        <Table
-                            sx={{ minWidth: 750, fontWeight: "bold" }}
-                            aria-labelledby="tableTitle"
-                            size="small"
-                        >
-                            <EnhancedTableHead
-                                headCells={headCells}
-                                order={order}
-                                orderBy={orderBy}
-                                onRequestSort={handleRequestSort}
-                                disableSorting={disableSorting}
-                            />
-                            <TableBody>
-                                {
-                                    visibleRows && visibleRows.length > 0 ? (
-                                        visibleRows.map((row, index) => {
-                                            return (
-                                                <TableRow
-                                                    role="checkbox"
-                                                    tabIndex={-1}
-                                                    key={row.id}
-                                                    width="100px"
+        <Box sx={{ width: '100%', backgroundColor: '#fff', padding: 1 }}>
+            <Box sx={{ marginBottom: 3 }}>
+                {contentHeader}
+            </Box>
+            <Paper sx={{ width: '100%', mb: 2 }}>
+                <TableContainer>
+                    <Table
+                        sx={{ minWidth: 750, fontWeight: "bold" }}
+                        aria-labelledby="tableTitle"
+                        size="small"
+                    >
+                        <EnhancedTableHead
+                            headCells={headCells}
+                            order={order}
+                            orderBy={orderBy}
+                            onRequestSort={handleRequestSort}
+                            disableSorting={disableSorting}
+                        />
+                        <TableBody>
+                            {
+                                visibleRows && visibleRows.length > 0 ? (
+                                    visibleRows.map((row, index) => {
+                                        return (
+                                            <TableRow
+                                                role="checkbox"
+                                                tabIndex={-1}
+                                                key={row.id}
+                                                width="100px"
+                                            >
+                                                <TableCell
+                                                    sx={{ wordWrap: "", width: "auto" }}
                                                 >
-                                                    <TableCell
-                                                        sx={{ wordWrap: "", width: "auto" }}
+                                                    <Box
+                                                        sx={{
+                                                            display: "flex",
+                                                            justifyContent: "center",
+                                                            alignItems: "center",
+                                                            padding: "1px",
+                                                            gap: "1rem",
+                                                            width: "auto",
+                                                        }}
                                                     >
-                                                        <Box
-                                                            sx={{
-                                                                display: "flex",
-                                                                justifyContent: "center",
-                                                                alignItems: "center",
-                                                                padding: "1px",
-                                                                gap: "1rem",
-                                                                width: "auto",
-                                                            }}
-                                                        >
-                                                            {showViewAction &&
-                                                                <Tooltip
-                                                                    title="Visualizar"
-                                                                    onClick={() => {
-                                                                        setData(
-                                                                            rows.find(
-                                                                                (r) => r.id === row.id
-                                                                            )
-                                                                        );
-                                                                        setOpen("VIEW");
-                                                                    }}
-                                                                >
-                                                                    <IconButton className="rounded-full bg-black/20 opacity-50 hover:bg-[#288bcd]">
-                                                                        <SearchSharpIcon className="w-4 h-4 hover:text-white" />
-                                                                    </IconButton>
-                                                                </Tooltip>
-                                                            }
-                                                            {showEditAction &&
-                                                                <Tooltip
-                                                                    title="Editar"
-                                                                    onClick={() => {
-                                                                        setData(
-                                                                            rows.find(
-                                                                                (r) => r.id === row.id
-                                                                            )
-                                                                        );
-                                                                        setOpen("EDIT");
-                                                                    }}
-                                                                >
-                                                                    <IconButton className="rounded-full bg-black/20 opacity-50 hover:bg-[#288bcd]">
-                                                                        <EditIcon className="w-4 h-4 hover:text-white" />
-                                                                    </IconButton>
-                                                                </Tooltip>
-                                                            }
-                                                            {showDeleteAction &&
-                                                                <Tooltip
-                                                                    title="Borrar"
-                                                                    onClick={() => {
-                                                                        setData(
-                                                                            rows.find(
-                                                                                (r) => r.id === row.id
-                                                                            )
-                                                                        );
-                                                                        setOpen("DELETE");
-                                                                    }}
-                                                                >
-                                                                    <IconButton
-                                                                        className="rounded-full bg-black/20 opacity-50 hover:bg-[#288bcd]"
-                                                                        aria-label="delete"
-                                                                    >
-                                                                        <CloseIcon className="w-4 h-4 hover:text-white" />
-                                                                    </IconButton>
-                                                                </Tooltip>
-                                                            }
-                                                            {showSettingsAction &&
-                                                                <Tooltip
-                                                                    title={showSettingsAction}
-                                                                    onClick={() => {
-                                                                        setData(
-                                                                            rows.find(
-                                                                                (r) => r.id === row.id
-                                                                            )
-                                                                        );
-                                                                        setOpen("SETTING");
-                                                                    }}
-                                                                >
-                                                                    <IconButton
-                                                                        className="rounded-full bg-black/20 opacity-50 hover:bg-[#078BCD]"
-                                                                        aria-label="setting"
-                                                                    >
-                                                                        <SettingsIcon className="w-4 h-4 hover:text-white" />
-                                                                    </IconButton>
-                                                                </Tooltip>
-                                                            }
-                                                        </Box>
-                                                    </TableCell>
-                                                    {headCells
-                                                        .map((cell) => cell.accessor)
-                                                        .map((accessor) => (
-                                                            <TableCell
-                                                                key={accessor}
-                                                                align="inherit"
-                                                                sx={{
-                                                                    color:
-                                                                        (deadlineColor === "sales" &&
-                                                                            deadlineIsPast(row)) ||
-                                                                            (deadlineColor ===
-                                                                                "clients" &&
-                                                                                row.sales.some((s) =>
-                                                                                    deadlineIsPast(s)
-                                                                                )) ||
-                                                                            (deadlineColor ===
-                                                                                "products" &&
-                                                                                row.min_stock >
-                                                                                getStock(row))
-                                                                            ? "red"
-                                                                            : "",
+                                                        {showViewAction &&
+                                                            <Tooltip
+                                                                title="Visualizar"
+                                                                onClick={() => {
+                                                                    setData(
+                                                                        rows.find(
+                                                                            (r) => r.id === row.id
+                                                                        )
+                                                                    );
+                                                                    setOpen("VIEW");
                                                                 }}
                                                             >
-                                                                {typeof accessor === "function"
-                                                                    ? accessor(row, index)
-                                                                    : row[accessor]}
-                                                            </TableCell>
-                                                        ))}
-                                                </TableRow>
-                                            );
-                                        })
-                                    ) : (
-                                        <TableRow>
-                                            <TableCell
-                                                colSpan={headCells.length + 1}
-                                                align="inherit"
-                                                sx={{
-                                                    fontSize: "1rem",
-                                                    textAlign: 'center'
-                                                }}
-                                            >
-                                                No se encontraron registros
-                                            </TableCell>
-                                        </TableRow>
-                                    )
-                                }
-                                {emptyRows > 0 && (
-                                    <TableRow style={{ height: 33 * emptyRows }}>
-                                        <TableCell colSpan={6} />
+                                                                <IconButton className="rounded-full bg-black/20 opacity-50 hover:bg-[#288bcd]">
+                                                                    <SearchSharpIcon className="w-4 h-4 hover:text-white" />
+                                                                </IconButton>
+                                                            </Tooltip>
+                                                        }
+                                                        {showEditAction &&
+                                                            <Tooltip
+                                                                title="Editar"
+                                                                onClick={() => {
+                                                                    setData(
+                                                                        rows.find(
+                                                                            (r) => r.id === row.id
+                                                                        )
+                                                                    );
+                                                                    setOpen("EDIT");
+                                                                }}
+                                                            >
+                                                                <IconButton className="rounded-full bg-black/20 opacity-50 hover:bg-[#288bcd]">
+                                                                    <EditIcon className="w-4 h-4 hover:text-white" />
+                                                                </IconButton>
+                                                            </Tooltip>
+                                                        }
+                                                        {showDeleteAction &&
+                                                            <Tooltip
+                                                                title="Borrar"
+                                                                onClick={() => {
+                                                                    setData(
+                                                                        rows.find(
+                                                                            (r) => r.id === row.id
+                                                                        )
+                                                                    );
+                                                                    setOpen("DELETE");
+                                                                }}
+                                                            >
+                                                                <IconButton
+                                                                    className="rounded-full bg-black/20 opacity-50 hover:bg-[#288bcd]"
+                                                                    aria-label="delete"
+                                                                >
+                                                                    <CloseIcon className="w-4 h-4 hover:text-white" />
+                                                                </IconButton>
+                                                            </Tooltip>
+                                                        }
+                                                        {showSettingsAction &&
+                                                            <Tooltip
+                                                                title={showSettingsAction}
+                                                                onClick={() => {
+                                                                    setData(
+                                                                        rows.find(
+                                                                            (r) => r.id === row.id
+                                                                        )
+                                                                    );
+                                                                    setOpen("SETTING");
+                                                                }}
+                                                            >
+                                                                <IconButton
+                                                                    className="rounded-full bg-black/20 opacity-50 hover:bg-[#078BCD]"
+                                                                    aria-label="setting"
+                                                                >
+                                                                    <SettingsIcon className="w-4 h-4 hover:text-white" />
+                                                                </IconButton>
+                                                            </Tooltip>
+                                                        }
+                                                    </Box>
+                                                </TableCell>
+                                                {headCells
+                                                    .map((cell) => cell.accessor)
+                                                    .map((accessor) => (
+                                                        <TableCell
+                                                            key={accessor}
+                                                            align="inherit"
+                                                            sx={{
+                                                                color:
+                                                                    (deadlineColor === "sales" &&
+                                                                        deadlineIsPast(row)) ||
+                                                                        (deadlineColor ===
+                                                                            "clients" &&
+                                                                            row.sales.some((s) =>
+                                                                                deadlineIsPast(s)
+                                                                            )) ||
+                                                                        (deadlineColor ===
+                                                                            "products" &&
+                                                                            row.min_stock >
+                                                                            getStock(row))
+                                                                        ? "red"
+                                                                        : "",
+                                                            }}
+                                                        >
+                                                            {typeof accessor === "function"
+                                                                ? accessor(row, index)
+                                                                : row[accessor]}
+                                                        </TableCell>
+                                                    ))}
+                                            </TableRow>
+                                        );
+                                    })
+                                ) : (
+                                    <TableRow>
+                                        <TableCell
+                                            colSpan={headCells.length + 1}
+                                            align="inherit"
+                                            sx={{
+                                                fontSize: "1rem",
+                                                textAlign: 'center'
+                                            }}
+                                        >
+                                            No se encontraron registros
+                                        </TableCell>
                                     </TableRow>
-                                )}
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
-                    <TablePagination
-                        rowsPerPageOptions={[5, 10, 25]}
-                        component="div"
-                        count={rows.length}
-                        rowsPerPage={rowsPerPage}
-                        labelRowsPerPage="Registros por página"
-                        labelDisplayedRows={({ from, to, count }) => `${from}–${to} de ${count}`}
-                        page={page}
-                        onPageChange={handleChangePage}
-                        onRowsPerPageChange={handleChangeRowsPerPage}
-                    />
-                </Paper>
-                {children}
-            </Box>
-        </div>
+                                )
+                            }
+                            {emptyRows > 0 && (
+                                <TableRow style={{ height: 33 * emptyRows }}>
+                                    <TableCell colSpan={6} />
+                                </TableRow>
+                            )}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+                <TablePagination
+                    rowsPerPageOptions={[5, 10, 25]}
+                    component="div"
+                    count={rows.length}
+                    rowsPerPage={rowsPerPage}
+                    labelRowsPerPage="Registros por página"
+                    labelDisplayedRows={({ from, to, count }) => `${from}–${to} de ${count}`}
+                    page={page}
+                    onPageChange={handleChangePage}
+                    onRowsPerPageChange={handleChangeRowsPerPage}
+                />
+            </Paper>
+            {children}
+        </Box>
     );
 }

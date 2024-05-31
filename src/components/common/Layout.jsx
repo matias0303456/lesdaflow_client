@@ -51,23 +51,17 @@ export function Layout({ children, title }) {
 
   return (
     <>
-      <nav
-        className={`${mobileOpen
-          ? "w-full h-screen items-start grid grid-cols-[20%,80%] justify-start absolute left-[-100%] transition-all ease duration-1000"
-          : "sticky top-0 z-40 mx-auto grid grid-cols-[20%,80%] xl:grid-cols-[12%,80%,8%] items-center justify-center gap-2 xl:px-3 transition-all ease-out duration-1000"
-          } bg-[#288bcd] `}
+      <nav className={`${mobileOpen
+        ? "w-full h-screen items-start grid grid-cols-[20%,80%] justify-start absolute left-[-100%] transition-all ease duration-1000"
+        : "sticky top-0 z-40 mx-auto grid grid-cols-[20%,80%] xl:grid-cols-[12%,80%,8%] items-center justify-center gap-2 xl:px-3 transition-all ease-out duration-1000"
+        } bg-[#288bcd] `}
       >
-        <div
-          className={`${mobileOpen ? "hidden" : "logo flex ml-2 items-center justify-center w-28"
-            }`}
-        >
+        <div className={`${mobileOpen ? "hidden" : "logo flex ml-2 items-center justify-center w-28"}`}>
           <Logo mobileOpen={mobileOpen} />
         </div>
-        <div
-          className={` ${mobileOpen
-            ? "flex flex-col items-start absolute z-40 h-[100%] right-[-100%] w-[100%] top-0 transition-colors ease-in-out delay-1000"
-            : " flex xl:hidden w-full h-8  items-center justify-end pr-3"
-            }`}
+        <div className={`${mobileOpen
+          ? "flex flex-col items-start absolute z-40 h-[100%] right-[-100%] w-[100%] top-0 transition-colors ease-in-out delay-1000"
+          : " flex xl:hidden w-full h-8  items-center justify-end pr-3"}`}
         >
           <div
             onClick={() => setMobileOpen((prev) => !prev)}
@@ -79,29 +73,25 @@ export function Layout({ children, title }) {
             {mobileOpen ? (
               <CloseIcon className="absolute z-60 text-white md:right-10 top-7 right-6" />
             ) : (
-              <MenuIcon className="absolute text-white right-6 top-7" />
+              <MenuIcon className="absolute text-white right-6 top-4" />
             )}
           </div>
         </div>
-        <div
-          className={`${mobileOpen
-            ? "text-white flex flex-col items-start justify-start z-40 absolute h-[70vh] right-[-100%] top-[55px] w-[100%]"
+        <div className={`${mobileOpen
+          ? "text-white flex flex-col items-start justify-start z-40 absolute h-[70vh] right-[-100%] top-[55px] w-[100%]"
+          : "hidden xl:flex w-[100%] static h-[100%] items-center justify-center gap-1"}`}
+        >
+          <ul className={`${mobileOpen
+            ? "text-white flex flex-col items-start justify-start z-40 absolute h-full right-0 top-5 w-[100%]"
             : "hidden xl:flex w-[100%] static h-[100%] items-center justify-center gap-1"
             }`}
-        >
-          <ul
-            className={`${mobileOpen
-              ? "text-white flex flex-col items-start justify-start z-40 absolute h-full right-0 top-5 w-[100%]"
-              : "hidden xl:flex w-[100%] static h-[100%] items-center justify-center gap-1"
-              }`}
           >
             {auth.user.role === "ADMINISTRADOR"
               ? nav_items_admin.map((item, index) => (
-                <li
-                  className={`${mobileOpen
-                    ? "text-center px-0 py-1 h-[55px] w-[30%] mx-auto"
-                    : "bg-[#288bcd] text-center px-2 h-[100%] hover:bg-[#3276B1] w-[100%]"
-                    } cursor-pointer flex flex-col items-center justify-center h-full decoration-transparent text-white`}
+                <li className={`${mobileOpen
+                  ? "text-center px-0 py-1 h-[55px] w-[30%] mx-auto"
+                  : "bg-[#288bcd] text-center px-2 h-[100%] hover:bg-[#3276B1] w-[100%]"
+                  } cursor-pointer flex flex-col items-center justify-center h-full decoration-transparent text-white`}
                   key={index}
                   onMouseEnter={() => {
                     setSubmenu(true)
@@ -112,15 +102,9 @@ export function Layout({ children, title }) {
                     setItemToShow("")
                   }}
                 >
-                  <div
-                    className={`${mobileOpen ? "float-right" : "flex-col"
-                      } flex  items-center justify-start`}
-                  >
+                  <div className={`${mobileOpen ? "float-right" : "flex-col"} flex  items-center justify-start`}>
                     <div className="flex items-center gap-1 justify-center">
-                      <Link
-                        className="lg:text-[14px]"
-                        to={item.path}
-                      >
+                      <Link className="lg:text-[14px]" to={item.path}>
                         {item.title}
                       </Link>
                       {mobileOpen ? (
@@ -129,10 +113,7 @@ export function Layout({ children, title }) {
                         <KeyboardArrowDownIcon className="lg:text-base text-xs" />
                       )}
                     </div>
-                    <div
-                      className={`${mobileOpen ? "ml-[92px] mt-[20px]" : "mx-auto"
-                        } w-[100%] flex  items-center justify-center`}
-                    >
+                    <div className={`${mobileOpen ? "ml-[92px] mt-[20px]" : "mx-auto"} w-[100%] flex  items-center justify-center`}>
                       {submenu && itemToShow === item.title ? (
                         <Dropdown
                           item={item.submenu}
@@ -158,10 +139,7 @@ export function Layout({ children, title }) {
                   }}
                 >
                   <div className="flex items-center justify-center">
-                    <Link
-                      className="lg:text-[14px]"
-                      to={item.path}
-                    >
+                    <Link className="lg:text-[14px]" to={item.path}>
                       {item.title}
                     </Link>
                     <KeyboardArrowDownIcon className="lg:text-base text-xs" />
@@ -175,18 +153,16 @@ export function Layout({ children, title }) {
               ))}
           </ul>
         </div>
-        <div
-          className={`${mobileOpen
-            ? " grid grid-cols-[40%,60%] py-2 px-5 items-center justify-start absolute z-40 w-[100%] mx-auto right-[-100%] bottom-0"
-            : "hidden xl:flex"
-            }`}
+        <div className={`${mobileOpen
+          ? " grid grid-cols-[40%,60%] py-2 px-5 items-center justify-start absolute z-40 w-[100%] mx-auto right-[-100%] bottom-0"
+          : "hidden xl:flex"}`}
         >
           <button
             title={`${auth.user.first_name} ${auth.user.last_name}`}
             className={`${mobileOpen
               ? " justify-end mr-3"
               : "justify-center hover:bg-slate-400"
-              } w-auto p-2 h-auto flex items-center  rounded-full bg-transparent`}
+              } w-auto p-2 h-auto flex items-center rounded-full bg-transparent`}
             onClick={() => {
               if (!mobileOpen) {
                 setUserDropdown((prev) => !prev)
@@ -196,12 +172,7 @@ export function Layout({ children, title }) {
             <Avatar sx={name.sx}>{name.children.toUpperCase()}</Avatar>
           </button>
           {userDropdown ? (
-            <div
-              className={`${mobileOpen
-                ? "w-[100%] pl-2 h-auto ml-3 justify-start"
-                : "justify-center"
-                } mt-2 mx-auto flex items-center`}
-            >
+            <div className={`${mobileOpen ? "w-[100%] pl-2 h-auto ml-3 justify-start" : "justify-center"} mt-2 mx-auto flex items-center`}>
               <UserDropdown
                 {...stringAvatar(
                   `${auth.user.first_name} ${auth.user.last_name} capitalize`
@@ -212,7 +183,7 @@ export function Layout({ children, title }) {
           ) : null}
         </div>
       </nav>
-      <div className="w-[100%] h-screen ">
+      <div className="w-[100%] h-screen">
         <h6 className="text-[#455a64] text-[20px] leading-7 bg-white px-4 py-2">
           {title}
         </h6>
