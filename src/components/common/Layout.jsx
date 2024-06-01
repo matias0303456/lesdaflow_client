@@ -60,22 +60,20 @@ export function Layout({ children, title }) {
             setItemToShow("")
           }}
         >
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 0.4, paddingX: 1, fontSize: 15 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 0.4, paddingX: 1, fontSize: 15, position: 'relative' }}>
             <Box>{item.title}</Box>
             {mobileOpen ? (
               <KeyboardArrowRightIcon className='text-xs' />
             ) : (
               <KeyboardArrowDownIcon className='text-xs' />
             )}
-          </Box>
-          <Box className={`${mobileOpen ? "ml-[92px] mt-[20px]" : "mx-auto"} w-[100%] flex  items-center justify-center`}>
-            {submenu && itemToShow === item.title ? (
+            {submenu && itemToShow === item.title &&
               <Dropdown
                 item={item.submenu}
                 mobileOpen={mobileOpen}
                 setMobileOpen={setMobileOpen}
               />
-            ) : null}
+            }
           </Box>
         </Box>
       ))}

@@ -1,29 +1,37 @@
 /* eslint-disable react/prop-types */
+import { Box } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
-export const Dropdown = ({ item, mobileOpen, setMobileOpen }) => {
+export const Dropdown = ({ item, setMobileOpen }) => {
 
   const navigate = useNavigate();
 
   return (
-    <ul
-      className={`${mobileOpen ? "float-right" : "top-[80px] shadow-2xl z-10"
-        } w-32 h-auto absolute xl:top-[56px] text-start list-none text-[#288bcd]`}
-    >
+    <Box sx={{
+      position: 'absolute',
+      backgroundColor: '#fff',
+      top: 40,
+      width: 200,
+      zIndex: 10,
+      boxShadow: '0 0 20px gray',
+      left: 0
+    }}>
       {item?.map((subitem, index) => (
-        <li
-          key={index}
-          className={
-            `${mobileOpen ? "h-[35px] text-[12px]" : "h-[50px] text-sm"} bg-white cursor-pointer flex items-center justify-start w-[100%] mx-auto decoration-transparent p-1 hover:bg-[#3276B1] hover:text-white`
-          }
+        <Box key={index}
+          sx={{
+            color: '#078BCD',
+            paddingY: 0.7,
+            paddingX: 2,
+            cursor: 'pointer',
+            ':hover': { backgroundColor: '#3276B1', color: '#fff' }
+          }}
           onClick={() => {
             setMobileOpen(false)
             navigate(subitem.path)
-          }}
-        >
+          }}>
           {subitem.subtitle}
-        </li>
+        </Box>
       ))}
-    </ul>
+    </Box>
   );
 };
