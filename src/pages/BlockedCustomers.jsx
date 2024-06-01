@@ -1,6 +1,6 @@
 import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import {  Box,  Button,  Typography} from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 
 import { AuthContext } from "../providers/AuthProvider";
 
@@ -18,7 +18,7 @@ export function BlockedCustomers() {
 
   return (
     <Layout title="Reporte de Clientes Bloqueados">
-      <Box className="w-[50%] p-2 bg-white rounded-md">
+      <Box sx={{ width: { xs: '100%', sm: '50%' } }} className="p-2 bg-white rounded-md">
         <Typography
           variant="h6"
           sx={{

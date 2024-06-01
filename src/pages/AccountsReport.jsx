@@ -42,7 +42,7 @@ export function AccountsReport() {
 
   return (
     <Layout title="Reporte Cuenta Corriente">
-      <Box className="w-[50%]">
+      <Box sx={{ width: { xs: '100%', sm: '50%' } }}>
         <Typography variant="h6" sx={{
           width: "100%",
           fontSize: "14px",

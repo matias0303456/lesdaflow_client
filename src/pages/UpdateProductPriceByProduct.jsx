@@ -97,7 +97,7 @@ export function UpdateProductPriceByProduct() {
 
   return (
     <Layout title="Actualizar Precios Productos">
-      <Box className="w-[50%] mb-3 bg-white rounded-md">
+      <Box sx={{ width: { xs: '100%', sm: '50%' } }} className="mb-3 bg-white rounded-md">
         <Typography
           variant="h6"
           sx={{

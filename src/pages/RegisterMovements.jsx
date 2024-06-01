@@ -37,7 +37,7 @@ export function RegisterMovements() {
 
   return (
     <Layout title="Reporte Cuenta Corriente">
-      <Box className="w-[50%] bg-white rounded-md">
+      <Box sx={{ width: { xs: '100%', sm: '50%' } }} className="bg-white rounded-md">
         <Typography
           variant="h6"
           sx={{
