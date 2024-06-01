@@ -2,7 +2,7 @@
 import { Box } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
-export const Dropdown = ({ item, setMobileOpen }) => {
+export const Dropdown = ({ item }) => {
 
   const navigate = useNavigate();
 
@@ -10,25 +10,22 @@ export const Dropdown = ({ item, setMobileOpen }) => {
     <Box sx={{
       position: 'absolute',
       backgroundColor: '#fff',
-      top: 40,
+      top: { xs: -7.5, md: 40 },
       width: 200,
       zIndex: 10,
-      boxShadow: '0 0 20px gray',
-      left: 0
+      boxShadow: { xs: 'none', md: '0 0 20px gray' },
+      left: { xs: 130, md: 0 }
     }}>
       {item?.map((subitem, index) => (
         <Box key={index}
           sx={{
             color: '#078BCD',
-            paddingY: 0.7,
+            paddingY: 1,
             paddingX: 2,
             cursor: 'pointer',
             ':hover': { backgroundColor: '#3276B1', color: '#fff' }
           }}
-          onClick={() => {
-            setMobileOpen(false)
-            navigate(subitem.path)
-          }}>
+          onClick={() => navigate(subitem.path)}>
           {subitem.subtitle}
         </Box>
       ))}

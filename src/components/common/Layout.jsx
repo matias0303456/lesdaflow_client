@@ -23,14 +23,13 @@ export function Layout({ children, title }) {
   const { auth } = useContext(AuthContext)
 
   const navigate = useNavigate()
-  // const { pathname } = useLocation()
 
   const [mobileOpen, setMobileOpen] = useState(false)
   const [submenu, setSubmenu] = useState(null)
   const [showUserDropdown, setShowUserDropdown] = useState(false)
   const [itemToShow, setItemToShow] = useState("")
 
-  const drawerWidth = 240
+  const drawerWidth = 330
 
   useEffect(() => {
     if (!auth) return navigate('/login')
@@ -41,16 +40,16 @@ export function Layout({ children, title }) {
   }
 
   const menuOptions = (
-    <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'column', md: 'row' } }}>
+    <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'column', md: 'row' }, width: '100%' }}>
       {nav_items.map((item, index) => (
-        <Box sx={{
+        <Box key={index} sx={{
           display: 'flex',
           alignItems: 'center',
           cursor: 'pointer',
           color: '#fff',
+          paddingY: { xs: 1, md: 0 },
           ':hover': { backgroundColor: '#3276B1' }
         }}
-          key={index}
           onMouseEnter={() => {
             setSubmenu(true)
             setItemToShow(item.title)
@@ -58,8 +57,7 @@ export function Layout({ children, title }) {
           onMouseLeave={() => {
             setSubmenu(false)
             setItemToShow("")
-          }}
-        >
+          }}>
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 0.4, paddingX: 1, fontSize: 15, position: 'relative' }}>
             <Box>{item.title}</Box>
             {mobileOpen ? (
@@ -67,13 +65,7 @@ export function Layout({ children, title }) {
             ) : (
               <KeyboardArrowDownIcon className='text-xs' />
             )}
-            {submenu && itemToShow === item.title &&
-              <Dropdown
-                item={item.submenu}
-                mobileOpen={mobileOpen}
-                setMobileOpen={setMobileOpen}
-              />
-            }
+            {submenu && itemToShow === item.title && <Dropdown item={item.submenu} />}
           </Box>
         </Box>
       ))}
@@ -115,7 +107,7 @@ export function Layout({ children, title }) {
             }
           }}
         >
-          <Box sx={{ display: { xs: 'flex', md: 'none' }, backgroundColor: '#078BCD' }}>
+          <Box sx={{ display: { xs: 'flex', md: 'none' }, backgroundColor: '#078BCD', height: '100%' }}>
             {menuOptions}
           </Box>
         </Drawer>
@@ -127,5 +119,5 @@ export function Layout({ children, title }) {
         </Box>
       </Box>
     </>
-  );
+  )
 }
