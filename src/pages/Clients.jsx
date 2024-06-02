@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import { Box, Button, FormControl, Input, InputLabel, MenuItem, Select, Typography } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
@@ -8,7 +8,6 @@ import { AuthContext } from "../providers/AuthProvider";
 import { DataContext } from "../providers/DataProvider";
 import { useForm } from "../hooks/useForm";
 import { useClients } from "../hooks/useClients";
-import { useUsers } from "../hooks/useUsers";
 
 import { Layout } from "../components/common/Layout";
 import { ModalComponent } from "../components/common/ModalComponent";
@@ -21,7 +20,6 @@ export function Clients() {
     const { state } = useContext(DataContext)
 
     const { loadingClients, handleSubmit, handleDelete, open, setOpen, getClients } = useClients()
-    const { loadingUsers, getUsers } = useUsers()
     const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
         defaultData: {
             id: '',
@@ -70,10 +68,6 @@ export function Clients() {
             }
         }
     })
-
-    useEffect(() => {
-        getUsers()
-    }, [])
 
     const headCells = [
         {
@@ -139,7 +133,7 @@ export function Clients() {
                         }
                     ]
                 }
-                loading={loadingClients || disabled || loadingUsers}
+                loading={loadingClients || disabled}
                 rows={state.clients.data}
                 entityKey="clients"
                 getter={getClients}
