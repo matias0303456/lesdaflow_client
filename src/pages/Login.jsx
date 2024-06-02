@@ -1,6 +1,6 @@
 import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Box, Button, FormControl, Input, InputLabel, Paper, Typography } from "@mui/material";
+import { Box, Button, FormControl, Input, InputLabel, Typography } from "@mui/material";
 
 import { useForm } from "../hooks/useForm";
 import { AuthContext } from "../providers/AuthProvider";
