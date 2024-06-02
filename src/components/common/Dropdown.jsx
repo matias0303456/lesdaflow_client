@@ -1,8 +1,13 @@
 /* eslint-disable react/prop-types */
-import { Box } from "@mui/material";
+import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import { Box } from "@mui/material";
+
+import { AuthContext } from "../../providers/AuthProvider";
 
 export const Dropdown = ({ item }) => {
+
+  const { auth } = useContext(AuthContext)
 
   const navigate = useNavigate();
 
@@ -16,7 +21,7 @@ export const Dropdown = ({ item }) => {
       boxShadow: { xs: 'none', md: '0 0 20px gray' },
       left: { xs: 130, md: 0 }
     }}>
-      {item?.map((subitem, index) => (
+      {item?.filter(item => item.can_access.includes(auth.user.role)).map((subitem, index) => (
         <Box key={index}
           sx={{
             color: '#078BCD',
