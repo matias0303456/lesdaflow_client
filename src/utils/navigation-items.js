@@ -112,7 +112,7 @@ export const nav_items = [
         can_access: ['ADMINISTRADOR']
       }
     ],
-    can_access: ['ADMINISTRADOR']
+    can_access: ['ADMINISTRADOR', 'VENDEDOR']
   },
   {
     title: "Presupuestos",
