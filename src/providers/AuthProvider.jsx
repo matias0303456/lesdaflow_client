@@ -7,7 +7,7 @@ export const AuthContext = createContext({
 
 export function AuthProvider({ children }) {
 
-    const [auth, setAuth] = useState(JSON.parse(localStorage.getItem('auth')))
+    const [auth, setAuth] = useState(JSON.parse(localStorage.getItem('auth_mga')))
 
     return (
         <AuthContext.Provider value={{ auth, setAuth }}>

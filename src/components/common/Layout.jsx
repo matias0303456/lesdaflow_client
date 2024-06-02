@@ -29,11 +29,9 @@ export function Layout({ children, title }) {
   const [showUserDropdown, setShowUserDropdown] = useState(false)
   const [itemToShow, setItemToShow] = useState("")
 
-  const drawerWidth = 330
+  if (!auth) return navigate('/login')
 
-  useEffect(() => {
-    if (!auth) return navigate('/login')
-  }, [])
+  const drawerWidth = 330
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen)
