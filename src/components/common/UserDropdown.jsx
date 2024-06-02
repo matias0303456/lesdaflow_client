@@ -13,7 +13,7 @@ export const UserDropdown = () => {
 
   const handleLogout = () => {
     setAuth(null);
-    localStorage.clear();
+    localStorage.removeItem('auth_mga');
     navigate("/login");
   };
 
