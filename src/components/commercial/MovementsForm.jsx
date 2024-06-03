@@ -1,43 +1,28 @@
-import { useState } from "react";
-import { Autocomplete, Box, Button, FormControl, Input, InputLabel, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from "@mui/material";
+import { Box, Button, FormControl, Input, InputLabel, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from "@mui/material";
 
 import { ModalComponent } from "../common/ModalComponent";
+import { getStock } from "../../utils/helpers";
 
 export function MovementsForm({
-    movementType,
+    open,
+    setOpen,
     formData,
     errors,
     handleChange,
+    reset,
+    disabled,
     handleSubmit,
-    reset, setOpen
+    validate,
+    setDisabled,
 }) {
-
-    const [search, setSearch] = useState([])
-
     return (
-        <ModalComponent open={open === 'NEW_INCOME' || open === 'NEW__OUTCOME'} onClose={() => reset(setOpen)} reduceWidth={600}>
+        <ModalComponent open={open} onClose={() => reset(setOpen)} reduceWidth={600}>
             <Typography variant="h6" sx={{ marginBottom: 2 }}>
-                {`Nuevo ${movementType}`}
+                {open === 'NEW_INCOME' && `Nuevo ingreso del producto: ${formData.code} - ${formData.details}`}
+                {open === 'NEW_OUTCOME' && `Nuevo egreso del producto: ${formData.code} - ${formData.details}`}
             </Typography>
-            <form onChange={handleChange} onSubmit={handleSubmit}>
+            <form onChange={handleChange} onSubmit={e => handleSubmit(e, validate, formData, setDisabled, reset)}>
                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                    <FormControl>
-                        <Autocomplete
-                            disablePortal
-                            id="product-autocomplete"
-                            value={formData.product_id.toString() > 0 ? `${search.find(p => p.id === formData.product_id)?.code} - ${search.find(p => p.id === formData.product_id)?.details}` : ''}
-                            options={search.map(p => ({ label: `Cód: ${p.code} - Det: ${p.details}`, id: p.id }))}
-                            noOptionsText="Buscar producto por código o nombre..."
-                            onChange={(e, value) => handleChange({ target: { name: 'product_id', value: value?.id ?? '' } })}
-                            renderInput={(params) => <TextField {...params} label="Producto" />}
-                            isOptionEqualToValue={(option, value) => option.code === value.code || value.length === 0}
-                        />
-                        {errors.product_id?.type === 'required' &&
-                            <Typography variant="caption" color="red" marginTop={1}>
-                                * El producto es requerido.
-                            </Typography>
-                        }
-                    </FormControl>
                     <Box sx={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center' }}>
                         <TableContainer component={Paper}>
                             <Table>
@@ -57,7 +42,7 @@ export function MovementsForm({
                                 <TableBody>
                                     <TableRow>
                                         <TableCell align="center">
-                                            {formData.product_id.toString().length > 0 ? search.find(p => p.id === formData.product_id)?.stock : 0}
+                                            {getStock(formData)}
                                         </TableCell>
                                         <TableCell align="center">
                                             <FormControl>
@@ -70,7 +55,8 @@ export function MovementsForm({
                                             </FormControl>
                                         </TableCell>
                                         <TableCell align="center">
-                                            {formData.product_id.toString().length > 0 ? search.find(p => p.id === formData.product_id)?.stock + Math.abs(parseInt(formData.amount.toString().length > 0 ? formData.amount : 0)) - oldFormDataAmount : 0}
+                                            {open === 'NEW_INCOME' && getStock(formData) + Math.abs(parseInt(formData.amount ? formData.amount : 0))}
+                                            {open === 'NEW_OUTCOME' && getStock(formData) - Math.abs(parseInt(formData.amount ? formData.amount : 0))}
                                         </TableCell>
                                     </TableRow>
                                 </TableBody>

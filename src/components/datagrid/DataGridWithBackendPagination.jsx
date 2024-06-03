@@ -18,6 +18,8 @@ import { SiMicrosoftexcel } from "react-icons/si"
 import CloseIcon from "@mui/icons-material/Close"
 import { LinearProgress } from '@mui/material'
 import StorefrontSharpIcon from '@mui/icons-material/StorefrontSharp';
+import InputSharpIcon from '@mui/icons-material/InputSharp';
+import OutputSharpIcon from '@mui/icons-material/OutputSharp';
 
 import { DataContext } from '../../providers/DataProvider'
 
@@ -32,7 +34,9 @@ export function DataGridWithBackendPagination({
   rows,
   setOpen,
   setOpenNewSale,
+  setOpenNewMovement,
   setFormData,
+  setFormDataMovement,
   entityKey,
   getter,
   contentHeader,
@@ -48,6 +52,8 @@ export function DataGridWithBackendPagination({
   showPDFAction = false,
   showExcelAction = false,
   showConvertToSale = false,
+  showInput = false,
+  showOutput = false,
   openPdfUrl = '',
   openExcelUrl = ''
 }) {
@@ -217,6 +223,32 @@ export function DataGridWithBackendPagination({
                                   >
                                     <IconButton className="rounded-full bg-black/20 opacity-50 hover:bg-[#078BCD]">
                                       <StorefrontSharpIcon className="w-4 h-4 hover:text-white" />
+                                    </IconButton>
+                                  </Tooltip>
+                                }
+                                {showInput &&
+                                  <Tooltip
+                                    title={showInput}
+                                    onClick={() => {
+                                      if (setFormDataMovement) setFormDataMovement(rows.find((r) => r.id === row.id))
+                                      if (setOpenNewMovement) setOpenNewMovement("NEW_INCOME")
+                                    }}
+                                  >
+                                    <IconButton className="rounded-full bg-black/20 opacity-50 hover:bg-[#078BCD]">
+                                      <InputSharpIcon className="w-4 h-4 hover:text-white" />
+                                    </IconButton>
+                                  </Tooltip>
+                                }
+                                {showOutput &&
+                                  <Tooltip
+                                    title={showOutput}
+                                    onClick={() => {
+                                      if (setFormDataMovement) setFormDataMovement(rows.find((r) => r.id === row.id))
+                                      if (setOpenNewMovement) setOpenNewMovement("NEW_OUTCOME")
+                                    }}
+                                  >
+                                    <IconButton className="rounded-full bg-black/20 opacity-50 hover:bg-[#078BCD]">
+                                      <OutputSharpIcon className="w-4 h-4 hover:text-white" />
                                     </IconButton>
                                   </Tooltip>
                                 }

@@ -33,6 +33,17 @@ export function useProducts() {
         }
     }
 
+    async function searchProducts(params) {
+        const { status, data } = await get('/search' + params)
+        if (status === 200) {
+            return { status, data }
+        } else {
+            setMessage(data.message)
+            setSeverity('error')
+            setOpenMessage(true)
+        }
+    }
+
     async function handleSubmit(e, validate, formData, reset, setDisabled) {
         e.preventDefault()
         if (validate()) {
@@ -130,6 +141,7 @@ export function useProducts() {
         setEarnPrice,
         getProducts,
         loadingProducts,
-        setLoadingProducts
+        setLoadingProducts,
+        searchProducts
     }
 }

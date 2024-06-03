@@ -6,11 +6,13 @@ import { DataContext } from "../providers/DataProvider";
 import { useProducts } from '../hooks/useProducts'
 import { useSuppliers } from "../hooks/useSuppliers";
 import { useForm } from "../hooks/useForm";
+import { useMovements } from "../hooks/useMovements";
 
 import { Layout } from "../components/common/Layout";
 import { ModalComponent } from "../components/common/ModalComponent";
 import { DataGridWithBackendPagination } from "../components/datagrid/DataGridWithBackendPagination";
 import { ProductFilter } from "../components/filters/ProductFilter";
+import { MovementsForm } from "../components/commercial/MovementsForm";
 
 import { getNewPrice, getStock } from "../utils/helpers";
 
@@ -50,30 +52,32 @@ export function Products() {
             amount: ''
         },
         rules: {
-            code: {
-                required: true,
-                maxLength: 55
-            },
-            details: {
-                required: true,
-                maxLength: 55
-            },
-            buy_price: {
-                required: true
-            },
-            min_stock: {
-                required: true
-            },
-            earn: {
-                required: true
-            },
-            supplier_id: {
-                required: true
-            },
-            amount: {
-                required: open === 'NEW'
-            }
+            code: { required: true, maxLength: 55 },
+            details: { required: true, maxLength: 55 },
+            buy_price: { required: true },
+            min_stock: { required: true },
+            earn: { required: true },
+            supplier_id: { required: true },
+            amount: { required: open === 'NEW' }
         }
+    })
+    const {
+        open: openMovement,
+        setOpen: setOpenMovement,
+        handleSubmit: handleSubmitMovement
+    } = useMovements()
+    const {
+        formData: formDataMovement,
+        setFormData: setFormDataMovement,
+        handleChange: handleChangeMovement,
+        errors: errorsMovement,
+        disabled: disabledMovement,
+        setDisabled: setDisabledMovement,
+        reset: resetMovement,
+        validate: validateMovement
+    } = useForm({
+        defaultData: { amount: '', observations: '' },
+        rules: { amount: { required: true }, observations: { maxLength: 255 } }
     })
 
     useEffect(() => {
@@ -158,7 +162,9 @@ export function Products() {
                 }
                 rows={state.products.data}
                 setOpen={setOpen}
+                setOpenNewMovement={setOpenMovement}
                 setFormData={setFormData}
+                setFormDataMovement={setFormDataMovement}
                 entityKey="products"
                 getter={getProducts}
                 loading={loadingSuppliers || loadingProducts || disabled}
@@ -166,6 +172,8 @@ export function Products() {
                 showDeleteAction
                 showViewAction
                 showEditAction
+                showInput="Ingresar stock"
+                showOutput="Egresar stock"
                 contentHeader={
                     <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between' }}>
                         <Box sx={{ display: 'flex', gap: 1 }}>
@@ -457,6 +465,18 @@ export function Products() {
                         </Button>
                     </Box>
                 </ModalComponent>
+                <MovementsForm
+                    open={openMovement}
+                    setOpen={setOpenMovement}
+                    formData={formDataMovement}
+                    errors={errorsMovement}
+                    handleChange={handleChangeMovement}
+                    reset={resetMovement}
+                    disabled={disabledMovement}
+                    setDisabled={setDisabledMovement}
+                    handleSubmit={handleSubmitMovement}
+                    validate={validateMovement}
+                />
             </DataGridWithBackendPagination>
         </Layout>
     )
