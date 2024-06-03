@@ -30,8 +30,8 @@ export function SalesSearch() {
   });
 
   useEffect(() => {
-    if (auth?.user.role !== "ADMINISTRADOR") navigate("/ventas");
-  }, []);
+    if (auth?.user.role !== 'ADMINISTRADOR' && auth?.user.role !== 'VENDEDOR') navigate('/productos')
+  }, [])
 
   useEffect(() => {
     getUsers()

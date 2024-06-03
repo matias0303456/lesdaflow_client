@@ -1,4 +1,5 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Box, Button, FormControl, Input, InputLabel, MenuItem, Select, Typography } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
@@ -18,6 +19,8 @@ export function Clients() {
 
     const { auth } = useContext(AuthContext)
     const { state } = useContext(DataContext)
+
+    const navigate = useNavigate()
 
     const { loadingClients, handleSubmit, handleDelete, open, setOpen, getClients } = useClients()
     const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
@@ -68,6 +71,10 @@ export function Clients() {
             }
         }
     })
+
+    useEffect(() => {
+        if (auth?.user.role !== 'ADMINISTRADOR' && auth?.user.role !== 'VENDEDOR') navigate('/productos')
+    }, [])
 
     const headCells = [
         {

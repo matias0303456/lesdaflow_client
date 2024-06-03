@@ -1,4 +1,5 @@
 import { useContext, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Box, Button, Checkbox, FormControl, FormControlLabel, Input, InputLabel, MenuItem, Paper, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
 
 import { AuthContext } from "../providers/AuthProvider";
@@ -20,6 +21,8 @@ export function Products() {
 
     const { auth } = useContext(AuthContext)
     const { state } = useContext(DataContext)
+
+    const navigate = useNavigate()
 
     const {
         loadingProducts,
@@ -79,6 +82,10 @@ export function Products() {
         defaultData: { amount: '', observations: '' },
         rules: { amount: { required: true }, observations: { maxLength: 255 } }
     })
+
+    useEffect(() => {
+        if (auth?.user.role !== 'ADMINISTRADOR') navigate('/productos')
+    }, [])
 
     useEffect(() => {
         getSuppliers()

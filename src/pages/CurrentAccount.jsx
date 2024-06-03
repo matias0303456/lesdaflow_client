@@ -27,7 +27,7 @@ export function CurrentAccount() {
   })
 
   useEffect(() => {
-    if (auth?.user.role !== 'ADMINISTRADOR') navigate('/productos')
+    if (auth?.user.role !== 'ADMINISTRADOR' && auth?.user.role !== 'VENDEDOR') navigate('/productos')
   }, [])
 
   const headCells = [

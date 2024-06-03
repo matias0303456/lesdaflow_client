@@ -56,8 +56,8 @@ export function SalesReady() {
   })
 
   useEffect(() => {
-    if (auth?.user.role !== 'ADMINISTRADOR' && auth?.user.role !== 'CHOFER') navigate('/ventas')
-  }, [])
+    if (auth?.user.role !== 'CHOFER') navigate('/productos')
+}, [])
 
   const headCells = [
     {

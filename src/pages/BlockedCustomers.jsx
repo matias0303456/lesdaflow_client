@@ -13,8 +13,8 @@ export function BlockedCustomers() {
   const navigate = useNavigate()
 
   useEffect(() => {
-    if (auth?.user.role !== "ADMINISTRADOR") navigate("/productos");
-  }, []);
+    if (auth?.user.role !== 'ADMINISTRADOR' && auth?.user.role !== 'VENDEDOR') navigate('/productos')
+  }, [])
 
   return (
     <Layout title="Reporte de Clientes Bloqueados">

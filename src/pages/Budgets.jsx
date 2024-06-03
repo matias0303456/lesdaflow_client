@@ -1,26 +1,31 @@
 import { useContext, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Box, Button, Typography } from "@mui/material";
 import { format } from "date-fns";
 
+import { AuthContext } from "../providers/AuthProvider";
 import { DataContext } from "../providers/DataProvider";
 import { useForm } from "../hooks/useForm";
 import { useBudgets } from "../hooks/useBudgets";
 import { useProducts } from "../hooks/useProducts";
 import { useClients } from "../hooks/useClients";
+import { useSales } from "../hooks/useSales";
 
 import { Layout } from "../components/common/Layout";
 import { DataGridWithBackendPagination } from "../components/datagrid/DataGridWithBackendPagination";
 import { ModalComponent } from "../components/common/ModalComponent";
 import { BudgetFilter } from "../components/filters/BudgetFilter";
 import { BudgetForm } from "../components/commercial/BudgetForm";
+import { SaleForm } from "../components/commercial/SaleForm";
 
 import { getBudgetTotal } from "../utils/helpers";
-import { SaleForm } from "../components/commercial/SaleForm";
-import { useSales } from "../hooks/useSales";
 
 export function Budgets() {
 
+    const { auth } = useContext(AuthContext)
     const { state } = useContext(DataContext)
+
+    const navigate = useNavigate()
 
     const { getProducts } = useProducts()
     const { getClients } = useClients()
@@ -83,6 +88,10 @@ export function Budgets() {
             }
         }
     })
+
+    useEffect(() => {
+        if (auth?.user.role !== 'ADMINISTRADOR' && auth?.user.role !== 'VENDEDOR') navigate('/productos')
+    }, [])
 
     useEffect(() => {
         getClients()

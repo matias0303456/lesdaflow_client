@@ -6,9 +6,9 @@ import { AuthContext } from "../providers/AuthProvider";
 import { DataContext } from "../providers/DataProvider";
 import { useForm } from "../hooks/useForm";
 import { useClients } from "../hooks/useClients";
+import { useUsers } from "../hooks/useUsers";
 
 import { Layout } from "../components/common/Layout";
-import { useUsers } from "../hooks/useUsers";
 
 export function AccountsReport() {
 
@@ -25,7 +25,7 @@ export function AccountsReport() {
   })
 
   useEffect(() => {
-    if (auth?.user.role !== "ADMINISTRADOR") navigate("/productos");
+    if (auth?.user.role !== "ADMINISTRADOR" && auth?.user.role !== 'VENDEDOR') navigate("/productos");
   }, [])
 
   useEffect(() => {

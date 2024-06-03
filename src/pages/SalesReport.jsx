@@ -35,7 +35,7 @@ export function SalesReport() {
   useUsers()
 
   useEffect(() => {
-    if (auth?.user.role !== "ADMINISTRADOR") navigate("/ventas")
+    if (auth?.user.role !== 'ADMINISTRADOR' && auth?.user.role !== 'VENDEDOR') navigate('/productos')
   }, [])
 
   const handleSubmit = e => {

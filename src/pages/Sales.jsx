@@ -1,4 +1,5 @@
 import { useContext, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Box, Button, Typography } from "@mui/material";
 import { format } from "date-fns";
 
@@ -22,6 +23,8 @@ export function Sales() {
 
     const { auth } = useContext(AuthContext)
     const { state } = useContext(DataContext)
+
+    const navigate = useNavigate()
 
     const {
         loadingSales,
@@ -62,6 +65,10 @@ export function Sales() {
             }
         }
     })
+
+    useEffect(() => {
+        if (auth?.user.role !== 'ADMINISTRADOR' && auth?.user.role !== 'VENDEDOR') navigate('/productos')
+    }, [])
 
     useEffect(() => {
         getClients()
