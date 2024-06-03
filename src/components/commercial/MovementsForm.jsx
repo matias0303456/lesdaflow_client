@@ -1,8 +1,7 @@
+import { useState } from "react";
 import { Autocomplete, Box, Button, FormControl, Input, InputLabel, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from "@mui/material";
 
 import { ModalComponent } from "../common/ModalComponent";
-import { useContext } from "react";
-import { DataContext } from "../../providers/DataProvider";
 
 export function MovementsForm({
     movementType,
@@ -13,7 +12,7 @@ export function MovementsForm({
     reset, setOpen
 }) {
 
-    const { state } = useContext(DataContext)
+    const [search, setSearch] = useState([])
 
     return (
         <ModalComponent open={open === 'NEW_INCOME' || open === 'NEW__OUTCOME'} onClose={() => reset(setOpen)} reduceWidth={600}>
@@ -26,9 +25,9 @@ export function MovementsForm({
                         <Autocomplete
                             disablePortal
                             id="product-autocomplete"
-                            value={formData.product_id.toString() > 0 ? `${state.products.data.find(p => p.id === formData.product_id)?.code} - ${searchProducts.find(p => p.id === formData.product_id)?.details} - T: ${searchProducts.find(p => p.id === formData.product_id)?.size}` : ''}
-                            options={state.products.data.map(p => ({ label: `Cód: ${p.code} - Det: ${p.details} - T: ${p.size}`, id: p.id }))}
-                            noOptionsText="No hay productos registrados."
+                            value={formData.product_id.toString() > 0 ? `${search.find(p => p.id === formData.product_id)?.code} - ${search.find(p => p.id === formData.product_id)?.details}` : ''}
+                            options={search.map(p => ({ label: `Cód: ${p.code} - Det: ${p.details}`, id: p.id }))}
+                            noOptionsText="Buscar producto por código o nombre..."
                             onChange={(e, value) => handleChange({ target: { name: 'product_id', value: value?.id ?? '' } })}
                             renderInput={(params) => <TextField {...params} label="Producto" />}
                             isOptionEqualToValue={(option, value) => option.code === value.code || value.length === 0}
@@ -58,7 +57,7 @@ export function MovementsForm({
                                 <TableBody>
                                     <TableRow>
                                         <TableCell align="center">
-                                            {formData.product_id.toString().length > 0 ? state.products.data.find(p => p.id === formData.product_id)?.stock : 0}
+                                            {formData.product_id.toString().length > 0 ? search.find(p => p.id === formData.product_id)?.stock : 0}
                                         </TableCell>
                                         <TableCell align="center">
                                             <FormControl>
@@ -71,7 +70,7 @@ export function MovementsForm({
                                             </FormControl>
                                         </TableCell>
                                         <TableCell align="center">
-                                            {formData.product_id.toString().length > 0 ? state.products.data.find(p => p.id === formData.product_id)?.stock + Math.abs(parseInt(formData.amount.toString().length > 0 ? formData.amount : 0)) - oldFormDataAmount : 0}
+                                            {formData.product_id.toString().length > 0 ? search.find(p => p.id === formData.product_id)?.stock + Math.abs(parseInt(formData.amount.toString().length > 0 ? formData.amount : 0)) - oldFormDataAmount : 0}
                                         </TableCell>
                                     </TableRow>
                                 </TableBody>
