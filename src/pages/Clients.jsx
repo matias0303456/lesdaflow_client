@@ -67,7 +67,7 @@ export function Clients() {
                 maxLength: 255
             },
             user_id: {
-                required: true
+                required: auth?.user.role === 'ADMINISTRADOR'
             }
         }
     })
@@ -150,7 +150,7 @@ export function Clients() {
                 showDeleteAction
                 showViewAction
                 contentHeader={
-                    <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: 1 }}>
                         <Box sx={{ display: 'flex', gap: 1 }}>
                             <Button variant="outlined" onClick={() => setOpen('NEW')}>
                                 Agregar

@@ -149,17 +149,9 @@ export function Users() {
         showViewAction
         contentHeader={
           <Box sx={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: 'space-between' }}>
-            <Box sx={{ display: "flex", gap: 1 }}>
-              <Button variant="outlined" size="medium" onClick={() => setOpen("NEW")}>
-                Agregar
-              </Button>
-              <Button variant="outlined" size="medium" color="success">
-                Excel
-              </Button>
-              <Button variant="outlined" size="medium" color="error">
-                Pdf
-              </Button>
-            </Box>
+            <Button variant="outlined" size="medium" onClick={() => setOpen("NEW")}>
+              Agregar
+            </Button>
             <UserFilter />
           </Box>
         }

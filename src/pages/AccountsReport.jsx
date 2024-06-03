@@ -21,7 +21,7 @@ export function AccountsReport() {
   const { getClients } = useClients()
   const { formData, handleChange, validate, errors } = useForm({
     defaultData: { user_id: '', client_id: '' },
-    rules: { user_id: { required: true }, client_id: { required: true } }
+    rules: { user_id: { required: auth?.user.role === 'ADMINISTRADOR' }, client_id: { required: true } }
   })
 
   useEffect(() => {
@@ -30,8 +30,8 @@ export function AccountsReport() {
 
   useEffect(() => {
     getClients()
-    getUsers()
-  }, [])
+    if (auth?.user.role === 'ADMINISTRADOR') getUsers()
+  }, [auth])
 
   const handleSubmit = e => {
     e.preventDefault()
@@ -64,21 +64,29 @@ export function AccountsReport() {
               <Select
                 labelId="seller-select"
                 id="user_id"
-                value={formData.user_id}
+                value={auth?.user.role === 'ADMINISTRADOR' ? formData.user_id : auth?.user.id}
+                disabled={auth?.user.role !== 'ADMINISTRADOR'}
                 label="Vendedor"
                 name="user_id"
                 onChange={handleChange}
               >
-                <MenuItem value="ALL">TODOS</MenuItem>
-                {state.users.data.length > 0 ? (
-                  state.users.data.map((u) => (
-                    <MenuItem key={u.id} value={u.id}>
-                      {`${u.first_name} ${u.last_name}`.toUpperCase()}
-                    </MenuItem>
-                  ))
-                ) : (
-                  <MenuItem>No se encontraron resultados</MenuItem>
-                )}
+                {auth?.user.role === 'ADMINISTRADOR' ?
+                  <>
+                    <MenuItem value="ALL">TODOS</MenuItem>
+                    {state.users.data.length > 0 ? (
+                      state.users.data.map((u) => (
+                        <MenuItem key={u.id} value={u.id}>
+                          {`${u.first_name} ${u.last_name}`.toUpperCase()}
+                        </MenuItem>
+                      ))
+                    ) : (
+                      <MenuItem>No se encontraron resultados</MenuItem>
+                    )}
+                  </> :
+                  <MenuItem value={auth?.user.id}>
+                    {`${auth?.user.first_name} ${auth?.user.last_name}`.toUpperCase()}
+                  </MenuItem>
+                }
               </Select>
               {errors.user_id?.type === 'required' &&
                 <Typography variant="caption" color="red" marginTop={1}>
