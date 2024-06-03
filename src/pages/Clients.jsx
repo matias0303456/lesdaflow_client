@@ -15,6 +15,8 @@ import { ModalComponent } from "../components/common/ModalComponent";
 import { DataGridWithBackendPagination } from "../components/datagrid/DataGridWithBackendPagination";
 import { ClientFilter } from "../components/filters/ClientFilter";
 
+import { REPORT_URL } from "../utils/urls";
+
 export function Clients() {
 
     const { auth } = useContext(AuthContext)
@@ -155,7 +157,9 @@ export function Clients() {
                             <Button variant="outlined" onClick={() => setOpen('NEW')}>
                                 Agregar
                             </Button>
-                            <Button variant="outlined" color='error'>
+                            <Button variant="outlined" color='error' onClick={() => {
+                                window.open(`${REPORT_URL}/client-details/${auth?.token}`, '_blank')
+                            }}>
                                 PDF
                             </Button>
                         </Box>
