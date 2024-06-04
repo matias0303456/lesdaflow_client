@@ -175,6 +175,7 @@ export function Sales() {
                 showDeleteAction={auth?.user.role === 'ADMINISTRADOR'}
                 showViewAction
                 showPDFAction
+                openPdfUrl={`${REPORT_URL}/sales-pdf?token=${auth?.token}&id=`}
                 contentHeader={
                     <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between' }}>
                         <Box sx={{ display: 'flex', gap: 1 }}>

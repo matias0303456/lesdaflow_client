@@ -154,7 +154,7 @@ export function DataGridWithBackendPagination({
                                 {showPDFAction &&
                                   <Tooltip
                                     title="Imprimir PDF"
-                                    onClick={() => window.open(openPdfUrl, '_blank')}
+                                    onClick={() => window.open(openPdfUrl + row.id, '_blank')}
                                   >
                                     <IconButton className="rounded-full bg-black/20 opacity-50 hover:bg-[#288bcd] hover:text-white">
                                       <PictureAsPdfSharpIcon className="w-4 h-4" />
