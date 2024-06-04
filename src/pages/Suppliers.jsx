@@ -12,6 +12,8 @@ import { ModalComponent } from "../components/common/ModalComponent";
 import { SupplierFilter } from "../components/filters/SupplierFilter";
 import { DataGridWithBackendPagination } from "../components/datagrid/DataGridWithBackendPagination";
 
+import { REPORT_URL } from "../utils/urls";
+
 export function Suppliers() {
 
     const { auth } = useContext(AuthContext)
@@ -146,7 +148,9 @@ export function Suppliers() {
                             <Button variant="outlined" onClick={() => setOpen('NEW')}>
                                 Agregar
                             </Button>
-                            <Button variant="outlined" color='success'>
+                            <Button variant="outlined" color='success' onClick={() => {
+                                window.open(`${REPORT_URL}/suppliers?token=${auth?.token}`, '_blank')
+                            }}>
                                 Excel
                             </Button>
                         </Box>
