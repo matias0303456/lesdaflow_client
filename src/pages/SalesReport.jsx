@@ -21,6 +21,8 @@ import { useUsers } from "../hooks/useUsers";
 
 import { Layout } from "../components/common/Layout";
 
+import { REPORT_URL } from "../utils/urls";
+
 export function SalesReport() {
 
   const { auth } = useContext(AuthContext)
@@ -29,8 +31,12 @@ export function SalesReport() {
   const navigate = useNavigate()
 
   const { formData, handleChange, validate, errors, reset } = useForm({
-    defaultData: { from: new Date(Date.now()), to: new Date(Date.now()), seller_id: '' },
-    rules: { seller_id: { required: true } }
+    defaultData: {
+      from: new Date(Date.now()),
+      to: new Date(Date.now()),
+      user: auth?.user.role !== 'ADMINISTRADOR' ? auth?.user.username : ''
+    },
+    rules: { user: { required: auth?.user.role === 'ADMINISTRADOR' } }
   })
   useUsers()
 
@@ -41,7 +47,8 @@ export function SalesReport() {
   const handleSubmit = e => {
     e.preventDefault()
     if (validate()) {
-      console.log(formData)
+      const { from, to, user } = formData
+      window.open(`${REPORT_URL}/sales-pdf?token=${auth?.token}&from=${from}&to=${to}&user=${user}`, '_blank')
       reset()
     }
   }
@@ -109,20 +116,33 @@ export function SalesReport() {
               </InputLabel>
               <Select
                 labelId="seller-select"
-                id="seller_id"
-                value={formData.seller_id}
+                id="user"
+                value={auth?.user.role === 'ADMINISTRADOR' ? formData.user : auth?.user.id}
+                disabled={auth?.user.role !== 'ADMINISTRADOR'}
                 label="Vendedor"
-                name="seller_id"
+                name="user"
                 onChange={handleChange}
                 sx={{ width: "100%" }}
               >
-                {state.users.data.map((u) => (
-                  <MenuItem key={u.id} value={u.id}>
-                    {`${u.first_name} ${u.last_name}`.toUpperCase()}
+                {auth?.user.role === 'ADMINISTRADOR' ?
+                  <>
+                    <MenuItem value="">Seleccione</MenuItem>
+                    {state.users.data.length > 0 ? (
+                      state.users.data.map((u) => (
+                        <MenuItem key={u.id} value={u.id}>
+                          {`${u.first_name} ${u.last_name}`.toUpperCase()}
+                        </MenuItem>
+                      ))
+                    ) : (
+                      <MenuItem>No se encontraron resultados</MenuItem>
+                    )}
+                  </> :
+                  <MenuItem value={auth?.user.id}>
+                    {`${auth?.user.first_name} ${auth?.user.last_name}`.toUpperCase()}
                   </MenuItem>
-                ))}
+                }
               </Select>
-              {errors.seller_id?.type === 'required' &&
+              {errors.user?.type === 'required' &&
                 <Typography variant="caption" color="red" marginTop={1}>
                   * El vendedor es requerido.
                 </Typography>

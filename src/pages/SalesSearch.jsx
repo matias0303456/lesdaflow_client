@@ -26,7 +26,12 @@ export function SalesSearch() {
   const { loadingUsers, getUsers } = useUsers()
   const { getSales } = useSales()
   const { formData, handleChange } = useForm({
-    defaultData: { from: new Date(Date.now()), to: new Date(Date.now()), code: '', user: '' }
+    defaultData: {
+      from: new Date(Date.now()),
+      to: new Date(Date.now()),
+      user: auth?.user.role !== 'ADMINISTRADOR' ? auth?.user.username : '',
+      code: ''
+    }
   });
 
   useEffect(() => {
@@ -34,7 +39,7 @@ export function SalesSearch() {
   }, [])
 
   useEffect(() => {
-    getUsers()
+    if (auth?.user.role === 'ADMINISTRADOR') getUsers()
   }, [])
 
   useEffect(() => {
@@ -150,18 +155,30 @@ export function SalesSearch() {
               <Select
                 labelId="seller-select"
                 id="user"
-                value={formData.user}
+                value={auth?.user.role === 'ADMINISTRADOR' ? formData.user : auth?.user.id}
+                disabled={auth?.user.role !== 'ADMINISTRADOR'}
                 label="Vendedor"
                 name="user"
                 onChange={handleChange}
                 sx={{ width: "100%" }}
               >
-                <MenuItem value="">Seleccione</MenuItem>
-                {state.users.data.map((u) => (
-                  <MenuItem key={u.id} value={u.username}>
-                    {`${u.first_name} ${u.last_name}`.toUpperCase()}
+                {auth?.user.role === 'ADMINISTRADOR' ?
+                  <>
+                    <MenuItem value="">Seleccione</MenuItem>
+                    {state.users.data.length > 0 ? (
+                      state.users.data.map((u) => (
+                        <MenuItem key={u.id} value={u.username}>
+                          {`${u.first_name} ${u.last_name}`.toUpperCase()}
+                        </MenuItem>
+                      ))
+                    ) : (
+                      <MenuItem>No se encontraron resultados</MenuItem>
+                    )}
+                  </> :
+                  <MenuItem value={auth?.user.id}>
+                    {`${auth?.user.first_name} ${auth?.user.last_name}`.toUpperCase()}
                   </MenuItem>
-                ))}
+                }
               </Select>
             </FormControl>
           </Box>

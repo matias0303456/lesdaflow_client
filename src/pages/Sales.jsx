@@ -181,7 +181,9 @@ export function Sales() {
                             <Button variant="outlined" onClick={() => setOpen('NEW')}>
                                 Agregar
                             </Button>
-                            <Button variant="outlined" color='success'>
+                            <Button variant="outlined" color='success' onClick={() => {
+                                window.open(`${REPORT_URL}/sales-excel?token=${auth?.token}`, '_blank')
+                            }}>
                                 Excel
                             </Button>
                         </Box>
