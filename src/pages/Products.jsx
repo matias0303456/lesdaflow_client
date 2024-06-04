@@ -16,6 +16,7 @@ import { ProductFilter } from "../components/filters/ProductFilter";
 import { MovementsForm } from "../components/commercial/MovementsForm";
 
 import { getNewPrice, getStock } from "../utils/helpers";
+import { REPORT_URL } from "../utils/urls";
 
 export function Products() {
 
@@ -187,10 +188,12 @@ export function Products() {
                             <Button variant="outlined" onClick={() => setOpen('NEW')}>
                                 Agregar
                             </Button>
-                            <Button variant="outlined" color='success'>
+                            <Button variant="outlined" color='success' onClick={() => {
+                                window.open(`${REPORT_URL}/products-excel?token=${auth?.token}`, '_blank')
+                            }}>
                                 Excel
                             </Button>
-                            <Button variant="contained" onClick={() => setOpen('NEW')}>
+                            <Button variant="contained">
                                 Stock nulo
                             </Button>
                         </Box>

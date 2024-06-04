@@ -18,6 +18,8 @@ import { useSuppliers } from "../hooks/useSuppliers"
 
 import { Layout } from "../components/common/Layout";
 
+import { REPORT_URL } from "../utils/urls";
+
 export function ProductsReport() {
 
   const { auth } = useContext(AuthContext);
@@ -25,9 +27,9 @@ export function ProductsReport() {
 
   const navigate = useNavigate()
 
-  const { formData, handleChange, errors, validate } = useForm({
+  const { formData, handleChange, validate } = useForm({
     defaultData: { supplier_id: '', stock: '' },
-    rules: { supplier_id: { required: true }, stock: { required: true } }
+    rules: {}
   })
   const { loadingSuppliers, getSuppliers } = useSuppliers()
 
@@ -42,7 +44,8 @@ export function ProductsReport() {
   const handleSubmit = e => {
     e.preventDefault()
     if (validate()) {
-      console.log(formData)
+      const { supplier_id, stock } = formData
+      window.open(`${REPORT_URL}/products-pdf?token=${auth?.token}${supplier_id.length > 0 ? `&supplier_id=${supplier_id}` : ''}${stock.length > 0 ? `&stock=${stock}` : ''}`, '_blank')
     }
   }
 
@@ -89,17 +92,13 @@ export function ProductsReport() {
                     disabled={state.suppliers.data.length === 0}
                     sx={{ width: "100%" }}
                   >
+                    <MenuItem value="">Seleccione</MenuItem>
                     {state.suppliers.data.map((supplier) => (
                       <MenuItem key={supplier.id} value={supplier.id}>
                         {supplier.name}
                       </MenuItem>
                     ))}
                   </Select>
-                  {errors.supplier_id?.type === 'required' &&
-                    <Typography variant="caption" color="red" marginTop={1}>
-                      * El proveedor es requerido.
-                    </Typography>
-                  }
                 </FormControl>
                 <FormControl variant="standard" sx={{
                   width: "100%",
@@ -119,15 +118,11 @@ export function ProductsReport() {
                     disabled={state.suppliers.data.length === 0}
                     sx={{ width: "100%" }}
                   >
-                    <MenuItem value="CON STOCK">CON STOCK</MenuItem>
-                    <MenuItem value="SIN STOCK">SIN STOCK</MenuItem>
-                    <MenuItem value="STOCK MINIMO">STOCK MINIMO</MenuItem>
+                    <MenuItem value="">Seleccione</MenuItem>
+                    <MenuItem value="CON_STOCK">CON STOCK</MenuItem>
+                    <MenuItem value="SIN_STOCK">SIN STOCK</MenuItem>
+                    <MenuItem value="STOCK_MINIMO">STOCK MINIMO</MenuItem>
                   </Select>
-                  {errors.stock?.type === 'required' &&
-                    <Typography variant="caption" color="red" marginTop={1}>
-                      * La existencia es requerida
-                    </Typography>
-                  }
                 </FormControl>
               </Box>
             </form>
