@@ -9,7 +9,7 @@ import { DataProvider } from "./providers/DataProvider";
 
 import { Login } from "./pages/Login";
 import { Clients } from './pages/Clients'
-import { AccountsReport } from "./pages/AccountsReport";
+// import { AccountsReport } from "./pages/AccountsReport";
 import { Users } from './pages/Users'
 import { Suppliers } from "./pages/Suppliers";
 import { Sales } from "./pages/Sales";
@@ -19,7 +19,7 @@ import { ProductsReport } from './pages/ProductsReport'
 import { Budgets } from "./pages/Budgets";
 import { Registers } from "./pages/Registers";
 import { Error } from './pages/Error'
-import { CurrentAccount } from "./pages/CurrentAccount";
+// import { CurrentAccount } from "./pages/CurrentAccount";
 import { ClientsBySeller } from "./pages/ClientsBySeller";
 import { SalesSearch } from "./pages/SalesSearch";
 import { SalesReady } from "./pages/SalesReady";
@@ -54,8 +54,8 @@ function App() {
                 <Route path="/" element={<Login />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/clientes" element={<Clients />} />
-                <Route path="/cta-cte" element={<CurrentAccount />} />
-                <Route path="/reporte-cta-cte" element={<AccountsReport />} />
+                {/* <Route path="/cta-cte" element={<CurrentAccount />} /> */}
+                {/* <Route path="/reporte-cta-cte" element={<AccountsReport />} /> */}
                 <Route path="/clientes-vendedor" element={<ClientsBySeller />} />
                 <Route path="/usuarios" element={<Users />} />
                 <Route path="/proveedores" element={<Suppliers />} />

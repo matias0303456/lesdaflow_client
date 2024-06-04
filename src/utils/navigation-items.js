@@ -20,16 +20,16 @@ export const nav_items = [
         path: "/clientes",
         can_access: ['ADMINISTRADOR', 'VENDEDOR']
       },
-      {
-        subtitle: "Cuentas Corrientes",
-        path: "/cta-cte",
-        can_access: ['ADMINISTRADOR', 'VENDEDOR']
-      },
-      {
-        subtitle: "Reporte Cuenta Corriente",
-        path: "/reporte-cta-cte",
-        can_access: ['ADMINISTRADOR', 'VENDEDOR']
-      },
+      // {
+      //   subtitle: "Cuentas Corrientes",
+      //   path: "/cta-cte",
+      //   can_access: ['ADMINISTRADOR', 'VENDEDOR']
+      // },
+      // {
+      //   subtitle: "Reporte Cuenta Corriente",
+      //   path: "/reporte-cta-cte",
+      //   can_access: ['ADMINISTRADOR', 'VENDEDOR']
+      // },
       {
         subtitle: "Clientes por Vendedor",
         path: "/clientes-vendedor",
