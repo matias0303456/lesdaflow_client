@@ -23,10 +23,7 @@ export function Registers() {
     const { loadingRegisters, handleSubmit, open, setOpen, getRegisters } = useRegisters()
     const { payments, loadingPayments, getPayments } = usePayments()
     const { formData, setFormData, handleChange, disabled, setDisabled, reset } = useForm({
-        defaultData: {
-            id: '',
-            user_id: auth?.user.id
-        }
+        defaultData: { id: '', user_id: auth?.user.id }
     })
 
     useEffect(() => {

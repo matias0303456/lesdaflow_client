@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { Box, Button, FormControl, InputLabel, MenuItem, Select, Typography } from "@mui/material";
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
@@ -8,14 +8,18 @@ import { es } from "date-fns/locale";
 import { AuthContext } from "../providers/AuthProvider";
 import { DataContext } from "../providers/DataProvider";
 import { useForm } from "../hooks/useForm";
+import { useUsers } from "../hooks/useUsers";
 
 import { Layout } from "../components/common/Layout";
+
+import { REPORT_URL } from "../utils/urls";
 
 export function RegisterMovements() {
 
   const { auth } = useContext(AuthContext)
   const { state } = useContext(DataContext)
 
+  const { getUsers } = useUsers()
   const { handleChange, formData, errors, validate } = useForm({
     defaultData: {
       from: new Date(Date.now()),
@@ -25,10 +29,15 @@ export function RegisterMovements() {
     rules: { user_id: { required: auth?.user.role === 'ADMINISTRADOR' } }
   })
 
+  useEffect(() => {
+    if (auth?.user.role === 'ADMINISTRADOR') getUsers()
+  }, [])
+
   const handleSubmit = e => {
     e.preventDefault()
     if (validate()) {
-      console.log(formData)
+      const { from, to, user_id } = formData
+      window.open(`${REPORT_URL}/registers-pdf?token=${auth?.token}&from=${from.toISOString()}&to=${to.toISOString()}&user_id=${user_id}`, '_blank')
     }
   }
 
@@ -103,23 +112,22 @@ export function RegisterMovements() {
                 sx={{ width: "100%" }}
                 onChange={handleChange}
               >
-                {auth?.user.role === 'ADMINISTRADOR' ?
-                  <>
-                    <MenuItem value="">Seleccione</MenuItem>
-                    {state.users.data.length > 0 ? (
-                      state.users.data.map((u) => (
+                {auth?.user.role === 'ADMINISTRADOR' ? (
+                  [
+                    <MenuItem value="" key="select">Seleccione</MenuItem>,
+                    ...(state.users.data.length > 0
+                      ? state.users.data.map((u) => (
                         <MenuItem key={u.id} value={u.id}>
                           {`${u.first_name} ${u.last_name}`.toUpperCase()}
                         </MenuItem>
                       ))
-                    ) : (
-                      <MenuItem>No se encontraron resultados</MenuItem>
-                    )}
-                  </> :
-                  <MenuItem value={auth?.user.id}>
+                      : [<MenuItem key="no-results">No se encontraron resultados</MenuItem>])
+                  ]
+                ) : (
+                  <MenuItem value={auth?.user.id} key={auth?.user.id}>
                     {`${auth?.user.first_name} ${auth?.user.last_name}`.toUpperCase()}
                   </MenuItem>
-                }
+                )}
               </Select>
               {errors.user_id?.type === 'required' &&
                 <Typography variant="caption" color="red" marginTop={1}>

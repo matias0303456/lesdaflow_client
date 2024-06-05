@@ -49,7 +49,7 @@ export function SalesReport() {
     e.preventDefault()
     if (validate()) {
       const { from, to, user } = formData
-      window.open(`${REPORT_URL}/sales-pdf-or-puppeteer?token=${auth?.token}&from=${from}&to=${to}&user=${user}`, '_blank')
+      window.open(`${REPORT_URL}/sales-pdf-or-puppeteer?token=${auth?.token}&from=${from.toISOString()}&to=${to.toISOString()}&user=${user}`, '_blank')
       reset()
     }
   }
@@ -125,23 +125,22 @@ export function SalesReport() {
                 onChange={handleChange}
                 sx={{ width: "100%" }}
               >
-                {auth?.user.role === 'ADMINISTRADOR' ?
-                  <>
-                    <MenuItem value="">Seleccione</MenuItem>
-                    {state.users.data.filter(u => u.role === 'VENDEDOR').length > 0 ? (
-                      state.users.data.filter(u => u.role === 'VENDEDOR').map((u) => (
-                        <MenuItem key={u.id} value={u.id}>
+                {auth?.user.role === 'ADMINISTRADOR' ? (
+                  [
+                    <MenuItem value="" key="select">Seleccione</MenuItem>,
+                    ...(state.users.data.filter(u => u.role === 'VENDEDOR').length > 0
+                      ? state.users.data.filter(u => u.role === 'VENDEDOR').map((u) => (
+                        <MenuItem key={u.id} value={u.username}>
                           {`${u.first_name} ${u.last_name}`.toUpperCase()}
                         </MenuItem>
                       ))
-                    ) : (
-                      <MenuItem>No se encontraron resultados</MenuItem>
-                    )}
-                  </> :
-                  <MenuItem value={auth?.user.id}>
+                      : [<MenuItem key="no-results">No se encontraron resultados</MenuItem>])
+                  ]
+                ) : (
+                  <MenuItem value={auth?.user.id} key={auth?.user.username}>
                     {`${auth?.user.first_name} ${auth?.user.last_name}`.toUpperCase()}
                   </MenuItem>
-                }
+                )}
               </Select>
               {errors.user?.type === 'required' &&
                 <Typography variant="caption" color="red" marginTop={1}>

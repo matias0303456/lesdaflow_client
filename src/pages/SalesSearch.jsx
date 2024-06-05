@@ -162,23 +162,22 @@ export function SalesSearch() {
                 onChange={handleChange}
                 sx={{ width: "100%" }}
               >
-                {auth?.user.role === 'ADMINISTRADOR' ?
-                  <>
-                    <MenuItem value="">Seleccione</MenuItem>
-                    {state.users.data.filter(u => u.role === 'VENDEDOR').length > 0 ? (
-                      state.users.data.filter(u => u.role === 'VENDEDOR').map((u) => (
+                {auth?.user.role === 'ADMINISTRADOR' ? (
+                  [
+                    <MenuItem value="" key="select">Seleccione</MenuItem>,
+                    ...(state.users.data.filter(u => u.role === 'VENDEDOR').length > 0
+                      ? state.users.data.filter(u => u.role === 'VENDEDOR').map((u) => (
                         <MenuItem key={u.id} value={u.username}>
                           {`${u.first_name} ${u.last_name}`.toUpperCase()}
                         </MenuItem>
                       ))
-                    ) : (
-                      <MenuItem>No se encontraron resultados</MenuItem>
-                    )}
-                  </> :
-                  <MenuItem value={auth?.user.id}>
+                      : [<MenuItem key="no-results">No se encontraron resultados</MenuItem>])
+                  ]
+                ) : (
+                  <MenuItem value={auth?.user.id} key={auth?.user.id}>
                     {`${auth?.user.first_name} ${auth?.user.last_name}`.toUpperCase()}
                   </MenuItem>
-                }
+                )}
               </Select>
             </FormControl>
           </Box>

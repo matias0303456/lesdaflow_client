@@ -18,7 +18,7 @@ export function BlockedCustomers() {
 
   return (
     <Layout title="Reporte de Clientes Bloqueados">
-      <Box sx={{ width: { xs: '100%', sm: '50%' } }} className="p-2 bg-white rounded-md">
+      <Box sx={{ width: { xs: '100%', sm: '50%' } }} className="bg-white rounded-md">
         <Typography
           variant="h6"
           sx={{
@@ -34,7 +34,7 @@ export function BlockedCustomers() {
         >
           Clientes Bloqueados
         </Typography>
-        <Box className="mt-3">
+        <Box className="mt-3 p-2">
           <Button variant="contained" color="primary">Imprimir</Button>
         </Box>
       </Box>
