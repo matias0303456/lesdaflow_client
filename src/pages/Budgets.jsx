@@ -19,6 +19,7 @@ import { BudgetForm } from "../components/commercial/BudgetForm";
 import { SaleForm } from "../components/commercial/SaleForm";
 
 import { getBudgetTotal } from "../utils/helpers";
+import { REPORT_URL } from "../utils/urls";
 
 export function Budgets() {
 
@@ -189,10 +190,14 @@ export function Budgets() {
                             <Button variant="outlined" onClick={() => setOpen('NEW')}>
                                 Agregar
                             </Button>
-                            <Button variant="outlined" color='success'>
+                            <Button variant="outlined" color='success' onClick={() => {
+                                window.open(`${REPORT_URL}/budgets-excel?token=${auth?.token}`, '_blank')
+                            }}>
                                 Excel
                             </Button>
-                            <Button variant="outlined" color='error'>
+                            <Button variant="outlined" color='error' onClick={() => {
+                                window.open(`${REPORT_URL}/budgets-pdf?token=${auth?.token}`, '_blank')
+                            }}>
                                 PDF
                             </Button>
                         </Box>
