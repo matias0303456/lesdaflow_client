@@ -179,11 +179,11 @@ export function Budgets() {
                 setOpen={setOpen}
                 setOpenNewSale={setOpenNewSale}
                 setFormData={setFormData}
-                showPDFAction
+                showPDFAction={`${REPORT_URL}/budgets-pdf?token=${auth?.token}&id=`}
+                showConvertToSale="Convertir a venta"
                 showViewAction
                 showEditAction
                 showDeleteAction
-                showConvertToSale="Convertir a venta"
                 contentHeader={
                     <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 2, justifyContent: 'space-between' }}>
                         <Box sx={{ display: 'flex', gap: 1 }}>

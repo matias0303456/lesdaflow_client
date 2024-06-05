@@ -53,9 +53,7 @@ export function DataGridWithBackendPagination({
   showExcelAction = false,
   showConvertToSale = false,
   showInput = false,
-  showOutput = false,
-  openPdfUrl = '',
-  openExcelUrl = ''
+  showOutput = false
 }) {
 
   const { state, dispatch } = useContext(DataContext)
@@ -144,7 +142,7 @@ export function DataGridWithBackendPagination({
                                 {showExcelAction &&
                                   <Tooltip
                                     title="Imprimir Excel"
-                                    onClick={() => window.open(openExcelUrl, '_blank')}
+                                    onClick={() => window.open(showExcelAction, '_blank')}
                                   >
                                     <IconButton className="rounded-full bg-black/20 opacity-50 hover:bg-[#288bcd] hover:text-white">
                                       <SiMicrosoftexcel className="w-4 h-4" />
@@ -154,7 +152,7 @@ export function DataGridWithBackendPagination({
                                 {showPDFAction &&
                                   <Tooltip
                                     title="Imprimir PDF"
-                                    onClick={() => window.open(openPdfUrl + row.id, '_blank')}
+                                    onClick={() => window.open(showPDFAction + row.id, '_blank')}
                                   >
                                     <IconButton className="rounded-full bg-black/20 opacity-50 hover:bg-[#288bcd] hover:text-white">
                                       <PictureAsPdfSharpIcon className="w-4 h-4" />

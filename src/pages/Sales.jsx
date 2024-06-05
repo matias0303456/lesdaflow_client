@@ -173,9 +173,8 @@ export function Sales() {
                 setFormData={setFormData}
                 showEditAction={auth?.user.role === 'ADMINISTRADOR'}
                 showDeleteAction={auth?.user.role === 'ADMINISTRADOR'}
+                showPDFAction={`${REPORT_URL}/sales-pdf?token=${auth?.token}&id=`}
                 showViewAction
-                showPDFAction
-                openPdfUrl={`${REPORT_URL}/sales-pdf?token=${auth?.token}&id=`}
                 contentHeader={
                     <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between' }}>
                         <Box sx={{ display: 'flex', gap: 1 }}>
