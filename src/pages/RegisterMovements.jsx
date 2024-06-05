@@ -1,5 +1,4 @@
-import { useContext, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useContext } from "react";
 import { Box, Button, FormControl, InputLabel, MenuItem, Select, Typography } from "@mui/material";
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
@@ -17,16 +16,14 @@ export function RegisterMovements() {
   const { auth } = useContext(AuthContext)
   const { state } = useContext(DataContext)
 
-  const navigate = useNavigate()
-
   const { handleChange, formData, errors, validate } = useForm({
-    defaultData: { from: new Date(Date.now()), to: new Date(Date.now()), register_id: '' },
-    rules: { register_id: { required: true } }
+    defaultData: {
+      from: new Date(Date.now()),
+      to: new Date(Date.now()),
+      user_id: auth?.user.role !== 'ADMINISTRADOR' ? auth?.user.id : '',
+    },
+    rules: { user_id: { required: auth?.user.role === 'ADMINISTRADOR' } }
   })
-
-  useEffect(() => {
-    if (auth?.user.role !== "ADMINISTRADOR") navigate("/productos");
-  }, [])
 
   const handleSubmit = e => {
     e.preventDefault()
@@ -93,27 +90,38 @@ export function RegisterMovements() {
               display: "flex", alignItems: "start",
               justifyContent: "center"
             }}>
-              <InputLabel id="demo-simple-select-standard-label">
+              <InputLabel id="user_id">
                 Caja
               </InputLabel>
               <Select
-                labelId="demo-simple-select-standard-label"
-                id="demo-simple-select-standard"
+                labelId="register-select"
+                id="user_id"
+                value={auth?.user.role === 'ADMINISTRADOR' ? formData.user_id : auth?.user.id}
+                disabled={auth?.user.role !== 'ADMINISTRADOR'}
+                label="Caja"
+                name="user_id"
                 sx={{ width: "100%" }}
                 onChange={handleChange}
-                label="Vendedor"
               >
-                {state.clients.data.length > 0 ? (
-                  state.clients.data.map((client) => (
-                    <MenuItem key={client.id} value={client}>
-                      {`${client.first_name} ${client.last_name}`.toUpperCase()}
-                    </MenuItem>
-                  ))
-                ) : (
-                  <MenuItem>No se encontraron resultados</MenuItem>
-                )}
+                {auth?.user.role === 'ADMINISTRADOR' ?
+                  <>
+                    <MenuItem value="">Seleccione</MenuItem>
+                    {state.users.data.length > 0 ? (
+                      state.users.data.map((u) => (
+                        <MenuItem key={u.id} value={u.id}>
+                          {`${u.first_name} ${u.last_name}`.toUpperCase()}
+                        </MenuItem>
+                      ))
+                    ) : (
+                      <MenuItem>No se encontraron resultados</MenuItem>
+                    )}
+                  </> :
+                  <MenuItem value={auth?.user.id}>
+                    {`${auth?.user.first_name} ${auth?.user.last_name}`.toUpperCase()}
+                  </MenuItem>
+                }
               </Select>
-              {errors.register_id?.type === 'required' &&
+              {errors.user_id?.type === 'required' &&
                 <Typography variant="caption" color="red" marginTop={1}>
                   * La caja es requerida.
                 </Typography>

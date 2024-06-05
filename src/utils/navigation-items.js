@@ -131,7 +131,7 @@ export const nav_items = [
     name: "registers",
     submenu: [
       {
-        subtitle: "Movimientos de Cajas",
+        subtitle: "Movimientos de cajas",
         path: "/movimientos-caja",
         can_access: ['ADMINISTRADOR', 'CHOFER', 'VENDEDOR']
       }
@@ -143,16 +143,16 @@ export const nav_items = [
     name: "reports",
     submenu: [
       {
-        subtitle: "Movimientos de caja",
+        subtitle: "Movimientos de cajas",
         path: "/reporte-movimientos-caja",
-        can_access: ['ADMINISTRADOR']
+        can_access: ['ADMINISTRADOR', 'CHOFER', 'VENDEDOR']
       },
       {
-        subtitle: "Clientes Bloqueados",
+        subtitle: "Clientes bloqueados",
         path: "/reportes-clientes-bloqueados",
         can_access: ['ADMINISTRADOR', 'VENDEDOR']
       }
     ],
-    can_access: ['ADMINISTRADOR', 'VENDEDOR']
+    can_access: ['ADMINISTRADOR', 'CHOFER', 'VENDEDOR']
   }
 ]

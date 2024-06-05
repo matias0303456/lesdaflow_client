@@ -102,14 +102,9 @@ export function Registers() {
                 showSettingsAction="Cerrar caja"
                 contentHeader={
                     <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 2, justifyContent: 'space-between' }}>
-                        <Box sx={{ display: 'flex', gap: 1 }}>
-                            <Button variant="outlined" onClick={() => setOpen('NEW')}>
-                                Apertura caja
-                            </Button>
-                            <Button variant="outlined" color='success'>
-                                Excel
-                            </Button>
-                        </Box>
+                        <Button variant="outlined" onClick={() => setOpen('NEW')}>
+                            Apertura caja
+                        </Button>
                         {auth?.user.role === 'ADMINISTRADOR' && <RegisterFilter />}
                     </Box>
                 }

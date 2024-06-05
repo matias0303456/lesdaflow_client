@@ -9,7 +9,7 @@ import { DataContext } from "../../providers/DataProvider"
 import { AddProductsToBudget } from "./AddProductsToBudget"
 import { ModalComponent } from "../common/ModalComponent"
 
-import { getBudgetTotal } from "../../utils/helpers"
+import { getBudgetSubtotal, getBudgetTotal } from "../../utils/helpers"
 
 export function BudgetForm({
     budgetProducts,
@@ -103,12 +103,12 @@ export function BudgetForm({
                     <FormControl>
                         <InputLabel htmlFor="total">Total</InputLabel>
                         <Input
-                            value={getBudgetTotal(budgetProducts.map(bp => {
+                            value={getBudgetTotal(formData, getBudgetSubtotal(budgetProducts.map(bp => {
                                 return {
                                     ...bp,
                                     product: state.products.data.find(p => p.id === bp.product_id)
                                 }
-                            }))}
+                            })))}
                             id="total"
                             type="number"
                             name="total"

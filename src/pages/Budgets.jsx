@@ -18,7 +18,7 @@ import { BudgetFilter } from "../components/filters/BudgetFilter";
 import { BudgetForm } from "../components/commercial/BudgetForm";
 import { SaleForm } from "../components/commercial/SaleForm";
 
-import { getBudgetTotal } from "../utils/helpers";
+import { getBudgetTotal, getBudgetSubtotal } from "../utils/helpers";
 import { REPORT_URL } from "../utils/urls";
 
 export function Budgets() {
@@ -45,7 +45,7 @@ export function Budgets() {
         missing
     } = useBudgets()
     const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
-        defaultData: { id: '', client_id: '', date: new Date(Date.now()) },
+        defaultData: { id: '', client_id: '', date: new Date(Date.now()), discount: 0 },
         rules: { client_id: { required: true }, date: { required: true } }
     })
     const {
@@ -164,7 +164,7 @@ export function Budgets() {
             numeric: false,
             disablePadding: true,
             label: 'Total',
-            accessor: (row) => `$${getBudgetTotal(row.budget_products)}`
+            accessor: (row) => `$${getBudgetTotal(row, getBudgetSubtotal(row.budget_products))}`
         },
     ]
 
@@ -179,7 +179,7 @@ export function Budgets() {
                 setOpen={setOpen}
                 setOpenNewSale={setOpenNewSale}
                 setFormData={setFormData}
-                showPDFAction={`${REPORT_URL}/budgets-pdf?token=${auth?.token}&id=`}
+                showPDFAction={`${REPORT_URL}/budgets-pdf-or-puppeteer?token=${auth?.token}&id=`}
                 showConvertToSale="Convertir a venta"
                 showViewAction
                 showEditAction
@@ -196,7 +196,7 @@ export function Budgets() {
                                 Excel
                             </Button>
                             <Button variant="outlined" color='error' onClick={() => {
-                                window.open(`${REPORT_URL}/budgets-pdf?token=${auth?.token}`, '_blank')
+                                window.open(`${REPORT_URL}/budgets-pdf-or-puppeteer?token=${auth?.token}`, '_blank')
                             }}>
                                 PDF
                             </Button>

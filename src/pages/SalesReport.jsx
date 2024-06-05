@@ -30,6 +30,7 @@ export function SalesReport() {
 
   const navigate = useNavigate()
 
+  const { getUsers } = useUsers()
   const { formData, handleChange, validate, errors, reset } = useForm({
     defaultData: {
       from: new Date(Date.now()),
@@ -38,17 +39,17 @@ export function SalesReport() {
     },
     rules: { user: { required: auth?.user.role === 'ADMINISTRADOR' } }
   })
-  useUsers()
 
   useEffect(() => {
     if (auth?.user.role !== 'ADMINISTRADOR' && auth?.user.role !== 'VENDEDOR') navigate('/productos')
+    if (auth?.user.role === 'ADMINISTRADOR') getUsers()
   }, [])
 
   const handleSubmit = e => {
     e.preventDefault()
     if (validate()) {
       const { from, to, user } = formData
-      window.open(`${REPORT_URL}/sales-pdf?token=${auth?.token}&from=${from}&to=${to}&user=${user}`, '_blank')
+      window.open(`${REPORT_URL}/sales-pdf-or-puppeteer?token=${auth?.token}&from=${from}&to=${to}&user=${user}`, '_blank')
       reset()
     }
   }
@@ -127,8 +128,8 @@ export function SalesReport() {
                 {auth?.user.role === 'ADMINISTRADOR' ?
                   <>
                     <MenuItem value="">Seleccione</MenuItem>
-                    {state.users.data.length > 0 ? (
-                      state.users.data.map((u) => (
+                    {state.users.data.filter(u => u.role === 'VENDEDOR').length > 0 ? (
+                      state.users.data.filter(u => u.role === 'VENDEDOR').map((u) => (
                         <MenuItem key={u.id} value={u.id}>
                           {`${u.first_name} ${u.last_name}`.toUpperCase()}
                         </MenuItem>

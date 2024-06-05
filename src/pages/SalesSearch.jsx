@@ -165,8 +165,8 @@ export function SalesSearch() {
                 {auth?.user.role === 'ADMINISTRADOR' ?
                   <>
                     <MenuItem value="">Seleccione</MenuItem>
-                    {state.users.data.length > 0 ? (
-                      state.users.data.map((u) => (
+                    {state.users.data.filter(u => u.role === 'VENDEDOR').length > 0 ? (
+                      state.users.data.filter(u => u.role === 'VENDEDOR').map((u) => (
                         <MenuItem key={u.id} value={u.username}>
                           {`${u.first_name} ${u.last_name}`.toUpperCase()}
                         </MenuItem>
