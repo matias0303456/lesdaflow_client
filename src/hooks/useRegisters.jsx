@@ -1,13 +1,15 @@
 import { useContext, useState } from "react"
 
-import { useApi } from "./useApi"
 import { MessageContext } from "../providers/MessageProvider"
+import { AuthContext } from "../providers/AuthProvider"
+import { DataContext } from "../providers/DataProvider"
+import { useApi } from "./useApi"
 
 import { REGISTER_URL } from "../utils/urls"
-import { DataContext } from "../providers/DataProvider"
 
 export function useRegisters() {
 
+    const { auth } = useContext(AuthContext)
     const { state, dispatch } = useContext(DataContext)
     const { setMessage, setOpenMessage, setSeverity } = useContext(MessageContext)
 
@@ -33,8 +35,26 @@ export function useRegisters() {
         }
     }
 
+    const someRegisterIsOpen = state.registers.data.some(r => r.is_open && r.user.id === auth.user.id) && open === 'NEW'
+
+    const registerIsClosed = (formData) => !state.registers.data.find(r => r.id === formData.id)?.is_open && open === 'SETTINGS'
+
     async function handleSubmit(e, formData, reset, setDisabled) {
         e.preventDefault()
+        if (someRegisterIsOpen) {
+            setMessage('Ya hay una caja abierta.')
+            setSeverity('error')
+            setOpenMessage(true)
+            setDisabled(false)
+            return
+        }
+        if (registerIsClosed(formData)) {
+            setMessage('La caja está cerrada.')
+            setSeverity('error')
+            setOpenMessage(true)
+            setDisabled(false)
+            return
+        }
         const { status, data } = open === 'NEW' ? await post(formData) : await put(formData)
         if (status === 200) {
             if (open === 'NEW') {
