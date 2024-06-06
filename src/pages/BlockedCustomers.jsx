@@ -5,6 +5,7 @@ import { Box, Button, Typography } from "@mui/material";
 import { AuthContext } from "../providers/AuthProvider";
 
 import { Layout } from "../components/common/Layout";
+import { REPORT_URL } from "../utils/urls";
 
 export function BlockedCustomers() {
 
@@ -35,7 +36,11 @@ export function BlockedCustomers() {
           Clientes Bloqueados
         </Typography>
         <Box className="mt-3 p-2">
-          <Button variant="contained" color="primary">Imprimir</Button>
+          <Button variant="contained" color="primary" onClick={() => {
+            window.open(`${REPORT_URL}/blocked-clients-pdf?token=${auth?.token}`, '_blank')
+          }}>
+            Imprimir
+          </Button>
         </Box>
       </Box>
     </Layout>
