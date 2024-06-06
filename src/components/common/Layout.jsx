@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 // /* eslint-disable react/prop-types */
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
@@ -89,7 +89,7 @@ export function Layout({ children, title }) {
             <Avatar sx={{ cursor: 'pointer' }} onClick={() => setShowUserDropdown(!showUserDropdown)}>
               {`${auth?.user.first_name.charAt(0).toUpperCase()}${auth?.user.last_name.charAt(0).toUpperCase()}`}
             </Avatar>
-            {showUserDropdown && <UserDropdown />}
+            {showUserDropdown && <UserDropdown setShowUserDropdown={setShowUserDropdown} />}
           </Box>
         </Box>
         <Drawer

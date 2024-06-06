@@ -21,6 +21,7 @@ import StorefrontSharpIcon from '@mui/icons-material/StorefrontSharp';
 import InputSharpIcon from '@mui/icons-material/InputSharp';
 import OutputSharpIcon from '@mui/icons-material/OutputSharp';
 
+import { AuthContext } from '../../providers/AuthProvider'
 import { DataContext } from '../../providers/DataProvider'
 
 import { EnhancedTableHead } from './EnhancedTableHead'
@@ -56,6 +57,7 @@ export function DataGridWithBackendPagination({
   showOutput = false
 }) {
 
+  const { auth } = useContext(AuthContext)
   const { state, dispatch } = useContext(DataContext)
 
   const [order, setOrder] = useState(defaultOrder)
@@ -129,16 +131,7 @@ export function DataGridWithBackendPagination({
                             <TableCell
                               sx={{ wordWrap: "", width: "auto" }}
                             >
-                              <Box
-                                sx={{
-                                  display: "flex",
-                                  justifyContent: "center",
-                                  alignItems: "center",
-                                  padding: "1px",
-                                  gap: "1rem",
-                                  width: "auto",
-                                }}
-                              >
+                              <Box sx={{ display: "flex", alignItems: "center", padding: "1px", gap: "1rem", width: "auto", }}>
                                 {showExcelAction &&
                                   <Tooltip
                                     title="Imprimir Excel"
@@ -173,30 +166,38 @@ export function DataGridWithBackendPagination({
                                   </Tooltip>
                                 }
                                 {showEditAction &&
-                                  <Tooltip
-                                    title="Editar"
-                                    onClick={() => {
-                                      if (setFormData) setFormData(rows.find((r) => r.id === row.id))
-                                      if (setOpen) setOpen("EDIT")
-                                    }}
-                                  >
-                                    <IconButton className="rounded-full bg-black/20 opacity-50 hover:bg-[#288bcd] hover:text-white">
-                                      <EditIcon className="w-4 h-4" />
-                                    </IconButton>
-                                  </Tooltip>
+                                  <>
+                                    {entityKey !== 'clients' || row.user_id === auth?.user.id &&
+                                      <Tooltip
+                                        title="Editar"
+                                        onClick={() => {
+                                          if (setFormData) setFormData(rows.find((r) => r.id === row.id))
+                                          if (setOpen) setOpen("EDIT")
+                                        }}
+                                      >
+                                        <IconButton className="rounded-full bg-black/20 opacity-50 hover:bg-[#288bcd] hover:text-white">
+                                          <EditIcon className="w-4 h-4" />
+                                        </IconButton>
+                                      </Tooltip>
+                                    }
+                                  </>
                                 }
                                 {showDeleteAction &&
-                                  <Tooltip
-                                    title="Borrar"
-                                    onClick={() => {
-                                      if (setFormData) setFormData(rows.find((r) => r.id === row.id))
-                                      if (setOpen) setOpen("DELETE")
-                                    }}
-                                  >
-                                    <IconButton className="rounded-full bg-black/20 opacity-50 hover:bg-[#288bcd] hover:text-white">
-                                      <CloseIcon className="w-4 h-4" />
-                                    </IconButton>
-                                  </Tooltip>
+                                  <>
+                                    {entityKey !== 'clients' || row.user_id === auth?.user.id &&
+                                      <Tooltip
+                                        title="Borrar"
+                                        onClick={() => {
+                                          if (setFormData) setFormData(rows.find((r) => r.id === row.id))
+                                          if (setOpen) setOpen("DELETE")
+                                        }}
+                                      >
+                                        <IconButton className="rounded-full bg-black/20 opacity-50 hover:bg-[#288bcd] hover:text-white">
+                                          <CloseIcon className="w-4 h-4" />
+                                        </IconButton>
+                                      </Tooltip>
+                                    }
+                                  </>
                                 }
                                 {showSettingsAction &&
                                   <Tooltip

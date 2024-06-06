@@ -1,6 +1,6 @@
 import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Box, Button, FormControl, Input, InputLabel, MenuItem, Select, Typography } from "@mui/material";
+import { Box, Button, Checkbox, FormControl, FormControlLabel, Input, InputLabel, MenuItem, Select, Typography } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { es } from "date-fns/locale";
@@ -39,7 +39,8 @@ export function Clients() {
             email: '',
             address: '',
             work_place: '',
-            user_id: ''
+            user_id: '',
+            is_blocked: false
         },
         rules: {
             first_name: {
@@ -67,9 +68,6 @@ export function Clients() {
             work_place: {
                 required: true,
                 maxLength: 255
-            },
-            user_id: {
-                required: auth?.user.role === 'ADMINISTRADOR'
             }
         }
     })
@@ -83,14 +81,14 @@ export function Clients() {
             id: "name",
             numeric: false,
             disablePadding: true,
-            label: "Nombre y apellido",
+            label: "Cliente",
             accessor: (row) => `${row.first_name} ${row.last_name}`
         },
         {
             id: "document_number",
             numeric: false,
             disablePadding: true,
-            label: "Nro. Documento/CUIT",
+            label: "Doc./CUIT",
             accessor: "document_number",
         },
         {
@@ -119,9 +117,16 @@ export function Clients() {
             id: 'work_place',
             numeric: false,
             disablePadding: true,
-            label: 'Nombre comercio',
+            label: 'Comercio',
             sorter: (row) => row.work_place ?? '',
             accessor: 'work_place'
+        },
+        {
+            id: 'is_blocked',
+            numeric: false,
+            disablePadding: true,
+            label: 'Bloqueado',
+            accessor: (row) => row.is_blocked ? 'Sí' : 'No'
         }
     ];
 
@@ -133,7 +138,7 @@ export function Clients() {
                     [
                         ...headCells,
                         {
-                            id: "user_id",
+                            id: "seller",
                             numeric: false,
                             disablePadding: true,
                             label: "Vendedor",
@@ -319,29 +324,13 @@ export function Clients() {
                                         </Typography>
                                     }
                                 </FormControl>
-                                {auth?.user.role === 'ADMINISTRADOR' &&
-                                    <FormControl sx={{ width: '50%' }}>
-                                        <InputLabel id="seller-select">Vendedor</InputLabel>
-                                        <Select
-                                            labelId="seller-select"
-                                            id="user_id"
-                                            value={formData.user_id}
-                                            label="Vendedor"
-                                            name="user_id"
-                                            onChange={handleChange}
-                                            disabled={open === 'VIEW'}
-                                        >
-                                            {state.users.data.map(u => (
-                                                <MenuItem key={u.id} value={u.id}>{`${u.first_name} ${u.last_name}`}</MenuItem>
-                                            ))}
-                                        </Select>
-                                        {errors.user_id?.type === 'required' &&
-                                            <Typography variant="caption" color="red" marginTop={1}>
-                                                * El vendedor es requerido.
-                                            </Typography>
-                                        }
-                                    </FormControl>
-                                }
+                                <FormControlLabel
+                                    control={<Checkbox disabled={open === 'VIEW'} />}
+                                    label="Bloqueado"
+                                    checked={formData.is_blocked}
+                                    value={formData.is_blocked}
+                                    onChange={e => setFormData({ ...formData, is_blocked: e.target.checked })}
+                                />
                             </Box>
                         </Box>
                         <FormControl sx={{
