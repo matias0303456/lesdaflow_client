@@ -1,21 +1,17 @@
 /* eslint-disable react/prop-types */
 import { useContext } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import SettingsIcon from "@mui/icons-material/Settings";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 
 import { AuthContext } from "../../providers/AuthProvider";
+import { useAuth } from "../../hooks/useAuth";
 
 export function UserDropdown({ setShowUserDropdown }) {
 
-  const { auth, setAuth } = useContext(AuthContext);
-  const navigate = useNavigate();
+  const { auth } = useContext(AuthContext);
 
-  const handleLogout = () => {
-    setAuth(null);
-    localStorage.removeItem('auth_mga');
-    navigate("/login");
-  };
+  const { handleLogout } = useAuth()
 
   return (
     <div
