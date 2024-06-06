@@ -99,7 +99,17 @@ export function BudgetForm({
                         open={open}
                     />
                 </Box>
-                <Box sx={{ display: 'flex', justifyContent: 'end', marginTop: 3 }}>
+                <Box sx={{ display: 'flex', justifyContent: 'end', gap: 2, marginTop: 3 }}>
+                    <FormControl>
+                        <InputLabel htmlFor="discount">% Descuento</InputLabel>
+                        <Input
+                            id="discount"
+                            type="number"
+                            name="discount"
+                            value={formData.discount}
+                            disabled={open === 'VIEW'}
+                        />
+                    </FormControl>
                     <FormControl>
                         <InputLabel htmlFor="total">Total</InputLabel>
                         <Input

@@ -72,10 +72,10 @@ export function Budgets() {
         defaultData: {
             id: '',
             client_id: '',
-            discount: '',
+            discount: 0,
             installments: '',
             type: 'CUENTA_CORRIENTE',
-            date: new Date(Date.now())
+            date: new Date(Date.now()),
         },
         rules: {
             client_id: {
@@ -107,7 +107,7 @@ export function Budgets() {
             setNewSale({
                 id: formData.id,
                 client_id: formData.client_id,
-                discount: '',
+                discount: formData.discount,
                 installments: '',
                 type: 'CUENTA_CORRIENTE',
                 date: new Date(Date.now())
