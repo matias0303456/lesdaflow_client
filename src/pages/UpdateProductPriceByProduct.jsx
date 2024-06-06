@@ -127,7 +127,7 @@ export function UpdateProductPriceByProduct() {
               variant="standard"
               sx={{ minWidth: "100%", color: "#59656b", display: "flex", alignItems: "start", justifyContent: "center" }}
             >
-              <InputLabel className="font-semibold text-gray-400 text-sm">
+              <InputLabel className="text-gray-400">
                 Producto
               </InputLabel>
               <Select
@@ -164,7 +164,7 @@ export function UpdateProductPriceByProduct() {
                   justifyContent: "center",
                 }}
               >
-                <InputLabel htmlFor="percentage" className="font-semibold text-gray-400 text-sm">
+                <InputLabel htmlFor="percentage" className="text-gray-400">
                   Porcentaje
                 </InputLabel>
                 <Input

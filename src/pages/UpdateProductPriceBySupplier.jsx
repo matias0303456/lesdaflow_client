@@ -70,6 +70,7 @@ export function UpdateProductPriceBySupplier() {
       numeric: false,
       disablePadding: true,
       label: "Precio Actual (venta)",
+      sorter: (row) => parseFloat(getProductSalePrice(row).toFixed(2)),
       accessor: (row) => `$${getProductSalePrice(row).toFixed(2)}`
     },
     {
@@ -77,6 +78,7 @@ export function UpdateProductPriceBySupplier() {
       numeric: false,
       disablePadding: true,
       label: "Precio Nuevo (venta)",
+      sorter: (row) => parseFloat(getProductNewSalePriceByPercentage(row, formData.percentage).toFixed(2)),
       accessor: (row) => `$${getProductNewSalePriceByPercentage(row, formData.percentage).toFixed(2)}`
     }
   ]
@@ -120,7 +122,7 @@ export function UpdateProductPriceBySupplier() {
                 justifyContent: "center"
               }}
             >
-              <InputLabel htmlFor="id" className="font-semibold text-gray-400 text-sm">
+              <InputLabel htmlFor="id" className="text-gray-400">
                 Proveedor
               </InputLabel>
               <Select
@@ -160,7 +162,7 @@ export function UpdateProductPriceBySupplier() {
                   marginTop: "2rem",
                 }}
               >
-                <InputLabel htmlFor="percentage" className="font-semibold text-gray-400 text-sm">
+                <InputLabel htmlFor="percentage" className="text-gray-400">
                   Porcentaje
                 </InputLabel>
                 <Input

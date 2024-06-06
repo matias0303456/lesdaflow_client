@@ -37,6 +37,7 @@ export function ClientsBySeller() {
       numeric: false,
       disablePadding: true,
       label: "Cliente",
+      sorter: (row) => `${row.first_name} ${row.last_name}`,
       accessor: (row) => `${row.first_name} ${row.last_name}`
     },
     {
@@ -44,6 +45,7 @@ export function ClientsBySeller() {
       numeric: false,
       disablePadding: true,
       label: "Nombre Comercio",
+      sorter: (row) => row.work_place,
       accessor: "work_place"
     },
     {
@@ -51,6 +53,7 @@ export function ClientsBySeller() {
       numeric: false,
       disablePadding: true,
       label: "Dirección",
+      sorter: (row) => row.address,
       accessor: "address"
     },
     {
@@ -58,6 +61,7 @@ export function ClientsBySeller() {
       numeric: false,
       disablePadding: true,
       label: "Celular",
+      sorter: (row) => row.cell_phone.toString(),
       accessor: "cell_phone"
     },
     {
@@ -65,6 +69,7 @@ export function ClientsBySeller() {
       numeric: false,
       disablePadding: true,
       label: "Email",
+      sorter: (row) => row.email ?? '',
       accessor: "email"
     },
   ];

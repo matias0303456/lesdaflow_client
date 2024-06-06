@@ -167,7 +167,7 @@ export function DataGridWithBackendPagination({
                                 }
                                 {showEditAction &&
                                   <>
-                                    {entityKey !== 'clients' || row.user_id === auth?.user.id &&
+                                    {(entityKey !== 'clients' || row.user_id === auth?.user.id) &&
                                       <Tooltip
                                         title="Editar"
                                         onClick={() => {
@@ -184,7 +184,7 @@ export function DataGridWithBackendPagination({
                                 }
                                 {showDeleteAction &&
                                   <>
-                                    {entityKey !== 'clients' || row.user_id === auth?.user.id &&
+                                    {(entityKey !== 'clients' || row.user_id === auth?.user.id) &&
                                       <Tooltip
                                         title="Borrar"
                                         onClick={() => {

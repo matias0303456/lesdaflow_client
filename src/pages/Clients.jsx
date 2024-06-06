@@ -82,6 +82,7 @@ export function Clients() {
             numeric: false,
             disablePadding: true,
             label: "Cliente",
+            sorter: (row) => `${row.first_name} ${row.last_name}`,
             accessor: (row) => `${row.first_name} ${row.last_name}`
         },
         {
@@ -89,36 +90,39 @@ export function Clients() {
             numeric: false,
             disablePadding: true,
             label: "Doc./CUIT",
-            accessor: "document_number",
+            sorter: (row) => row.document_number ? row.document_number.toString() : '',
+            accessor: "document_number"
         },
         {
             id: "cell_phone",
             numeric: false,
             disablePadding: true,
             label: "Celular",
-            accessor: "cell_phone",
+            sorter: (row) => row.cell_phone.toString(),
+            accessor: "cell_phone"
         },
         {
             id: "email",
             numeric: false,
             disablePadding: true,
             label: "Email",
-            sorter: (row) => row.email,
-            accessor: "email",
+            sorter: (row) => row.email ?? '',
+            accessor: "email"
         },
         {
             id: "address",
             numeric: false,
             disablePadding: true,
             label: "Dirección",
-            accessor: "address",
+            sorter: (row) => row.address,
+            accessor: "address"
         },
         {
             id: 'work_place',
             numeric: false,
             disablePadding: true,
             label: 'Comercio',
-            sorter: (row) => row.work_place ?? '',
+            sorter: (row) => row.work_place,
             accessor: 'work_place'
         },
         {
@@ -126,6 +130,7 @@ export function Clients() {
             numeric: false,
             disablePadding: true,
             label: 'Bloqueado',
+            sorter: (row) => row.is_blocked,
             accessor: (row) => row.is_blocked ? 'Sí' : 'No'
         }
     ];

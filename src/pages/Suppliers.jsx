@@ -107,7 +107,6 @@ export function Suppliers() {
             numeric: false,
             disablePadding: true,
             label: 'Teléfono',
-            sorter: (row) => row.phone ?? '',
             accessor: 'cell_phone'
         },
         {
@@ -115,7 +114,6 @@ export function Suppliers() {
             numeric: false,
             disablePadding: true,
             label: 'Teléfono',
-            sorter: (row) => row.phone ?? '',
             accessor: 'business_phone'
         },
         {
@@ -123,10 +121,8 @@ export function Suppliers() {
             numeric: false,
             disablePadding: true,
             label: 'Email',
-            sorter: (row) => row.email ?? '',
             accessor: 'email'
-        },
-
+        }
     ]
 
     return (

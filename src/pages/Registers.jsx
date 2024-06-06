@@ -36,6 +36,7 @@ export function Registers() {
             numeric: false,
             disablePadding: true,
             label: "Caja",
+            sorter: (row) => row.user.username,
             accessor: (row) => row.user.username,
         },
         {
@@ -43,6 +44,7 @@ export function Registers() {
             numeric: false,
             disablePadding: true,
             label: "Apertura Fecha",
+            sorter: (row) => format(setLocalDate(row.created_at), 'dd/MM/yy'),
             accessor: (row) => format(setLocalDate(row.created_at), 'dd/MM/yy')
         },
         {
@@ -50,6 +52,7 @@ export function Registers() {
             numeric: false,
             disablePadding: true,
             label: "Apertura Hora",
+            sorter: (row) => format(new Date(row.created_at), 'HH:mm:ss').toString().replace(':', ''),
             accessor: (row) => format(setLocalDate(row.created_at), 'HH:mm:ss')
         },
         {
@@ -65,7 +68,7 @@ export function Registers() {
             numeric: false,
             disablePadding: true,
             label: "Cierre Fecha",
-            sorter: (row) => row.created_at === row.updated_at ? '-' : row.updated_at,
+            sorter: (row) => row.created_at === row.updated_at ? '-' : format(setLocalDate(row.updated_at), 'dd/MM/yy'),
             accessor: (row) => row.created_at === row.updated_at ? '-' : format(setLocalDate(row.updated_at), 'dd/MM/yy')
         },
         {
@@ -73,6 +76,7 @@ export function Registers() {
             numeric: false,
             disablePadding: true,
             label: "Cierre hora",
+            sorter: (row) => row.created_at === row.updated_at ? '-' : format(new Date(row.updated_at), 'HH:mm:ss').toString().replace(':', ''),
             accessor: (row) => row.created_at === row.updated_at ? '-' : format(setLocalDate(row.updated_at), 'HH:mm:ss')
         },
         {

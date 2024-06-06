@@ -117,21 +117,21 @@ export function Products() {
             id: 'buy_price',
             numeric: false,
             disablePadding: true,
-            label: 'Precio de compra',
+            label: 'P. compra',
             accessor: 'buy_price'
         },
         {
             id: 'earn',
             numeric: false,
             disablePadding: true,
-            label: '% Ganancia',
+            label: '% Gan.',
             accessor: 'earn'
         },
         {
             id: 'sale_price',
             numeric: false,
             disablePadding: true,
-            label: 'Precio de venta',
+            label: 'P. venta',
             sorter: (row) => parseFloat((row.buy_price + ((row.buy_price / 100) * row.earn)).toFixed(2)),
             accessor: (row) => `$${(row.buy_price + ((row.buy_price / 100) * row.earn)).toFixed(2)}`
         },

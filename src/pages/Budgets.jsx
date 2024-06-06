@@ -136,20 +136,23 @@ export function Budgets() {
             numeric: false,
             disablePadding: true,
             label: 'Hora',
-            accessor: (row) => format(new Date(row.date), 'hh:ss')
+            sorter: (row) => format(new Date(row.date), 'HH:mm').toString().replace(':', ''),
+            accessor: (row) => format(new Date(row.date), 'HH:mm')
         },
         {
             id: 'seller',
             numeric: false,
             disablePadding: true,
             label: 'Vendedor',
+            sorter: (row) => `${row.client.user.first_name} ${row.client.user.last_name}`,
             accessor: (row) => `${row.client.user.first_name} ${row.client.user.last_name}`
         },
         {
-            id: 'client',
+            id: 'client_name',
             numeric: false,
             disablePadding: true,
             label: 'Cliente',
+            sorter: (row) => `${row.client.first_name} ${row.client.last_name}`,
             accessor: (row) => `${row.client.first_name} ${row.client.last_name}`
         },
         {
@@ -157,6 +160,7 @@ export function Budgets() {
             numeric: false,
             disablePadding: true,
             label: 'Dirección',
+            sorter: (row) => row.client.address,
             accessor: (row) => row.client.address
         },
         {
@@ -164,6 +168,7 @@ export function Budgets() {
             numeric: false,
             disablePadding: true,
             label: 'Total',
+            sorter: (row) => parseFloat(getBudgetTotal(row, getBudgetSubtotal(row.budget_products))),
             accessor: (row) => `$${getBudgetTotal(row, getBudgetSubtotal(row.budget_products))}`
         },
     ]

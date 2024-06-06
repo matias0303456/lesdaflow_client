@@ -87,13 +87,15 @@ export function Users() {
       numeric: false,
       disablePadding: true,
       label: "Nombre y apellido",
-      accessor: (row) => `${row.first_name} ${row.last_name}`,
+      sorter: (row) => `${row.first_name} ${row.last_name}`,
+      accessor: (row) => `${row.first_name} ${row.last_name}`
     },
     {
       id: "document_number",
       numeric: false,
       disablePadding: true,
       label: "Nro. Documento",
+      sorter: (row) => row.document_number.toString(),
       accessor: "document_number",
     },
     {
@@ -101,14 +103,16 @@ export function Users() {
       numeric: false,
       disablePadding: true,
       label: "Celular",
-      accessor: "cell_phone",
+      sorter: (row) => row.cell_phone.toString(),
+      accessor: "cell_phone"
     },
     {
       id: "local_phone",
       numeric: false,
       disablePadding: true,
       label: "Teléfono",
-      accessor: "local_phone",
+      sorter: (row) => row.local_phone.toString(),
+      accessor: "local_phone"
     },
     {
       id: "email",
@@ -123,16 +127,18 @@ export function Users() {
       numeric: false,
       disablePadding: true,
       label: "Dirección",
-      accessor: "address",
+      sorter: (row) => row.address,
+      accessor: "address"
     },
     {
       id: "role",
       numeric: false,
       disablePadding: true,
       label: "Rol",
-      accessor: "role",
+      sorter: (row) => row.role,
+      accessor: "role"
     }
-  ];
+  ]
 
   return (
     <Layout title="Usuarios">

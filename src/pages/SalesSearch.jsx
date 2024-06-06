@@ -68,14 +68,15 @@ export function SalesSearch() {
       numeric: false,
       disablePadding: true,
       label: 'Hora',
-      accessor: (row) => format(new Date(row.date), 'hh:mm')
+      sorter: (row) => format(new Date(row.date), 'HH:mm').toString().replace(':', ''),
+      accessor: (row) => format(new Date(row.date), 'HH:mm')
     },
     {
       id: "type",
       numeric: false,
       disablePadding: true,
       label: "Tipo de Comprobante",
-      accessor: "type"
+      accessor: (row) => row.type.replaceAll('CUENTA_CORRIENTE', 'CTA CTE')
     },
   ];
 
