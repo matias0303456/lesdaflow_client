@@ -21,6 +21,7 @@ export function useSales() {
     const [idsToDelete, setIdsToDelete] = useState([])
     const [saleSaved, setSaleSaved] = useState(null)
     const [missing, setMissing] = useState(false)
+    const [isBlocked, setIsBlocked] = useState(false)
 
     async function getSales(params) {
         const { status, data } = await get(params)
@@ -75,6 +76,7 @@ export function useSales() {
                 setSaleProducts([])
                 setMissing(false)
                 setIdsToDelete([])
+                setIsBlocked(false)
             } else {
                 setMessage(data.message)
                 setSeverity('error')
@@ -130,6 +132,8 @@ export function useSales() {
         setMissing,
         handleSubmit,
         handleDelete,
-        getSales
+        getSales,
+        isBlocked,
+        setIsBlocked
     }
 }

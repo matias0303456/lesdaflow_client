@@ -40,7 +40,9 @@ export function Sales() {
         setSaleSaved,
         handleSubmit,
         handleDelete,
-        getSales
+        getSales,
+        isBlocked,
+        setIsBlocked
     } = useSales()
     const { loadingProducts, getProducts } = useProducts()
     const { loadingClients, getClients } = useClients()
@@ -80,6 +82,10 @@ export function Sales() {
             setSaleProducts(formData.sale_products)
         }
     }, [formData])
+
+    useEffect(() => {
+        setIsBlocked(state.clients.data.find(c => c.id === parseInt(formData.client_id))?.is_blocked)
+    }, [formData.client_id])
 
     const headCells = [
         {
@@ -209,6 +215,8 @@ export function Sales() {
                     setDisabled={setDisabled}
                     handleChange={handleChange}
                     errors={errors}
+                    isBlocked={isBlocked}
+                    setIsBlocked={setIsBlocked}
                 />
                 <ModalComponent
                     reduceWidth={800}

@@ -28,7 +28,9 @@ export function SaleForm({
     disabled,
     setDisabled,
     handleChange,
-    errors
+    errors,
+    isBlocked,
+    setIsBlocked
 }) {
 
     const { state } = useContext(DataContext)
@@ -42,6 +44,7 @@ export function SaleForm({
                 setMissing(false)
                 reset(setOpen)
                 setIdsToDelete([])
+                setIsBlocked(false)
             }}
         >
             <Typography variant="h6" sx={{ marginBottom: 2 }}>
@@ -68,6 +71,11 @@ export function SaleForm({
                                 {errors.client_id?.type === 'required' &&
                                     <Typography variant="caption" color="red" marginTop={1}>
                                         * El cliente es requerido.
+                                    </Typography>
+                                }
+                                {isBlocked &&
+                                    <Typography variant="caption" color="red" marginTop={1}>
+                                        * Este cliente está bloqueado.
                                     </Typography>
                                 }
                             </FormControl>
@@ -206,13 +214,19 @@ export function SaleForm({
                         setMissing(false)
                         reset(setOpen)
                         setIdsToDelete([])
+                        setIsBlocked(false)
                     }} sx={{
                         width: '50%'
                     }}>
                         {open === 'VIEW' ? 'Cerrar' : 'Cancelar'}
                     </Button>
                     {(open === 'NEW' || open === 'EDIT' || open === 'CONVERT') &&
-                        <Button type="submit" variant="contained" disabled={disabled} sx={{ width: '50%' }}>
+                        <Button
+                            type="submit"
+                            variant="contained"
+                            disabled={disabled || isBlocked}
+                            sx={{ width: '50%' }}
+                        >
                             Guardar
                         </Button>
                     }
