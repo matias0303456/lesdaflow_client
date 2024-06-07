@@ -8,7 +8,7 @@ import { DataGridWithFrontendPagination } from "../datagrid/DataGridWithFrontend
 
 import { setLocalDate } from "../../utils/helpers";
 
-export function PaymentsABM({ rows, handleCloseSale, handleClosePayment  }) {
+export function PaymentsABM({ rows, handleCloseSale, setOpen, setFormData }) {
 
     const { auth } = useContext(AuthContext)
 
@@ -61,18 +61,12 @@ export function PaymentsABM({ rows, handleCloseSale, handleClosePayment  }) {
                 rows={rows}
                 showDeleteAction={auth?.user.role === 'ADMINISTRADOR'}
                 showEditAction={auth?.user.role === 'ADMINISTRADOR'}
-                // contentHeader={
-                //     <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between' }}>
-                //         <Button variant="outlined" onClick={() => setOpen('NEW')}>
-                //             Agregar
-                //         </Button>
-                //     </Box>
-                // }
+                setOpen={setOpen}
+                setData={setFormData}
             />
             <Box sx={{ textAlign: 'center' }}>
                 <Button type="button" variant="outlined" onClick={() => {
                     handleCloseSale()
-                    handleClosePayment()
                 }} sx={{ width: '25%' }}>
                     Cerrar
                 </Button>

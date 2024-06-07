@@ -3,31 +3,22 @@ import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers"
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns"
 import { es } from "date-fns/locale"
 
-import { useForm } from "../../hooks/useForm"
-
-export function PaymentForm() {
-
-    const { formData, validate, errors, disabled, handleChange } = useForm({
-        defaultData: { date: '', type: 'EFECTIVO', amount: '', observations: '' },
-        rules: {
-            date: { required: true },
-            amount: { required: true },
-            observations: { maxLength: 255 }
-        }
-    })
-
-    const handleSubmit = e => {
-        e.preventDefault()
-        if (validate()) {
-            console.log(formData)
-        }
-    }
-
+export function PaymentForm({
+    handleSubmit,
+    handleChange,
+    validate,
+    formData,
+    reset,
+    setOpen,
+    disabled,
+    setDisabled,
+    errors
+}) {
     return (
-        <form onChange={handleChange} onSubmit={handleSubmit}>
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
-                <Box sx={{ display: 'flex', flexDirection: 'column', width: '40%', gap: 3 }}>
-                    <FormControl>
+        <form onSubmit={e => handleSubmit(e, validate, formData, reset, setDisabled)}>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, paddingX: 3 }}>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 2 }}>
+                    <FormControl sx={{ width: '33%' }}>
                         <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
                             <DatePicker
                                 label="Fecha"
@@ -40,27 +31,8 @@ export function PaymentForm() {
                                 })}
                             />
                         </LocalizationProvider>
-                        {errors.date?.type === 'required' &&
-                            <Typography variant="caption" color="red" marginTop={1}>
-                                * La fecha es requerida.
-                            </Typography>
-                        }
                     </FormControl>
-                    <FormControl>
-                        <InputLabel htmlFor="amount">Importe</InputLabel>
-                        <Input
-                            id="amount"
-                            type="number"
-                            name="amount"
-                            value={formData.amount}
-                        />
-                        {errors.amount?.type === 'required' &&
-                            <Typography variant="caption" color="red" marginTop={1}>
-                                * El importe es requerido.
-                            </Typography>
-                        }
-                    </FormControl>
-                    <FormControl>
+                    <FormControl sx={{ width: '33%' }}>
                         <InputLabel id="type-select">Tipo</InputLabel>
                         <Select
                             labelId="type-select"
@@ -69,27 +41,43 @@ export function PaymentForm() {
                             label="Proveedor"
                             name="type"
                             sx={{ width: '100%' }}
+                            onChange={handleChange}
                         >
                             <MenuItem value="EFECTIVO">EFECTIVO</MenuItem>
                             <MenuItem value="TRANSFERENCIA">TRANSFERENCIA</MenuItem>
                             <MenuItem value="CHEQUE">CHEQUE</MenuItem>
                         </Select>
                     </FormControl>
-                    <FormControl>
-                        <InputLabel htmlFor="observations">Observaciones</InputLabel>
+                    <FormControl sx={{ width: '33%' }}>
+                        <InputLabel id="amount">Importe</InputLabel>
                         <Input
-                            id="observations"
-                            type="text"
-                            name="observations"
-                            value={formData.observations}
+                            id="amount"
+                            type="number"
+                            name="amount"
+                            value={formData.amount}
+                            onChange={handleChange}
                         />
-                        {errors.observations?.type === 'maxLength' &&
+                        {errors.amount?.type === 'required' &&
                             <Typography variant="caption" color="red" marginTop={1}>
-                                * Las observaciones son demasiado largas.
+                                * El importe es requerido.
                             </Typography>
                         }
                     </FormControl>
                 </Box>
+                <FormControl>
+                    <InputLabel id="observations">Observaciones</InputLabel>
+                    <Input
+                        id="observations"
+                        name="observations"
+                        value={formData.observations}
+                        onChange={handleChange}
+                    />
+                    {errors.observations?.type === 'maxLength' &&
+                        <Typography variant="caption" color="red" marginTop={1}>
+                            * Las observaciones son demasiado largas.
+                        </Typography>
+                    }
+                </FormControl>
             </Box>
             <Box sx={{ display: 'flex', justifyContent: 'end' }}>
                 <FormControl sx={{
@@ -101,17 +89,17 @@ export function PaymentForm() {
                     marginTop: 3,
                     width: '50%'
                 }}>
-                    <Button type="button" variant="outlined">
+                    <Button type="button" variant="outlined" sx={{ width: '33%' }}>
                         Cerrar
                     </Button>
-                    <Button type="button" variant="outlined">
+                    <Button type="button" variant="outlined" sx={{ width: '33%' }} onClick={() => reset(setOpen)}>
                         Cancelar
                     </Button>
                     <Button
                         type="submit"
                         variant="contained"
                         disabled={disabled}
-                        sx={{ width: '50%' }}
+                        sx={{ width: '33%' }}
                     >
                         Guardar
                     </Button>
