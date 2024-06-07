@@ -185,7 +185,7 @@ export function Sales() {
                 getter={getSales}
                 setOpen={setOpen}
                 setFormData={setFormData}
-                showEditAction={auth?.user.role === 'ADMINISTRADOR'}
+                showEditAction={auth?.user.role === 'ADMINISTRADOR' || auth?.user.role === 'VENDEDOR'}
                 showDeleteAction={auth?.user.role === 'ADMINISTRADOR'}
                 showPDFAction={`${REPORT_URL}/sales-pdf-or-puppeteer?token=${auth?.token}&id=`}
                 showViewAction

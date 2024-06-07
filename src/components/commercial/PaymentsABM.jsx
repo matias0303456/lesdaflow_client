@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { Box, Button } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import { format } from "date-fns";
 
 import { AuthContext } from "../../providers/AuthProvider";
@@ -8,7 +8,15 @@ import { DataGridWithFrontendPagination } from "../datagrid/DataGridWithFrontend
 
 import { setLocalDate } from "../../utils/helpers";
 
-export function PaymentsABM({ rows, handleCloseSale, setOpen, setFormData }) {
+export function PaymentsABM({
+    rows,
+    handleCloseSale,
+    open,
+    setOpen,
+    formData,
+    setFormData,
+    handleDelete
+}) {
 
     const { auth } = useContext(AuthContext)
 
@@ -63,6 +71,25 @@ export function PaymentsABM({ rows, handleCloseSale, setOpen, setFormData }) {
                 showEditAction={auth?.user.role === 'ADMINISTRADOR'}
                 setOpen={setOpen}
                 setData={setFormData}
+                contentHeader={
+                    <>
+                        {open === 'DELETE' &&
+                            <Box sx={{ marginTop: 1 }}>
+                                <Typography variant="body1" color="#F00" textAlign="center">
+                                    {`¿Borrar el pago #${formData.id}?`}
+                                </Typography>
+                                <Box sx={{ display: 'flex', justifyContent: 'center', gap: 1, marginTop: 1 }}>
+                                    <Button size="small" variant="contained" onClick={() => handleDelete(formData)}>
+                                        Confirmar
+                                    </Button>
+                                    <Button size="small" variant="outlined" onClick={() => setOpen(null)}>
+                                        Cancelar
+                                    </Button>
+                                </Box>
+                            </Box>
+                        }
+                    </>
+                }
             />
             <Box sx={{ textAlign: 'center' }}>
                 <Button type="button" variant="outlined" onClick={() => {

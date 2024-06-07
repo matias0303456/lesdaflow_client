@@ -4,6 +4,7 @@ import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers"
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns"
 import { es } from "date-fns/locale"
 
+import { AuthContext } from "../../providers/AuthProvider"
 import { DataContext } from "../../providers/DataProvider"
 import { usePayments } from "../../hooks/usePayments"
 import { useForm } from "../../hooks/useForm"
@@ -37,12 +38,14 @@ export function SaleForm({
     setIsBlocked
 }) {
 
+    const { auth } = useContext(AuthContext)
     const { state } = useContext(DataContext)
 
     const {
         open: openPayment,
         setOpen: setOpenPayment,
-        handleSubmit: handleSubmitPayment
+        handleSubmit: handleSubmitPayment,
+        handleDelete: handleDeletePayment
     } = usePayments()
     const {
         formData: formDataPayment,
@@ -69,8 +72,11 @@ export function SaleForm({
     }, [open, openPayment])
 
     useEffect(() => {
-        if (valueTab === 1) resetPayment(setOpenPayment)
-        if (valueTab === 2) setOpenPayment('NEW')
+        if (valueTab < 2) {
+            resetPayment(setOpenPayment)
+        } else {
+            setOpenPayment('NEW')
+        }
     }, [valueTab])
 
     const handleChangeTab = (_, newValue) => {
@@ -136,7 +142,7 @@ export function SaleForm({
                                             onChange={(e, value) => handleChange({ target: { name: 'client_id', value: value?.id ?? '' } })}
                                             renderInput={(params) => <TextField {...params} label="Cliente" />}
                                             isOptionEqualToValue={(option, value) => option.code === value.code || value.length === 0}
-                                            disabled={open === 'VIEW'}
+                                            disabled={open === 'VIEW' || (open === 'EDIT' && auth?.user.role !== 'ADMINISTRADOR')}
                                         />
                                         {errors.client_id?.type === 'required' &&
                                             <Typography variant="caption" color="red" marginTop={1}>
@@ -172,7 +178,7 @@ export function SaleForm({
                                                         value: new Date(value.toISOString())
                                                     }
                                                 })}
-                                                disabled={open === 'VIEW'}
+                                                disabled={open === 'VIEW' || (open === 'EDIT' && auth?.user.role !== 'ADMINISTRADOR')}
                                             />
                                         </LocalizationProvider>
                                         {errors.date?.type === 'required' &&
@@ -188,7 +194,7 @@ export function SaleForm({
                                             type="number"
                                             name="discount"
                                             value={formData.discount}
-                                            disabled={formData.type === 'CUENTA_CORRIENTE' || open === 'VIEW'}
+                                            disabled={formData.type === 'CUENTA_CORRIENTE' || open === 'VIEW' || (open === 'EDIT' && auth?.user.role !== 'ADMINISTRADOR')}
                                         />
                                     </FormControl>
                                     <FormControl>
@@ -198,7 +204,7 @@ export function SaleForm({
                                             type="number"
                                             name="installments"
                                             value={formData.installments}
-                                            disabled={formData.type === 'CONTADO' || open === 'VIEW'}
+                                            disabled={formData.type === 'CONTADO' || open === 'VIEW' || (open === 'EDIT' && auth?.user.role !== 'ADMINISTRADOR')}
                                         />
                                         {errors.installments?.type === 'required' &&
                                             <Typography variant="caption" color="red" marginTop={1}>
@@ -208,7 +214,7 @@ export function SaleForm({
                                     </FormControl>
                                     <Box sx={{ display: 'flex', justifyContent: 'space-around' }}>
                                         <FormControlLabel
-                                            control={<Checkbox disabled={open === 'VIEW'} />}
+                                            control={<Checkbox disabled={open === 'VIEW' || (open === 'EDIT' && auth?.user.role !== 'ADMINISTRADOR')} />}
                                             label="Cuenta Corriente"
                                             checked={formData.type === 'CUENTA_CORRIENTE'}
                                             onChange={e => {
@@ -222,7 +228,7 @@ export function SaleForm({
                                             }}
                                         />
                                         <FormControlLabel
-                                            control={<Checkbox disabled={open === 'VIEW'} />}
+                                            control={<Checkbox disabled={open === 'VIEW' || (open === 'EDIT' && auth?.user.role !== 'ADMINISTRADOR')} />}
                                             label="Contado"
                                             checked={formData.type === 'CONTADO'}
                                             onChange={e => {
@@ -236,7 +242,7 @@ export function SaleForm({
                                             }}
                                         />
                                         <FormControlLabel
-                                            control={<Checkbox disabled={open === 'VIEW'} />}
+                                            control={<Checkbox disabled={open === 'VIEW' || (open === 'EDIT' && auth?.user.role !== 'ADMINISTRADOR')} />}
                                             label="Poxipol"
                                             checked={formData.type === 'POXIPOL'}
                                             onChange={e => {
@@ -280,9 +286,9 @@ export function SaleForm({
                             width: '50%'
                         }}>
                             <Button type="button" variant="outlined" onClick={handleClose} sx={{ width: '50%' }}>
-                                {open === 'VIEW' ? 'Cerrar' : 'Cancelar'}
+                                {open === 'VIEW' || (open === 'EDIT' && auth?.user.role !== 'ADMINISTRADOR') ? 'Cerrar' : 'Cancelar'}
                             </Button>
-                            {(open === 'NEW' || open === 'EDIT' || open === 'CONVERT') &&
+                            {(open === 'NEW' || open === 'CONVERT' || (open === 'EDIT' && auth?.user.role === 'ADMINISTRADOR')) &&
                                 <Button
                                     type="submit"
                                     variant="contained"
@@ -301,8 +307,11 @@ export function SaleForm({
                     <PaymentsABM
                         rows={state.sales.data.find(s => s.id === formData.id)?.payments ?? []}
                         handleCloseSale={handleClose}
+                        open={openPayment}
                         setOpen={setOpenPayment}
+                        formData={formDataPayment}
                         setFormData={setFormDataPayment}
+                        handleDelete={handleDeletePayment}
                     />
                 </Box>
             }
@@ -311,6 +320,7 @@ export function SaleForm({
                     <PaymentForm
                         handleSubmit={handleSubmitPayment}
                         handleChange={handleChangePayment}
+                        handleCloseSale={handleClose}
                         validate={validatePayment}
                         formData={formDataPayment}
                         reset={resetPayment}

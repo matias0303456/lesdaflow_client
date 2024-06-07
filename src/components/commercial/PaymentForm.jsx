@@ -6,6 +6,7 @@ import { es } from "date-fns/locale"
 export function PaymentForm({
     handleSubmit,
     handleChange,
+    handleCloseSale,
     validate,
     formData,
     reset,
@@ -89,7 +90,10 @@ export function PaymentForm({
                     marginTop: 3,
                     width: '50%'
                 }}>
-                    <Button type="button" variant="outlined" sx={{ width: '33%' }}>
+                    <Button type="button" variant="outlined" sx={{ width: '33%' }} onClick={() => {
+                        handleCloseSale()
+                        reset(setOpen)
+                    }}>
                         Cerrar
                     </Button>
                     <Button type="button" variant="outlined" sx={{ width: '33%' }} onClick={() => reset(setOpen)}>

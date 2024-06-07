@@ -1,6 +1,8 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Autocomplete, Button, FormControl, Input, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from "@mui/material";
 import CancelSharpIcon from '@mui/icons-material/CancelSharp';
+
+import { AuthContext } from "../../providers/AuthProvider";
 
 import { getProductSalePrice, getStock } from "../../utils/helpers";
 
@@ -14,6 +16,8 @@ export function AddProductsToSale({
     setIdsToDelete,
     open
 }) {
+
+    const { auth } = useContext(AuthContext)
 
     const [value, setValue] = useState('')
 
@@ -54,7 +58,7 @@ export function AddProductsToSale({
 
     return (
         <>
-            {(open === 'NEW' || open === 'EDIT') &&
+            {(open === 'NEW' || (open === 'EDIT' && auth?.user.role === 'ADMINISTRADOR')) &&
                 <>
                     <FormControl>
                         <Autocomplete
@@ -117,7 +121,7 @@ export function AddProductsToSale({
                                             <Input
                                                 type="number"
                                                 value={sp.amount}
-                                                disabled={open === 'VIEW'}
+                                                disabled={open === 'VIEW' || (open === 'EDIT' && auth?.user.role !== 'ADMINISTRADOR')}
                                                 onChange={e => handleChangeAmount({
                                                     product_id: p.id,
                                                     amount: e.target.value
@@ -127,7 +131,7 @@ export function AddProductsToSale({
                                         <TableCell>${getProductSalePrice(p)}</TableCell>
                                         <TableCell>{getStock(p)}</TableCell>
                                         <TableCell>${(currentAmount * getProductSalePrice(p)).toFixed(2)}</TableCell>
-                                        {(open === 'NEW' || open === 'EDIT' || open === 'CONVERT') &&
+                                        {(open === 'NEW' || open === 'CONVERT' || (open === 'EDIT' && auth?.user.role === 'ADMINISTRADOR')) &&
                                             <TableCell align="center">
                                                 <Button type="button" onClick={() => handleDeleteProduct(sp.id, p.id)}>
                                                     <CancelSharpIcon />
