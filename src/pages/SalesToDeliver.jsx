@@ -11,7 +11,7 @@ import { Layout } from "../components/common/Layout";
 import { DataGridWithBackendPagination } from "../components/datagrid/DataGridWithBackendPagination";
 import { SaleFilter } from "../components/filters/SaleFilter";
 
-import { getSaleTotal } from "../utils/helpers";
+import { getSaleDifference, getSaleTotal } from "../utils/helpers";
 
 export function SalesToDeliver() {
 
@@ -79,13 +79,15 @@ export function SalesToDeliver() {
             numeric: false,
             disablePadding: true,
             label: 'Hora',
-            accessor: (row) => format(new Date(row.date), 'hh:mm')
+            sorter: (row) => format(new Date(row.date), 'HH:mm').toString().replace(':', ''),
+            accessor: (row) => format(new Date(row.date), 'HH:mm')
         },
         {
-            id: 'client',
+            id: 'client_name',
             numeric: false,
             disablePadding: true,
             label: 'Cliente',
+            sorter: (row) => `${row.client.first_name} ${row.client.last_name}`,
             accessor: (row) => `${row.client.first_name} ${row.client.last_name}`
         },
         {
@@ -93,6 +95,7 @@ export function SalesToDeliver() {
             numeric: false,
             disablePadding: true,
             label: 'Dirección',
+            sorter: (row) => row.client.address,
             accessor: (row) => row.client.address
         },
         {
@@ -100,27 +103,30 @@ export function SalesToDeliver() {
             numeric: false,
             disablePadding: true,
             label: 'Teléfono',
+            sorter: (row) => row.client.local_phone.toString(),
             accessor: (row) => row.client.local_phone
         },
         {
             id: 'type',
             numeric: false,
             disablePadding: true,
-            label: 'Tipo Comp.',
+            label: 'Comp.',
             accessor: (row) => row.type.replaceAll('CUENTA_CORRIENTE', 'CTA CTE')
         },
         {
-            id: 'already paid',
+            id: 'paid',
             numeric: false,
             disablePadding: true,
             label: 'Pagado',
-            accessor: 'already paid'
+            sorter: (row) => parseFloat(getSaleDifference(row).replace('$', '')) > 0 ? 1 : 0,
+            accessor: (row) => parseFloat(getSaleDifference(row).replace('$', '')) > 0 ? 'No' : 'Sí'
         },
         {
             id: 'total',
             numeric: true,
             disablePadding: true,
             label: 'Total',
+            sorter: (row) => getSaleTotal(row).replace('$', ''),
             accessor: (row) => getSaleTotal(row)
         }
     ]

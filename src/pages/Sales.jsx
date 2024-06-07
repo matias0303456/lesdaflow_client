@@ -17,7 +17,7 @@ import { DataGridWithBackendPagination } from "../components/datagrid/DataGridWi
 import { SaleForm } from "../components/commercial/SaleForm";
 
 import { REPORT_URL } from "../utils/urls";
-import { getSaleTotal } from "../utils/helpers";
+import { getSaleDifference, getSaleTotal } from "../utils/helpers";
 
 export function Sales() {
 
@@ -154,8 +154,8 @@ export function Sales() {
             numeric: false,
             disablePadding: true,
             label: 'Pagado',
-            sorter: (row) => 'asd',
-            accessor: (row) => 'asd'
+            sorter: (row) => parseFloat(getSaleDifference(row).replace('$','')) > 0 ? 1 : 0,
+            accessor: (row) => parseFloat(getSaleDifference(row).replace('$','')) > 0 ? 'No' : 'Sí'
         },
         {
             id: 'total',
