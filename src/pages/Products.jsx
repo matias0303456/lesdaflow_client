@@ -177,11 +177,11 @@ export function Products() {
                 getter={getProducts}
                 loading={loadingSuppliers || loadingProducts || disabled}
                 deadlineColor="products"
-                showDeleteAction
+                showDeleteAction={auth?.user.role === 'ADMINISTRADOR'}
+                showEditAction={auth?.user.role === 'ADMINISTRADOR'}
+                showInput={auth?.user.role === 'ADMINISTRADOR' && "Ingresar stock"}
+                showOutput={auth?.user.role === 'ADMINISTRADOR' && "Egresar stock"}
                 showViewAction
-                showEditAction
-                showInput="Ingresar stock"
-                showOutput="Egresar stock"
                 contentHeader={
                     <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between' }}>
                         <Box sx={{ display: 'flex', gap: 1 }}>

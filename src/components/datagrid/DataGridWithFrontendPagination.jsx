@@ -69,7 +69,7 @@ export function DataGridWithFrontendPagination({
         [order, orderBy, page, rowsPerPage, rows],
     );
     return (
-        <Box sx={{ width: '100%', backgroundColor: '#fff', padding: 1 }}>
+        <Box sx={{ width: '100%', backgroundColor: '#fff' }}>
             <Box sx={{ marginBottom: 3 }}>
                 {contentHeader}
             </Box>
@@ -98,19 +98,15 @@ export function DataGridWithFrontendPagination({
                                                 key={row.id}
                                                 width="100px"
                                             >
-                                                <TableCell
-                                                    sx={{ wordWrap: "", width: "auto" }}
-                                                >
-                                                    <Box
-                                                        sx={{
-                                                            display: "flex",
-                                                            justifyContent: "center",
-                                                            alignItems: "center",
-                                                            padding: "1px",
-                                                            gap: "1rem",
-                                                            width: "auto",
-                                                        }}
-                                                    >
+                                                <TableCell sx={{ width: "auto" }}>
+                                                    <Box sx={{
+                                                        display: "flex",
+                                                        justifyContent: "center",
+                                                        alignItems: "center",
+                                                        padding: "1px",
+                                                        gap: "1rem",
+                                                        width: "auto",
+                                                    }}>
                                                         {showViewAction &&
                                                             <Tooltip
                                                                 title="Visualizar"

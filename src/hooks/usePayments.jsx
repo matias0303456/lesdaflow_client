@@ -11,6 +11,7 @@ export function usePayments() {
 
     const [loadingPayments, setLoadingPayments] = useState(true)
     const [payments, setPayments] = useState([])
+    const [open, setOpen] = useState(null)
 
     const { get } = useApi(PAYMENT_URL)
 
@@ -27,5 +28,5 @@ export function usePayments() {
         }
     }
 
-    return { payments, setPayments, loadingPayments, setLoadingPayments, getPayments }
+    return { payments, setPayments, loadingPayments, setLoadingPayments, getPayments, open, setOpen }
 }

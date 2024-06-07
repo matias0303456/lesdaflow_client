@@ -15,7 +15,7 @@ const style = {
     borderRadius: 1
 };
 
-export function ModalComponent({ children, open, onClose, dynamicContent = false, reduceWidth = 300 }) {
+export function ModalComponent({ children, open, onClose, dynamicContent = false, reduceWidth = 300, p = 3 }) {
 
     const [screenWidth, setScreenWidth] = useState(window.innerWidth < 700 ? window.innerWidth : window.innerWidth - reduceWidth)
     const [screenHeight] = useState(dynamicContent ?
@@ -40,12 +40,12 @@ export function ModalComponent({ children, open, onClose, dynamicContent = false
             slots={{ backdrop: Backdrop }}
             slotProps={{
                 backdrop: {
-                    timeout: 500,
+                    timeout: 100,
                 },
             }}
         >
             <Fade in={open}>
-                <Box sx={{ ...style, ...screenHeight, width: screenWidth }}>
+                <Box sx={{ ...style, ...screenHeight, width: screenWidth, p }}>
                     {children}
                 </Box>
             </Fade>

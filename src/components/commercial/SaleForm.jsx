@@ -4,11 +4,13 @@ import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers"
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns"
 import { es } from "date-fns/locale"
 
-import { AuthContext } from "../../providers/AuthProvider"
 import { DataContext } from "../../providers/DataProvider"
+import { usePayments } from "../../hooks/usePayments"
 
 import { AddProductsToSale } from "./AddProductsToSale"
 import { ModalComponent } from "../common/ModalComponent"
+import { PaymentsABM } from "./PaymentsABM"
+import { PaymentForm } from "./PaymentForm"
 
 import { getCurrentSubtotal, getCurrentTotal, getInstallmentsAmount } from "../../utils/helpers"
 
@@ -34,12 +36,23 @@ export function SaleForm({
     setIsBlocked
 }) {
 
-    const { auth } = useContext(AuthContext)
     const { state } = useContext(DataContext)
+
+    const { open: openPayment, setOpen: setOpenPayment } = usePayments()
+
     const [valueTab, setValueTab] = useState(0)
 
     const handleChangeTab = (_, newValue) => {
         setValueTab(newValue)
+    }
+
+    const handleClose = () => {
+        setSaleProducts([])
+        setMissing(false)
+        reset(setOpen)
+        setIdsToDelete([])
+        setIsBlocked(false)
+        setValueTab(0)
     }
 
     function a11yProps(index) {
@@ -50,8 +63,8 @@ export function SaleForm({
     }
 
     function CustomTabPanel(props) {
-        const { children, value, index, ...other } = props
-        
+        const { children, value, index, p = 1, ...other } = props
+
         return (
             <div
                 role="tabpanel"
@@ -60,7 +73,7 @@ export function SaleForm({
                 aria-labelledby={`simple-tab-${index}`}
                 {...other}
             >
-                {value === index && <Box sx={{ p: 1 }}>{children}</Box>}
+                {value === index && <Box sx={{ p }}>{children}</Box>}
             </div>
         )
     }
@@ -68,24 +81,28 @@ export function SaleForm({
     return (
         <ModalComponent
             reduceWidth={50}
+            p={1}
             open={open === 'NEW' || open === 'EDIT' || open === 'VIEW' || open === 'CONVERT'}
-            onClose={() => {
-                setSaleProducts([])
-                setMissing(false)
-                reset(setOpen)
-                setIdsToDelete([])
-                setIsBlocked(false)
-            }}
+            onClose={handleClose}
         >
-            <Typography variant="h6">
-                {(open === 'NEW' || open === 'CONVERT') && 'Nueva venta'}
-                {open === 'EDIT' && 'Editar venta'}
-                {open === 'VIEW' && `Venta #${formData.id}`}
-            </Typography>
-            <Box sx={{ marginBottom: 2 }}>
+            <Box sx={{ marginBottom: open === 'EDIT' && valueTab === 1 ? 0 : 1 }}>
                 <Tabs value={valueTab} onChange={handleChangeTab}>
-                    <Tab label="General" {...a11yProps(0)} />
-                    <Tab disabled={open === 'NEW' || open === 'CONVERT'} label="Pagos" {...a11yProps(1)} />
+                    <Tab
+                        label={open === 'EDIT' ? `Editar venta #${formData.id}` :
+                            (open === 'NEW' || open === 'CONVERT') ? 'Nueva venta' :
+                                open === 'VIEW' ? `Venta #${formData.id}` : ''}
+                        {...a11yProps(0)}
+                    />
+                    <Tab
+                        disabled={open === 'NEW' || open === 'CONVERT'}
+                        label="Pagos"
+                        {...a11yProps(1)}
+                    />
+                    <Tab
+                        disabled={open === 'NEW' || open === 'CONVERT' || open === 'VIEW'}
+                        label="Nuevo pago"
+                        {...a11yProps(2)}
+                    />
                 </Tabs>
             </Box>
             <CustomTabPanel value={valueTab} index={0}>
@@ -246,15 +263,7 @@ export function SaleForm({
                         marginTop: 3,
                         width: '50%'
                     }}>
-                        <Button type="button" variant="outlined" onClick={() => {
-                            setSaleProducts([])
-                            setMissing(false)
-                            reset(setOpen)
-                            setIdsToDelete([])
-                            setIsBlocked(false)
-                        }} sx={{
-                            width: '50%'
-                        }}>
+                        <Button type="button" variant="outlined" onClick={handleClose} sx={{ width: '50%' }}>
                             {open === 'VIEW' ? 'Cerrar' : 'Cancelar'}
                         </Button>
                         {(open === 'NEW' || open === 'EDIT' || open === 'CONVERT') &&
@@ -270,8 +279,17 @@ export function SaleForm({
                     </FormControl>
                 </form>
             </CustomTabPanel>
-            <CustomTabPanel value={valueTab} index={1}>
-                Pagos
+            <CustomTabPanel value={valueTab} index={1} p={0}>
+                <PaymentsABM
+                    rows={formData.payments ?? []}
+                    handleCloseSale={handleClose}
+                    handleClosePayment={() => {
+                        setOpenPayment(null)
+                    }}
+                />
+            </CustomTabPanel>
+            <CustomTabPanel value={valueTab} index={2}>
+                <PaymentForm />
             </CustomTabPanel>
         </ModalComponent>
     )
