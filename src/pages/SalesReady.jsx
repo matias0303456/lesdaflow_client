@@ -6,10 +6,13 @@ import { AuthContext } from "../providers/AuthProvider";
 import { DataContext } from "../providers/DataProvider";
 import { useForm } from "../hooks/useForm";
 import { useSales } from "../hooks/useSales";
+import { useProducts } from "../hooks/useProducts";
+import { useClients } from "../hooks/useClients";
 
 import { Layout } from "../components/common/Layout";
 import { DataGridWithBackendPagination } from "../components/datagrid/DataGridWithBackendPagination";
 import { SaleFilter } from "../components/filters/SaleFilter";
+import { SaleForm } from "../components/commercial/SaleForm";
 
 import { getSaleDifference, getSaleTotal } from "../utils/helpers";
 
@@ -20,37 +23,41 @@ export function SalesReady() {
 
   const navigate = useNavigate()
 
-  const { loadingSales, getSales, setOpen } = useSales()
+  const {
+    loadingSales,
+    open,
+    setOpen,
+    getSales,
+    saleProducts,
+    setSaleProducts,
+    missing,
+    setMissing,
+    idsToDelete,
+    setIdsToDelete,
+    handleSubmit,
+    isBlocked,
+    setIsBlocked
+  } = useSales()
+  const { getProducts } = useProducts()
+  const { getClients } = useClients()
   const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
     defaultData: {
       id: '',
-      name: '',
-      address: '',
-      city: '',
-      province: '',
-      email: '',
-      phone: '',
-      products: []
+      client_id: '',
+      discount: '',
+      installments: '',
+      type: 'CUENTA_CORRIENTE',
+      date: new Date(Date.now())
     },
     rules: {
-      name: {
-        required: true,
-        maxLength: 55
+      client_id: {
+        required: true
       },
-      address: {
-        maxLength: 55
+      date: {
+        required: true
       },
-      city: {
-        maxLength: 55
-      },
-      province: {
-        maxLength: 55
-      },
-      email: {
-        maxLength: 55
-      },
-      phone: {
-        maxLength: 55
+      installments: {
+        required: true
       }
     }
   })
@@ -58,6 +65,17 @@ export function SalesReady() {
   useEffect(() => {
     if (auth?.user.role !== 'CHOFER') navigate('/productos')
   }, [])
+
+  useEffect(() => {
+    getProducts()
+    getClients()
+  }, [])
+
+  useEffect(() => {
+    if (open === 'EDIT') {
+      setSaleProducts(formData.sale_products)
+    }
+  }, [formData])
 
   const headCells = [
     {
@@ -142,7 +160,29 @@ export function SalesReady() {
         setOpen={setOpen}
         setFormData={setFormData}
         showSettingsAction="Preparar venta"
+        showEditAction
         contentHeader={<SaleFilter showDateAndType />}
+      />
+      <SaleForm
+        saleProducts={saleProducts}
+        setSaleProducts={setSaleProducts}
+        missing={missing}
+        setMissing={setMissing}
+        reset={reset}
+        open={open}
+        setOpen={setOpen}
+        idsToDelete={idsToDelete}
+        setIdsToDelete={setIdsToDelete}
+        formData={formData}
+        setFormData={setFormData}
+        handleSubmit={handleSubmit}
+        validate={validate}
+        disabled={disabled}
+        setDisabled={setDisabled}
+        handleChange={handleChange}
+        errors={errors}
+        isBlocked={isBlocked}
+        setIsBlocked={setIsBlocked}
       />
     </Layout>
   );

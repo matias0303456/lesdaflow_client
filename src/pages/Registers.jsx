@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { Box, Button, FormControl, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
 import { format } from "date-fns";
 
@@ -10,7 +10,7 @@ import { useRegisters } from "../hooks/useRegisters";
 import { Layout } from "../components/common/Layout";
 import { ModalComponent } from "../components/common/ModalComponent";
 import { DataGridWithBackendPagination } from "../components/datagrid/DataGridWithBackendPagination";
-import { RegisterFilter } from "../components/filters/RegisterFilter";
+// import { RegisterFilter } from "../components/filters/RegisterFilter";
 
 import { setLocalDate } from "../utils/helpers";
 
@@ -19,10 +19,16 @@ export function Registers() {
     const { auth } = useContext(AuthContext)
     const { state } = useContext(DataContext)
 
-    const { loadingRegisters, handleSubmit, open, setOpen, getRegisters } = useRegisters()
+    const { loadingRegisters, handleSubmit, open, setOpen, getRegisters, currentAmount, getCurrentRegister } = useRegisters()
     const { formData, setFormData, handleChange, disabled, setDisabled, reset } = useForm({
         defaultData: { id: '', user_id: auth?.user.id }
     })
+
+    useEffect(() => {
+        if (open === 'SETTINGS') {
+            getCurrentRegister(formData)
+        }
+    }, [open, formData])
 
     const headCells = [
         {
@@ -100,7 +106,7 @@ export function Registers() {
                         <Button variant="outlined" onClick={() => setOpen('NEW')}>
                             Apertura caja
                         </Button>
-                        {auth?.user.role === 'ADMINISTRADOR' && <RegisterFilter />}
+                        {/* {auth?.user.role === 'ADMINISTRADOR' && <RegisterFilter />} */}
                     </Box>
                 }
             >
@@ -144,7 +150,7 @@ export function Registers() {
                                                             {format(setLocalDate(Date.now()), 'HH:mm:ss')}
                                                         </TableCell>
                                                         <TableCell align="center">
-                                                            {formData.end_amount}
+                                                            {formData.end_amount ?? currentAmount}
                                                         </TableCell>
                                                     </>
                                                 }

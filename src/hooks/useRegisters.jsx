@@ -17,6 +17,7 @@ export function useRegisters() {
 
     const [loadingRegisters, setLoadingRegisters] = useState(true)
     const [open, setOpen] = useState(null)
+    const [currentAmount, setCurrentAmount] = useState('')
 
     const { get } = useApi(REGISTER_URL)
 
@@ -38,6 +39,18 @@ export function useRegisters() {
     const someRegisterIsOpen = state.registers.data.some(r => r.is_open && r.user.id === auth.user.id) && open === 'NEW'
 
     const registerIsClosed = (formData) => !state.registers.data.find(r => r.id === formData.id)?.is_open && open === 'SETTINGS'
+
+    async function getCurrentRegister(formData) {
+        if (registerIsClosed(formData)) return
+        const { status, data } = await get(`/current?id=${formData.id}`)
+        if (status === 200) {
+            setCurrentAmount(data.end_amount)
+        } else {
+            setMessage(data.message)
+            setSeverity('error')
+            setOpenMessage(true)
+        }
+    }
 
     async function handleSubmit(e, formData, reset, setDisabled) {
         e.preventDefault()
@@ -112,6 +125,8 @@ export function useRegisters() {
         handleDelete,
         open,
         setOpen,
-        getRegisters
+        getRegisters,
+        currentAmount,
+        getCurrentRegister
     }
 }
