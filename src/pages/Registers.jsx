@@ -1,11 +1,10 @@
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import { Box, Button, FormControl, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
 import { format } from "date-fns";
 
 import { AuthContext } from "../providers/AuthProvider";
 import { DataContext } from "../providers/DataProvider";
 import { useForm } from "../hooks/useForm";
-import { usePayments } from "../hooks/usePayments";
 import { useRegisters } from "../hooks/useRegisters";
 
 import { Layout } from "../components/common/Layout";
@@ -13,7 +12,7 @@ import { ModalComponent } from "../components/common/ModalComponent";
 import { DataGridWithBackendPagination } from "../components/datagrid/DataGridWithBackendPagination";
 import { RegisterFilter } from "../components/filters/RegisterFilter";
 
-import { getRegisterTotal, setLocalDate } from "../utils/helpers";
+import { setLocalDate } from "../utils/helpers";
 
 export function Registers() {
 
@@ -21,14 +20,9 @@ export function Registers() {
     const { state } = useContext(DataContext)
 
     const { loadingRegisters, handleSubmit, open, setOpen, getRegisters } = useRegisters()
-    const { payments, loadingPayments, getPayments } = usePayments()
     const { formData, setFormData, handleChange, disabled, setDisabled, reset } = useForm({
         defaultData: { id: '', user_id: auth?.user.id }
     })
-
-    useEffect(() => {
-        getPayments()
-    }, [])
 
     const headCells = [
         {
@@ -84,15 +78,15 @@ export function Registers() {
             numeric: false,
             disablePadding: true,
             label: "Cierre Saldo",
-            sorter: (row) => parseFloat(getRegisterTotal(row, payments).replace('$', '')),
-            accessor: (row) => getRegisterTotal(row, payments)
+            sorter: (row) => parseFloat(row.end_amount.replace('$', '')),
+            accessor: (row) => row.end_amount
         }
     ];
 
     return (
         <Layout title="Movimientos Caja">
             <DataGridWithBackendPagination
-                loading={loadingRegisters || loadingPayments || disabled}
+                loading={loadingRegisters || disabled}
                 headCells={headCells}
                 rows={state.registers.data}
                 entityKey="registers"
@@ -150,7 +144,7 @@ export function Registers() {
                                                             {format(setLocalDate(Date.now()), 'HH:mm:ss')}
                                                         </TableCell>
                                                         <TableCell align="center">
-                                                            {getRegisterTotal(formData, payments, true)}
+                                                            {formData.end_amount}
                                                         </TableCell>
                                                     </>
                                                 }

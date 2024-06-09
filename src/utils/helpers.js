@@ -104,16 +104,6 @@ export function getAccountStatus(sale) {
     }
 }
 
-export function getRegisterTotal(register, payments, close = false) {
-    if (register.created_at === register.updated_at && !close) return '$0'
-    const total = payments.filter(p => {
-        return p.sale.client.user_id === register.user_id &&
-            new Date(p.date).getTime() > new Date(register.created_at).getTime() &&
-            new Date(p.date).getTime() < (close ? Date.now() : new Date(register.updated_at).getTime())
-    }).reduce((prev, curr) => prev + curr.amount, 0)
-    return `$${total.toFixed(2)}`
-}
-
 export function getAmountByInstallment(sale) {
     return `$${(getSaleTotal(sale).replaceAll('$', '') / sale.installments).toFixed(2)}`
 }
