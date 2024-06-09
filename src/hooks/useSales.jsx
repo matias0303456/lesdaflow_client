@@ -117,6 +117,37 @@ export function useSales() {
         setOpen(null)
     }
 
+    async function prepareSaleProduct(id, is_prepared) {
+        const req = { id, is_prepared }
+        const { status, data } = await put(req, '/update-sale-product')
+        if (status === 200) {
+            dispatch({
+                type: 'SALES',
+                payload: {
+                    ...state.sales,
+                    data: [
+                        {
+                            ...state.sales.data.find(s => s.id === data.sale_id),
+                            sale_products: [
+                                data,
+                                ...state.sales.data.find(s => s.id === data.sale_id).sale_products
+                                    .filter(sp => sp.id !== data.id)
+                            ]
+                        },
+                        ...state.sales.data.filter(s => s.id !== data.sale_id)
+                    ]
+                }
+            })
+            setSaleProducts([data, ...saleProducts.filter(sp => sp.id !== data.id)])
+            setMessage('Producto preparado correctamente.')
+            setSeverity('success')
+        } else {
+            setMessage('Ocurrió un error. Actualice la página.')
+            setSeverity('error')
+        }
+        setOpenMessage(true)
+    }
+
     return {
         loadingSales,
         setLoadingSales,
@@ -134,6 +165,7 @@ export function useSales() {
         handleDelete,
         getSales,
         isBlocked,
-        setIsBlocked
+        setIsBlocked,
+        prepareSaleProduct
     }
 }

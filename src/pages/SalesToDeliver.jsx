@@ -15,6 +15,7 @@ import { SaleFilter } from "../components/filters/SaleFilter";
 import { SaleForm } from "../components/commercial/SaleForm";
 
 import { getSaleDifference, getSaleTotal } from "../utils/helpers";
+import { REPORT_URL } from "../utils/urls";
 
 export function SalesToDeliver() {
 
@@ -72,7 +73,7 @@ export function SalesToDeliver() {
     }, [])
 
     useEffect(() => {
-        if (open === 'EDIT') {
+        if (open === 'EDIT' || open === 'SETTINGS') {
             setSaleProducts(formData.sale_products)
         }
     }, [formData])
@@ -159,6 +160,7 @@ export function SalesToDeliver() {
                 getter={getSales}
                 setOpen={setOpen}
                 setFormData={setFormData}
+                showPDFAction={`${REPORT_URL}/sales-pdf-or-puppeteer?token=${auth?.token}&id=`}
                 showSettingsAction="Registrar entrega"
                 showEditAction
                 contentHeader={<SaleFilter showDateAndType />}

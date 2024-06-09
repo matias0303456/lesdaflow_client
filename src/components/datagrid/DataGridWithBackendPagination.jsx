@@ -26,7 +26,7 @@ import { DataContext } from '../../providers/DataProvider'
 
 import { EnhancedTableHead } from './EnhancedTableHead'
 
-import { deadlineIsPast, getStock } from '../../utils/helpers'
+import { deadlineIsPast, getStock, saleIsPrepared } from '../../utils/helpers'
 import { getComparator, stableSort } from '../../utils/dataGrid'
 
 export function DataGridWithBackendPagination({
@@ -59,6 +59,7 @@ export function DataGridWithBackendPagination({
 
   const { auth } = useContext(AuthContext)
   const { state, dispatch } = useContext(DataContext)
+
 
   const [order, setOrder] = useState(defaultOrder)
   const [orderBy, setOrderBy] = useState(defaultOrderBy)
@@ -200,17 +201,24 @@ export function DataGridWithBackendPagination({
                                   </>
                                 }
                                 {showSettingsAction &&
-                                  <Tooltip
-                                    title={showSettingsAction}
-                                    onClick={() => {
-                                      if (setFormData) setFormData(rows.find((r) => r.id === row.id))
-                                      if (setOpen) setOpen("SETTINGS")
-                                    }}
-                                  >
-                                    <IconButton className="rounded-full bg-black/20 opacity-50 hover:bg-[#078BCD]">
-                                      <SettingsIcon className="w-4 h-4 hover:text-white" />
-                                    </IconButton>
-                                  </Tooltip>
+                                  <>
+                                    {(entityKey !== 'sales' ||
+                                      (showSettingsAction === 'Preparar venta' && !saleIsPrepared(row)) ||
+                                      (showSettingsAction === 'Registrar entrega' && saleIsPrepared(row))
+                                    ) &&
+                                      <Tooltip
+                                        title={showSettingsAction}
+                                        onClick={() => {
+                                          if (setFormData) setFormData(rows.find((r) => r.id === row.id))
+                                          if (setOpen) setOpen("SETTINGS")
+                                        }}
+                                      >
+                                        <IconButton className="rounded-full bg-black/20 opacity-50 hover:bg-[#078BCD]">
+                                          <SettingsIcon className="w-4 h-4 hover:text-white" />
+                                        </IconButton>
+                                      </Tooltip>
+                                    }
+                                  </>
                                 }
                                 {showConvertToSale &&
                                   <Tooltip

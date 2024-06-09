@@ -62,9 +62,9 @@ export function useApi(url) {
         }
     }
 
-    async function put(req) {
+    async function put(req, params) {
         try {
-            const res = await fetch(url + `/${req.id}`, {
+            const res = await fetch(url + (params ? params : '') + `/${req.id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

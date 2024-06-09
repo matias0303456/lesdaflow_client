@@ -146,3 +146,7 @@ export function getBudgetSubtotal(budget_products) {
 export function getBudgetTotal(budget, subtotal) {
     return (subtotal - ((subtotal / 100) * parseFloat(budget.discount))).toFixed(2)
 }
+
+export function saleIsPrepared(sale) {
+    return sale.sale_products.every(sp => sp.is_prepared)
+}

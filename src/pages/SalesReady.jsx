@@ -1,20 +1,20 @@
 import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { Box, Button, Checkbox, FormControlLabel, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
 import { format } from "date-fns";
 
 import { AuthContext } from "../providers/AuthProvider";
 import { DataContext } from "../providers/DataProvider";
 import { useForm } from "../hooks/useForm";
 import { useSales } from "../hooks/useSales";
-import { useProducts } from "../hooks/useProducts";
-import { useClients } from "../hooks/useClients";
 
 import { Layout } from "../components/common/Layout";
 import { DataGridWithBackendPagination } from "../components/datagrid/DataGridWithBackendPagination";
 import { SaleFilter } from "../components/filters/SaleFilter";
-import { SaleForm } from "../components/commercial/SaleForm";
+import { ModalComponent } from "../components/common/ModalComponent";
 
 import { getSaleDifference, getSaleTotal } from "../utils/helpers";
+import { REPORT_URL } from "../utils/urls";
 
 export function SalesReady() {
 
@@ -30,17 +30,9 @@ export function SalesReady() {
     getSales,
     saleProducts,
     setSaleProducts,
-    missing,
-    setMissing,
-    idsToDelete,
-    setIdsToDelete,
-    handleSubmit,
-    isBlocked,
-    setIsBlocked
+    prepareSaleProduct
   } = useSales()
-  const { getProducts } = useProducts()
-  const { getClients } = useClients()
-  const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
+  const { formData, setFormData } = useForm({
     defaultData: {
       id: '',
       client_id: '',
@@ -48,17 +40,6 @@ export function SalesReady() {
       installments: '',
       type: 'CUENTA_CORRIENTE',
       date: new Date(Date.now())
-    },
-    rules: {
-      client_id: {
-        required: true
-      },
-      date: {
-        required: true
-      },
-      installments: {
-        required: true
-      }
     }
   })
 
@@ -67,12 +48,7 @@ export function SalesReady() {
   }, [])
 
   useEffect(() => {
-    getProducts()
-    getClients()
-  }, [])
-
-  useEffect(() => {
-    if (open === 'EDIT') {
+    if (open === 'SETTINGS') {
       setSaleProducts(formData.sale_products)
     }
   }, [formData])
@@ -152,7 +128,7 @@ export function SalesReady() {
   return (
     <Layout title="Ventas Pendientes Preparacion">
       <DataGridWithBackendPagination
-        loading={loadingSales || disabled}
+        loading={loadingSales}
         headCells={headCells}
         rows={state.sales.data}
         entityKey="sales"
@@ -160,29 +136,47 @@ export function SalesReady() {
         setOpen={setOpen}
         setFormData={setFormData}
         showSettingsAction="Preparar venta"
+        showPDFAction={`${REPORT_URL}/sales-pdf-or-puppeteer?token=${auth?.token}&id=`}
         contentHeader={<SaleFilter showDateAndType />}
       />
-      <SaleForm
-        saleProducts={saleProducts}
-        setSaleProducts={setSaleProducts}
-        missing={missing}
-        setMissing={setMissing}
-        reset={reset}
-        open={open}
-        setOpen={setOpen}
-        idsToDelete={idsToDelete}
-        setIdsToDelete={setIdsToDelete}
-        formData={formData}
-        setFormData={setFormData}
-        handleSubmit={handleSubmit}
-        validate={validate}
-        disabled={disabled}
-        setDisabled={setDisabled}
-        handleChange={handleChange}
-        errors={errors}
-        isBlocked={isBlocked}
-        setIsBlocked={setIsBlocked}
-      />
-    </Layout>
+      <ModalComponent open={open === 'SETTINGS'} onClose={() => setOpen(null)} reduceWidth={800}>
+        <Typography variant="h6" marginBottom={1}>
+          Preparar venta
+        </Typography>
+        <TableContainer component={Paper}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell align="center">Código</TableCell>
+                <TableCell align="center">Producto</TableCell>
+                <TableCell align="center">Cantidad</TableCell>
+                <TableCell align="center">Preparado</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {saleProducts.map(sp => (
+                <TableRow key={sp.id}>
+                  <TableCell align="center">{sp.product.code}</TableCell>
+                  <TableCell align="center">{sp.product.details}</TableCell>
+                  <TableCell align="center">{sp.amount}</TableCell>
+                  <TableCell align="center">
+                    <FormControlLabel
+                      control={<Checkbox />}
+                      checked={sp.is_prepared}
+                      onChange={async e => await prepareSaleProduct(sp.id, e.target.checked)}
+                    />
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+        <Box sx={{ marginTop: 2, textAlign: 'center' }}>
+          <Button type="button" variant="outlined" onClick={() => setOpen(null)} sx={{ width: '40%' }}>
+            Cerrar
+          </Button>
+        </Box>
+      </ModalComponent>
+    </Layout >
   );
 }
