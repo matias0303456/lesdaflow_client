@@ -69,7 +69,7 @@ export function Sales() {
     })
 
     useEffect(() => {
-        if (auth?.user.role !== 'ADMINISTRADOR' && auth?.user.role !== 'VENDEDOR') navigate('/productos')
+        if (auth?.user.role !== 'ADMINISTRADOR' && auth?.user.role !== 'VENDEDOR') navigate('/prep-ventas')
     }, [])
 
     useEffect(() => {
@@ -154,8 +154,8 @@ export function Sales() {
             numeric: false,
             disablePadding: true,
             label: 'Pagado',
-            sorter: (row) => parseFloat(getSaleDifference(row).replace('$','')) > 0 ? 1 : 0,
-            accessor: (row) => parseFloat(getSaleDifference(row).replace('$','')) > 0 ? 'No' : 'Sí'
+            sorter: (row) => parseFloat(getSaleDifference(row).replace('$', '')) > 0 ? 1 : 0,
+            accessor: (row) => parseFloat(getSaleDifference(row).replace('$', '')) > 0 ? 'No' : 'Sí'
         },
         {
             id: 'total',
@@ -170,8 +170,8 @@ export function Sales() {
             numeric: false,
             disablePadding: true,
             label: 'Entregado',
-            sorter: (row) => 'ewr',
-            accessor: (row) => 'ewr'
+            sorter: (row) => row.is_delivered ? 1 : 0,
+            accessor: (row) => row.is_delivered ? 'Sí' : 'No'
         }
     ]
 

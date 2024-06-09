@@ -91,7 +91,7 @@ export function Budgets() {
     })
 
     useEffect(() => {
-        if (auth?.user.role !== 'ADMINISTRADOR' && auth?.user.role !== 'VENDEDOR') navigate('/productos')
+        if (auth?.user.role !== 'ADMINISTRADOR' && auth?.user.role !== 'VENDEDOR') navigate('/prep-ventas')
     }, [])
 
     useEffect(() => {

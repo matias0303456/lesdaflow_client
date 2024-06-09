@@ -43,7 +43,7 @@ export function UpdateProductPriceBySupplier() {
   });
 
   useEffect(() => {
-    if (auth?.user.role !== "ADMINISTRADOR") navigate("/productos");
+    if (auth?.user.role !== "ADMINISTRADOR") navigate(auth?.user.role === 'CHOFER' ? '/prep-ventas' : "/productos");
   }, []);
 
   useEffect(() => {

@@ -160,7 +160,6 @@ export function SalesReady() {
         setOpen={setOpen}
         setFormData={setFormData}
         showSettingsAction="Preparar venta"
-        showEditAction
         contentHeader={<SaleFilter showDateAndType />}
       />
       <SaleForm

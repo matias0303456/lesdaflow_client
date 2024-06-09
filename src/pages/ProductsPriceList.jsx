@@ -23,7 +23,7 @@ export function ProductsPriceList() {
   const { formData, handleChange } = useForm({ defaultData: { code: '', details: '' } })
 
   useEffect(() => {
-    if (auth?.user.role !== 'ADMINISTRADOR' && auth?.user.role !== 'VENDEDOR') navigate('/productos')
+    if (auth?.user.role !== 'ADMINISTRADOR' && auth?.user.role !== 'VENDEDOR') navigate('/prep-ventas')
   }, [])
 
   const headCells = [

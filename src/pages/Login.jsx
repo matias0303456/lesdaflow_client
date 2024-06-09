@@ -38,7 +38,7 @@ export function Login() {
             if (status === 200) {
                 localStorage.setItem('auth_mga', JSON.stringify(data))
                 setAuth(data)
-                navigate('/productos')
+                navigate(data.user.role === 'CHOFER' ? '/prep-ventas' : '/productos')
             } else {
                 setMessage(data.message)
                 setSeverity('error')
