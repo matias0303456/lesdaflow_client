@@ -193,7 +193,9 @@ export function Products() {
                             }}>
                                 Excel
                             </Button>
-                            <Button variant="contained">
+                            <Button variant="contained" onClick={() => {
+                                window.open(`${REPORT_URL}/products-pdf?token=${auth?.token}&stock=SIN_STOCK`, '_blank')
+                            }}>
                                 Stock nulo
                             </Button>
                         </Box>
