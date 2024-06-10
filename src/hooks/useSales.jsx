@@ -148,6 +148,29 @@ export function useSales() {
         setOpenMessage(true)
     }
 
+    async function deliverSale(formData, reset) {
+        const { status, data } = await put({ ...formData, is_delivered: true })
+        if (status === 200) {
+            dispatch({
+                type: 'SALES',
+                payload: {
+                    ...state.sales,
+                    data: [
+                        data,
+                        ...state.sales.data.filter(s => s.id !== data.id)
+                    ]
+                }
+            })
+            setMessage('Entrega registrada correctamente.')
+            setSeverity('success')
+            reset(setOpen)
+        } else {
+            setMessage(data.message)
+            setSeverity('error')
+        }
+        setOpenMessage(true)
+    }
+
     return {
         loadingSales,
         setLoadingSales,
@@ -166,6 +189,7 @@ export function useSales() {
         getSales,
         isBlocked,
         setIsBlocked,
-        prepareSaleProduct
+        prepareSaleProduct,
+        deliverSale
     }
 }

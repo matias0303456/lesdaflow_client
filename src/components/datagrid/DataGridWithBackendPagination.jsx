@@ -204,7 +204,7 @@ export function DataGridWithBackendPagination({
                                   <>
                                     {(entityKey !== 'sales' ||
                                       (showSettingsAction === 'Preparar venta' && !saleIsPrepared(row)) ||
-                                      (showSettingsAction === 'Registrar entrega' && saleIsPrepared(row))
+                                      (showSettingsAction === 'Registrar entrega' && saleIsPrepared(row) && !row.is_delivered)
                                     ) &&
                                       <Tooltip
                                         title={showSettingsAction}

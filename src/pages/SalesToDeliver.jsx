@@ -16,6 +16,8 @@ import { SaleForm } from "../components/commercial/SaleForm";
 
 import { getSaleDifference, getSaleTotal } from "../utils/helpers";
 import { REPORT_URL } from "../utils/urls";
+import { ModalComponent } from "../components/common/ModalComponent";
+import { Box, Button, Typography } from "@mui/material";
 
 export function SalesToDeliver() {
 
@@ -37,7 +39,8 @@ export function SalesToDeliver() {
         setIdsToDelete,
         handleSubmit,
         isBlocked,
-        setIsBlocked
+        setIsBlocked,
+        deliverSale
     } = useSales()
     const { getProducts } = useProducts()
     const { getClients } = useClients()
@@ -49,17 +52,6 @@ export function SalesToDeliver() {
             installments: '',
             type: 'CUENTA_CORRIENTE',
             date: new Date(Date.now())
-        },
-        rules: {
-            client_id: {
-                required: true
-            },
-            date: {
-                required: true
-            },
-            installments: {
-                required: true
-            }
         }
     })
 
@@ -73,7 +65,7 @@ export function SalesToDeliver() {
     }, [])
 
     useEffect(() => {
-        if (open === 'EDIT' || open === 'SETTINGS') {
+        if (open === 'EDIT') {
             setSaleProducts(formData.sale_products)
         }
     }, [formData])
@@ -186,6 +178,25 @@ export function SalesToDeliver() {
                 isBlocked={isBlocked}
                 setIsBlocked={setIsBlocked}
             />
+            <ModalComponent open={open === 'SETTINGS'} onClose={() => setOpen(null)} reduceWidth={900}>
+                <Typography variant="h6" marginBottom={1} textAlign="center">
+                    Confirmar entrega de venta
+                </Typography>
+                <Box sx={{ display: 'flex', gap: 1, justifyContent: 'center' }}>
+                    <Button type="button" variant="outlined" onClick={() => setOpen(null)} sx={{ width: '35%' }}>
+                        Cancelar
+                    </Button>
+                    <Button
+                        type="button"
+                        variant="contained"
+                        disabled={disabled}
+                        sx={{ width: '35%' }}
+                        onClick={() => deliverSale(formData, reset)}
+                    >
+                        Confirmar
+                    </Button>
+                </Box>
+            </ModalComponent>
         </Layout>
     )
 }
