@@ -89,7 +89,7 @@ export const nav_items = [
       {
         subtitle: "ABM de Productos",
         path: "/productos",
-        can_access: ['ADMINISTRADOR']
+        can_access: ['ADMINISTRADOR', 'VENDEDOR', 'CHOFER']
       },
       {
         subtitle: "Lista de Precios",
@@ -112,7 +112,7 @@ export const nav_items = [
         can_access: ['ADMINISTRADOR']
       }
     ],
-    can_access: ['ADMINISTRADOR', 'VENDEDOR']
+    can_access: ['ADMINISTRADOR', 'VENDEDOR', 'CHOFER']
   },
   {
     title: "Presupuestos",
