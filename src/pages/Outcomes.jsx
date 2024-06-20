@@ -99,6 +99,13 @@ export function Outcomes() {
                     setOutcomes([data, ...outcomes.filter(out => out.id !== formData.id)])
                     setMessage('Ingreso editado correctamente.')
                 }
+                setSearchProducts([
+                    {
+                        ...searchProducts.find(sp => sp.id === data.product_id),
+                        stock: searchProducts.find(sp => sp.id === data.product_id).stock - data.amount
+                    },
+                    ...searchProducts.filter(sp => sp.id !== data.product_id)
+                ])
                 setSeverity('success')
                 reset(setOpen)
             } else {
@@ -116,6 +123,19 @@ export function Outcomes() {
         if (result.every(r => r.status === 200)) {
             const ids = result.map(r => r.data.id)
             setOutcomes([...outcomes.filter(out => !ids.includes(out.id))])
+            setSearchProducts(searchProducts.map(sp => {
+                const pIds = result.map(r => r.data.product_id)
+                if (pIds.includes(sp.id)) {
+                    return {
+                        ...sp,
+                        stock: sp.stock + result
+                            .filter(r => r.data.product_id === sp.id)
+                            .reduce((prev, curr) => prev + curr.data.amount, 0)
+                    }
+                } else {
+                    return sp
+                }
+            }))
             setMessage(`${result.length === 1 ? 'Egreso eliminado' : 'Egresos eliminados'} correctamente.`)
             setSeverity('success')
         } else {
