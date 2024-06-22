@@ -1,10 +1,11 @@
-import { useContext, useEffect, useState } from "react"
+import { useContext, useState } from "react"
 
 import { DataContext } from "../providers/DataProvider"
 import { MessageContext } from "../providers/MessageProvider"
 import { useApi } from "./useApi"
 
 import { PAYMENT_URL } from "../utils/urls"
+import { getSaleDifference } from "../utils/helpers"
 
 export function usePayments() {
 
@@ -15,8 +16,18 @@ export function usePayments() {
 
     const { post, put, destroy } = useApi(PAYMENT_URL)
 
+    const checkDifference = (formData) => {
+        const diff = getSaleDifference(state.sales.data.find(s => s.id === formData.sale_id)).replace('$', '')
+        if (parseFloat(diff) >= parseFloat(formData.amount)) return true
+        setMessage(`El importe debe ser menor al saldo. Saldo actual: $${diff}`)
+        setSeverity('error')
+        setOpenMessage(true)
+        return false
+    }
+
     const handleSubmit = async (e, validate, formData, reset, setDisabled) => {
         e.preventDefault()
+        if (!checkDifference(formData)) return
         if (validate()) {
             const { status, data } = open === 'NEW' ? await post(formData) : await put(formData)
             if (status === 200) {
