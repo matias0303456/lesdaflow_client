@@ -40,7 +40,6 @@ export function Suppliers() {
                 maxLength: 255
             },
             business_name: {
-                required: true,
                 maxLength: 255
             },
             cuil: {
@@ -50,7 +49,6 @@ export function Suppliers() {
                 maxLength: 255
             },
             cell_phone: {
-                required: true,
                 maxLength: 255
             },
             business_phone: {
@@ -180,11 +178,6 @@ export function Suppliers() {
                                 <FormControl sx={{ width: '50%' }}>
                                     <InputLabel htmlFor="business_name">Razón Social</InputLabel>
                                     <Input id="business_name" type="text" name="business_name" value={formData.business_name} disabled={open === 'VIEW'} />
-                                    {errors.business_name?.type === 'required' &&
-                                        <Typography variant="caption" color="red" marginTop={1}>
-                                            * La razón social es requerida.
-                                        </Typography>
-                                    }
                                     {errors.business_name?.type === 'maxLength' &&
                                         <Typography variant="caption" color="red" marginTop={1}>
                                             * La razón social es demasiado larga.
@@ -216,11 +209,6 @@ export function Suppliers() {
                                 <FormControl sx={{ width: '50%' }}>
                                     <InputLabel htmlFor="cell_phone">Celular</InputLabel>
                                     <Input id="cell_phone" type="text" name="cell_phone" value={formData.cell_phone} disabled={open === 'VIEW'} />
-                                    {errors.cell_phone?.type === 'required' &&
-                                        <Typography variant="caption" color="red" marginTop={1}>
-                                            * El celular es requerido.
-                                        </Typography>
-                                    }
                                     {errors.cell_phone?.type === 'maxLength' &&
                                         <Typography variant="caption" color="red" marginTop={1}>
                                             * El celular es demasiado largo.
