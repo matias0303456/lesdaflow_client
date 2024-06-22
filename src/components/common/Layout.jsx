@@ -87,7 +87,7 @@ export function Layout({ children, title }) {
           </Box>
           <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', position: 'relative', paddingY: 1 }}>
             <Avatar sx={{ cursor: 'pointer' }} onClick={() => setShowUserDropdown(!showUserDropdown)}>
-              {`${auth?.user.first_name.charAt(0).toUpperCase()}${auth?.user.last_name.charAt(0).toUpperCase()}`}
+              {auth?.user.name.charAt(0).toUpperCase()}
             </Avatar>
             {showUserDropdown && <UserDropdown setShowUserDropdown={setShowUserDropdown} />}
           </Box>
