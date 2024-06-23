@@ -15,7 +15,7 @@ export function useUsers() {
     const [open, setOpen] = useState(null)
     const [newPwd, setNewPwd] = useState('')
 
-    const { get, post, put, destroy, changeVendorPwd } = useApi(USER_URL)
+    const { get, post, put, destroy } = useApi(USER_URL)
 
     async function getUsers(params) {
         const { status, data } = await get(params)
@@ -90,21 +90,26 @@ export function useUsers() {
         setOpen(null)
     }
 
-    async function handleSubmitNewPwd(e, formData, reset, setDisabled) {
-        e.preventDefault()
-        setLoadingUsers(true)
-        const { status, data } = await changeVendorPwd(formData.id, { password: newPwd })
+    async function toggleActive(formData) {
+        const { status, data } = await put(formData)
         if (status === 200) {
+            dispatch({
+                type: 'USERS',
+                payload: {
+                    ...state.users,
+                    data: [
+                        data,
+                        ...state.users.data.filter(u => u.id !== formData.id)
+                    ]
+                }
+            })
+            setMessage('Usuario editado correctamente.')
             setSeverity('success')
-            reset(setOpen)
-            setNewPwd('')
         } else {
+            setMessage(data.message)
             setSeverity('error')
-            setDisabled(false)
         }
-        setMessage(data.message)
         setOpenMessage(true)
-        setLoadingUsers(false)
     }
 
     return {
@@ -115,7 +120,8 @@ export function useUsers() {
         handleSubmit,
         handleDelete,
         getUsers,
-        handleSubmitNewPwd,
-        newPwd, setNewPwd
+        newPwd, 
+        setNewPwd,
+        toggleActive
     }
 }

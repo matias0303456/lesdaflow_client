@@ -23,7 +23,7 @@ export function Users() {
 
   const navigate = useNavigate()
 
-  const { loadingUsers, getUsers, setOpen, handleSubmit, open, handleDelete } = useUsers()
+  const { loadingUsers, getUsers, setOpen, handleSubmit, open, handleDelete, toggleActive } = useUsers()
   const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
     defaultData: {
       id: '',
@@ -95,7 +95,7 @@ export function Users() {
       id: "name",
       numeric: false,
       disablePadding: true,
-      label: "Nombre y apellido",
+      label: "Nombre y Apellido",
       sorter: (row) => row.name,
       accessor: 'name'
     },
@@ -150,7 +150,10 @@ export function Users() {
           <FormControlLabel
             control={<Checkbox />}
             checked={row.is_active}
-            onChange={e => { }}
+            onChange={e => toggleActive({
+              ...row,
+              is_active: e.target.checked
+            })}
           />
         </Box>
       )
