@@ -32,7 +32,6 @@ export function Clients() {
             last_name: '',
             document_type: '',
             document_number: '',
-            gender_type: '',
             birth: new Date(Date.now()),
             cell_phone: '',
             local_phone: '',
@@ -67,6 +66,9 @@ export function Clients() {
             },
             work_place: {
                 required: true,
+                maxLength: 255
+            },
+            email: {
                 maxLength: 255
             }
         }
@@ -147,8 +149,8 @@ export function Clients() {
                             numeric: false,
                             disablePadding: true,
                             label: "Vendedor",
-                            sorter: (row) => `${row.user.first_name} ${row.user.last_name}`,
-                            accessor: (row) => `${row.user.first_name} ${row.user.last_name}`,
+                            sorter: (row) => row.user.name,
+                            accessor: (row) => row.user.name
                         }
                     ]
                 }
@@ -239,21 +241,6 @@ export function Clients() {
                             </Box>
                             <Box sx={{ display: 'flex', gap: 5 }}>
                                 <FormControl sx={{ width: '50%' }}>
-                                    <InputLabel id="gender-select">Sexo</InputLabel>
-                                    <Select
-                                        labelId="gender-select"
-                                        id="gender__type"
-                                        value={formData.gender_type}
-                                        label="Sexo"
-                                        name="gender_type"
-                                        onChange={handleChange}
-                                        disabled={open === 'VIEW'}
-                                    >
-                                        <MenuItem value="MASCULINO">MASCULINO</MenuItem>
-                                        <MenuItem value="FEMENINO">FEMENINO</MenuItem>
-                                    </Select>
-                                </FormControl>
-                                <FormControl sx={{ width: '50%' }}>
                                     <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
                                         <DatePicker
                                             label="Fecha nacimiento"
@@ -298,6 +285,11 @@ export function Clients() {
                                 <FormControl sx={{ width: '50%' }}>
                                     <InputLabel htmlFor="email">Email</InputLabel>
                                     <Input id="email" type="text" name="email" value={formData.email} disabled={open === 'VIEW'} />
+                                    {errors.email?.type === 'maxLength' &&
+                                        <Typography variant="caption" color="red" marginTop={1}>
+                                            * El email es deamsiado largo.
+                                        </Typography>
+                                    }
                                 </FormControl>
                                 <FormControl sx={{ width: '50%' }}>
                                     <InputLabel htmlFor="work_place">Nombre comercio</InputLabel>
