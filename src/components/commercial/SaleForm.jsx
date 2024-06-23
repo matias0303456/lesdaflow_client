@@ -65,17 +65,17 @@ export function SaleForm({
 
     useEffect(() => {
         if (openPayment === 'EDIT') setValueTab(2)
-        if (!openPayment && valueTab > 0) setValueTab(1)
+        if (open === 'EDIT' && !openPayment && valueTab === 2) setValueTab(1)
         if (open === 'EDIT' && formDataPayment.id.toString().length === 0) {
             setFormDataPayment({ ...formDataPayment, sale_id: formData.id })
         }
     }, [open, openPayment])
 
     useEffect(() => {
-        if (valueTab < 2) {
-            resetPayment(setOpenPayment)
-        } else {
+        if (valueTab === 2) {
             setOpenPayment('NEW')
+        } else {
+            resetPayment(setOpenPayment)
         }
     }, [valueTab])
 
@@ -123,6 +123,11 @@ export function SaleForm({
                         disabled={open === 'NEW' || open === 'CONVERT' || open === 'VIEW' || openPayment === 'DELETE'}
                         label={openPayment === 'EDIT' ? `Editar pago #${formDataPayment.id}` : "Nuevo pago"}
                         {...a11yProps(2)}
+                    />
+                    <Tab
+                        disabled={open === 'NEW' || open === 'CONVERT'}
+                        label="Observaciones"
+                        {...a11yProps(3)}
                     />
                 </Tabs>
             </Box>
@@ -329,6 +334,55 @@ export function SaleForm({
                         setDisabled={setDisabledPayment}
                         errors={errorsPayment}
                     />
+                </Box>
+            }
+            {valueTab === 3 &&
+                <Box sx={{ p: 1 }}>
+                    <textarea
+                        style={{
+                            width: '100%',
+                            height: 300,
+                            border: '1px solid #C4C4C4',
+                            padding: 10,
+                            borderRadius: 5,
+                            resize: 'none'
+                        }}
+                        disabled={open === 'VIEW'}
+                        id="observations"
+                        name="observations"
+                        placeholder="Observaciones..."
+                        value={formData.observations}
+                        onChange={handleChange}
+                    ></textarea>
+                    {errors.observations?.type === 'maxLength' &&
+                        <Typography variant="caption" color="red" marginTop={1}>
+                            * Las observaciones son demasiado largas.
+                        </Typography>
+                    }
+                    <Box sx={{
+                        display: 'flex',
+                        flexDirection: 'row',
+                        gap: 1,
+                        justifyContent: 'center',
+                        margin: '0 auto',
+                        marginTop: 3,
+                        width: '50%'
+                    }}>
+                        <Button type="button" variant="outlined" onClick={handleClose} sx={{ width: '50%' }}>
+                            {open === 'VIEW' ? 'Cerrar' : 'Cancelar'}
+                        </Button>
+                        {(open === 'NEW' || open === 'CONVERT' || open === 'EDIT') &&
+                            <Button
+                                type="button"
+                                variant="contained"
+                                disabled={disabled || isBlocked}
+                                sx={{ width: '50%' }}
+                                onClick={e => handleSubmit(e, formData, validate, reset, setDisabled)}
+                            >
+                                Guardar
+                            </Button>
+                        }
+                    </Box>
                 </Box>
             }
         </ModalComponent>

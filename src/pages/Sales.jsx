@@ -53,7 +53,8 @@ export function Sales() {
             discount: '',
             installments: '',
             type: 'CUENTA_CORRIENTE',
-            date: new Date(Date.now())
+            date: new Date(Date.now()),
+            observations: ''
         },
         rules: {
             client_id: {
@@ -64,6 +65,9 @@ export function Sales() {
             },
             installments: {
                 required: true
+            },
+            observations: {
+                maxLength: 255
             }
         }
     })
@@ -115,8 +119,8 @@ export function Sales() {
             numeric: false,
             disablePadding: true,
             label: 'Vendedor',
-            sorter: (row) => `${row.client.user.first_name} ${row.client.user.last_name}`,
-            accessor: (row) => `${row.client.user.first_name} ${row.client.user.last_name}`
+            sorter: (row) => row.client.user.name,
+            accessor: (row) => row.client.user.name
         },
         {
             id: 'client_name',

@@ -51,7 +51,13 @@ export function SalesToDeliver() {
             discount: '',
             installments: '',
             type: 'CUENTA_CORRIENTE',
-            date: new Date(Date.now())
+            date: new Date(Date.now()),
+            observations: ''
+        },
+        rules: {
+            observations: {
+                maxLength: 255
+            }
         }
     })
 
@@ -131,6 +137,14 @@ export function SalesToDeliver() {
             label: 'Pagado',
             sorter: (row) => parseFloat(getSaleDifference(row).replace('$', '')) > 0 ? 1 : 0,
             accessor: (row) => parseFloat(getSaleDifference(row).replace('$', '')) > 0 ? 'No' : 'Sí'
+        },
+        {
+            id: 'delivered',
+            numeric: false,
+            disablePadding: true,
+            label: 'Entregado',
+            sorter: (row) => row.is_delivered ? 1 : 0,
+            accessor: (row) => row.is_delivered ? 'Sí' : 'No'
         },
         {
             id: 'total',

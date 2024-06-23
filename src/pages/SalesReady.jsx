@@ -39,7 +39,13 @@ export function SalesReady() {
       discount: '',
       installments: '',
       type: 'CUENTA_CORRIENTE',
-      date: new Date(Date.now())
+      date: new Date(Date.now()),
+      observations: ''
+    },
+    rules: {
+      observations: {
+        maxLength: 255
+      }
     }
   })
 
