@@ -29,7 +29,6 @@ import { UpdateProductPriceByProduct } from "./pages/UpdateProductPriceByProduct
 import { UpdateProductPriceBySupplier } from "./pages/UpdateProductPriceBySupplier";
 import { RegisterMovements } from "./pages/RegisterMovements";
 import { BlockedCustomers } from "./pages/BlockedCustomers";
-import { ChangePassword } from "./pages/ChangePassword";
 
 function App() {
 
@@ -74,7 +73,6 @@ function App() {
                 <Route path="/movimientos-caja" element={<Registers />} />
                 <Route path="/reporte-movimientos-caja" element={<RegisterMovements />} />
                 <Route path="/reportes-clientes-bloqueados" element={<BlockedCustomers />} />
-                <Route path="/cambiar-contraseña" element={<ChangePassword />} />
                 <Route path="*" element={<Error />} />
               </Routes>
             </BrowserRouter>

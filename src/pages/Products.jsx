@@ -97,14 +97,16 @@ export function Products() {
             numeric: false,
             disablePadding: true,
             label: 'Código',
-            accessor: 'code'
+            accessor: 'code',
+            can_access: ['CHOFER', 'VENDEDOR']
         },
         {
             id: 'details',
             numeric: false,
             disablePadding: true,
             label: 'Producto',
-            accessor: 'details'
+            accessor: 'details',
+            can_access: ['CHOFER', 'VENDEDOR']
         },
         {
             id: 'buy_price',
@@ -126,7 +128,8 @@ export function Products() {
             disablePadding: true,
             label: 'P. venta',
             sorter: (row) => parseFloat((row.buy_price + ((row.buy_price / 100) * row.earn)).toFixed(2)),
-            accessor: (row) => `$${(row.buy_price + ((row.buy_price / 100) * row.earn)).toFixed(2)}`
+            accessor: (row) => `$${(row.buy_price + ((row.buy_price / 100) * row.earn)).toFixed(2)}`,
+            can_access: ['CHOFER', 'VENDEDOR']
         },
         {
             id: 'supplier',
@@ -134,33 +137,31 @@ export function Products() {
             disablePadding: true,
             label: 'Proveedor',
             sorter: (row) => row.supplier.name.toLowerCase(),
-            accessor: (row) => row.supplier.name
+            accessor: (row) => row.supplier.name,
+            can_access: ['CHOFER', 'VENDEDOR']
         },
+        {
+            id: 'stock',
+            numeric: false,
+            disablePadding: true,
+            label: 'Stock',
+            sorter: (row) => getStock(row),
+            accessor: (row) => getStock(row),
+            can_access: ['VENDEDOR']
+        },
+        {
+            id: 'min_stock',
+            numeric: false,
+            disablePadding: true,
+            label: 'Stock mínimo',
+            accessor: 'min_stock'
+        }
     ]
 
     return (
         <Layout title="Productos">
             <DataGridWithBackendPagination
-                headCells={auth?.user.role === 'CHOFER' ? headCells :
-                    [
-                        ...headCells,
-                        {
-                            id: 'stock',
-                            numeric: false,
-                            disablePadding: true,
-                            label: 'Stock',
-                            sorter: (row) => getStock(row),
-                            accessor: (row) => getStock(row)
-                        },
-                        {
-                            id: 'min_stock',
-                            numeric: false,
-                            disablePadding: true,
-                            label: 'Stock mínimo',
-                            accessor: 'min_stock'
-                        }
-                    ]
-                }
+                headCells={headCells.filter(hc => auth?.user.role === 'ADMINISTRADOR' || hc.can_access?.includes(auth?.user.role))}
                 rows={state.products.data}
                 setOpen={setOpen}
                 setOpenNewMovement={setOpenMovement}

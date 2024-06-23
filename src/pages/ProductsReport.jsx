@@ -1,5 +1,4 @@
 import { useContext, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import {
   Box,
   Button,
@@ -25,17 +24,11 @@ export function ProductsReport() {
   const { auth } = useContext(AuthContext);
   const { state } = useContext(DataContext)
 
-  const navigate = useNavigate()
-
   const { formData, handleChange, validate } = useForm({
     defaultData: { supplier_id: '', stock: '' },
     rules: {}
   })
   const { loadingSuppliers, getSuppliers } = useSuppliers()
-
-  useEffect(() => {
-    if (auth?.user.role !== "ADMINISTRADOR") navigate(auth?.user.role === 'CHOFER' ? '/prep-ventas' : "/productos");
-  }, [])
 
   useEffect(() => {
     getSuppliers()
@@ -118,10 +111,10 @@ export function ProductsReport() {
                     disabled={state.suppliers.data.length === 0}
                     sx={{ width: "100%" }}
                   >
-                    <MenuItem value="">Seleccione</MenuItem>
+                    <MenuItem value="">TODOS</MenuItem>
                     <MenuItem value="CON_STOCK">CON STOCK</MenuItem>
                     <MenuItem value="SIN_STOCK">SIN STOCK</MenuItem>
-                    <MenuItem value="STOCK_MINIMO">STOCK MINIMO</MenuItem>
+                    {auth?.user.role === 'ADMINISTRADOR' && <MenuItem value="STOCK_MINIMO">STOCK MINIMO</MenuItem>}
                   </Select>
                 </FormControl>
               </Box>

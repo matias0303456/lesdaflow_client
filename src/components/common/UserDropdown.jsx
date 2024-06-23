@@ -1,7 +1,5 @@
 /* eslint-disable react/prop-types */
 import { useContext } from "react";
-import { Link } from "react-router-dom";
-import SettingsIcon from "@mui/icons-material/Settings";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 
 import { AuthContext } from "../../providers/AuthProvider";
@@ -24,15 +22,7 @@ export function UserDropdown({ setShowUserDropdown }) {
         </div>
         <small className="text-[10px] font-thin">{auth?.user.role}</small>
       </div>
-      <div className="text-xs font-thin p-3">
-        <Link
-          to="/cambiar-contraseña"
-          className="flex items-center gap-1 mb-1 p-1 rounded-md hover:text-gray-950 hover:bg-gray-50"
-          style={{ transition: '300ms all' }}
-        >
-          <SettingsIcon />
-          <p>Cambiar contraseña</p>
-        </Link>
+      <div className="text-xs font-thin p-3 w-full">
         <button
           className="flex items-center gap-1 w-full p-1 rounded-md hover:text-gray-950 hover:bg-gray-50"
           onClick={handleLogout}

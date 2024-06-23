@@ -99,7 +99,7 @@ export const nav_items = [
       {
         subtitle: "Reporte de Productos",
         path: "/reporte-productos",
-        can_access: ['ADMINISTRADOR']
+        can_access: ['ADMINISTRADOR', 'VENDEDOR', 'CHOFER']
       },
       {
         subtitle: "Actualizar Precios Por Proveedor",
