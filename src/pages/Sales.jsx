@@ -51,7 +51,6 @@ export function Sales() {
             id: '',
             client_id: '',
             discount: '',
-            installments: '',
             type: 'CUENTA_CORRIENTE',
             date: new Date(Date.now()),
             observations: ''
@@ -61,9 +60,6 @@ export function Sales() {
                 required: true
             },
             date: {
-                required: true
-            },
-            installments: {
                 required: true
             },
             observations: {

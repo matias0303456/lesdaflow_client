@@ -14,7 +14,7 @@ import { ModalComponent } from "../common/ModalComponent"
 import { PaymentsABM } from "./PaymentsABM"
 import { PaymentForm } from "./PaymentForm"
 
-import { getCurrentSubtotal, getCurrentTotal, getInstallmentsAmount } from "../../utils/helpers"
+import { getCurrentSubtotal, getCurrentTotal } from "../../utils/helpers"
 
 export function SaleForm({
     saleProducts,
@@ -202,21 +202,6 @@ export function SaleForm({
                                             disabled={formData.type === 'CUENTA_CORRIENTE' || open === 'VIEW' || (open === 'EDIT' && auth?.user.role !== 'ADMINISTRADOR')}
                                         />
                                     </FormControl>
-                                    <FormControl>
-                                        <InputLabel htmlFor="installments">Cantidad Cuotas</InputLabel>
-                                        <Input
-                                            id="installments"
-                                            type="number"
-                                            name="installments"
-                                            value={formData.installments}
-                                            disabled={formData.type === 'CONTADO' || open === 'VIEW' || (open === 'EDIT' && auth?.user.role !== 'ADMINISTRADOR')}
-                                        />
-                                        {errors.installments?.type === 'required' &&
-                                            <Typography variant="caption" color="red" marginTop={1}>
-                                                * Las cuotas son requeridas.
-                                            </Typography>
-                                        }
-                                    </FormControl>
                                     <Box sx={{ display: 'flex', justifyContent: 'space-around' }}>
                                         <FormControlLabel
                                             control={<Checkbox disabled={open === 'VIEW' || (open === 'EDIT' && auth?.user.role !== 'ADMINISTRADOR')} />}
@@ -240,8 +225,7 @@ export function SaleForm({
                                                 if (e.target.checked) {
                                                     setFormData({
                                                         ...formData,
-                                                        type: 'CONTADO',
-                                                        installments: 1
+                                                        type: 'CONTADO'
                                                     })
                                                 }
                                             }}
@@ -254,8 +238,7 @@ export function SaleForm({
                                                 if (e.target.checked) {
                                                     setFormData({
                                                         ...formData,
-                                                        type: 'POXIPOL',
-                                                        installments: 1
+                                                        type: 'POXIPOL'
                                                     })
                                                 }
                                             }}
@@ -271,13 +254,6 @@ export function SaleForm({
                                 <FormControl>
                                     <InputLabel htmlFor="total">Total</InputLabel>
                                     <Input value={getCurrentTotal(formData, saleProducts, state.products.data)} id="total" type="number" name="total" disabled />
-                                </FormControl>
-                                <FormControl>
-                                    <InputLabel htmlFor="inst_amount">Monto por cuota</InputLabel>
-                                    <Input
-                                        id="inst_amount" type="number" name="total" disabled
-                                        value={getInstallmentsAmount(getCurrentTotal(formData, saleProducts, state.products.data), formData.installments)}
-                                    />
                                 </FormControl>
                             </Box>
                         </Box>
@@ -315,6 +291,7 @@ export function SaleForm({
                         open={openPayment}
                         setOpen={setOpenPayment}
                         formData={formDataPayment}
+                        reset={resetPayment}
                         setFormData={setFormDataPayment}
                         handleDelete={handleDeletePayment}
                     />

@@ -39,16 +39,16 @@ export function getSaleDifference(sale) {
     return `$${(saleTotal - paymentsTotal).toFixed(2)}`
 }
 
-export function getDeadline(date, installments) {
+export function getDeadline(date) {
     const startDate = new Date(date)
     const endDate = new Date(startDate)
-    endDate.setDate(startDate.getDate() + 30 * installments)
+    endDate.setDate(startDate.getDate() + 30)
     return endDate.toISOString().split('T')[0]
 }
 
 export function deadlineIsPast(row) {
     const now = new Date(Date.now())
-    const deadline = new Date(getDeadline(row.date, row.installments))
+    const deadline = new Date(getDeadline(row.date))
     return deadline < now
 }
 
@@ -89,11 +89,6 @@ export function getNewCostAndEarnPrice(product, value, earn) {
     return (parseFloat(value) + (parseFloat(value) / 100) * parseFloat(earn)).toFixed(2)
 }
 
-export function getInstallmentsAmount(total, installments) {
-    const inst = installments.toString().length === 0 ? 1 : parseInt(installments)
-    return (total.replace('$', '') / inst).toFixed(2)
-}
-
 export function getAccountStatus(sale) {
     if (sale.type === 'CONTADO') return ''
     const diff = getSaleDifference(sale).replaceAll('$', '')
@@ -102,10 +97,6 @@ export function getAccountStatus(sale) {
     } else {
         return 'Finalizada'
     }
-}
-
-export function getAmountByInstallment(sale) {
-    return `$${(getSaleTotal(sale).replaceAll('$', '') / sale.installments).toFixed(2)}`
 }
 
 export function getSaleDifferenceByPayment(sale, idx) {

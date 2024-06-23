@@ -14,6 +14,7 @@ export function PaymentsABM({
     open,
     setOpen,
     formData,
+    reset,
     setFormData,
     handleDelete
 }) {
@@ -79,7 +80,7 @@ export function PaymentsABM({
                                     {`¿Borrar el pago #${formData.id}?`}
                                 </Typography>
                                 <Box sx={{ display: 'flex', justifyContent: 'center', gap: 1, marginTop: 1 }}>
-                                    <Button size="small" variant="contained" onClick={() => handleDelete(formData)}>
+                                    <Button size="small" variant="contained" onClick={() => handleDelete(formData, reset)}>
                                         Confirmar
                                     </Button>
                                     <Button size="small" variant="outlined" onClick={() => setOpen(null)}>

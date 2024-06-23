@@ -49,7 +49,6 @@ export function SalesToDeliver() {
             id: '',
             client_id: '',
             discount: '',
-            installments: '',
             type: 'CUENTA_CORRIENTE',
             date: new Date(Date.now()),
             observations: ''

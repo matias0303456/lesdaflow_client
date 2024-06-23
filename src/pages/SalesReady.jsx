@@ -37,7 +37,6 @@ export function SalesReady() {
       id: '',
       client_id: '',
       discount: '',
-      installments: '',
       type: 'CUENTA_CORRIENTE',
       date: new Date(Date.now()),
       observations: ''

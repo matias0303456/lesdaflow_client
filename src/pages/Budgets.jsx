@@ -73,7 +73,6 @@ export function Budgets() {
             id: '',
             client_id: '',
             discount: 0,
-            installments: '',
             type: 'CUENTA_CORRIENTE',
             date: new Date(Date.now()),
         },
@@ -82,9 +81,6 @@ export function Budgets() {
                 required: true
             },
             date: {
-                required: true
-            },
-            installments: {
                 required: true
             }
         }
@@ -108,7 +104,6 @@ export function Budgets() {
                 id: formData.id,
                 client_id: formData.client_id,
                 discount: formData.discount,
-                installments: '',
                 type: 'CUENTA_CORRIENTE',
                 date: new Date(Date.now())
             })

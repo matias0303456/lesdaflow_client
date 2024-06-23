@@ -65,7 +65,7 @@ export function AddProductsToSale({
                             disablePortal
                             id="product-autocomplete"
                             options={products.filter(p =>
-                                !saleProducts.map(sp => sp.product_id).includes(p.id))
+                                !saleProducts.map(sp => sp.product_id).includes(p.id) && getStock(p) > 0)
                                 .map(p => ({ label: `Código ${p.code} / Detalle ${p.details}`, id: p.id }))}
                             noOptionsText="No hay productos disponibles."
                             onChange={(e, value) => handleAdd({ idx: saleProducts.length, product_id: value?.id ?? '' })}

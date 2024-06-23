@@ -80,7 +80,7 @@ export function usePayments() {
         }
     }
 
-    async function handleDelete(formData) {
+    async function handleDelete(formData, reset) {
         const { status, data } = await destroy(formData)
         if (status === 200) {
             dispatch({
@@ -101,6 +101,7 @@ export function usePayments() {
             })
             setMessage('Pago eliminado correctamente.')
             setSeverity('success')
+            reset()
         } else {
             setMessage(data.message)
             setSeverity('error')

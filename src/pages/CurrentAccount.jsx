@@ -64,7 +64,7 @@ export function CurrentAccount() {
       numeric: false,
       disablePadding: true,
       label: "Vencimiento",
-      accessor: (row) => getDeadline(row.date, row.installments)
+      accessor: (row) => getDeadline(row.date)
     },
     {
       id: "seller",
