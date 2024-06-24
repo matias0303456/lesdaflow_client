@@ -1,5 +1,5 @@
-import { useContext, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import { Link } from "react-router-dom";
 import { Box, Button, Checkbox, FormControl, FormControlLabel, Input, InputLabel, MenuItem, Select, Typography } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
@@ -21,8 +21,6 @@ export function Clients() {
 
     const { auth } = useContext(AuthContext)
     const { state } = useContext(DataContext)
-
-    const navigate = useNavigate()
 
     const { loadingClients, handleSubmit, handleDelete, open, setOpen, getClients } = useClients()
     const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
@@ -74,10 +72,6 @@ export function Clients() {
         }
     })
 
-    useEffect(() => {
-        if (auth?.user.role !== 'ADMINISTRADOR' && auth?.user.role !== 'VENDEDOR') navigate('/prep-ventas')
-    }, [])
-
     const headCells = [
         {
             id: "name",
@@ -117,7 +111,11 @@ export function Clients() {
             disablePadding: true,
             label: "Dirección",
             sorter: (row) => row.address,
-            accessor: "address"
+            accessor: (row) => (
+                <Link target="_blank" to={`https://www.google.com/maps?q=${row.address}`}>
+                    <span style={{ color: '#078BCD' }}>{row.address}</span>
+                </Link>
+            )
         },
         {
             id: 'work_place',

@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Box, Button, Checkbox, FormControl, FormControlLabel, IconButton, Input, InputAdornment, InputLabel, MenuItem, Select, TextField, Typography } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
@@ -129,7 +129,11 @@ export function Users() {
       disablePadding: true,
       label: "Dirección",
       sorter: (row) => row.address,
-      accessor: "address"
+      accessor: (row) => (
+        <Link target="_blank" to={`https://www.google.com/maps?q=${row.address}`}>
+          <span style={{ color: '#078BCD' }}>{row.address}</span>
+        </Link>
+      )
     },
     {
       id: "role",

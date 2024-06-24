@@ -1,5 +1,5 @@
 import { useContext, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Box, Button, FormControl, Input, InputLabel, Typography } from "@mui/material";
 
 import { AuthContext } from "../providers/AuthProvider";
@@ -98,7 +98,11 @@ export function Suppliers() {
             numeric: false,
             disablePadding: true,
             label: 'Dirección',
-            accessor: 'address'
+            accessor: (row) => (
+                <Link target="_blank" to={`https://www.google.com/maps?q=${row.address}`}>
+                    <span style={{ color: '#078BCD' }}>{row.address}</span>
+                </Link>
+            )
         },
         {
             id: 'cell_phone',

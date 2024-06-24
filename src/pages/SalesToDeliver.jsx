@@ -1,5 +1,6 @@
 import { useContext, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { Box, Button, Typography } from "@mui/material";
 import { format } from "date-fns";
 
 import { AuthContext } from "../providers/AuthProvider";
@@ -13,11 +14,10 @@ import { Layout } from "../components/common/Layout";
 import { DataGridWithBackendPagination } from "../components/datagrid/DataGridWithBackendPagination";
 import { SaleFilter } from "../components/filters/SaleFilter";
 import { SaleForm } from "../components/commercial/SaleForm";
+import { ModalComponent } from "../components/common/ModalComponent";
 
 import { getSaleDifference, getSaleTotal } from "../utils/helpers";
 import { REPORT_URL } from "../utils/urls";
-import { ModalComponent } from "../components/common/ModalComponent";
-import { Box, Button, Typography } from "@mui/material";
 
 export function SalesToDeliver() {
 
@@ -112,7 +112,11 @@ export function SalesToDeliver() {
             disablePadding: true,
             label: 'Dirección',
             sorter: (row) => row.client.address,
-            accessor: (row) => row.client.address
+            accessor: (row) => (
+                <Link target="_blank" to={`https://www.google.com/maps?q=${row.client.address}`}>
+                    <span style={{ color: '#078BCD' }}>{row.client.address}</span>
+                </Link>
+            )
         },
         {
             id: 'phone',

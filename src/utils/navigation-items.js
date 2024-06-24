@@ -18,7 +18,7 @@ export const nav_items = [
       {
         subtitle: "ABM Clientes",
         path: "/clientes",
-        can_access: ['ADMINISTRADOR', 'VENDEDOR']
+        can_access: ['ADMINISTRADOR', 'VENDEDOR', 'CHOFER']
       },
       // {
       //   subtitle: "Cuentas Corrientes",
@@ -36,7 +36,7 @@ export const nav_items = [
         can_access: ['ADMINISTRADOR']
       }
     ],
-    can_access: ['ADMINISTRADOR', 'VENDEDOR']
+    can_access: ['ADMINISTRADOR', 'VENDEDOR', 'CHOFER']
   },
   {
     title: "Proveedores",
