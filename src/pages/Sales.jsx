@@ -17,7 +17,7 @@ import { DataGridWithBackendPagination } from "../components/datagrid/DataGridWi
 import { SaleForm } from "../components/commercial/SaleForm";
 
 import { REPORT_URL } from "../utils/urls";
-import { getSaleDifference, getSaleTotal } from "../utils/helpers";
+import { deadlineIsPast, getSaleDifference, getSaleTotal } from "../utils/helpers";
 
 export function Sales() {
 
@@ -84,7 +84,10 @@ export function Sales() {
     }, [formData])
 
     useEffect(() => {
-        setIsBlocked(state.clients.data.find(c => c.id === parseInt(formData.client_id))?.is_blocked)
+        const currentClient = state.clients.data.find(c => c.id === parseInt(formData.client_id))
+        const currentClientSales = state.sales.data.filter(s => s.client_id === currentClient?.id)
+        const someSaleIsPast = currentClientSales.some(s => deadlineIsPast(s))
+        setIsBlocked(currentClient?.is_blocked || someSaleIsPast)
     }, [formData.client_id])
 
     const headCells = [

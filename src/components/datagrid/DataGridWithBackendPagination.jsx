@@ -271,11 +271,11 @@ export function DataGridWithBackendPagination({
                                     color:
                                       (deadlineColor === "sales" &&
                                         deadlineIsPast(row)) ||
-                                        (deadlineColor ===
-                                          "clients" &&
-                                          row.sales.some((s) =>
-                                            deadlineIsPast(s)
-                                          )) ||
+                                        // (deadlineColor ===
+                                        //   "clients" &&
+                                        //   row.sales.some((s) =>
+                                        //     deadlineIsPast(s)
+                                        //   )) ||
                                         (deadlineColor ===
                                           "products" &&
                                           row.min_stock >

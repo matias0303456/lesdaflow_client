@@ -42,11 +42,12 @@ export function getSaleDifference(sale) {
 export function getDeadline(date) {
     const startDate = new Date(date)
     const endDate = new Date(startDate)
-    endDate.setDate(startDate.getDate() + 25)
+    endDate.setDate(startDate.getDate() + 20)
     return endDate.toISOString().split('T')[0]
 }
 
 export function deadlineIsPast(row) {
+    if (row.type !== 'CUENTA_CORRIENTE') return false
     const now = new Date(Date.now())
     const deadline = new Date(getDeadline(row.date))
     return deadline < now

@@ -91,5 +91,27 @@ export function useClients() {
         setOpen(null)
     }
 
-    return { loadingClients, setLoadingClients, handleSubmit, handleDelete, open, setOpen, getClients }
+    async function toggleBlocked(formData) {
+        const { status, data } = await put(formData)
+        if (status === 200) {
+            dispatch({
+                type: 'CLIENTS',
+                payload: {
+                    ...state.clients,
+                    data: [
+                        data,
+                        ...state.clients.data.filter(c => c.id !== formData.id)
+                    ]
+                }
+            })
+            setMessage('Cliente editado correctamente.')
+            setSeverity('success')
+        } else {
+            setMessage(data.message)
+            setSeverity('error')
+        }
+        setOpenMessage(true)
+    }
+
+    return { loadingClients, setLoadingClients, handleSubmit, handleDelete, open, setOpen, getClients, toggleBlocked }
 }

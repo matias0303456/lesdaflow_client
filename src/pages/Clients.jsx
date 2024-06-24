@@ -22,7 +22,7 @@ export function Clients() {
     const { auth } = useContext(AuthContext)
     const { state } = useContext(DataContext)
 
-    const { loadingClients, handleSubmit, handleDelete, open, setOpen, getClients } = useClients()
+    const { loadingClients, handleSubmit, handleDelete, open, setOpen, getClients, toggleBlocked } = useClients()
     const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
         defaultData: {
             id: '',
@@ -130,8 +130,19 @@ export function Clients() {
             numeric: false,
             disablePadding: true,
             label: 'Bloqueado',
-            sorter: (row) => row.is_blocked,
-            accessor: (row) => row.is_blocked ? 'Sí' : 'No'
+            sorter: (row) => row.is_blocked ? 1 : 0,
+            accessor: (row) => (
+                <Box sx={{ textAlign: 'center' }}>
+                    <FormControlLabel
+                        control={<Checkbox disabled={auth?.user.role !== 'ADMINISTRADOR'} />}
+                        checked={row.is_blocked}
+                        onChange={e => toggleBlocked({
+                            ...row,
+                            is_blocked: e.target.checked
+                        })}
+                    />
+                </Box>
+            )
         }
     ];
 
@@ -258,6 +269,20 @@ export function Clients() {
                                         </Typography>
                                     }
                                 </FormControl>
+                                <FormControl sx={{ width: '50%' }}>
+                                    <InputLabel htmlFor="address">Dirección</InputLabel>
+                                    <Input id="address" type="text" name="address" value={formData.address} disabled={open === 'VIEW'} />
+                                    {errors.address?.type === 'required' &&
+                                        <Typography variant="caption" color="red" marginTop={1}>
+                                            * La dirección es requerida.
+                                        </Typography>
+                                    }
+                                    {errors.address?.type === 'maxLength' &&
+                                        <Typography variant="caption" color="red" marginTop={1}>
+                                            * La dirección es demasiado larga.
+                                        </Typography>
+                                    }
+                                </FormControl>
                             </Box>
                             <Box sx={{ display: 'flex', gap: 5 }}>
                                 <FormControl sx={{ width: '50%' }}>
@@ -303,29 +328,6 @@ export function Clients() {
                                         </Typography>
                                     }
                                 </FormControl>
-                            </Box>
-                            <Box sx={{ display: 'flex', gap: 5 }}>
-                                <FormControl sx={{ width: '50%' }}>
-                                    <InputLabel htmlFor="address">Dirección</InputLabel>
-                                    <Input id="address" type="text" name="address" value={formData.address} disabled={open === 'VIEW'} />
-                                    {errors.address?.type === 'required' &&
-                                        <Typography variant="caption" color="red" marginTop={1}>
-                                            * La dirección es requerida.
-                                        </Typography>
-                                    }
-                                    {errors.address?.type === 'maxLength' &&
-                                        <Typography variant="caption" color="red" marginTop={1}>
-                                            * La dirección es demasiado larga.
-                                        </Typography>
-                                    }
-                                </FormControl>
-                                <FormControlLabel
-                                    control={<Checkbox disabled={open === 'VIEW'} />}
-                                    label="Bloqueado"
-                                    checked={formData.is_blocked}
-                                    value={formData.is_blocked}
-                                    onChange={e => setFormData({ ...formData, is_blocked: e.target.checked })}
-                                />
                             </Box>
                         </Box>
                         <FormControl sx={{
