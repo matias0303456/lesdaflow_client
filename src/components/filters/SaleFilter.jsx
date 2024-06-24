@@ -7,7 +7,7 @@ import { es } from "date-fns/locale";
 import { DataContext } from "../../providers/DataProvider";
 import { useSales } from "../../hooks/useSales";
 
-export function SaleFilter({ showWorkPlace, showSeller, showDateAndType }) {
+export function SaleFilter({ showWorkPlace, showSeller, showDate }) {
 
     const { state, dispatch } = useContext(DataContext)
 
@@ -117,40 +117,38 @@ export function SaleFilter({ showWorkPlace, showSeller, showDateAndType }) {
                                 </Select>
                             </FormControl>
                         }
-                        {showDateAndType &&
-                            <>
-                                <FormControl>
-                                    <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
-                                        <DatePicker
-                                            label="Fecha"
-                                            value={state.sales.filter_fields.date.length === 0 ? new Date(Date.now()) : new Date(state.sales.filter_fields.date)}
-                                            onChange={value => handleChange({
-                                                target: {
-                                                    name: 'date',
-                                                    value: new Date(value.toISOString())
-                                                }
-                                            })}
-                                        />
-                                    </LocalizationProvider>
-                                </FormControl>
-                                <FormControl>
-                                    <InputLabel id="type-select">Tipo Comp.</InputLabel>
-                                    <Select
-                                        labelId="type-select"
-                                        id="type"
-                                        value={state.sales.filter_fields.type}
-                                        label="Tipo Comp."
-                                        name="type"
-                                        onChange={handleChange}
-                                    >
-                                        <MenuItem value="">Seleccione</MenuItem>
-                                        <MenuItem value="CONTADO">CONTADO</MenuItem>
-                                        <MenuItem value="CUENTA_CORRIENTE">CTA CTE</MenuItem>
-                                        <MenuItem value="POXIPOL">POXIPOL</MenuItem>
-                                    </Select>
-                                </FormControl>
-                            </>
+                        {showDate &&
+                            <FormControl>
+                                <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
+                                    <DatePicker
+                                        label="Fecha"
+                                        value={state.sales.filter_fields.date.length === 0 ? new Date(Date.now()) : new Date(state.sales.filter_fields.date)}
+                                        onChange={value => handleChange({
+                                            target: {
+                                                name: 'date',
+                                                value: new Date(value.toISOString())
+                                            }
+                                        })}
+                                    />
+                                </LocalizationProvider>
+                            </FormControl>
                         }
+                        <FormControl>
+                            <InputLabel id="type-select">T. Vta.</InputLabel>
+                            <Select
+                                labelId="type-select"
+                                id="type"
+                                value={state.sales.filter_fields.type}
+                                label="Tipo Comp."
+                                name="type"
+                                onChange={handleChange}
+                            >
+                                <MenuItem value="">Seleccione</MenuItem>
+                                <MenuItem value="CONTADO">CONTADO</MenuItem>
+                                <MenuItem value="CUENTA_CORRIENTE">CTA CTE</MenuItem>
+                                <MenuItem value="POXIPOL">POXIPOL</MenuItem>
+                            </Select>
+                        </FormControl>
                     </Box>
                     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                         <Button type="button" variant="outlined" onClick={handleReset}>

@@ -146,7 +146,7 @@ export function SalesReady() {
         setFormData={setFormData}
         showSettingsAction="Preparar venta"
         showPDFAction={`${REPORT_URL}/sales-pdf-or-puppeteer?token=${auth?.token}&id=`}
-        contentHeader={<SaleFilter showDateAndType />}
+        contentHeader={<SaleFilter showDate />}
       />
       <ModalComponent open={open === 'SETTINGS'} onClose={() => setOpen(null)} reduceWidth={800}>
         <Typography variant="h6" marginBottom={1}>
