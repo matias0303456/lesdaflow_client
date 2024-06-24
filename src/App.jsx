@@ -27,7 +27,7 @@ import { SalesToDeliver } from "./pages/SalesToDeliver";
 import { ProductsPriceList } from "./pages/ProductsPriceList"
 import { UpdateProductPriceByProduct } from "./pages/UpdateProductPriceByProduct";
 import { UpdateProductPriceBySupplier } from "./pages/UpdateProductPriceBySupplier";
-import { RegisterMovements } from "./pages/RegisterMovements";
+// import { RegisterMovements } from "./pages/RegisterMovements";
 import { BlockedCustomers } from "./pages/BlockedCustomers";
 
 function App() {
@@ -71,7 +71,7 @@ function App() {
                 <Route path="/producto-actualiza-precio" element={<UpdateProductPriceByProduct />} />
                 <Route path="/presupuestos" element={<Budgets />} />
                 <Route path="/movimientos-caja" element={<Registers />} />
-                <Route path="/reporte-movimientos-caja" element={<RegisterMovements />} />
+                {/* <Route path="/reporte-movimientos-caja" element={<RegisterMovements />} /> */}
                 <Route path="/reportes-clientes-bloqueados" element={<BlockedCustomers />} />
                 <Route path="*" element={<Error />} />
               </Routes>

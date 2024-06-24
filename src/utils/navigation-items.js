@@ -142,11 +142,11 @@ export const nav_items = [
     title: "Reportes",
     name: "reports",
     submenu: [
-      {
-        subtitle: "Movimientos de cajas",
-        path: "/reporte-movimientos-caja",
-        can_access: ['ADMINISTRADOR', 'CHOFER', 'VENDEDOR']
-      },
+      // {
+      //   subtitle: "Movimientos de cajas",
+      //   path: "/reporte-movimientos-caja",
+      //   can_access: ['ADMINISTRADOR', 'CHOFER', 'VENDEDOR']
+      // },
       {
         subtitle: "Clientes bloqueados",
         path: "/reportes-clientes-bloqueados",

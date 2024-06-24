@@ -10,9 +10,10 @@ import { useRegisters } from "../hooks/useRegisters";
 import { Layout } from "../components/common/Layout";
 import { ModalComponent } from "../components/common/ModalComponent";
 import { DataGridWithBackendPagination } from "../components/datagrid/DataGridWithBackendPagination";
-// import { RegisterFilter } from "../components/filters/RegisterFilter";
+import { RegisterFilter } from "../components/filters/RegisterFilter";
 
 import { setLocalDate } from "../utils/helpers";
+import { REPORT_URL } from "../utils/urls";
 
 export function Registers() {
 
@@ -99,14 +100,15 @@ export function Registers() {
                 getter={getRegisters}
                 setOpen={setOpen}
                 setFormData={setFormData}
-                showViewAction
                 showSettingsAction="Cerrar caja"
+                showPDFAction={`${REPORT_URL}/register-payments?token=${auth?.token}&id=`}
+                showViewAction
                 contentHeader={
                     <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 2, justifyContent: 'space-between' }}>
                         <Button variant="outlined" onClick={() => setOpen('NEW')}>
                             Apertura caja
                         </Button>
-                        {/* {auth?.user.role === 'ADMINISTRADOR' && <RegisterFilter />} */}
+                        {auth?.user.role === 'ADMINISTRADOR' && <RegisterFilter />}
                     </Box>
                 }
             >
