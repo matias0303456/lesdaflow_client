@@ -42,7 +42,7 @@ export function getSaleDifference(sale) {
 export function getDeadline(date) {
     const startDate = new Date(date)
     const endDate = new Date(startDate)
-    endDate.setDate(startDate.getDate() + 30)
+    endDate.setDate(startDate.getDate() + 25)
     return endDate.toISOString().split('T')[0]
 }
 

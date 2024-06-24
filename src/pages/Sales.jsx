@@ -103,18 +103,10 @@ export function Sales() {
             accessor: (row) => format(new Date(row.date), 'dd/MM/yy')
         },
         {
-            id: 'hour',
-            numeric: false,
-            disablePadding: true,
-            label: 'Hora',
-            sorter: (row) => format(new Date(row.date), 'HH:mm').toString().replace(':', ''),
-            accessor: (row) => format(new Date(row.date), 'HH:mm')
-        },
-        {
             id: 'seller',
             numeric: false,
             disablePadding: true,
-            label: 'Vendedor',
+            label: 'Vdor.',
             sorter: (row) => row.client.user.name,
             accessor: (row) => row.client.user.name
         },
@@ -138,7 +130,7 @@ export function Sales() {
             id: 'address',
             numeric: false,
             disablePadding: true,
-            label: 'Dirección',
+            label: 'Direcc.',
             sorter: (row) => row.client.address,
             accessor: (row) => row.client.address
         },
@@ -146,16 +138,8 @@ export function Sales() {
             id: 'type',
             numeric: false,
             disablePadding: true,
-            label: 'Comp.',
+            label: 'T. Vta.',
             accessor: (row) => row.type.replaceAll('CUENTA_CORRIENTE', 'CTA CTE')
-        },
-        {
-            id: 'paid',
-            numeric: false,
-            disablePadding: true,
-            label: 'Pagado',
-            sorter: (row) => parseFloat(getSaleDifference(row).replace('$', '')) > 0 ? 1 : 0,
-            accessor: (row) => parseFloat(getSaleDifference(row).replace('$', '')) > 0 ? 'No' : 'Sí'
         },
         {
             id: 'total',
@@ -164,6 +148,14 @@ export function Sales() {
             label: 'Total',
             sorter: (row) => getSaleTotal(row).replace('$', ''),
             accessor: (row) => getSaleTotal(row)
+        },
+        {
+            id: 'paid',
+            numeric: false,
+            disablePadding: true,
+            label: 'Pagado',
+            sorter: (row) => parseFloat(getSaleDifference(row).replace('$', '')) > 0 ? 1 : 0,
+            accessor: (row) => parseFloat(getSaleDifference(row).replace('$', '')) > 0 ? 'No' : 'Sí'
         },
         {
             id: 'delivered',
