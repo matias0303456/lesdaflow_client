@@ -60,6 +60,7 @@ export function useMovements() {
                 setDisabled(false)
             }
             setOpenMessage(true)
+            if (status === 200) return data
         }
     }
 
@@ -93,7 +94,7 @@ export function useMovements() {
         setOpenIncome(null)
     }
 
-    async function getOutcomes(){
+    async function getOutcomes() {
         const { status, data } = await getOutcome(page['outcomes'], offset['outcomes'], search)
         if (status === 200) {
             setOutcomes(data[0])
@@ -102,17 +103,17 @@ export function useMovements() {
         }
     }
 
-    async function handleSubmitOutcome(e, validate, formData, reset, setDisabled) {
+    async function handleSubmitOutcome(e, formData, validate, reset, setDisabled) {
         e.preventDefault()
         if (validate()) {
             const { status, data } = openOutcome === 'NEW' ? await postOutcome(formData) : await putOutcome(formData)
             if (status === 200) {
                 if (openOutcome === 'NEW') {
                     setOutcomes([data, ...outcomes])
-                    setMessage('Ingreso creado correctamente.')
+                    setMessage('Egreso creado correctamente.')
                 } else {
                     setOutcomes([data, ...outcomes.filter(out => out.id !== formData.id)])
-                    setMessage('Ingreso editado correctamente.')
+                    setMessage('Egreso editado correctamente.')
                 }
                 setSearchProducts([
                     {
@@ -129,6 +130,7 @@ export function useMovements() {
                 setDisabled(false)
             }
             setOpenMessage(true)
+            if (status === 200) return data
         }
     }
 

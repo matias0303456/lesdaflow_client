@@ -8,22 +8,26 @@ import { AuthContext } from "../providers/AuthProvider";
 import { useProducts } from '../hooks/useProducts'
 import { useForm } from "../hooks/useForm";
 import { useSuppliers } from "../hooks/useSuppliers";
+import { useMovements } from "../hooks/useMovements";
 
 import { Layout } from "../components/Layout";
 import { DataGrid } from "../components/DataGrid";
 import { ModalComponent } from "../components/ModalComponent";
 import { ProductFilter } from "../components/filters/ProductFilter";
+import { UpdateProductPrice } from "../components/UpdateProductPrice";
+import { MovementsForm } from "../components/MovementsForm";
 
 import { getStock } from "../utils/helpers";
-import { UpdateProductPrice } from "../components/UpdateProductPrice";
 
 export function Products() {
 
     const { auth } = useContext(AuthContext)
     const { searchProducts } = useContext(SearchContext)
 
+    const { suppliers, loadingSuppliers } = useSuppliers()
     const {
         products,
+        setProducts,
         loadingProducts,
         handleSubmit,
         handleDelete,
@@ -34,7 +38,6 @@ export function Products() {
         getProducts,
         getSearchProducts
     } = useProducts()
-    const { suppliers, loadingSuppliers } = useSuppliers()
     const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
         defaultData: {
             id: '',
@@ -81,6 +84,20 @@ export function Products() {
             }
         }
     })
+    const { setOpenIncome, setOpenOutcome, handleSubmitIncome, handleSubmitOutcome } = useMovements()
+    const {
+        formData: newMovement,
+        setFormData: setNewMovement,
+        errors: errorsMovement,
+        handleChange: handleChangeMovement,
+        reset: resetMovement,
+        disabled: disabledMovement,
+        validate: validateMovement,
+        setDisabled: setDisabledMovement
+    } = useForm({
+        defaultData: { type: '', product_id: '', observations: '', amount: '', code: '', details: '' },
+        rules: { product_id: { required: true }, observations: { maxLength: 255 }, amount: { required: true } }
+    })
 
     const [massiveEdit, setMassiveEdit] = useState([])
     const [earnPrice, setEarnPrice] = useState(0)
@@ -96,6 +113,15 @@ export function Products() {
         const earn = formData.earn.toString().length === 0 ? 0 : parseInt(formData.earn)
         setEarnPrice(`$${(buy_price + ((buy_price / 100) * earn)).toFixed(2)}`)
     }, [formData])
+
+    const handleSubmitMovement = (e) => {
+        if (newMovement.type === 'ingreso') {
+            return handleSubmitIncome(e, newMovement, validateMovement, resetMovement, setDisabledMovement)
+        }
+        if (newMovement.type === 'egreso') {
+            return handleSubmitOutcome(e, newMovement, validateMovement, resetMovement, setDisabledMovement)
+        }
+    }
 
     const headCells = [
         {
@@ -122,7 +148,16 @@ export function Products() {
                     }}
                     onMouseEnter={() => setStopPointerEvents(true)}
                     onMouseLeave={() => setStopPointerEvents(false)}
-                    onClick={() => { }}
+                    onClick={() => {
+                        setNewMovement({
+                            ...newMovement,
+                            type: 'ingreso',
+                            product_id: row.id,
+                            code: row.code,
+                            details: row.details
+                        })
+                        setOpenIncome('NEW')
+                    }}
                 />
             )
         },
@@ -143,7 +178,16 @@ export function Products() {
                     }}
                     onMouseEnter={() => setStopPointerEvents(true)}
                     onMouseLeave={() => setStopPointerEvents(false)}
-                    onClick={() => { }}
+                    onClick={() => {
+                        setNewMovement({
+                            ...newMovement,
+                            type: 'egreso',
+                            product_id: row.id,
+                            code: row.code,
+                            details: row.details
+                        })
+                        setOpenOutcome('NEW')
+                    }}
                 />
             )
         },
@@ -417,6 +461,18 @@ export function Products() {
                             handleSubmitMassive={handleSubmitMassive}
                             handleUpdateCostAndEarn={handleUpdateCostAndEarn}
                             setDisabled={setDisabled}
+                        />
+                        <MovementsForm
+                            open={newMovement.type.length > 0}
+                            setOpen={newMovement.type === 'ingreso' ? setOpenIncome : setOpenOutcome}
+                            formData={newMovement}
+                            errors={errorsMovement}
+                            handleChange={handleChangeMovement}
+                            reset={resetMovement}
+                            disabled={disabledMovement}
+                            handleSubmit={handleSubmitMovement}
+                            products={products}
+                            setProducts={setProducts}
                         />
                     </DataGrid>
                 </>

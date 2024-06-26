@@ -166,7 +166,7 @@ export function Outcomes() {
                                 {openOutcome === 'NEW' && 'Nuevo egreso'}
                                 {openOutcome === 'EDIT' && 'Editar egreso'}
                             </Typography>
-                            <form onChange={handleChange} onSubmit={e => handleSubmitOutcome(e, validate, formData, reset, setDisabled)}>
+                            <form onChange={handleChange} onSubmit={e => handleSubmitOutcome(e, formData, validate, reset, setDisabled)}>
                                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                                     <FormControl>
                                         <Autocomplete

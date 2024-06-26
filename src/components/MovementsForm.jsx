@@ -1,7 +1,8 @@
 import { Box, Button, FormControl, Input, InputLabel, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
 
-import { ModalComponent } from "../common/ModalComponent";
-import { getStock } from "../../utils/helpers";
+import { ModalComponent } from "./ModalComponent";
+
+import { getStock } from "../utils/helpers";
 
 export function MovementsForm({
     open,
@@ -12,16 +13,44 @@ export function MovementsForm({
     reset,
     disabled,
     handleSubmit,
-    validate,
-    setDisabled,
+    products,
+    setProducts
 }) {
+
+    const currentStock = getStock(products.find(p => p.id === parseInt(formData.product_id)))
+
     return (
         <ModalComponent open={open} onClose={() => reset(setOpen)} reduceWidth={600}>
             <Typography variant="h6" sx={{ marginBottom: 2 }}>
-                {open === 'NEW_INCOME' && `Nuevo ingreso del producto: ${formData.code} - ${formData.details}`}
-                {open === 'NEW_OUTCOME' && `Nuevo egreso del producto: ${formData.code} - ${formData.details}`}
+                {`Nuevo ${formData.type} del producto: ${formData.code} - ${formData.details}`}
             </Typography>
-            <form onChange={handleChange} onSubmit={e => handleSubmit(e, validate, formData, setDisabled, reset)}>
+            <form onChange={handleChange} onSubmit={async e => {
+                const data = await handleSubmit(e)
+                if (formData.type === 'ingreso') {
+                    setProducts([
+                        ...products.filter(p => p.id !== parseInt(formData.product_id)),
+                        {
+                            ...products.find(p => p.id === parseInt(formData.product_id)),
+                            incomes: [
+                                ...products.find(p => p.id === parseInt(formData.product_id)).incomes,
+                                data
+                            ]
+                        }
+                    ])
+                }
+                if (formData.type === 'egreso') {
+                    setProducts([
+                        ...products.filter(p => p.id !== parseInt(formData.product_id)),
+                        {
+                            ...products.find(p => p.id === parseInt(formData.product_id)),
+                            outcomes: [
+                                ...products.find(p => p.id === parseInt(formData.product_id)).outcomes,
+                                data
+                            ]
+                        }
+                    ])
+                }
+            }}>
                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                     <Box sx={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center' }}>
                         <TableContainer component={Paper}>
@@ -42,7 +71,7 @@ export function MovementsForm({
                                 <TableBody>
                                     <TableRow>
                                         <TableCell align="center">
-                                            {getStock(formData)}
+                                            {currentStock}
                                         </TableCell>
                                         <TableCell align="center">
                                             <FormControl>
@@ -55,8 +84,8 @@ export function MovementsForm({
                                             </FormControl>
                                         </TableCell>
                                         <TableCell align="center">
-                                            {open === 'NEW_INCOME' && getStock(formData) + Math.abs(parseInt(formData.amount ? formData.amount : 0))}
-                                            {open === 'NEW_OUTCOME' && getStock(formData) - Math.abs(parseInt(formData.amount ? formData.amount : 0))}
+                                            {formData.type === 'ingreso' && currentStock + Math.abs(parseInt(formData.amount ? formData.amount : 0))}
+                                            {formData.type === 'egreso' && currentStock - Math.abs(parseInt(formData.amount ? formData.amount : 0))}
                                         </TableCell>
                                     </TableRow>
                                 </TableBody>
