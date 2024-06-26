@@ -1,34 +1,40 @@
-import { useCallback, useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Autocomplete, Box, Button, FormControl, Input, InputLabel, LinearProgress, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from "@mui/material";
 import { format } from 'date-fns'
 
 import { AuthContext } from "../providers/AuthProvider";
-import { MessageContext } from "../providers/MessageProvider";
-import { PageContext } from "../providers/PageProvider";
 import { SearchContext } from "../providers/SearchProvider";
-import { useApi } from "../hooks/useApi";
 import { useForm } from "../hooks/useForm";
+import { useMovements } from "../hooks/useMovements";
+import { useProducts } from "../hooks/useProducts";
 
 import { Layout } from "../components/Layout";
 import { DataGrid } from "../components/DataGrid";
 import { ModalComponent } from "../components/ModalComponent";
 import { MovementFilter } from "../components/filters/MovementFilter";
 
-import { INCOME_URL, PRODUCT_URL } from "../utils/urls";
 import { getStockTillDate } from "../utils/helpers";
 
 export function Incomes() {
 
-    const { page, offset, count, setCount, search } = useContext(PageContext)
     const { auth } = useContext(AuthContext)
-    const { setMessage, setOpenMessage, setSeverity } = useContext(MessageContext)
-    const { searchProducts, setSearchProducts } = useContext(SearchContext)
+    const { searchProducts } = useContext(SearchContext)
 
     const navigate = useNavigate()
 
-    const { get, post, put, destroy } = useApi(INCOME_URL)
-
+    const {
+        incomes,
+        getIncomes,
+        loadingIncomes,
+        setOpenIncome,
+        handleDeleteIncome,
+        handleSubmitIncome,
+        openIncome,
+        oldFormDataAmount,
+        setOldFormDataAmount
+    } = useMovements()
+    const { getSearchProducts } = useProducts()
     const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
         defaultData: {
             id: '',
@@ -49,103 +55,19 @@ export function Incomes() {
         }
     })
 
-    const [loadingIncomes, setLoadingIncomes] = useState(true)
-    const [incomes, setIncomes] = useState([])
-    const [open, setOpen] = useState(null)
-    const [oldFormDataAmount, setOldFormDataAmount] = useState(0)
-
     useEffect(() => {
         if (auth?.user.role.name !== 'ADMINISTRADOR') navigate('/veroshop/productos')
     }, [])
 
     useEffect(() => {
-        (async () => {
-            const res = await fetch(PRODUCT_URL + '/search', {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': auth.token
-                }
-            })
-            const data = await res.json()
-            if (res.status === 200) setSearchProducts(data)
-        })()
+        getIncomes()
+        getSearchProducts()
     }, [])
-
-    const getIncomes = useCallback(async () => {
-        const { status, data } = await get(page['incomes'], offset['incomes'], search)
-        if (status === 200) {
-            setIncomes(data[0])
-            setCount({ ...count, 'incomes': data[1] })
-            setLoadingIncomes(false)
-        }
-    }, [page, offset, search])
 
     useEffect(() => {
-        (async () => {
-            await getIncomes()
-        })()
-    }, [])
-
-    async function handleSubmit(e) {
-        e.preventDefault()
-        if (validate()) {
-            const { status, data } = open === 'NEW' ? await post(formData) : await put(formData)
-            if (status === 200) {
-                if (open === 'NEW') {
-                    setIncomes([data, ...incomes])
-                    setMessage('Ingreso creado correctamente.')
-                } else {
-                    setIncomes([data, ...incomes.filter(inc => inc.id !== formData.id)])
-                    setMessage('Ingreso editado correctamente.')
-                }
-                setSearchProducts([
-                    {
-                        ...searchProducts.find(sp => sp.id === data.product_id),
-                        stock: searchProducts.find(sp => sp.id === data.product_id).stock + data.amount
-                    },
-                    ...searchProducts.filter(sp => sp.id !== data.product_id)
-                ])
-                setSeverity('success')
-                reset(setOpen)
-            } else {
-                setMessage(data.message)
-                setSeverity('error')
-                setDisabled(false)
-            }
-            setOpenMessage(true)
-        }
-    }
-
-    async function handleDelete(elements) {
-        setLoadingIncomes(true)
-        const result = await Promise.all(elements.map(e => destroy(e)))
-        if (result.every(r => r.status === 200)) {
-            const ids = result.map(r => r.data.id)
-            setIncomes([...incomes.filter(inc => !ids.includes(inc.id))])
-            setSearchProducts(searchProducts.map(sp => {
-                const pIds = result.map(r => r.data.product_id)
-                if (pIds.includes(sp.id)) {
-                    return {
-                        ...sp,
-                        stock: sp.stock - result
-                            .filter(r => r.data.product_id === sp.id)
-                            .reduce((prev, curr) => prev + curr.data.amount, 0)
-                    }
-                } else {
-                    return sp
-                }
-            }))
-            setMessage(`${result.length === 1 ? 'Ingreso eliminado' : 'Ingresos eliminados'} correctamente.`)
-            setSeverity('success')
-        } else {
-            setMessage('Ocurrió un error. Actualice la página.')
-            setSeverity('error')
-        }
-        setOpenMessage(true)
-        setLoadingIncomes(false)
-        setOpen(null)
-    }
+        if (openIncome === 'NEW') setOldFormDataAmount(0)
+        if (openIncome === 'EDIT') setOldFormDataAmount(parseInt(formData.amount))
+    }, [openIncome])
 
     const headCells = [
         {
@@ -219,11 +141,6 @@ export function Incomes() {
         }
     ]
 
-    useEffect(() => {
-        if (open === 'NEW') setOldFormDataAmount(0)
-        if (open === 'EDIT') setOldFormDataAmount(parseInt(formData.amount))
-    }, [open])
-
     return (
         <Layout title="Ingresos">
             {loadingIncomes || disabled ?
@@ -236,20 +153,20 @@ export function Incomes() {
                         title=""
                         headCells={headCells}
                         rows={incomes}
-                        open={open}
-                        setOpen={setOpen}
+                        open={openIncome}
+                        setOpen={setOpenIncome}
                         data={formData}
                         setData={setFormData}
-                        handleDelete={handleDelete}
+                        handleDelete={handleDeleteIncome}
                         pageKey="incomes"
                         getter={getIncomes}
                     >
-                        <ModalComponent open={open === 'NEW' || open === 'EDIT'} onClose={() => reset(setOpen)} reduceWidth={600}>
+                        <ModalComponent open={openIncome === 'NEW' || openIncome === 'EDIT'} onClose={() => reset(setOpenIncome)} reduceWidth={600}>
                             <Typography variant="h6" sx={{ marginBottom: 2 }}>
-                                {open === 'NEW' && 'Nuevo ingreso'}
-                                {open === 'EDIT' && 'Editar ingreso'}
+                                {openIncome === 'NEW' && 'Nuevo ingreso'}
+                                {openIncome === 'EDIT' && 'Editar ingreso'}
                             </Typography>
-                            <form onChange={handleChange} onSubmit={handleSubmit}>
+                            <form onChange={handleChange} onSubmit={e => handleSubmitIncome(e, formData, validate, reset, setDisabled)}>
                                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                                     <FormControl>
                                         <Autocomplete
@@ -325,7 +242,7 @@ export function Incomes() {
                                         marginTop: 1,
                                         width: '50%'
                                     }}>
-                                        <Button type="button" variant="outlined" onClick={() => reset(setOpen)} sx={{
+                                        <Button type="button" variant="outlined" onClick={() => reset(setOpenIncome)} sx={{
                                             width: '50%'
                                         }}>
                                             Cancelar

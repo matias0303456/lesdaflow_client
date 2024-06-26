@@ -1,14 +1,16 @@
-import { useContext, useEffect, useState } from "react"
+import { useContext, useState } from "react"
 
-import { useApi } from "./useApi"
+import { AuthContext } from "../providers/AuthProvider"
 import { MessageContext } from "../providers/MessageProvider"
 import { PageContext } from "../providers/PageProvider"
 import { SearchContext } from "../providers/SearchProvider"
+import { useApi } from "./useApi"
 
 import { PRODUCT_URL } from "../utils/urls"
 
 export function useProducts() {
 
+    const { auth } = useContext(AuthContext)
     const { page, offset, count, setCount, search } = useContext(PageContext)
     const { setMessage, setOpenMessage, setSeverity } = useContext(MessageContext)
     const { searchProducts, setSearchProducts } = useContext(SearchContext)
@@ -20,12 +22,6 @@ export function useProducts() {
     const [open, setOpen] = useState(null)
 
     const { get } = useApi(PRODUCT_URL)
-
-    useEffect(() => {
-        (async () => {
-            await getProducts()
-        })()
-    }, [])
 
     async function getProducts() {
         const { status, data } = await get(page['products'], offset['products'], search)
@@ -148,17 +144,30 @@ export function useProducts() {
         setOpen(null)
     }
 
+    async function getSearchProducts() {
+        const res = await fetch(PRODUCT_URL + '/search', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': auth.token
+            }
+        })
+        const data = await res.json()
+        if (res.status === 200) setSearchProducts(data)
+    }
+
     return {
+        getProducts,
         products,
         setProducts,
         loadingProducts,
         setLoadingProducts,
-        getProducts,
         open,
         setOpen,
         handleSubmit,
         handleSubmitMassive,
         handleDelete,
-        handleUpdateCostAndEarn
+        handleUpdateCostAndEarn,
+        getSearchProducts
     }
 }

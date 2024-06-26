@@ -14,25 +14,25 @@ import { DataGrid } from "../components/DataGrid";
 import { ModalComponent } from "../components/ModalComponent";
 import { ProductFilter } from "../components/filters/ProductFilter";
 
-import { PRODUCT_URL } from "../utils/urls";
 import { getStock } from "../utils/helpers";
 import { UpdateProductPrice } from "../components/UpdateProductPrice";
 
 export function Products() {
 
     const { auth } = useContext(AuthContext)
-    const { searchProducts, setSearchProducts } = useContext(SearchContext)
+    const { searchProducts } = useContext(SearchContext)
 
     const {
         products,
         loadingProducts,
-        getProducts,
         handleSubmit,
         handleDelete,
         open,
         setOpen,
         handleSubmitMassive,
-        handleUpdateCostAndEarn
+        handleUpdateCostAndEarn,
+        getProducts,
+        getSearchProducts
     } = useProducts()
     const { suppliers, loadingSuppliers } = useSuppliers()
     const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
@@ -87,24 +87,15 @@ export function Products() {
     const [stopPointerEvents, setStopPointerEvents] = useState(false)
 
     useEffect(() => {
+        getProducts()
+        getSearchProducts()
+    }, [])
+
+    useEffect(() => {
         const buy_price = formData.buy_price.toString().length === 0 ? 0 : parseInt(formData.buy_price)
         const earn = formData.earn.toString().length === 0 ? 0 : parseInt(formData.earn)
         setEarnPrice(`$${(buy_price + ((buy_price / 100) * earn)).toFixed(2)}`)
     }, [formData])
-
-    useEffect(() => {
-        (async () => {
-            const res = await fetch(PRODUCT_URL + '/search', {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': auth.token
-                }
-            })
-            const data = await res.json()
-            if (res.status === 200) setSearchProducts(data)
-        })()
-    }, [])
 
     const headCells = [
         {
@@ -131,7 +122,7 @@ export function Products() {
                     }}
                     onMouseEnter={() => setStopPointerEvents(true)}
                     onMouseLeave={() => setStopPointerEvents(false)}
-                    onClick={() => {}}
+                    onClick={() => { }}
                 />
             )
         },
@@ -152,7 +143,7 @@ export function Products() {
                     }}
                     onMouseEnter={() => setStopPointerEvents(true)}
                     onMouseLeave={() => setStopPointerEvents(false)}
-                    onClick={() => {}}
+                    onClick={() => { }}
                 />
             )
         },

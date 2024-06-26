@@ -1,12 +1,10 @@
 import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Autocomplete, Box, Button, FormControl, LinearProgress, TextField, Typography } from "@mui/material";
+import { Autocomplete, Box, Button, FormControl, TextField, Typography } from "@mui/material";
 
 import { AuthContext } from "../providers/AuthProvider";
 import { SearchContext } from "../providers/SearchProvider";
 import { useForm } from '../hooks/useForm'
-import { useClients } from "../hooks/useClients";
-import { useProducts } from '../hooks/useProducts'
 
 import { Layout } from "../components/Layout";
 
