@@ -1,5 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { Box, Button, FormControl, Input, InputLabel, LinearProgress, MenuItem, Select, Typography } from "@mui/material";
+import InputSharpIcon from '@mui/icons-material/InputSharp';
+import OutputSharpIcon from '@mui/icons-material/OutputSharp';
 
 import { SearchContext } from "../providers/SearchProvider";
 import { AuthContext } from "../providers/AuthProvider";
@@ -82,6 +84,7 @@ export function Products() {
 
     const [massiveEdit, setMassiveEdit] = useState([])
     const [earnPrice, setEarnPrice] = useState(0)
+    const [stopPointerEvents, setStopPointerEvents] = useState(false)
 
     useEffect(() => {
         const buy_price = formData.buy_price.toString().length === 0 ? 0 : parseInt(formData.buy_price)
@@ -112,6 +115,48 @@ export function Products() {
             accessor: 'id'
         },
         {
+            id: 'income',
+            numeric: false,
+            disablePadding: true,
+            label: 'Ingresar',
+            sorter: (row) => row.id,
+            accessor: (row) => (
+                <InputSharpIcon
+                    sx={{
+                        color: '#8B4992',
+                        transition: '100ms all',
+                        ":hover": {
+                            transform: 'scale(1.1)'
+                        }
+                    }}
+                    onMouseEnter={() => setStopPointerEvents(true)}
+                    onMouseLeave={() => setStopPointerEvents(false)}
+                    onClick={() => {}}
+                />
+            )
+        },
+        {
+            id: 'outcome',
+            numeric: false,
+            disablePadding: true,
+            label: 'Egresar',
+            sorter: (row) => row.id,
+            accessor: (row) => (
+                <OutputSharpIcon
+                    sx={{
+                        color: '#8B4992',
+                        transition: '100ms all',
+                        ":hover": {
+                            transform: 'scale(1.1)'
+                        }
+                    }}
+                    onMouseEnter={() => setStopPointerEvents(true)}
+                    onMouseLeave={() => setStopPointerEvents(false)}
+                    onClick={() => {}}
+                />
+            )
+        },
+        {
             id: 'code',
             numeric: false,
             disablePadding: true,
@@ -137,21 +182,21 @@ export function Products() {
             id: 'buy_price',
             numeric: false,
             disablePadding: true,
-            label: 'Precio de compra',
+            label: 'P. compra',
             accessor: (row) => `$${row.buy_price.toFixed(2)}`
         },
         {
             id: 'earn',
             numeric: false,
             disablePadding: true,
-            label: 'Ganancia',
+            label: 'Gan.',
             accessor: (row) => `${row.earn}%`
         },
         {
             id: 'sale_price',
             numeric: false,
             disablePadding: true,
-            label: 'Precio de venta',
+            label: 'P. vta.',
             sorter: (row) => parseFloat((row.buy_price + ((row.buy_price / 100) * row.earn)).toFixed(2)),
             accessor: (row) => `$${(row.buy_price + ((row.buy_price / 100) * row.earn)).toFixed(2)}`
         },
@@ -159,7 +204,7 @@ export function Products() {
             id: 'supplier',
             numeric: false,
             disablePadding: true,
-            label: 'Proveedor',
+            label: 'Prov.',
             sorter: (row) => row.supplier.name.toLowerCase(),
             accessor: (row) => row.supplier.name
         },
@@ -167,14 +212,14 @@ export function Products() {
             id: 'min_stock',
             numeric: false,
             disablePadding: true,
-            label: 'Stock mínimo',
+            label: 'Stock mín.',
             accessor: 'min_stock'
         },
         {
             id: 'stock',
             numeric: false,
             disablePadding: true,
-            label: 'Stock actual',
+            label: 'Stock act.',
             sorter: (row) => getStock(row),
             accessor: (row) => getStock(row)
         }
@@ -201,6 +246,7 @@ export function Products() {
                         disableAdd={auth?.user.role.name !== 'ADMINISTRADOR'}
                         allowMassiveEdit
                         updateByPercentage
+                        stopPointerEvents={stopPointerEvents}
                         setMassiveEdit={(values) => {
                             if (typeof values[0] === 'object') {
                                 setMassiveEdit(searchProducts.filter(sp => values.map(v => v.id).includes(sp.id)))
