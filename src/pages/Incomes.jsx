@@ -172,7 +172,7 @@ export function Incomes() {
                                         <Autocomplete
                                             disablePortal
                                             id="product-autocomplete"
-                                            value={formData.product_id.toString() > 0 ? `${searchProducts.find(p => p.id === formData.product_id)?.code} - ${searchProducts.find(p => p.id === formData.product_id)?.details} - T: ${searchProducts.find(p => p.id === formData.product_id)?.size}` : ''}
+                                            value={formData.product_id.toString() > 0 ? `Cód: ${searchProducts.find(p => p.id === formData.product_id)?.code} - Det: ${searchProducts.find(p => p.id === formData.product_id)?.details} - T: ${searchProducts.find(p => p.id === formData.product_id)?.size}` : ''}
                                             options={searchProducts.map(p => ({ label: `Cód: ${p.code} - Det: ${p.details} - T: ${p.size}`, id: p.id }))}
                                             noOptionsText="No hay productos registrados."
                                             onChange={(e, value) => handleChange({ target: { name: 'product_id', value: value?.id ?? '' } })}

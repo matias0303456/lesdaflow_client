@@ -105,9 +105,9 @@ export function useMovements() {
     async function handleSubmitOutcome(e, validate, formData, reset, setDisabled) {
         e.preventDefault()
         if (validate()) {
-            const { status, data } = open === 'NEW' ? await postOutcome(formData) : await putOutcome(formData)
+            const { status, data } = openOutcome === 'NEW' ? await postOutcome(formData) : await putOutcome(formData)
             if (status === 200) {
-                if (open === 'NEW') {
+                if (openOutcome === 'NEW') {
                     setOutcomes([data, ...outcomes])
                     setMessage('Ingreso creado correctamente.')
                 } else {
@@ -180,6 +180,7 @@ export function useMovements() {
         setOpenOutcome,
         getOutcomes,
         handleSubmitOutcome,
-        handleDeleteOutcome
+        handleDeleteOutcome,
+        outcomes
     }
 }
