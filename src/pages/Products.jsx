@@ -14,8 +14,8 @@ import { Layout } from "../components/Layout";
 import { DataGrid } from "../components/DataGrid";
 import { ModalComponent } from "../components/ModalComponent";
 import { ProductFilter } from "../components/filters/ProductFilter";
-import { UpdateProductPrice } from "../components/UpdateProductPrice";
-import { MovementsForm } from "../components/MovementsForm";
+import { UpdateProductPrice } from "../components/commercial/UpdateProductPrice";
+import { MovementsForm } from "../components/commercial/MovementsForm";
 
 import { getStock } from "../utils/helpers";
 

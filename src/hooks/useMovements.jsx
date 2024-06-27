@@ -14,6 +14,7 @@ export function useMovements() {
     const { searchProducts, setSearchProducts } = useContext(SearchContext)
 
     const { get: getIncome, post: postIncome, put: putIncome, destroy: destroyIncome } = useApi(INCOME_URL)
+    const { post: postIncomeByAmount } = useApi(INCOME_URL + '/by-amount')
     const { get: getOutcome, post: postOutcome, put: putOutcome, destroy: destroyOutcome } = useApi(OUTCOME_URL)
 
     const [loadingIncomes, setLoadingIncomes] = useState(true)
@@ -23,6 +24,8 @@ export function useMovements() {
     const [outcomes, setOutcomes] = useState([])
     const [openOutcome, setOpenOutcome] = useState(null)
     const [oldFormDataAmount, setOldFormDataAmount] = useState(0)
+    const [incomesByAmount, setIncomesByAmount] = useState([])
+    const [amount, setAmount] = useState(1)
 
     async function getIncomes() {
         const { status, data } = await getIncome(page['incomes'], offset['incomes'], search)
@@ -62,6 +65,38 @@ export function useMovements() {
             setOpenMessage(true)
             if (status === 200) return data
         }
+    }
+
+    async function handleSubmitIncomesByAmount(e, handleClose) {
+        e.preventDefault()
+        const { status, data } = await postIncomeByAmount({
+            incomes: incomesByAmount.map(iba => ({
+                amount,
+                product_id: iba.product_id,
+                observations: iba.observations
+            }))
+        })
+        if (status === 200) {
+            setIncomes([...data, ...incomes])
+            setMessage('Ingresos creados correctamente.')
+            const newIncomeIds = data.map(d => d.product_id)
+            setSearchProducts(searchProducts.map(sp => {
+                if (newIncomeIds.includes(sp.id)) {
+                    return {
+                        ...sp,
+                        stock: sp.stock + data.find(d => d.product_id === sp.id).amount
+                    }
+                } else {
+                    return sp
+                }
+            }))
+            setSeverity('success')
+            handleClose()
+        } else {
+            setMessage(data.message)
+            setSeverity('error')
+        }
+        setOpenMessage(true)
     }
 
     async function handleDeleteIncome(elements) {
@@ -183,6 +218,11 @@ export function useMovements() {
         getOutcomes,
         handleSubmitOutcome,
         handleDeleteOutcome,
-        outcomes
+        outcomes,
+        incomesByAmount,
+        setIncomesByAmount,
+        amount,
+        setAmount,
+        handleSubmitIncomesByAmount
     }
 }

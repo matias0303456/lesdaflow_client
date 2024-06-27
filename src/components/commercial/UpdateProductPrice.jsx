@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { Box, Button, Input, Paper, Tab, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tabs, Typography } from "@mui/material"
 
-import { ModalComponent } from "./ModalComponent"
+import { ModalComponent } from "../ModalComponent"
 
-import { getNewCostAndEarnPrice, getNewPrice } from "../utils/helpers"
+import { getNewCostAndEarnPrice, getNewPrice } from "../../utils/helpers"
 
 function CustomTabPanel(props) {
     const { children, value, index, ...other } = props;

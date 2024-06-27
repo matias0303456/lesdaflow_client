@@ -1,8 +1,8 @@
 import { Box, Button, FormControl, Input, InputLabel, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
 
-import { ModalComponent } from "./ModalComponent";
+import { ModalComponent } from "../ModalComponent";
 
-import { getStock } from "../utils/helpers";
+import { getStock } from "../../utils/helpers";
 
 export function MovementsForm({
     open,

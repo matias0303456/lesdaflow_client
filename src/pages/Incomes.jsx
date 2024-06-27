@@ -1,6 +1,6 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Autocomplete, Box, Button, FormControl, Input, InputLabel, LinearProgress, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from "@mui/material";
+import { Autocomplete, Box, Button, FormControl, Input, InputLabel, LinearProgress, Paper, Tab, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tabs, TextField, Typography } from "@mui/material";
 import { format } from 'date-fns'
 
 import { AuthContext } from "../providers/AuthProvider";
@@ -15,6 +15,30 @@ import { ModalComponent } from "../components/ModalComponent";
 import { MovementFilter } from "../components/filters/MovementFilter";
 
 import { getStockTillDate } from "../utils/helpers";
+import { IncomesByAmount } from "../components/commercial/IncomesByAmount";
+
+function CustomTabPanel(props) {
+    const { children, value, index, ...other } = props
+
+    return (
+        <div
+            role="tabpanel"
+            hidden={value !== index}
+            id={`simple-tabpanel-${index}`}
+            aria-labelledby={`simple-tab-${index}`}
+            {...other}
+        >
+            {value === index && <Box sx={{ p: 1 }}>{children}</Box>}
+        </div>
+    )
+}
+
+function a11yProps(index) {
+    return {
+        id: `simple-tab-${index}`,
+        'aria-controls': `simple-tabpanel-${index}`,
+    }
+}
 
 export function Incomes() {
 
@@ -32,7 +56,12 @@ export function Incomes() {
         handleSubmitIncome,
         openIncome,
         oldFormDataAmount,
-        setOldFormDataAmount
+        setOldFormDataAmount,
+        incomesByAmount,
+        setIncomesByAmount,
+        amount,
+        setAmount,
+        handleSubmitIncomesByAmount
     } = useMovements()
     const { getSearchProducts } = useProducts()
     const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
@@ -55,6 +84,8 @@ export function Incomes() {
         }
     })
 
+    const [tabValue, setTabValue] = useState(0)
+
     useEffect(() => {
         if (auth?.user.role.name !== 'ADMINISTRADOR') navigate('/veroshop/productos')
     }, [])
@@ -68,6 +99,23 @@ export function Incomes() {
         if (openIncome === 'NEW') setOldFormDataAmount(0)
         if (openIncome === 'EDIT') setOldFormDataAmount(parseInt(formData.amount))
     }, [openIncome])
+
+    useEffect(() => {
+        if (tabValue === 0) {
+            setIncomesByAmount([])
+            setAmount(1)
+        }
+        if (tabValue === 1) {
+            reset()
+        }
+    }, [tabValue])
+
+    const handleClose = () => {
+        reset(setOpenIncome)
+        setIncomesByAmount([])
+        setAmount(1)
+        setTabValue(0)
+    }
 
     const headCells = [
         {
@@ -161,100 +209,126 @@ export function Incomes() {
                         pageKey="incomes"
                         getter={getIncomes}
                     >
-                        <ModalComponent open={openIncome === 'NEW' || openIncome === 'EDIT'} onClose={() => reset(setOpenIncome)} reduceWidth={600}>
-                            <Typography variant="h6" sx={{ marginBottom: 2 }}>
+                        <ModalComponent
+                            open={openIncome === 'NEW' || openIncome === 'EDIT'}
+                            onClose={handleClose}
+                            reduceWidth={400}
+                            padding={2}
+                        >
+                            <Typography variant="h6">
                                 {openIncome === 'NEW' && 'Nuevo ingreso'}
                                 {openIncome === 'EDIT' && 'Editar ingreso'}
                             </Typography>
-                            <form onChange={handleChange} onSubmit={e => handleSubmitIncome(e, formData, validate, reset, setDisabled)}>
-                                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                                    <FormControl>
-                                        <Autocomplete
-                                            disablePortal
-                                            id="product-autocomplete"
-                                            value={formData.product_id.toString() > 0 ? `Cód: ${searchProducts.find(p => p.id === formData.product_id)?.code} - Det: ${searchProducts.find(p => p.id === formData.product_id)?.details} - T: ${searchProducts.find(p => p.id === formData.product_id)?.size}` : ''}
-                                            options={searchProducts.map(p => ({ label: `Cód: ${p.code} - Det: ${p.details} - T: ${p.size}`, id: p.id }))}
-                                            noOptionsText="No hay productos registrados."
-                                            onChange={(e, value) => handleChange({ target: { name: 'product_id', value: value?.id ?? '' } })}
-                                            renderInput={(params) => <TextField {...params} label="Producto" />}
-                                            isOptionEqualToValue={(option, value) => option.code === value.code || value.length === 0}
-                                        />
-                                        {errors.product_id?.type === 'required' &&
-                                            <Typography variant="caption" color="red" marginTop={1}>
-                                                * El producto es requerido.
-                                            </Typography>
-                                        }
-                                    </FormControl>
-                                    <Box sx={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center' }}>
-                                        <TableContainer component={Paper}>
-                                            <Table>
-                                                <TableHead>
-                                                    <TableRow>
-                                                        <TableCell align="center">
-                                                            Stock actual
-                                                        </TableCell>
-                                                        <TableCell align="center">
-                                                            Cantidad
-                                                        </TableCell>
-                                                        <TableCell align="center">
-                                                            Nuevo stock
-                                                        </TableCell>
-                                                    </TableRow>
-                                                </TableHead>
-                                                <TableBody>
-                                                    <TableRow>
-                                                        <TableCell align="center">
-                                                            {formData.product_id.toString().length > 0 ? searchProducts.find(p => p.id === formData.product_id)?.stock : 0}
-                                                        </TableCell>
-                                                        <TableCell align="center">
-                                                            <FormControl>
-                                                                <Input id="amount" type="number" name="amount" value={formData.amount} />
-                                                                {errors.amount?.type === 'required' &&
-                                                                    <Typography variant="caption" color="red" marginTop={1}>
-                                                                        * La cantidad es requerida.
-                                                                    </Typography>
-                                                                }
-                                                            </FormControl>
-                                                        </TableCell>
-                                                        <TableCell align="center">
-                                                            {formData.product_id.toString().length > 0 ? searchProducts.find(p => p.id === formData.product_id)?.stock + Math.abs(parseInt(formData.amount.toString().length > 0 ? formData.amount : 0)) - oldFormDataAmount : 0}
-                                                        </TableCell>
-                                                    </TableRow>
-                                                </TableBody>
-                                            </Table>
-                                        </TableContainer>
-                                    </Box>
-                                    <FormControl>
-                                        <InputLabel htmlFor="observations">Observaciones</InputLabel>
-                                        <Input id="observations" type="text" name="observations" value={formData.observations} />
-                                        {errors.observations?.type === 'maxLength' &&
-                                            <Typography variant="caption" color="red" marginTop={1}>
-                                                * Las observaciones son demasiado largas.
-                                            </Typography>
-                                        }
-                                    </FormControl>
-                                    <FormControl sx={{
-                                        display: 'flex',
-                                        flexDirection: 'row',
-                                        gap: 1,
-                                        justifyContent: 'center',
-                                        margin: '0 auto',
-                                        marginTop: 1,
-                                        width: '50%'
-                                    }}>
-                                        <Button type="button" variant="outlined" onClick={() => reset(setOpenIncome)} sx={{
-                                            width: '50%'
-                                        }}>
-                                            Cancelar
-                                        </Button>
-                                        <Button type="submit" variant="contained" disabled={disabled} sx={{
-                                            width: '50%'
-                                        }}>
-                                            Guardar
-                                        </Button>
-                                    </FormControl>
+                            <Box sx={{ width: '100%' }}>
+                                <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                                    <Tabs value={tabValue} onChange={(_, newValue) => setTabValue(newValue)} aria-label="basic tabs example">
+                                        <Tab label="Por Producto" {...a11yProps(0)} />
+                                        <Tab label="Por Cantidad" {...a11yProps(1)} disabled={openIncome !== 'NEW'} />
+                                    </Tabs>
                                 </Box>
-                            </form>
+                                <CustomTabPanel value={tabValue} index={0}>
+                                    <form onChange={handleChange} onSubmit={e => handleSubmitIncome(e, formData, validate, reset, setDisabled)}>
+                                        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                                            <FormControl>
+                                                <Autocomplete
+                                                    disablePortal
+                                                    id="product-autocomplete"
+                                                    value={formData.product_id.toString() > 0 ? `Cód: ${searchProducts.find(p => p.id === formData.product_id)?.code} - Det: ${searchProducts.find(p => p.id === formData.product_id)?.details} - T: ${searchProducts.find(p => p.id === formData.product_id)?.size}` : ''}
+                                                    options={searchProducts.map(p => ({ label: `Cód: ${p.code} - Det: ${p.details} - T: ${p.size}`, id: p.id }))}
+                                                    noOptionsText="No hay productos registrados."
+                                                    onChange={(e, value) => handleChange({ target: { name: 'product_id', value: value?.id ?? '' } })}
+                                                    renderInput={(params) => <TextField {...params} label="Producto" />}
+                                                    isOptionEqualToValue={(option, value) => option.code === value.code || value.length === 0}
+                                                />
+                                                {errors.product_id?.type === 'required' &&
+                                                    <Typography variant="caption" color="red" marginTop={1}>
+                                                        * El producto es requerido.
+                                                    </Typography>
+                                                }
+                                            </FormControl>
+                                            <Box sx={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center' }}>
+                                                <TableContainer component={Paper}>
+                                                    <Table>
+                                                        <TableHead>
+                                                            <TableRow>
+                                                                <TableCell align="center">
+                                                                    Stock actual
+                                                                </TableCell>
+                                                                <TableCell align="center">
+                                                                    Cantidad
+                                                                </TableCell>
+                                                                <TableCell align="center">
+                                                                    Nuevo stock
+                                                                </TableCell>
+                                                            </TableRow>
+                                                        </TableHead>
+                                                        <TableBody>
+                                                            <TableRow>
+                                                                <TableCell align="center">
+                                                                    {formData.product_id.toString().length > 0 ? searchProducts.find(p => p.id === formData.product_id)?.stock : 0}
+                                                                </TableCell>
+                                                                <TableCell align="center">
+                                                                    <FormControl>
+                                                                        <Input id="amount" type="number" name="amount" value={formData.amount} />
+                                                                        {errors.amount?.type === 'required' &&
+                                                                            <Typography variant="caption" color="red" marginTop={1}>
+                                                                                * La cantidad es requerida.
+                                                                            </Typography>
+                                                                        }
+                                                                    </FormControl>
+                                                                </TableCell>
+                                                                <TableCell align="center">
+                                                                    {formData.product_id.toString().length > 0 ? searchProducts.find(p => p.id === formData.product_id)?.stock + Math.abs(parseInt(formData.amount.toString().length > 0 ? formData.amount : 0)) - oldFormDataAmount : 0}
+                                                                </TableCell>
+                                                            </TableRow>
+                                                        </TableBody>
+                                                    </Table>
+                                                </TableContainer>
+                                            </Box>
+                                            <FormControl>
+                                                <InputLabel htmlFor="observations">Observaciones</InputLabel>
+                                                <Input id="observations" type="text" name="observations" value={formData.observations} />
+                                                {errors.observations?.type === 'maxLength' &&
+                                                    <Typography variant="caption" color="red" marginTop={1}>
+                                                        * Las observaciones son demasiado largas.
+                                                    </Typography>
+                                                }
+                                            </FormControl>
+                                            <FormControl sx={{
+                                                display: 'flex',
+                                                flexDirection: 'row',
+                                                gap: 1,
+                                                justifyContent: 'center',
+                                                margin: '0 auto',
+                                                marginTop: 1,
+                                                width: '50%'
+                                            }}>
+                                                <Button type="button" variant="outlined" onClick={handleClose} sx={{
+                                                    width: '50%'
+                                                }}>
+                                                    Cancelar
+                                                </Button>
+                                                <Button type="submit" variant="contained" disabled={disabled} sx={{
+                                                    width: '50%'
+                                                }}>
+                                                    Guardar
+                                                </Button>
+                                            </FormControl>
+                                        </Box>
+                                    </form>
+                                </CustomTabPanel>
+                                <CustomTabPanel value={tabValue} index={1}>
+                                    <IncomesByAmount
+                                        incomesByAmount={incomesByAmount}
+                                        setIncomesByAmount={setIncomesByAmount}
+                                        amount={amount}
+                                        setAmount={setAmount}
+                                        products={searchProducts}
+                                        handleClose={handleClose}
+                                        handleSubmit={handleSubmitIncomesByAmount}
+                                    />
+                                </CustomTabPanel>
+                            </Box>
                         </ModalComponent>
                     </DataGrid>
                 </>

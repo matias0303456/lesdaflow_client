@@ -18,7 +18,7 @@ import { Layout } from "../components/Layout";
 import { DataGrid } from "../components/DataGrid";
 import { ModalComponent } from "../components/ModalComponent";
 import { SaleFilter } from "../components/filters/SaleFilter";
-import { AddProductsToSale } from "../components/AddProductsToSale";
+import { AddProductsToSale } from "../components/commercial/AddProductsToSale";
 
 import { CLIENT_URL, PRODUCT_URL, REPORT_URL, SALE_URL } from "../utils/urls";
 import { getAccountStatus, getCurrentSubtotal, getCurrentTotal, getDeadline, getInstallmentsAmount, getSaleDifference, getSaleTotal, setLocalDate } from "../utils/helpers";

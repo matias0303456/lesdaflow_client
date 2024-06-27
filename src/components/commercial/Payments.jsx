@@ -6,17 +6,17 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { format } from "date-fns";
 import es from 'date-fns/locale/es';
 
-import { AuthContext } from "../providers/AuthProvider";
-import { MessageContext } from "../providers/MessageProvider";
-import { useApi } from "../hooks/useApi";
-import { useForm } from "../hooks/useForm";
+import { AuthContext } from "../../providers/AuthProvider";
+import { MessageContext } from "../../providers/MessageProvider";
+import { useApi } from "../../hooks/useApi";
+import { useForm } from "../../hooks/useForm";
 
-import { DataGrid } from "./DataGrid";
-import { ModalComponent } from "./ModalComponent";
-import { PaymentFilter } from "../components/filters/PaymentFilter";
+import { DataGrid } from "../DataGrid";
+import { ModalComponent } from "../ModalComponent";
+import { PaymentFilter } from "../filters/PaymentFilter";
 
-import { PAYMENT_URL } from "../utils/urls";
-import { getSaleDifference, getSaleDifferenceByPayment } from "../utils/helpers";
+import { PAYMENT_URL } from "../../utils/urls";
+import { getSaleDifference, getSaleDifferenceByPayment } from "../../utils/helpers";
 
 export function Payments({ sale, setSale, loading, setLoading }) {
 

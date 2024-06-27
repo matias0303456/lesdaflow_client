@@ -11,11 +11,10 @@ const style = {
     transform: 'translate(-50%, -50%)',
     bgcolor: 'background.paper',
     boxShadow: 24,
-    p: 3,
     borderRadius: 1
 };
 
-export function ModalComponent({ children, open, onClose, dynamicContent = false, reduceWidth = 300 }) {
+export function ModalComponent({ children, open, onClose, dynamicContent = false, reduceWidth = 300, padding = 3 }) {
 
     const [screenWidth, setScreenWidth] = useState(window.innerWidth < 700 ? window.innerWidth : window.innerWidth - reduceWidth)
     const [screenHeight] = useState(dynamicContent ?
@@ -45,7 +44,7 @@ export function ModalComponent({ children, open, onClose, dynamicContent = false
             }}
         >
             <Fade in={open}>
-                <Box sx={{ ...style, ...screenHeight, width: screenWidth }}>
+                <Box sx={{ ...style, ...screenHeight, width: screenWidth, padding }}>
                     {children}
                 </Box>
             </Fade>
