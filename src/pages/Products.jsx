@@ -16,6 +16,7 @@ import { ModalComponent } from "../components/ModalComponent";
 import { ProductFilter } from "../components/filters/ProductFilter";
 import { UpdateProductPrice } from "../components/commercial/UpdateProductPrice";
 import { MovementsForm } from "../components/commercial/MovementsForm";
+import { IncomesByAmount } from "../components/commercial/IncomesByAmount";
 
 import { getStock } from "../utils/helpers";
 
@@ -36,7 +37,8 @@ export function Products() {
         handleSubmitMassive,
         handleUpdateCostAndEarn,
         getProducts,
-        getSearchProducts
+        getSearchProducts,
+        setLoadingProducts
     } = useProducts()
     const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
         defaultData: {
@@ -84,7 +86,17 @@ export function Products() {
             }
         }
     })
-    const { setOpenIncome, setOpenOutcome, handleSubmitIncome, handleSubmitOutcome } = useMovements()
+    const {
+        setOpenIncome,
+        setOpenOutcome,
+        handleSubmitIncome,
+        handleSubmitOutcome,
+        amount,
+        setAmount,
+        incomesByAmount,
+        setIncomesByAmount,
+        handleSubmitIncomesByAmount
+    } = useMovements()
     const {
         formData: newMovement,
         setFormData: setNewMovement,
@@ -109,6 +121,10 @@ export function Products() {
     }, [])
 
     useEffect(() => {
+        console.log(products)
+    }, [products])
+
+    useEffect(() => {
         const buy_price = formData.buy_price.toString().length === 0 ? 0 : parseInt(formData.buy_price)
         const earn = formData.earn.toString().length === 0 ? 0 : parseInt(formData.earn)
         setEarnPrice(`$${(buy_price + ((buy_price / 100) * earn)).toFixed(2)}`)
@@ -122,6 +138,29 @@ export function Products() {
             return handleSubmitOutcome(e, newMovement, validateMovement, resetMovement, setDisabledMovement)
         }
     }
+
+    const handleClose = () => {
+        setOpen(null)
+        setIncomesByAmount([])
+        setAmount(1)
+    }
+
+    const saveNewIncomes = async (e) => {
+        setLoadingProducts(true)
+        const { newIncomeIds, data } = await handleSubmitIncomesByAmount(e, handleClose)
+        setProducts(products.map(p => {
+            if (newIncomeIds.includes(p.id)) {
+                return {
+                    ...p,
+                    stock: getStock(p) + data.find(d => d.product_id === p.id).amount
+                }
+            } else {
+                return p
+            }
+        }))
+        setLoadingProducts(false)
+    }
+
 
     const headCells = [
         {
@@ -293,6 +332,7 @@ export function Products() {
                         handlePrint
                         pageKey="products"
                         getter={getProducts}
+                        setIncomesByAmount={setIncomesByAmount}
                     >
                         <ModalComponent
                             open={open === 'NEW' || open === 'EDIT'}
@@ -474,6 +514,24 @@ export function Products() {
                             products={products}
                             setProducts={setProducts}
                         />
+                        <ModalComponent
+                            open={open === 'INCOME_BY_AMOUNT'}
+                            onClose={handleClose}
+                            reduceWidth={400}
+                        >
+                            <Typography variant="h6" sx={{ marginBottom: 3 }}>
+                                Nuevo ingreso por cantidad
+                            </Typography>
+                            <IncomesByAmount
+                                incomesByAmount={incomesByAmount}
+                                setIncomesByAmount={setIncomesByAmount}
+                                amount={amount}
+                                setAmount={setAmount}
+                                products={searchProducts}
+                                handleClose={handleClose}
+                                handleSubmit={saveNewIncomes}
+                            />
+                        </ModalComponent>
                     </DataGrid>
                 </>
             }

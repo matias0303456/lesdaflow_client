@@ -7,6 +7,7 @@ import { SearchContext } from "../providers/SearchProvider"
 import { useApi } from "./useApi"
 
 import { PRODUCT_URL } from "../utils/urls"
+import { getStock } from "../utils/helpers"
 
 export function useProducts() {
 
@@ -43,9 +44,11 @@ export function useProducts() {
             if (status === 200) {
                 if (open === 'NEW') {
                     setProducts([data, ...products])
+                    setSearchProducts([{ ...data, stock: getStock(data) }, ...searchProducts])
                     setMessage('Producto creado correctamente.')
                 } else {
                     setProducts([data, ...products.filter(p => p.id !== formData.id)])
+                    setSearchProducts([{ ...data, stock: getStock(data) }, ...searchProducts.filter(sp => sp.id !== formData.id)])
                     setMessage('Producto editado correctamente.')
                 }
                 setSeverity('success')
@@ -129,6 +132,7 @@ export function useProducts() {
         if (result.every(r => r.status === 200)) {
             const ids = result.map(r => r.data.id)
             setProducts([...products.filter(p => !ids.includes(p.id))])
+            setSearchProducts([...searchProducts.filter(sp => !ids.includes(sp.id))])
             setMessage(`${result.length === 1 ? 'Producto eliminado' : 'Productos eliminados'} correctamente.`)
             setSeverity('success')
         } else {

@@ -28,6 +28,7 @@ import PasswordSharpIcon from '@mui/icons-material/PasswordSharp';
 import { SearchSharp } from '@mui/icons-material';
 import PictureAsPdfSharpIcon from '@mui/icons-material/PictureAsPdfSharp';
 import { SiMicrosoftexcel } from "react-icons/si";
+import InputSharpIcon from '@mui/icons-material/InputSharp';
 
 import { AuthContext } from '../providers/AuthProvider';
 import { PageContext } from '../providers/PageProvider';
@@ -144,7 +145,8 @@ function EnhancedTableToolbar({
     selected,
     rows,
     orderBy,
-    order
+    order,
+    setIncomesByAmount
 }) {
 
     const { auth } = React.useContext(AuthContext)
@@ -302,6 +304,24 @@ function EnhancedTableToolbar({
                     </IconButton>
                 </Tooltip>
             }
+            {auth.user.role.name === 'ADMINISTRADOR' &&
+                pathname === '/veroshop/productos' &&
+                <Tooltip title="Ingresar por cantidad" onClick={() => {
+                    setOpen('INCOME_BY_AMOUNT')
+                    if (setIncomesByAmount && selected.length > 0) {
+                        setIncomesByAmount(rows.filter(r => selected.includes(r.id))
+                            .map((r, idx) => ({
+                                idx,
+                                product_id: r.id,
+                                observations: ''
+                            })))
+                    }
+                }}>
+                    <IconButton>
+                        <InputSharpIcon />
+                    </IconButton>
+                </Tooltip>
+            }
             <ModalComponent reduceWidth={500} open={open === 'DELETE'} onClose={() => setOpen(null)}>
                 <Typography variant="h6" sx={{ marginBottom: 3, textAlign: 'center' }}>
                     ¿Desea eliminar los elementos seleccionados?
@@ -354,6 +374,7 @@ export function DataGrid({
     defaultOrder = 'desc',
     defaultOrderBy = 'id',
     stopPointerEvents = false,
+    setIncomesByAmount = false,
     pageKey,
     getter = undefined
 }) {
@@ -450,6 +471,7 @@ export function DataGrid({
                         rows={rows}
                         orderBy={orderBy}
                         order={order}
+                        setIncomesByAmount={setIncomesByAmount}
                     />
                     <TableContainer>
                         <Table

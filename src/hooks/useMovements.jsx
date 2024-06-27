@@ -1,11 +1,12 @@
 import { useContext, useState } from "react"
 
 import { MessageContext } from "../providers/MessageProvider"
-
-import { INCOME_URL, OUTCOME_URL } from "../utils/urls"
-import { useApi } from "./useApi"
 import { SearchContext } from "../providers/SearchProvider"
 import { PageContext } from "../providers/PageProvider"
+
+import { useApi } from "./useApi"
+
+import { INCOME_URL, OUTCOME_URL } from "../utils/urls"
 
 export function useMovements() {
 
@@ -69,6 +70,7 @@ export function useMovements() {
 
     async function handleSubmitIncomesByAmount(e, handleClose) {
         e.preventDefault()
+        let newIncomeIds = []
         const { status, data } = await postIncomeByAmount({
             incomes: incomesByAmount.map(iba => ({
                 amount,
@@ -79,7 +81,7 @@ export function useMovements() {
         if (status === 200) {
             setIncomes([...data, ...incomes])
             setMessage('Ingresos creados correctamente.')
-            const newIncomeIds = data.map(d => d.product_id)
+            newIncomeIds = data.map(d => d.product_id)
             setSearchProducts(searchProducts.map(sp => {
                 if (newIncomeIds.includes(sp.id)) {
                     return {
@@ -97,6 +99,7 @@ export function useMovements() {
             setSeverity('error')
         }
         setOpenMessage(true)
+        if (status === 200) return { newIncomeIds, data }
     }
 
     async function handleDeleteIncome(elements) {

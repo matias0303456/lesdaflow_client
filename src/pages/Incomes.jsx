@@ -13,9 +13,9 @@ import { Layout } from "../components/Layout";
 import { DataGrid } from "../components/DataGrid";
 import { ModalComponent } from "../components/ModalComponent";
 import { MovementFilter } from "../components/filters/MovementFilter";
+import { IncomesByAmount } from "../components/commercial/IncomesByAmount";
 
 import { getStockTillDate } from "../utils/helpers";
-import { IncomesByAmount } from "../components/commercial/IncomesByAmount";
 
 function CustomTabPanel(props) {
     const { children, value, index, ...other } = props
