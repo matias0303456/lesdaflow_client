@@ -9,6 +9,7 @@ import { useProducts } from "../hooks/useProducts";
 import { useClients } from '../hooks/useClients'
 import { useForm } from "../hooks/useForm";
 import { useSales } from "../hooks/useSales";
+import { useUsers } from "../hooks/useUsers";
 
 import { Layout } from "../components/common/Layout";
 import { ModalComponent } from "../components/common/ModalComponent";
@@ -46,6 +47,7 @@ export function Sales() {
     } = useSales()
     const { loadingProducts, getProducts } = useProducts()
     const { loadingClients, getClients } = useClients()
+    const { loadingUsers, getUsers } = useUsers()
     const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
         defaultData: {
             id: '',
@@ -75,6 +77,7 @@ export function Sales() {
     useEffect(() => {
         getClients()
         getProducts()
+        getUsers()
     }, [])
 
     useEffect(() => {
@@ -177,7 +180,7 @@ export function Sales() {
     return (
         <Layout title="Ventas">
             <DataGridWithBackendPagination
-                loading={loadingClients || loadingSales || loadingProducts || disabled}
+                loading={loadingClients || loadingSales || loadingProducts || loadingUsers || disabled}
                 headCells={headCells}
                 rows={state.sales.data}
                 entityKey="sales"
@@ -200,7 +203,7 @@ export function Sales() {
                                 Excel
                             </Button>
                         </Box>
-                        <SaleFilter showWorkPlace showSeller />
+                        <SaleFilter showWorkPlace showSeller showType />
                     </Box>
                 }
             >

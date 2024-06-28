@@ -50,6 +50,7 @@ export function CurrentAccount() {
       numeric: false,
       disablePadding: true,
       label: "Nombre Comercio",
+      sorter: (row) => row.client.work_place,
       accessor: (row) => row.client.work_place,
     },
     {
@@ -64,6 +65,7 @@ export function CurrentAccount() {
       numeric: false,
       disablePadding: true,
       label: "Vencimiento",
+      sorter: (row) => getDeadline(row.date),
       accessor: (row) => getDeadline(row.date)
     },
     {
@@ -71,13 +73,15 @@ export function CurrentAccount() {
       numeric: false,
       disablePadding: true,
       label: "Vendedor",
-      accessor: (row) => `${row.client.user.first_name} ${row.client.user.last_name}`,
+      sorter: (row) => row.client.user.name,
+      accessor: (row) => row.client.user.name
     },
     {
       id: "amount",
       numeric: true,
       disablePadding: true,
       label: "Importe",
+      sorter: (row) => getSaleTotal(row),
       accessor: (row) => getSaleTotal(row)
     },
     {
@@ -85,6 +89,7 @@ export function CurrentAccount() {
       numeric: true,
       disablePadding: true,
       label: "Saldo",
+      sorter: (row) => getSaleDifference(row),
       accessor: (row) => getSaleDifference(row)
     },
     {
@@ -92,6 +97,7 @@ export function CurrentAccount() {
       numeric: false,
       disablePadding: true,
       label: "Estado",
+      sorter: (row) => getAccountStatus(row),
       accessor: (row) => getAccountStatus(row)
     },
   ];
@@ -103,7 +109,7 @@ export function CurrentAccount() {
         headCells={headCells}
         rows={state.sales.data}
         entityKey="sales"
-        getter={getSales}
+        getter={params => getSales(params.replace('&type=', '') + '&type=CUENTA_CORRIENTE' + '&pending=true')}
         setOpen={setOpen}
         setFormData={setFormData}
         showDeleteAction
@@ -113,7 +119,7 @@ export function CurrentAccount() {
             <Button variant="outlined" color="success">
               Excel
             </Button>
-            <SaleFilter showWorkPlace />
+            <SaleFilter showWorkPlace showStatus filterTypeFromPage="CUENTA_CORRIENTE"/>
           </Box>
         }
       />

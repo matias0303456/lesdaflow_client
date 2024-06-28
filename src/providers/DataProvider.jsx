@@ -43,7 +43,7 @@ const initialState = {
         data: [],
         page: 0,
         offset: 5,
-        filter_fields: { client: '', work_place: '', id: '', user: '', date: '', type: '', loaded: false },
+        filter_fields: { client: '', work_place: '', id: '', user: '', date: '', type: '', pending: true, loaded: false },
         filters: ''
     },
     'users': {
@@ -51,7 +51,7 @@ const initialState = {
         data: [],
         page: 0,
         offset: 5,
-        filter_fields: { first_name: '', last_name: '', role: '', loaded: false },
+        filter_fields: { name: '', role: '', loaded: false },
         filters: ''
     },
     'registers': {
