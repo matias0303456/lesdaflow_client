@@ -198,7 +198,7 @@ export function Clients() {
                         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
                             <Box sx={{ display: 'flex', gap: 5 }}>
                                 <FormControl sx={{ width: '50%' }}>
-                                    <InputLabel htmlFor="first_name">Nombres</InputLabel>
+                                    <InputLabel htmlFor="first_name">Nombres *</InputLabel>
                                     <Input id="first_name" type="text" name="first_name" value={formData.first_name} disabled={open === 'VIEW'} />
                                     {errors.first_name?.type === 'required' &&
                                         <Typography variant="caption" color="red" marginTop={1}>
@@ -212,7 +212,7 @@ export function Clients() {
                                     }
                                 </FormControl>
                                 <FormControl sx={{ width: '50%' }}>
-                                    <InputLabel htmlFor="last_name">Apellidos</InputLabel>
+                                    <InputLabel htmlFor="last_name">Apellidos *</InputLabel>
                                     <Input id="last_name" type="text" name="last_name" value={formData.last_name} disabled={open === 'VIEW'} />
                                     {errors.last_name?.type === 'required' &&
                                         <Typography variant="caption" color="red" marginTop={1}>
@@ -270,7 +270,7 @@ export function Clients() {
                                     }
                                 </FormControl>
                                 <FormControl sx={{ width: '50%' }}>
-                                    <InputLabel htmlFor="address">Dirección</InputLabel>
+                                    <InputLabel htmlFor="address">Dirección *</InputLabel>
                                     <Input id="address" type="text" name="address" value={formData.address} disabled={open === 'VIEW'} />
                                     {errors.address?.type === 'required' &&
                                         <Typography variant="caption" color="red" marginTop={1}>
@@ -286,7 +286,7 @@ export function Clients() {
                             </Box>
                             <Box sx={{ display: 'flex', gap: 5 }}>
                                 <FormControl sx={{ width: '50%' }}>
-                                    <InputLabel htmlFor="cell_phone">Celular</InputLabel>
+                                    <InputLabel htmlFor="cell_phone">Celular *</InputLabel>
                                     <Input id="cell_phone" type="number" name="cell_phone" value={formData.cell_phone} disabled={open === 'VIEW'} />
                                     {errors.cell_phone?.type === 'required' &&
                                         <Typography variant="caption" color="red" marginTop={1}>
@@ -315,7 +315,7 @@ export function Clients() {
                                     }
                                 </FormControl>
                                 <FormControl sx={{ width: '50%' }}>
-                                    <InputLabel htmlFor="work_place">Nombre comercio</InputLabel>
+                                    <InputLabel htmlFor="work_place">Nombre comercio *</InputLabel>
                                     <Input id="work_place" type="text" name="work_place" value={formData.work_place} disabled={open === 'VIEW'} />
                                     {errors.work_place?.type === 'required' &&
                                         <Typography variant="caption" color="red" marginTop={1}>

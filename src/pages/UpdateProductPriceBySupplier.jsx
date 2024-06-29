@@ -123,7 +123,7 @@ export function UpdateProductPriceBySupplier() {
               }}
             >
               <InputLabel htmlFor="id" className="text-gray-400">
-                Proveedor
+                Proveedor *
               </InputLabel>
               <Select
                 labelId="supplier-select"

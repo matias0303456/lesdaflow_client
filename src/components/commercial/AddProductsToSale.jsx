@@ -69,7 +69,7 @@ export function AddProductsToSale({
                                 .map(p => ({ label: `Código ${p.code} / Detalle ${p.details}`, id: p.id }))}
                             noOptionsText="No hay productos disponibles."
                             onChange={(e, value) => handleAdd({ idx: saleProducts.length, product_id: value?.id ?? '' })}
-                            renderInput={(params) => <TextField {...params} label="Producto" />}
+                            renderInput={(params) => <TextField {...params} label="Producto *" />}
                             isOptionEqualToValue={(option, value) => option.code === value.code || value.length === 0}
                             onInputChange={(e, value) => setValue(value)}
                             value={value}

@@ -58,7 +58,7 @@ export function BudgetForm({
                             options={state.clients.data.map(c => ({ label: `${c.first_name} ${c.last_name} (${c.work_place})`, id: c.id }))}
                             noOptionsText="No hay clientes registrados."
                             onChange={(e, value) => handleChange({ target: { name: 'client_id', value: value?.id ?? '' } })}
-                            renderInput={(params) => <TextField {...params} label="Cliente" />}
+                            renderInput={(params) => <TextField {...params} label="Cliente *" />}
                             isOptionEqualToValue={(option, value) => option.code === value.code || value.length === 0}
                             disabled={open === 'VIEW'}
                         />

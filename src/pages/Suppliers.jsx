@@ -166,7 +166,7 @@ export function Suppliers() {
                         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
                             <Box sx={{ display: 'flex', gap: 5 }}>
                                 <FormControl sx={{ width: '50%' }}>
-                                    <InputLabel htmlFor="name">Nombre Completo</InputLabel>
+                                    <InputLabel htmlFor="name">Nombre Completo *</InputLabel>
                                     <Input id="name" type="text" name="name" value={formData.name} disabled={open === 'VIEW'} />
                                     {errors.name?.type === 'required' &&
                                         <Typography variant="caption" color="red" marginTop={1}>

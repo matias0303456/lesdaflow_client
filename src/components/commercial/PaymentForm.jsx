@@ -50,7 +50,7 @@ export function PaymentForm({
                         </Select>
                     </FormControl>
                     <FormControl sx={{ width: '33%' }}>
-                        <InputLabel id="amount">Importe</InputLabel>
+                        <InputLabel id="amount">Importe *</InputLabel>
                         <Input
                             id="amount"
                             type="number"

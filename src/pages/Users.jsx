@@ -199,7 +199,7 @@ export function Users() {
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
               <Box sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', gap: 2 }}>
                 <FormControl sx={{ width: { xs: '100%', sm: '30%' } }}>
-                  <InputLabel htmlFor="name">Nombre y apellido</InputLabel>
+                  <InputLabel htmlFor="name">Nombre y apellido *</InputLabel>
                   <Input id="name" type="text" name="name" value={formData.name} disabled={open === 'VIEW'} />
                   {errors.name?.type === 'required' &&
                     <Typography variant="caption" color="red" marginTop={1}>
@@ -213,7 +213,7 @@ export function Users() {
                   }
                 </FormControl>
                 <FormControl sx={{ width: { xs: '100%', sm: '30%' } }}>
-                  <InputLabel htmlFor="username">Usuario</InputLabel>
+                  <InputLabel htmlFor="username">Usuario *</InputLabel>
                   <Input id="username" type="text" name="username" value={formData.username} disabled={open === 'VIEW'} />
                   {errors.username?.type === 'required' &&
                     <Typography variant="caption" color="red" marginTop={1}>
@@ -229,7 +229,7 @@ export function Users() {
                 <FormControl sx={{ width: { xs: '100%', sm: '30%' } }}>
                   <TextField
                     type={showPassword ? 'text' : 'password'}
-                    label="Contraseña"
+                    label="Contraseña *"
                     variant="outlined"
                     id="password"
                     name="password"
@@ -304,7 +304,7 @@ export function Users() {
                   </Select>
                 </FormControl>
                 <FormControl sx={{ width: { xs: '100%', sm: '30%' } }}>
-                  <InputLabel htmlFor="document_number">Nro. documento / CUIT</InputLabel>
+                  <InputLabel htmlFor="document_number">Nro. documento / CUIT *</InputLabel>
                   <Input id="document_number" type="text" name="document_number" value={formData.document_number} disabled={open === 'VIEW'} />
                   {errors.document_number?.type === 'required' &&
                     <Typography variant="caption" color="red" marginTop={1}>
@@ -315,7 +315,7 @@ export function Users() {
               </Box>
               <Box sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', gap: 2 }}>
                 <FormControl sx={{ width: { xs: '100%', sm: '30%' } }}>
-                  <InputLabel htmlFor="local_phone">Teléfono</InputLabel>
+                  <InputLabel htmlFor="local_phone">Teléfono *</InputLabel>
                   <Input id="local_phone" type="number" name="local_phone" value={formData.local_phone} disabled={open === 'VIEW'} />
                   {errors.local_phone?.type === 'required' &&
                     <Typography variant="caption" color="red" marginTop={1}>
@@ -329,7 +329,7 @@ export function Users() {
                   }
                 </FormControl>
                 <FormControl sx={{ width: { xs: '100%', sm: '30%' } }}>
-                  <InputLabel htmlFor="cell_phone">Celular</InputLabel>
+                  <InputLabel htmlFor="cell_phone">Celular *</InputLabel>
                   <Input id="cell_phone" type="number" name="cell_phone" value={formData.cell_phone} disabled={open === 'VIEW'} />
                   {errors.cell_phone?.type === 'required' &&
                     <Typography variant="caption" color="red" marginTop={1}>
@@ -354,7 +354,7 @@ export function Users() {
               </Box>
               <Box sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', gap: { xs: 2, sm: 1 } }}>
                 <FormControl sx={{ width: { xs: '100%', sm: '25%' } }}>
-                  <InputLabel htmlFor="address">Dirección</InputLabel>
+                  <InputLabel htmlFor="address">Dirección *</InputLabel>
                   <Input id="address" type="text" name="address" value={formData.address} disabled={open === 'VIEW'} />
                   {errors.address?.type === 'required' &&
                     <Typography variant="caption" color="red" marginTop={1}>

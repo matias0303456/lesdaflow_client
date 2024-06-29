@@ -128,7 +128,7 @@ export function UpdateProductPriceByProduct() {
               sx={{ minWidth: "100%", color: "#59656b", display: "flex", alignItems: "start", justifyContent: "center" }}
             >
               <InputLabel className="text-gray-400">
-                Producto
+                Producto *
               </InputLabel>
               <Select
                 labelId="product-select"

@@ -98,7 +98,7 @@ export function ClientsBySeller() {
                 {state.users.data.filter(u => u.id !== auth?.user.id && u.role === 'VENDEDOR').length > 0 ? (
                   state.users.data.filter(u => u.id !== auth?.user.id && u.role === 'VENDEDOR').map((u) => (
                     <MenuItem key={u.id} value={u.id}>
-                      {`${u.first_name} ${u.last_name}`.toUpperCase()}
+                      {u.name.toUpperCase()}
                     </MenuItem>
                   ))
                 ) : (

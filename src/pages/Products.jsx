@@ -215,7 +215,7 @@ export function Products() {
                         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                             <Box sx={{ display: 'flex', gap: 3 }}>
                                 <FormControl sx={{ width: '50%' }}>
-                                    <InputLabel htmlFor="code">Código</InputLabel>
+                                    <InputLabel htmlFor="code">Código *</InputLabel>
                                     <Input id="code" type="text" name="code" value={formData.code} disabled={open === 'VIEW'} />
                                     {errors.code?.type === 'required' &&
                                         <Typography variant="caption" color="red" marginTop={1}>
@@ -229,7 +229,7 @@ export function Products() {
                                     }
                                 </FormControl>
                                 <FormControl sx={{ width: '50%' }}>
-                                    <InputLabel htmlFor="details">Nombre producto</InputLabel>
+                                    <InputLabel htmlFor="details">Nombre producto *</InputLabel>
                                     <Input id="details" type="text" name="details" value={formData.details} disabled={open === 'VIEW'} />
                                     {errors.details?.type === 'required' &&
                                         <Typography variant="caption" color="red" marginTop={1}>
@@ -245,7 +245,7 @@ export function Products() {
                             </Box>
                             <Box sx={{ display: 'flex', gap: 3 }}>
                                 <FormControl sx={{ width: '50%' }}>
-                                    <InputLabel htmlFor="buy_price">Precio de compra</InputLabel>
+                                    <InputLabel htmlFor="buy_price">Precio de compra *</InputLabel>
                                     <Input id="buy_price" type="number" name="buy_price" value={formData.buy_price} disabled={open === 'VIEW'} />
                                     {errors.buy_price?.type === 'required' &&
                                         <Typography variant="caption" color="red" marginTop={1}>
@@ -254,7 +254,7 @@ export function Products() {
                                     }
                                 </FormControl>
                                 <FormControl sx={{ width: '50%' }}>
-                                    <InputLabel htmlFor="earn">% Ganancia</InputLabel>
+                                    <InputLabel htmlFor="earn">% Ganancia *</InputLabel>
                                     <Input id="earn" type="number" name="earn" value={formData.earn} disabled={open === 'VIEW'} />
                                     {errors.earn?.type === 'required' &&
                                         <Typography variant="caption" color="red" marginTop={1}>
@@ -273,7 +273,7 @@ export function Products() {
                                     />
                                 </FormControl>
                                 <FormControl sx={{ width: '50%' }}>
-                                    <InputLabel htmlFor="min_stock">Stock mínimo</InputLabel>
+                                    <InputLabel htmlFor="min_stock">Stock mínimo *</InputLabel>
                                     <Input id="min_stock" type="number" name="min_stock" value={formData.min_stock} disabled={open === 'VIEW'} />
                                     {errors.min_stock?.type === 'required' &&
                                         <Typography variant="caption" color="red" marginTop={1}>
@@ -284,7 +284,7 @@ export function Products() {
                             </Box>
                             <Box sx={{ display: 'flex', gap: 3 }}>
                                 <FormControl sx={{ width: '50%' }}>
-                                    <InputLabel id="supplier-select">Proveedor</InputLabel>
+                                    <InputLabel id="supplier-select">Proveedor *</InputLabel>
                                     <Select
                                         labelId="supplier-select"
                                         id="supplier_id"
@@ -345,7 +345,7 @@ export function Products() {
                             </Box>
                             {open === 'NEW' &&
                                 <FormControl sx={{ width: '50%' }}>
-                                    <InputLabel htmlFor="amount">Stock</InputLabel>
+                                    <InputLabel htmlFor="amount">Stock *</InputLabel>
                                     <Input id="amount" type="number" name="amount" value={formData.amount} disabled={open === 'VIEW'} />
                                     {errors.amount?.type === 'required' &&
                                         <Typography variant="caption" color="red" marginTop={1}>

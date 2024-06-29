@@ -113,7 +113,7 @@ export function SalesReport() {
               }}
             >
               <InputLabel id="demo-simple-select-standard-label">
-                Vendedor
+                Vendedor *
               </InputLabel>
               <Select
                 labelId="seller-select"
