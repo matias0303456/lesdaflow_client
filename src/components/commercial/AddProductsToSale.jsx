@@ -1,5 +1,5 @@
 import { useContext, useState } from "react";
-import { Autocomplete, Button, FormControl, Input, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from "@mui/material";
+import { Autocomplete, Box, Button, FormControl, Input, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from "@mui/material";
 import CancelSharpIcon from '@mui/icons-material/CancelSharp';
 
 import { AuthContext } from "../../providers/AuthProvider";
@@ -57,7 +57,7 @@ export function AddProductsToSale({
     }
 
     return (
-        <>
+        <Box sx={{ display: 'flex', flexDirection: 'column', width: '60%' }}>
             {(open === 'NEW' || (open === 'EDIT' && auth?.user.role === 'ADMINISTRADOR')) &&
                 <>
                     <FormControl>
@@ -99,13 +99,7 @@ export function AddProductsToSale({
                     <TableBody>
                         {saleProducts.length === 0 ?
                             <TableRow>
-                                <TableCell></TableCell>
-                                <TableCell></TableCell>
-                                <TableCell></TableCell>
-                                <TableCell align="center">No hay productos agregados a esta venta.</TableCell>
-                                <TableCell></TableCell>
-                                <TableCell></TableCell>
-                                <TableCell></TableCell>
+                                <TableCell align="center" colSpan={7}>No hay productos agregados a esta venta.</TableCell>
                             </TableRow> :
                             saleProducts.map(sp => {
                                 const p = products.find(p => p.id === sp.product_id)
@@ -144,6 +138,6 @@ export function AddProductsToSale({
                     </TableBody>
                 </Table>
             </TableContainer>
-        </>
+        </Box>
     )
 }

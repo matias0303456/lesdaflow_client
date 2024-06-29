@@ -101,7 +101,7 @@ export function SaleForm({
 
     return (
         <ModalComponent
-            reduceWidth={50}
+            reduceWidth={300}
             p={1}
             open={open === 'NEW' || open === 'EDIT' || open === 'VIEW' || open === 'CONVERT'}
             onClose={handleClose}
@@ -134,64 +134,64 @@ export function SaleForm({
             {valueTab === 0 &&
                 <Box sx={{ p: 1 }}>
                     <form onChange={handleChange} onSubmit={(e) => handleSubmit(e, formData, validate, reset, setDisabled)}>
-                        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
-                            <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 3 }}>
-                                <Box sx={{ display: 'flex', flexDirection: 'column', width: '60%', gap: 3 }}>
-                                    <FormControl>
-                                        <Autocomplete
-                                            disablePortal
-                                            id="client-autocomplete"
-                                            value={formData.client_id.toString().length > 0 ? `${state.clients.data.find(c => c.id === formData.client_id)?.first_name} - ${state.clients.data.find(c => c.id === formData.client_id)?.last_name}` : ''}
-                                            options={state.clients.data.map(c => ({ label: `${c.first_name} - ${c.last_name}`, id: c.id }))}
-                                            noOptionsText="No hay clientes registrados."
-                                            onChange={(e, value) => handleChange({ target: { name: 'client_id', value: value?.id ?? '' } })}
-                                            renderInput={(params) => <TextField {...params} label="Cliente" />}
-                                            isOptionEqualToValue={(option, value) => option.code === value.code || value.length === 0}
+                        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                            <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 2 }}>
+                                <FormControl sx={{ width: '60%' }}>
+                                    <Autocomplete
+                                        disablePortal
+                                        id="client-autocomplete"
+                                        value={formData.client_id.toString().length > 0 ? `${state.clients.data.find(c => c.id === formData.client_id)?.first_name} - ${state.clients.data.find(c => c.id === formData.client_id)?.last_name}` : ''}
+                                        options={state.clients.data.map(c => ({ label: `${c.first_name} - ${c.last_name}`, id: c.id }))}
+                                        noOptionsText="No hay clientes registrados."
+                                        onChange={(e, value) => handleChange({ target: { name: 'client_id', value: value?.id ?? '' } })}
+                                        renderInput={(params) => <TextField {...params} label="Cliente" />}
+                                        isOptionEqualToValue={(option, value) => option.code === value.code || value.length === 0}
+                                        disabled={open === 'VIEW' || (open === 'EDIT' && auth?.user.role !== 'ADMINISTRADOR')}
+                                    />
+                                    {errors.client_id?.type === 'required' &&
+                                        <Typography variant="caption" color="red" marginTop={1}>
+                                            * El cliente es requerido.
+                                        </Typography>
+                                    }
+                                    {isBlocked &&
+                                        <Typography variant="caption" color="red" marginTop={1}>
+                                            * Este cliente está bloqueado.
+                                        </Typography>
+                                    }
+                                </FormControl>
+                                <FormControl sx={{ width: '40%' }}>
+                                    <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
+                                        <DatePicker
+                                            label="Fecha"
+                                            value={new Date(formData.date)}
+                                            onChange={value => handleChange({
+                                                target: {
+                                                    name: 'date',
+                                                    value: new Date(value.toISOString())
+                                                }
+                                            })}
                                             disabled={open === 'VIEW' || (open === 'EDIT' && auth?.user.role !== 'ADMINISTRADOR')}
                                         />
-                                        {errors.client_id?.type === 'required' &&
-                                            <Typography variant="caption" color="red" marginTop={1}>
-                                                * El cliente es requerido.
-                                            </Typography>
-                                        }
-                                        {isBlocked &&
-                                            <Typography variant="caption" color="red" marginTop={1}>
-                                                * Este cliente está bloqueado.
-                                            </Typography>
-                                        }
-                                    </FormControl>
-                                    <AddProductsToSale
-                                        products={state.products.data}
-                                        saleProducts={saleProducts}
-                                        setSaleProducts={setSaleProducts}
-                                        missing={missing}
-                                        setMissing={setMissing}
-                                        idsToDelete={idsToDelete}
-                                        setIdsToDelete={setIdsToDelete}
-                                        open={open}
-                                    />
-                                </Box>
+                                    </LocalizationProvider>
+                                    {errors.date?.type === 'required' &&
+                                        <Typography variant="caption" color="red" marginTop={1}>
+                                            * La fecha es requerida.
+                                        </Typography>
+                                    }
+                                </FormControl>
+                            </Box>
+                            <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 2 }}>
+                                <AddProductsToSale
+                                    products={state.products.data}
+                                    saleProducts={saleProducts}
+                                    setSaleProducts={setSaleProducts}
+                                    missing={missing}
+                                    setMissing={setMissing}
+                                    idsToDelete={idsToDelete}
+                                    setIdsToDelete={setIdsToDelete}
+                                    open={open}
+                                />
                                 <Box sx={{ display: 'flex', flexDirection: 'column', width: '40%', gap: 3 }}>
-                                    <FormControl>
-                                        <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
-                                            <DatePicker
-                                                label="Fecha"
-                                                value={new Date(formData.date)}
-                                                onChange={value => handleChange({
-                                                    target: {
-                                                        name: 'date',
-                                                        value: new Date(value.toISOString())
-                                                    }
-                                                })}
-                                                disabled={open === 'VIEW' || (open === 'EDIT' && auth?.user.role !== 'ADMINISTRADOR')}
-                                            />
-                                        </LocalizationProvider>
-                                        {errors.date?.type === 'required' &&
-                                            <Typography variant="caption" color="red" marginTop={1}>
-                                                * La fecha es requerida.
-                                            </Typography>
-                                        }
-                                    </FormControl>
                                     <FormControl>
                                         <InputLabel htmlFor="discount">% Descuento</InputLabel>
                                         <Input
@@ -246,16 +246,16 @@ export function SaleForm({
                                     </Box>
                                 </Box>
                             </Box>
-                            <Box sx={{ display: 'flex', justifyContent: 'end' }}>
-                                <FormControl>
-                                    <InputLabel htmlFor="subtotal">Subtotal</InputLabel>
-                                    <Input value={getCurrentSubtotal(saleProducts, state.products.data)} id="subtotal" type="number" name="subtotal" disabled />
-                                </FormControl>
-                                <FormControl>
-                                    <InputLabel htmlFor="total">Total</InputLabel>
-                                    <Input value={getCurrentTotal(formData, saleProducts, state.products.data)} id="total" type="number" name="total" disabled />
-                                </FormControl>
-                            </Box>
+                        </Box>
+                        <Box sx={{ display: 'flex', justifyContent: 'end', marginTop: 3 }}>
+                            <FormControl>
+                                <InputLabel htmlFor="subtotal">Subtotal</InputLabel>
+                                <Input value={getCurrentSubtotal(saleProducts, state.products.data)} id="subtotal" type="number" name="subtotal" disabled />
+                            </FormControl>
+                            <FormControl>
+                                <InputLabel htmlFor="total">Total</InputLabel>
+                                <Input value={getCurrentTotal(formData, saleProducts, state.products.data)} id="total" type="number" name="total" disabled />
+                            </FormControl>
                         </Box>
                         <FormControl sx={{
                             display: 'flex',

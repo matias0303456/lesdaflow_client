@@ -204,6 +204,7 @@ export function Products() {
                 <ModalComponent
                     open={open === 'NEW' || open === 'EDIT' || open === 'VIEW'}
                     onClose={() => reset(setOpen)}
+                    reduceWidth={500}
                 >
                     <Typography variant="h6" sx={{ marginBottom: 0.5 }}>
                         {open === 'NEW' && 'Nuevo producto'}
@@ -212,145 +213,147 @@ export function Products() {
                     </Typography>
                     <form onChange={handleChange} onSubmit={(e) => handleSubmit(e, validate, formData, reset, setDisabled)}>
                         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                            <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 3 }}>
-                                <Box sx={{ display: 'flex', flexDirection: 'column', width: '50%', gap: 3 }}>
-                                    <FormControl>
-                                        <InputLabel htmlFor="code">Código</InputLabel>
-                                        <Input id="code" type="text" name="code" value={formData.code} disabled={open === 'VIEW'} />
-                                        {errors.code?.type === 'required' &&
-                                            <Typography variant="caption" color="red" marginTop={1}>
-                                                * El código es requerido.
-                                            </Typography>
-                                        }
-                                        {errors.code?.type === 'maxLength' &&
-                                            <Typography variant="caption" color="red" marginTop={1}>
-                                                * El código es demasiado largo.
-                                            </Typography>
-                                        }
-                                    </FormControl>
-                                    <FormControl>
-                                        <InputLabel htmlFor="buy_price">Precio de compra</InputLabel>
-                                        <Input id="buy_price" type="number" name="buy_price" value={formData.buy_price} disabled={open === 'VIEW'} />
-                                        {errors.buy_price?.type === 'required' &&
-                                            <Typography variant="caption" color="red" marginTop={1}>
-                                                * El precio de compra es requerido.
-                                            </Typography>
-                                        }
-                                    </FormControl>
-                                    <FormControl>
-                                        <InputLabel htmlFor="size">Precio de venta</InputLabel>
-                                        <Input
-                                            type="text"
-                                            value={earnPrice}
-                                            disabled
-                                        />
-                                    </FormControl>
-                                    {open === 'NEW' &&
-                                        <FormControl>
-                                            <InputLabel htmlFor="amount">Stock</InputLabel>
-                                            <Input id="amount" type="number" name="amount" value={formData.amount} disabled={open === 'VIEW'} />
-                                            {errors.amount?.type === 'required' &&
-                                                <Typography variant="caption" color="red" marginTop={1}>
-                                                    * El stock es requerido.
-                                                </Typography>
-                                            }
-                                        </FormControl>
+                            <Box sx={{ display: 'flex', gap: 3 }}>
+                                <FormControl sx={{ width: '50%' }}>
+                                    <InputLabel htmlFor="code">Código</InputLabel>
+                                    <Input id="code" type="text" name="code" value={formData.code} disabled={open === 'VIEW'} />
+                                    {errors.code?.type === 'required' &&
+                                        <Typography variant="caption" color="red" marginTop={1}>
+                                            * El código es requerido.
+                                        </Typography>
                                     }
-                                    <FormControl>
-                                        <InputLabel id="supplier-select">Proveedor</InputLabel>
-                                        <Select
-                                            labelId="supplier-select"
-                                            id="supplier_id"
-                                            value={formData.supplier_id}
-                                            label="Proveedor"
-                                            name="supplier_id"
-                                            onChange={handleChange}
-                                            disabled={open === 'VIEW'}
-                                        >
-                                            {state.suppliers.data.map(s => (
-                                                <MenuItem key={s.id} value={s.id}>{s.name}</MenuItem>
-                                            ))}
-                                        </Select>
-                                        {errors.supplier_id?.type === 'required' &&
-                                            <Typography variant="caption" color="red" marginTop={1}>
-                                                * El proveedor es requerido.
-                                            </Typography>
-                                        }
-                                    </FormControl>
-                                </Box>
-                                <Box sx={{ display: 'flex', flexDirection: 'column', width: '50%', gap: 3 }}>
-                                    <FormControl>
-                                        <InputLabel htmlFor="details">Nombre producto</InputLabel>
-                                        <Input id="details" type="text" name="details" value={formData.details} disabled={open === 'VIEW'} />
-                                        {errors.details?.type === 'required' &&
-                                            <Typography variant="caption" color="red" marginTop={1}>
-                                                * El nombre es requerido.
-                                            </Typography>
-                                        }
-                                        {errors.details?.type === 'maxLength' &&
-                                            <Typography variant="caption" color="red" marginTop={1}>
-                                                * El nombre es demasiado largo.
-                                            </Typography>
-                                        }
-                                    </FormControl>
-                                    <FormControl>
-                                        <InputLabel htmlFor="earn">% Ganancia</InputLabel>
-                                        <Input id="earn" type="number" name="earn" value={formData.earn} disabled={open === 'VIEW'} />
-                                        {errors.earn?.type === 'required' &&
-                                            <Typography variant="caption" color="red" marginTop={1}>
-                                                * La ganancia es requerida.
-                                            </Typography>
-                                        }
-                                    </FormControl>
-                                    <FormControl>
-                                        <InputLabel htmlFor="min_stock">Stock mínimo</InputLabel>
-                                        <Input id="min_stock" type="number" name="min_stock" value={formData.min_stock} disabled={open === 'VIEW'} />
-                                        {errors.min_stock?.type === 'required' &&
-                                            <Typography variant="caption" color="red" marginTop={1}>
-                                                * El stock mínimo es requerido.
-                                            </Typography>
-                                        }
-                                    </FormControl>
-                                    <Box sx={{ display: 'flex', justifyContent: 'space-around' }}>
-                                        <FormControlLabel
-                                            control={<Checkbox />}
-                                            label="Efectivo"
-                                            checked={formData.cash}
-                                            disabled={open === 'VIEW'}
-                                            onChange={e => handleChange({
-                                                target: {
-                                                    name: 'cash',
-                                                    value: e.target.checked
-                                                }
-                                            })}
-                                        />
-                                        <FormControlLabel
-                                            control={<Checkbox />}
-                                            label="Cta. Cte."
-                                            checked={formData.cta_cte}
-                                            disabled={open === 'VIEW'}
-                                            onChange={e => handleChange({
-                                                target: {
-                                                    name: 'cta_cte',
-                                                    value: e.target.checked
-                                                }
-                                            })}
-                                        />
-                                        <FormControlLabel
-                                            control={<Checkbox />}
-                                            label="Poxipol"
-                                            checked={formData.poxipol}
-                                            disabled={open === 'VIEW'}
-                                            onChange={e => handleChange({
-                                                target: {
-                                                    name: 'poxipol',
-                                                    value: e.target.checked
-                                                }
-                                            })}
-                                        />
-                                    </Box>
+                                    {errors.code?.type === 'maxLength' &&
+                                        <Typography variant="caption" color="red" marginTop={1}>
+                                            * El código es demasiado largo.
+                                        </Typography>
+                                    }
+                                </FormControl>
+                                <FormControl sx={{ width: '50%' }}>
+                                    <InputLabel htmlFor="details">Nombre producto</InputLabel>
+                                    <Input id="details" type="text" name="details" value={formData.details} disabled={open === 'VIEW'} />
+                                    {errors.details?.type === 'required' &&
+                                        <Typography variant="caption" color="red" marginTop={1}>
+                                            * El nombre es requerido.
+                                        </Typography>
+                                    }
+                                    {errors.details?.type === 'maxLength' &&
+                                        <Typography variant="caption" color="red" marginTop={1}>
+                                            * El nombre es demasiado largo.
+                                        </Typography>
+                                    }
+                                </FormControl>
+                            </Box>
+                            <Box sx={{ display: 'flex', gap: 3 }}>
+                                <FormControl sx={{ width: '50%' }}>
+                                    <InputLabel htmlFor="buy_price">Precio de compra</InputLabel>
+                                    <Input id="buy_price" type="number" name="buy_price" value={formData.buy_price} disabled={open === 'VIEW'} />
+                                    {errors.buy_price?.type === 'required' &&
+                                        <Typography variant="caption" color="red" marginTop={1}>
+                                            * El precio de compra es requerido.
+                                        </Typography>
+                                    }
+                                </FormControl>
+                                <FormControl sx={{ width: '50%' }}>
+                                    <InputLabel htmlFor="earn">% Ganancia</InputLabel>
+                                    <Input id="earn" type="number" name="earn" value={formData.earn} disabled={open === 'VIEW'} />
+                                    {errors.earn?.type === 'required' &&
+                                        <Typography variant="caption" color="red" marginTop={1}>
+                                            * La ganancia es requerida.
+                                        </Typography>
+                                    }
+                                </FormControl>
+                            </Box>
+                            <Box sx={{ display: 'flex', gap: 3 }}>
+                                <FormControl sx={{ width: '50%' }}>
+                                    <InputLabel htmlFor="size">Precio de venta</InputLabel>
+                                    <Input
+                                        type="text"
+                                        value={earnPrice}
+                                        disabled
+                                    />
+                                </FormControl>
+                                <FormControl sx={{ width: '50%' }}>
+                                    <InputLabel htmlFor="min_stock">Stock mínimo</InputLabel>
+                                    <Input id="min_stock" type="number" name="min_stock" value={formData.min_stock} disabled={open === 'VIEW'} />
+                                    {errors.min_stock?.type === 'required' &&
+                                        <Typography variant="caption" color="red" marginTop={1}>
+                                            * El stock mínimo es requerido.
+                                        </Typography>
+                                    }
+                                </FormControl>
+                            </Box>
+                            <Box sx={{ display: 'flex', gap: 3 }}>
+                                <FormControl sx={{ width: '50%' }}>
+                                    <InputLabel id="supplier-select">Proveedor</InputLabel>
+                                    <Select
+                                        labelId="supplier-select"
+                                        id="supplier_id"
+                                        value={formData.supplier_id}
+                                        label="Proveedor"
+                                        name="supplier_id"
+                                        onChange={handleChange}
+                                        disabled={open === 'VIEW'}
+                                    >
+                                        {state.suppliers.data.map(s => (
+                                            <MenuItem key={s.id} value={s.id}>{s.name}</MenuItem>
+                                        ))}
+                                    </Select>
+                                    {errors.supplier_id?.type === 'required' &&
+                                        <Typography variant="caption" color="red" marginTop={1}>
+                                            * El proveedor es requerido.
+                                        </Typography>
+                                    }
+                                </FormControl>
+                                <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                                    <FormControlLabel
+                                        control={<Checkbox />}
+                                        label="Efectivo"
+                                        checked={formData.cash}
+                                        disabled={open === 'VIEW'}
+                                        onChange={e => handleChange({
+                                            target: {
+                                                name: 'cash',
+                                                value: e.target.checked
+                                            }
+                                        })}
+                                    />
+                                    <FormControlLabel
+                                        control={<Checkbox />}
+                                        label="Cta. Cte."
+                                        checked={formData.cta_cte}
+                                        disabled={open === 'VIEW'}
+                                        onChange={e => handleChange({
+                                            target: {
+                                                name: 'cta_cte',
+                                                value: e.target.checked
+                                            }
+                                        })}
+                                    />
+                                    <FormControlLabel
+                                        control={<Checkbox />}
+                                        label="Poxipol"
+                                        checked={formData.poxipol}
+                                        disabled={open === 'VIEW'}
+                                        onChange={e => handleChange({
+                                            target: {
+                                                name: 'poxipol',
+                                                value: e.target.checked
+                                            }
+                                        })}
+                                    />
                                 </Box>
                             </Box>
+                            {open === 'NEW' &&
+                                <FormControl sx={{ width: '50%' }}>
+                                    <InputLabel htmlFor="amount">Stock</InputLabel>
+                                    <Input id="amount" type="number" name="amount" value={formData.amount} disabled={open === 'VIEW'} />
+                                    {errors.amount?.type === 'required' &&
+                                        <Typography variant="caption" color="red" marginTop={1}>
+                                            * El stock es requerido.
+                                        </Typography>
+                                    }
+                                </FormControl>
+                            }
                             <FormControl sx={{
                                 display: 'flex',
                                 flexDirection: 'row',
