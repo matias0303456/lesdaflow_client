@@ -178,7 +178,7 @@ export function Products() {
                 showViewAction
                 contentHeader={
                     <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between' }}>
-                        <Box sx={{ display: 'flex', gap: 1 }}>
+                        <Box sx={{ display: 'flex', gap: 1, marginBottom: { xs: 2, lg: 0 } }}>
                             {auth?.user.role === 'ADMINISTRADOR' &&
                                 <Button variant="outlined" onClick={() => setOpen('NEW')}>
                                     Agregar

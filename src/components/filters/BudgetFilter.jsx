@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import { Box, Button, FormControl, Input, InputLabel } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
@@ -12,11 +12,6 @@ export function BudgetFilter() {
     const { state, dispatch } = useContext(DataContext)
 
     const { getBudgets } = useBudgets()
-
-    const [show, setShow] = useState(
-        typeof state.budgets.filter_fields.from !== 'string' || typeof state.budgets.filter_fields.to !== 'string' ||
-        state.budgets.filter_fields.user.length > 0 || state.budgets.filter_fields.client.length > 0
-    )
 
     const handleChange = e => {
         dispatch({
@@ -43,8 +38,6 @@ export function BudgetFilter() {
         })
     }
 
-    const handleToggleShow = () => setShow(!show)
-
     useEffect(() => {
         const { from, to, user, client, loaded } = state.budgets.filter_fields
         const fromIsNotString = typeof from !== 'string'
@@ -63,64 +56,48 @@ export function BudgetFilter() {
     }, [state.budgets.filter_fields])
 
     return (
-        <>
-            {show ?
-                <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 2 }}>
-                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                        <FormControl>
-                            <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
-                                <DatePicker
-                                    label="Desde"
-                                    value={state.budgets.filter_fields.from.length === 0 ? new Date(Date.now()) : new Date(state.budgets.filter_fields.from)}
-                                    onChange={value => handleChange({ target: { name: 'from', value: new Date(value.toISOString()) } })}
-                                />
-                            </LocalizationProvider>
-                        </FormControl>
-                        <FormControl>
-                            <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
-                                <DatePicker
-                                    label="Hasta"
-                                    value={state.budgets.filter_fields.to.length === 0 ? new Date(Date.now()) : new Date(state.budgets.filter_fields.to)}
-                                    onChange={value => handleChange({ target: { name: 'to', value: new Date(value.toISOString()) } })}
-                                />
-                            </LocalizationProvider>
-                        </FormControl>
-                    </Box>
-                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                        <FormControl>
-                            <InputLabel htmlFor="client">Cliente</InputLabel>
-                            <Input
-                                id="client"
-                                type="text"
-                                name="client"
-                                value={state.budgets.filter_fields.client}
-                                onChange={handleChange}
-                            />
-                        </FormControl>
-                        <FormControl>
-                            <InputLabel htmlFor="user">Vendedor</InputLabel>
-                            <Input
-                                id="user"
-                                type="text"
-                                name="user"
-                                value={state.budgets.filter_fields.user}
-                                onChange={handleChange}
-                            />
-                        </FormControl>
-                    </Box>
-                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                        <Button type="button" variant="outlined" onClick={handleReset}>
-                            Reiniciar filtros
-                        </Button>
-                        <Button type="button" variant="outlined" onClick={handleToggleShow}>
-                            Ocultar filtros
-                        </Button>
-                    </Box>
-                </Box> :
-                <Button type="button" variant="outlined" onClick={handleToggleShow}>
-                    Mostrar filtros
-                </Button>
-            }
-        </>
+        <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 2 }}>
+            <FormControl>
+                <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
+                    <DatePicker
+                        label="Desde"
+                        value={state.budgets.filter_fields.from.length === 0 ? new Date(Date.now()) : new Date(state.budgets.filter_fields.from)}
+                        onChange={value => handleChange({ target: { name: 'from', value: new Date(value.toISOString()) } })}
+                    />
+                </LocalizationProvider>
+            </FormControl>
+            <FormControl>
+                <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
+                    <DatePicker
+                        label="Hasta"
+                        value={state.budgets.filter_fields.to.length === 0 ? new Date(Date.now()) : new Date(state.budgets.filter_fields.to)}
+                        onChange={value => handleChange({ target: { name: 'to', value: new Date(value.toISOString()) } })}
+                    />
+                </LocalizationProvider>
+            </FormControl>
+            <FormControl>
+                <InputLabel htmlFor="client">Cliente</InputLabel>
+                <Input
+                    id="client"
+                    type="text"
+                    name="client"
+                    value={state.budgets.filter_fields.client}
+                    onChange={handleChange}
+                />
+            </FormControl>
+            <FormControl>
+                <InputLabel htmlFor="user">Vendedor</InputLabel>
+                <Input
+                    id="user"
+                    type="text"
+                    name="user"
+                    value={state.budgets.filter_fields.user}
+                    onChange={handleChange}
+                />
+            </FormControl>
+            <Button type="button" variant="outlined" onClick={handleReset}>
+                Reiniciar filtros
+            </Button>
+        </Box>
     )
 }
