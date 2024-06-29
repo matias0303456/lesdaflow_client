@@ -193,7 +193,7 @@ export function Sales() {
                 showViewAction
                 contentHeader={
                     <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between' }}>
-                        <Box sx={{ display: 'flex', gap: 1 }}>
+                        <Box sx={{ display: 'flex', gap: 1, width: '20%' }}>
                             <Button variant="outlined" onClick={() => setOpen('NEW')}>
                                 Agregar
                             </Button>
@@ -203,7 +203,21 @@ export function Sales() {
                                 Excel
                             </Button>
                         </Box>
-                        <SaleFilter showWorkPlace showSeller showType />
+                        <SaleFilter
+                            showWorkPlace
+                            showSeller
+                            showType
+                            width={{
+                                main: '80%',
+                                client: '15%',
+                                id: '15%',
+                                date: '15%',
+                                btn: '10%',
+                                work_place: '15%',
+                                seller: '15%',
+                                type: '15%'
+                            }}
+                        />
                     </Box>
                 }
             >

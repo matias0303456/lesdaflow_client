@@ -109,17 +109,17 @@ export function CurrentAccount() {
         headCells={headCells}
         rows={state.sales.data}
         entityKey="sales"
-        getter={params => getSales(params.replace('&type=', '') + '&type=CUENTA_CORRIENTE' + '&pending=true')}
+        getter={getSales}
         setOpen={setOpen}
         setFormData={setFormData}
         showDeleteAction
         showViewAction
         contentHeader={
           <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between' }}>
-            <Button variant="outlined" color="success">
+            <Button variant="outlined" color="success" sx={{ width: '10%' }}>
               Excel
             </Button>
-            <SaleFilter showWorkPlace showStatus filterTypeFromPage="CUENTA_CORRIENTE"/>
+            <SaleFilter showWorkPlace width={{ main: '90%', client: '15%', id: '15%', btn: '10%', work_place: '15%' }} />
           </Box>
         }
       />

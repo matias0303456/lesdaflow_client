@@ -7,7 +7,7 @@ import { es } from "date-fns/locale";
 import { DataContext } from "../../providers/DataProvider";
 import { useSales } from "../../hooks/useSales";
 
-export function SaleFilter({ showWorkPlace, showSeller, showDate, showType, showStatus, filterTypeFromPage, width }) {
+export function SaleFilter({ showWorkPlace, showSeller, showDate, showType, width }) {
 
     const { state, dispatch } = useContext(DataContext)
 
@@ -32,14 +32,14 @@ export function SaleFilter({ showWorkPlace, showSeller, showDate, showType, show
             type: 'SALES',
             payload: {
                 ...state.sales,
-                filter_fields: { client: '', work_place: '', id: '', user: '', date: '', type: '', pending: showStatus, loaded: false },
+                filter_fields: { client: '', work_place: '', id: '', user: '', date: '', type: '', loaded: false },
                 filters: ''
             }
         })
     }
 
     useEffect(() => {
-        const { client, work_place, id, user, date, type, loaded, pending } = state.sales.filter_fields
+        const { client, work_place, id, user, date, type, loaded } = state.sales.filter_fields
         const dateIsNotString = typeof date !== 'string'
         if (client.length > 0 || work_place.length > 0 || id.length > 0 ||
             user.length > 0 || dateIsNotString || type.length > 0) {
@@ -47,17 +47,17 @@ export function SaleFilter({ showWorkPlace, showSeller, showDate, showType, show
                 type: 'SALES',
                 payload: {
                     ...state.sales,
-                    filters: `&client=${client}&work_place=${work_place}&id=${id}&user=${user}&pending=${(pending && showStatus) ? pending.toString() : ''}&date=${dateIsNotString ? new Date(date).toISOString() : ''}&type=${type}`
+                    filters: `&client=${client}&work_place=${work_place}&id=${id}&user=${user}&date=${dateIsNotString ? new Date(date).toISOString() : ''}&type=${type}`
                 }
             })
         } else if (loaded) {
-            getSales(`?page=${state.sales.page}&offset=${state.sales.offset}${pending ? `&pending=true` : ''}${filterTypeFromPage ? `&type=${filterTypeFromPage}` : ''}`)
+            getSales(`?page=${state.sales.page}&offset=${state.sales.offset}`)
         }
     }, [state.sales.filter_fields])
 
     return (
-        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, justifyContent: 'space-between' }}>
-            <FormControl sx={{ width: '15%' }}>
+        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, width: width.main, alignItems: 'center', justifyContent: 'end' }}>
+            <FormControl sx={{ width: width.client }}>
                 <InputLabel htmlFor="client">Cliente</InputLabel>
                 <Input
                     id="client"
@@ -68,7 +68,7 @@ export function SaleFilter({ showWorkPlace, showSeller, showDate, showType, show
                 />
             </FormControl>
             {showWorkPlace &&
-                <FormControl sx={{ width: '15%' }}>
+                <FormControl sx={{ width: width.work_place }}>
                     <InputLabel htmlFor="work_place">N. Comercio</InputLabel>
                     <Input
                         id="work_place"
@@ -79,7 +79,7 @@ export function SaleFilter({ showWorkPlace, showSeller, showDate, showType, show
                     />
                 </FormControl>
             }
-            <FormControl sx={{ width: '15%' }}>
+            <FormControl sx={{ width: width.id }}>
                 <InputLabel htmlFor="id">N° venta</InputLabel>
                 <Input
                     id="id"
@@ -90,7 +90,7 @@ export function SaleFilter({ showWorkPlace, showSeller, showDate, showType, show
                 />
             </FormControl>
             {showSeller &&
-                <FormControl sx={{ width: '15%' }}>
+                <FormControl sx={{ width: width.seller }}>
                     <InputLabel id="user-select">Vendedor</InputLabel>
                     <Select
                         labelId="user-select"
@@ -108,7 +108,7 @@ export function SaleFilter({ showWorkPlace, showSeller, showDate, showType, show
                 </FormControl>
             }
             {showDate &&
-                <FormControl>
+                <FormControl sx={{ width: width.date }}>
                     <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
                         <DatePicker
                             label="Fecha"
@@ -124,7 +124,7 @@ export function SaleFilter({ showWorkPlace, showSeller, showDate, showType, show
                 </FormControl>
             }
             {showType &&
-                <FormControl sx={{ width: '15%' }}>
+                <FormControl sx={{ width: width.type }}>
                     <InputLabel id="type-select">T. Vta.</InputLabel>
                     <Select
                         labelId="type-select"
@@ -141,15 +141,7 @@ export function SaleFilter({ showWorkPlace, showSeller, showDate, showType, show
                     </Select>
                 </FormControl>
             }
-            {showStatus &&
-                <FormControlLabel
-                    control={<Checkbox />}
-                    label="Pendientes"
-                    checked={state.sales.filter_fields.pending}
-                    onChange={e => handleChange({ target: { name: 'pending', value: e.target.checked } })}
-                />
-            }
-            <Button type="button" variant="outlined" sx={{ width: '15%' }} onClick={handleReset}>
+            <Button type="button" variant="outlined" sx={{ width: width.btn }} onClick={handleReset}>
                 Reiniciar filtros
             </Button>
         </Box>
