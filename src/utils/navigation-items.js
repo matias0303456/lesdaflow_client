@@ -110,6 +110,11 @@ export const nav_items = [
         subtitle: "Actualizar Precios Por Producto",
         path: "/producto-actualiza-precio",
         can_access: ['ADMINISTRADOR']
+      },
+      {
+        subtitle: "Ingresos por cantidad",
+        path: "/ingresos-cantidad",
+        can_access: ['ADMINISTRADOR']
       }
     ],
     can_access: ['ADMINISTRADOR', 'VENDEDOR', 'CHOFER']
