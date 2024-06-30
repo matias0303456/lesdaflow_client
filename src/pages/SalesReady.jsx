@@ -113,7 +113,7 @@ export function SalesReady() {
       id: 'type',
       numeric: false,
       disablePadding: true,
-      label: 'Comp.',
+      label: 'T. Vta.',
       accessor: (row) => row.type.replaceAll('CUENTA_CORRIENTE', 'CTA CTE')
     },
     {

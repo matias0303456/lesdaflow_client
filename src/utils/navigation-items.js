@@ -78,6 +78,11 @@ export const nav_items = [
         subtitle: "Entrega de Ventas",
         path: "/entrega-ventas",
         can_access: ['CHOFER']
+      },
+      {
+        subtitle: "Comisiones",
+        path: "/comisiones",
+        can_access: ['ADMINISTRADOR']
       }
     ],
     can_access: ['ADMINISTRADOR', 'CHOFER', 'VENDEDOR']

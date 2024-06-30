@@ -5,21 +5,17 @@ import { format } from "date-fns";
 
 import { AuthContext } from "../providers/AuthProvider";
 import { DataContext } from "../providers/DataProvider";
-import { useForm } from "../hooks/useForm";
 import { useSales } from "../hooks/useSales";
-import { useProducts } from "../hooks/useProducts";
-import { useClients } from "../hooks/useClients";
+import { useForm } from "../hooks/useForm";
 
 import { Layout } from "../components/common/Layout";
 import { DataGridWithBackendPagination } from "../components/datagrid/DataGridWithBackendPagination";
 import { SaleFilter } from "../components/filters/SaleFilter";
-import { SaleForm } from "../components/commercial/SaleForm";
 import { ModalComponent } from "../components/common/ModalComponent";
 
 import { getSaleDifference, getSaleTotal } from "../utils/helpers";
-import { REPORT_URL } from "../utils/urls";
 
-export function SalesToDeliver() {
+export function Comissions() {
 
     const { auth } = useContext(AuthContext)
     const { state } = useContext(DataContext)
@@ -31,20 +27,9 @@ export function SalesToDeliver() {
         open,
         setOpen,
         getSales,
-        saleProducts,
-        setSaleProducts,
-        missing,
-        setMissing,
-        idsToDelete,
-        setIdsToDelete,
-        handleSubmit,
-        isBlocked,
-        setIsBlocked,
-        deliverSale
+        cancelSale
     } = useSales()
-    const { getProducts } = useProducts()
-    const { getClients } = useClients()
-    const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
+    const { formData, setFormData, disabled, reset } = useForm({
         defaultData: {
             id: '',
             client_id: '',
@@ -61,19 +46,8 @@ export function SalesToDeliver() {
     })
 
     useEffect(() => {
-        if (auth?.user.role !== 'CHOFER') navigate('/productos')
+        if (auth?.user.role !== 'ADMINISTRADOR') navigate(auth?.user.role === 'CHOFER' ? '/prep-ventas' : "/productos")
     }, [])
-
-    useEffect(() => {
-        getProducts()
-        getClients()
-    }, [])
-
-    useEffect(() => {
-        if (open === 'EDIT') {
-            setSaleProducts(formData.sale_products)
-        }
-    }, [formData])
 
     const headCells = [
         {
@@ -89,14 +63,6 @@ export function SalesToDeliver() {
             disablePadding: true,
             label: "Fecha",
             accessor: (row) => format(new Date(row.date), 'dd/MM/yy')
-        },
-        {
-            id: 'hour',
-            numeric: false,
-            disablePadding: true,
-            label: 'Hora',
-            sorter: (row) => format(new Date(row.date), 'HH:mm').toString().replace(':', ''),
-            accessor: (row) => format(new Date(row.date), 'HH:mm')
         },
         {
             id: 'client_name',
@@ -160,7 +126,7 @@ export function SalesToDeliver() {
     ]
 
     return (
-        <Layout title="Ventas Pendientes Entrega">
+        <Layout title="Comisiones">
             <DataGridWithBackendPagination
                 loading={loadingSales || disabled}
                 headCells={headCells}
@@ -169,35 +135,13 @@ export function SalesToDeliver() {
                 getter={getSales}
                 setOpen={setOpen}
                 setFormData={setFormData}
-                showPDFAction={`${REPORT_URL}/sales-pdf-or-puppeteer?token=${auth?.token}&id=`}
-                showSettingsAction="Registrar entrega"
+                showSettingsAction="Registrar cancelación"
                 showEditAction
                 contentHeader={<SaleFilter showDate width={{ main: '100%', client: '15%', id: '15%', date: '15%', btn: '10%' }} />}
             />
-            <SaleForm
-                saleProducts={saleProducts}
-                setSaleProducts={setSaleProducts}
-                missing={missing}
-                setMissing={setMissing}
-                reset={reset}
-                open={open}
-                setOpen={setOpen}
-                idsToDelete={idsToDelete}
-                setIdsToDelete={setIdsToDelete}
-                formData={formData}
-                setFormData={setFormData}
-                handleSubmit={handleSubmit}
-                validate={validate}
-                disabled={disabled}
-                setDisabled={setDisabled}
-                handleChange={handleChange}
-                errors={errors}
-                isBlocked={isBlocked}
-                setIsBlocked={setIsBlocked}
-            />
             <ModalComponent open={open === 'SETTINGS'} onClose={() => setOpen(null)} reduceWidth={900}>
                 <Typography variant="h6" marginBottom={1} textAlign="center">
-                    Confirmar entrega de venta
+                    Confirmar cancelación de venta
                 </Typography>
                 <Box sx={{ display: 'flex', gap: 1, justifyContent: 'center' }}>
                     <Button type="button" variant="outlined" onClick={() => setOpen(null)} sx={{ width: '35%' }}>
@@ -208,12 +152,12 @@ export function SalesToDeliver() {
                         variant="contained"
                         disabled={disabled}
                         sx={{ width: '35%' }}
-                        onClick={() => deliverSale(formData, reset)}
+                        onClick={() => cancelSale(formData, reset)}
                     >
                         Confirmar
                     </Button>
                 </Box>
             </ModalComponent>
         </Layout>
-    )
+    );
 }
