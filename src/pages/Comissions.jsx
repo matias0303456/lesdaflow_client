@@ -54,7 +54,7 @@ export function Comissions() {
             id: 'id',
             numeric: false,
             disablePadding: true,
-            label: 'Cod. Venta',
+            label: 'Cód. Vta.',
             accessor: 'id'
         },
         {
@@ -85,14 +85,6 @@ export function Comissions() {
             )
         },
         {
-            id: 'phone',
-            numeric: false,
-            disablePadding: true,
-            label: 'Teléfono',
-            sorter: (row) => row.client.local_phone.toString(),
-            accessor: (row) => row.client.local_phone
-        },
-        {
             id: 'type',
             numeric: false,
             disablePadding: true,
@@ -114,6 +106,14 @@ export function Comissions() {
             label: 'Entregado',
             sorter: (row) => row.is_delivered ? 1 : 0,
             accessor: (row) => row.is_delivered ? 'Sí' : 'No'
+        },
+        {
+            id: 'canceled',
+            numeric: false,
+            disablePadding: true,
+            label: 'Cancelado',
+            sorter: (row) => row.is_canceled ? 1 : 0,
+            accessor: (row) => row.is_canceled ? 'Sí' : 'No'
         },
         {
             id: 'total',
