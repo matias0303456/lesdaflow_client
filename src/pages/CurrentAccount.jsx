@@ -13,6 +13,7 @@ import { DataGridWithBackendPagination } from "../components/datagrid/DataGridWi
 import { SaleFilter } from '../components/filters/SaleFilter'
 
 import { getAccountStatus, getDeadline, getSaleDifference, getSaleTotal } from "../utils/helpers";
+import { REPORT_URL } from "../utils/urls";
 
 export function CurrentAccount() {
 
@@ -116,12 +117,15 @@ export function CurrentAccount() {
         getter={getSales}
         setOpen={setOpen}
         setFormData={setFormData}
+        showPDFAction={`${REPORT_URL}/accounts-pdf?token=${auth?.token}&id=`}
         showDeleteAction
         showViewAction
         contentHeader={
           <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between' }}>
-            <Button variant="outlined" color="success" sx={{ width: '10%' }}>
-              Excel
+            <Button variant="outlined" color='error' sx={{ width: '10%' }} onClick={() => {
+              window.open(`${REPORT_URL}/accounts-pdf?token=${auth?.token}`, '_blank')
+            }}>
+              PDF
             </Button>
             <SaleFilter
               showWorkPlace

@@ -131,7 +131,7 @@ export function SalesReport() {
                     ...(state.users.data.filter(u => u.role === 'VENDEDOR').length > 0
                       ? state.users.data.filter(u => u.role === 'VENDEDOR').map((u) => (
                         <MenuItem key={u.id} value={u.username}>
-                          {`${u.first_name} ${u.last_name}`.toUpperCase()}
+                          {u.name.toUpperCase()}
                         </MenuItem>
                       ))
                       : [<MenuItem key="no-results">No se encontraron resultados</MenuItem>])
