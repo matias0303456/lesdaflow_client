@@ -43,7 +43,6 @@ export function DataGridWithBackendPagination({
   contentHeader,
   loading,
   deadlineColor = false,
-  disableSorting = false,
   defaultOrder = 'desc',
   defaultOrderBy = 'id',
   showEditAction = false,
@@ -54,7 +53,9 @@ export function DataGridWithBackendPagination({
   showExcelAction = false,
   showConvertToSale = false,
   showInput = false,
-  showOutput = false
+  showOutput = false,
+  salesAdapter = false,
+  pendingFilter = false
 }) {
 
   const { auth } = useContext(AuthContext)
@@ -65,7 +66,6 @@ export function DataGridWithBackendPagination({
   const [orderBy, setOrderBy] = useState(defaultOrderBy)
 
   const handleRequestSort = (event, property) => {
-    if (disableSorting) return
     const isAsc = orderBy === property && order === 'asc'
     setOrder(isAsc ? 'desc' : 'asc')
     setOrderBy(property)
@@ -91,8 +91,20 @@ export function DataGridWithBackendPagination({
   )
 
   useEffect(() => {
-    getter(`?page=${state[entityKey].page}&offset=${state[entityKey].offset}${state[entityKey].filters}`)
-  }, [state[entityKey].page, state[entityKey].offset, state[entityKey].filters])
+    let salesFilter = ''
+    if (salesAdapter) {
+      if (salesAdapter === 'SalesToDeliver') {
+        salesFilter = '&is_prepared=true'
+      }
+      if (salesAdapter === 'Comissions') {
+        salesFilter = '&is_delivered=true'
+      }
+      if (salesAdapter === 'CurrentAccount') {
+        salesFilter = pendingFilter ? '&pending=true' : ''
+      }
+    }
+    getter(`?page=${state[entityKey].page}&offset=${state[entityKey].offset}${state[entityKey].filters.replace('&type=', '').replace('CONTADO', '&type=CONTADO').replace('POXIPOL', '&type=POXIPOL')}${salesAdapter && salesAdapter === 'CurrentAccount' ? '&type=CUENTA_CORRIENTE' : ''}${salesFilter}`)
+  }, [state[entityKey].page, state[entityKey].offset, state[entityKey].filters, salesAdapter, pendingFilter])
 
   return (
     <>
@@ -116,7 +128,6 @@ export function DataGridWithBackendPagination({
                   order={order}
                   orderBy={orderBy}
                   onRequestSort={handleRequestSort}
-                  disableSorting={disableSorting}
                 />
                 <TableBody>
                   {
@@ -204,8 +215,8 @@ export function DataGridWithBackendPagination({
                                   <>
                                     {(entityKey !== 'sales' ||
                                       (showSettingsAction === 'Preparar venta' && !saleIsPrepared(row)) ||
-                                      (showSettingsAction === 'Registrar entrega' && saleIsPrepared(row) && !row.is_delivered) ||
-                                      (showSettingsAction === 'Registrar cancelación' && saleIsPrepared(row) && row.is_delivered && !row.is_canceled)
+                                      (showSettingsAction === 'Registrar entrega' && !row.is_delivered) ||
+                                      (showSettingsAction === 'Registrar cancelación' && !row.is_canceled)
                                     ) &&
                                       <Tooltip
                                         title={showSettingsAction}

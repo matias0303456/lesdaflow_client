@@ -7,7 +7,17 @@ import { es } from "date-fns/locale";
 import { DataContext } from "../../providers/DataProvider";
 import { useSales } from "../../hooks/useSales";
 
-export function SaleFilter({ showWorkPlace, showSeller, showDate, showType, width }) {
+export function SaleFilter({
+    showWorkPlace,
+    showSeller,
+    showDate,
+    showType,
+    width,
+    showPending,
+    salesAdapter,
+    pendingFilter,
+    setPendingFilter
+}) {
 
     const { state, dispatch } = useContext(DataContext)
 
@@ -51,9 +61,23 @@ export function SaleFilter({ showWorkPlace, showSeller, showDate, showType, widt
                 }
             })
         } else if (loaded) {
-            getSales(`?page=${state.sales.page}&offset=${state.sales.offset}`)
+            if (salesAdapter && salesAdapter === 'CurrentAccount') {
+                dispatch({
+                    type: 'SALES',
+                    payload: {
+                        ...state.sales,
+                        filters: ''
+                    }
+                })
+            } else if (salesAdapter && salesAdapter === 'Comissions') {
+                getSales(`?page=${state.sales.page}&offset=${state.sales.offset}&is_delivered=true`)
+            } else if (salesAdapter === 'SalesToDeliver') {
+                getSales(`?page=${state.sales.page}&offset=${state.sales.offset}&is_prepared=true`)
+            } else {
+                getSales(`?page=${state.sales.page}&offset=${state.sales.offset}`)
+            }
         }
-    }, [state.sales.filter_fields])
+    }, [state.sales.filter_fields, salesAdapter, pendingFilter])
 
     return (
         <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, width: width.main, alignItems: 'center', justifyContent: 'end' }}>
@@ -136,10 +160,17 @@ export function SaleFilter({ showWorkPlace, showSeller, showDate, showType, widt
                     >
                         <MenuItem value="">Seleccione</MenuItem>
                         <MenuItem value="CONTADO">CONTADO</MenuItem>
-                        <MenuItem value="CUENTA_CORRIENTE">CTA CTE</MenuItem>
                         <MenuItem value="POXIPOL">POXIPOL</MenuItem>
                     </Select>
                 </FormControl>
+            }
+            {showPending &&
+                <FormControlLabel
+                    control={<Checkbox />}
+                    label="Pendientes"
+                    checked={pendingFilter}
+                    onChange={e => setPendingFilter(e.target.checked)}
+                />
             }
             <Button type="button" variant="outlined" sx={{ width: width.btn }} onClick={handleReset}>
                 Reiniciar filtros

@@ -28,7 +28,6 @@ export function DataGridWithFrontendPagination({
     setData,
     contentHeader,
     deadlineColor = false,
-    disableSorting = false,
     defaultOrder = 'desc',
     defaultOrderBy = 'id',
     showEditAction = false,
@@ -43,7 +42,6 @@ export function DataGridWithFrontendPagination({
     const [rowsPerPage, setRowsPerPage] = useState(5);
 
     const handleRequestSort = (event, property) => {
-        if (disableSorting) return
         const isAsc = orderBy === property && order === 'asc';
         setOrder(isAsc ? 'desc' : 'asc');
         setOrderBy(property);
@@ -85,7 +83,6 @@ export function DataGridWithFrontendPagination({
                             order={order}
                             orderBy={orderBy}
                             onRequestSort={handleRequestSort}
-                            disableSorting={disableSorting}
                         />
                         <TableBody>
                             {

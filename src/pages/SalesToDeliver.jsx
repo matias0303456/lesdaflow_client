@@ -166,6 +166,7 @@ export function SalesToDeliver() {
                 headCells={headCells}
                 rows={state.sales.data}
                 entityKey="sales"
+                salesAdapter="SalesToDeliver"
                 getter={getSales}
                 setOpen={setOpen}
                 setFormData={setFormData}

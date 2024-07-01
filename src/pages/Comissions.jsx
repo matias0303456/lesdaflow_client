@@ -132,12 +132,19 @@ export function Comissions() {
                 headCells={headCells}
                 rows={state.sales.data}
                 entityKey="sales"
+                salesAdapter="Comissions"
                 getter={getSales}
                 setOpen={setOpen}
                 setFormData={setFormData}
                 showSettingsAction="Registrar cancelación"
                 showEditAction
-                contentHeader={<SaleFilter showDate width={{ main: '100%', client: '15%', id: '15%', date: '15%', btn: '10%' }} />}
+                contentHeader={
+                    <SaleFilter
+                        showDate
+                        salesAdapter="Comissions"
+                        width={{ main: '100%', client: '15%', id: '15%', date: '15%', btn: '10%' }}
+                    />
+                }
             />
             <ModalComponent open={open === 'SETTINGS'} onClose={() => setOpen(null)} reduceWidth={900}>
                 <Typography variant="h6" marginBottom={1} textAlign="center">

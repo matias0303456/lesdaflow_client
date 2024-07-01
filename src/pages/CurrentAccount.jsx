@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Box, Button } from "@mui/material";
 import { format } from "date-fns";
@@ -29,6 +29,8 @@ export function CurrentAccount() {
   useEffect(() => {
     if (auth?.user.role !== 'ADMINISTRADOR' && auth?.user.role !== 'VENDEDOR') navigate('/prep-ventas')
   }, [])
+
+  const [pendingFilter, setPendingFilter] = useState(true)
 
   const headCells = [
     {
@@ -109,6 +111,8 @@ export function CurrentAccount() {
         headCells={headCells}
         rows={state.sales.data}
         entityKey="sales"
+        salesAdapter="CurrentAccount"
+        pendingFilter={pendingFilter}
         getter={getSales}
         setOpen={setOpen}
         setFormData={setFormData}
@@ -119,7 +123,14 @@ export function CurrentAccount() {
             <Button variant="outlined" color="success" sx={{ width: '10%' }}>
               Excel
             </Button>
-            <SaleFilter showWorkPlace width={{ main: '90%', client: '15%', id: '15%', btn: '10%', work_place: '15%' }} />
+            <SaleFilter
+              showWorkPlace
+              showPending
+              salesAdapter="CurrentAccount"
+              pendingFilter={pendingFilter}
+              setPendingFilter={setPendingFilter}
+              width={{ main: '90%', client: '15%', id: '15%', btn: '10%', work_place: '15%' }}
+            />
           </Box>
         }
       />
