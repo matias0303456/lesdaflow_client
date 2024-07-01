@@ -136,8 +136,6 @@ export function Comissions() {
                 getter={getSales}
                 setOpen={setOpen}
                 setFormData={setFormData}
-                showSettingsAction="Registrar cancelación"
-                showViewAction
                 contentHeader={
                     <SaleFilter
                         showDate

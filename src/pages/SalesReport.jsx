@@ -128,8 +128,8 @@ export function SalesReport() {
                 {auth?.user.role === 'ADMINISTRADOR' ? (
                   [
                     <MenuItem value="" key="select">Seleccione</MenuItem>,
-                    ...(state.users.data.filter(u => u.role === 'VENDEDOR').length > 0
-                      ? state.users.data.filter(u => u.role === 'VENDEDOR').map((u) => (
+                    ...(state.users.data.filter(u => u.role !== 'CHOFER').length > 0
+                      ? state.users.data.filter(u => u.role !== 'CHOFER').map((u) => (
                         <MenuItem key={u.id} value={u.username}>
                           {u.name.toUpperCase()}
                         </MenuItem>
