@@ -25,6 +25,7 @@ export function useSales() {
     const [saleSaved, setSaleSaved] = useState(null)
     const [missing, setMissing] = useState(false)
     const [isBlocked, setIsBlocked] = useState(false)
+    const [salesByClient, setSalesByClient] = useState([])
 
     async function getSales(params) {
         const { status, data } = await get(params)
@@ -34,6 +35,17 @@ export function useSales() {
                 payload: { ...state.sales, data: data[0], count: data[1] }
             })
             setLoadingSales(false)
+        } else {
+            setMessage(data.message)
+            setSeverity('error')
+            setOpenMessage(true)
+        }
+    }
+
+    async function getSalesByClient(id) {
+        const { status, data } = await get(`/by-client?client_id=${id}`)
+        if (status === 200) {
+            setSalesByClient(data)
         } else {
             setMessage(data.message)
             setSeverity('error')
@@ -221,6 +233,8 @@ export function useSales() {
         setIsBlocked,
         prepareSaleProduct,
         deliverSale,
-        cancelSale
+        cancelSale,
+        getSalesByClient,
+        salesByClient
     }
 }
