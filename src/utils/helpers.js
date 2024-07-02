@@ -143,18 +143,22 @@ export function saleIsPrepared(sale) {
     return sale.sale_products.every(sp => sp.is_prepared)
 }
 
-export function getCommissionValueByPayment(payment, user, type) {
+export function getCommissionValueByPayment(payment, user) {
     const amount = parseFloat(payment.amount)
     const types = {
         'CUENTA_CORRIENTE': user.cta_cte_commission,
         'CONTADO': user.contado_commission,
         'POXIPOL': user.poxipol_commission
     }
-    return ((amount / 100) * types[type]).toFixed(2)
+    return ((amount / 100) * types[payment.sale.type]).toFixed(2)
 }
 
 export function getCommissionValueBySale(sale, user) {
     return sale.payments.filter(p => p.created_by === user.created_by).reduce((prev, curr) => {
-        parseFloat(prev) + parseFloat(getCommissionValueByPayment(curr, user, sale.type))
+        parseFloat(prev) + parseFloat(getCommissionValueByPayment(curr, user))
     }, 0).toFixed(2)
+}
+
+export function saleIsCanceled(sale) {
+    return sale.payments.every(p => p.is_canceled)
 }

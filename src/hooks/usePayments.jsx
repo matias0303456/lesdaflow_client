@@ -12,9 +12,25 @@ export function usePayments() {
     const { state, dispatch } = useContext(DataContext)
     const { setMessage, setOpenMessage, setSeverity } = useContext(MessageContext)
 
+    const [loadingPayments, setLoadingPayments] = useState(true)
     const [open, setOpen] = useState(null)
 
-    const { post, put, destroy } = useApi(PAYMENT_URL)
+    const { get, post, put, destroy } = useApi(PAYMENT_URL)
+
+    async function getPayments(params) {
+        const { status, data } = await get(params)
+        if (status === 200) {
+            dispatch({
+                type: 'PAYMENTS',
+                payload: { ...state.payments, data: data[0], count: data[1] }
+            })
+            setLoadingPayments(false)
+        } else {
+            setMessage(data.message)
+            setSeverity('error')
+            setOpenMessage(true)
+        }
+    }
 
     const checkDifference = (formData) => {
         const diff = getSaleDifference(state.sales.data.find(s => s.id === formData.sale_id)).replace('$', '')
@@ -48,6 +64,7 @@ export function usePayments() {
                             ]
                         }
                     })
+                    dispatch({ type: 'PAYMENTS', payload: { ...state.payments, data: [data, ...state.payments.data] } })
                     setMessage('Pago registrado correctamente.')
                 } else {
                     dispatch({
@@ -64,6 +81,16 @@ export function usePayments() {
                                     ]
                                 },
                                 ...state.sales.data.filter(s => s.id !== data.sale_id)
+                            ]
+                        }
+                    })
+                    dispatch({
+                        type: 'PAYMENTS',
+                        payload: {
+                            ...state.payments,
+                            data: [
+                                data,
+                                ...state.payments.data.filter(p => p.id !== formData.id)
                             ]
                         }
                     })
@@ -99,6 +126,13 @@ export function usePayments() {
                     ]
                 }
             })
+            dispatch({
+                type: 'PAYMENTS',
+                payload: {
+                    ...state.payments,
+                    data: [...state.payments.data.filter(p => p.id !== data.id)]
+                }
+            })
             setMessage('Pago eliminado correctamente.')
             setSeverity('success')
             reset()
@@ -110,5 +144,37 @@ export function usePayments() {
         setOpen(null)
     }
 
-    return { open, setOpen, handleSubmit, handleDelete }
+    async function cancelPayment(formData) {
+        const { status, data } = await put(formData, '/cancel-payment')
+        if (status === 200) {
+            dispatch({
+                type: 'PAYMENTS',
+                payload: {
+                    ...state.payments,
+                    data: [
+                        data,
+                        ...state.payments.data.filter(p => p.id !== formData.id)
+                    ]
+                }
+            })
+            setMessage('Cancelación registrada correctamente.')
+            setSeverity('success')
+            setOpen(null)
+        } else {
+            setMessage(data.message)
+            setSeverity('error')
+        }
+        setOpenMessage(true)
+    }
+
+    return {
+        open,
+        setOpen,
+        handleSubmit,
+        handleDelete,
+        cancelPayment,
+        getPayments,
+        loadingPayments,
+        setLoadingPayments
+    }
 }

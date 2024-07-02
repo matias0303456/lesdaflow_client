@@ -1,19 +1,20 @@
 import { useContext, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { Box, Button, Typography } from "@mui/material";
+import { useNavigate, useRoutes } from "react-router-dom";
+import { Box, Button, Checkbox, FormControlLabel, Typography } from "@mui/material";
 import { format } from "date-fns";
 
 import { AuthContext } from "../providers/AuthProvider";
 import { DataContext } from "../providers/DataProvider";
-import { useSales } from "../hooks/useSales";
 import { useForm } from "../hooks/useForm";
 
 import { Layout } from "../components/common/Layout";
 import { DataGridWithBackendPagination } from "../components/datagrid/DataGridWithBackendPagination";
-import { SaleFilter } from "../components/filters/SaleFilter";
-import { ModalComponent } from "../components/common/ModalComponent";
 
-import { getSaleDifference, getSaleTotal } from "../utils/helpers";
+import { usePayments } from "../hooks/usePayments";
+import { getCommissionValueByPayment } from "../utils/helpers";
+import { useUsers } from "../hooks/useUsers";
+import { ModalComponent } from "../components/common/ModalComponent";
+import { PaymentFilter } from "../components/filters/PaymentFilter";
 
 export function Comissions() {
 
@@ -22,31 +23,16 @@ export function Comissions() {
 
     const navigate = useNavigate()
 
-    const {
-        loadingSales,
-        open,
-        setOpen,
-        getSales,
-        cancelSale
-    } = useSales()
-    const { formData, setFormData, disabled, reset } = useForm({
-        defaultData: {
-            id: '',
-            client_id: '',
-            discount: '',
-            type: 'CUENTA_CORRIENTE',
-            date: new Date(Date.now()),
-            observations: ''
-        },
-        rules: {
-            observations: {
-                maxLength: 255
-            }
-        }
-    })
+    const { getPayments, cancelPayment, loadingPayments, open, setOpen } = usePayments()
+    const { getUsers, loadingUsers } = useUsers()
+    const { formData, setFormData, disabled } = useForm({ defaultData: {}, rules: {} })
 
     useEffect(() => {
-        if (auth?.user.role !== 'ADMINISTRADOR') navigate(auth?.user.role === 'CHOFER' ? '/prep-ventas' : "/productos")
+        if (auth?.user.role !== 'ADMINISTRADOR') {
+            navigate(auth?.user.role === 'CHOFER' ? '/prep-ventas' : "/productos")
+        } else {
+            getUsers()
+        }
     }, [])
 
     const headCells = [
@@ -54,8 +40,15 @@ export function Comissions() {
             id: 'id',
             numeric: false,
             disablePadding: true,
-            label: 'Cód. Vta.',
+            label: 'N° pago',
             accessor: 'id'
+        },
+        {
+            id: 'sale_id',
+            numeric: false,
+            disablePadding: true,
+            label: 'N° venta',
+            accessor: 'sale_id'
         },
         {
             id: "date",
@@ -65,104 +58,98 @@ export function Comissions() {
             accessor: (row) => format(new Date(row.date), 'dd/MM/yy')
         },
         {
-            id: 'client_name',
+            id: 'amount',
             numeric: false,
             disablePadding: true,
-            label: 'Cliente',
-            sorter: (row) => `${row.client.first_name} ${row.client.last_name}`,
-            accessor: (row) => `${row.client.first_name} ${row.client.last_name}`
-        },
-        {
-            id: 'address',
-            numeric: false,
-            disablePadding: true,
-            label: 'Dirección',
-            sorter: (row) => row.client.address,
-            accessor: (row) => (
-                <Link target="_blank" to={`https://www.google.com/maps?q=${row.client.address}`}>
-                    <span style={{ color: '#078BCD' }}>{row.client.address}</span>
-                </Link>
-            )
+            label: 'Importe',
+            accessor: (row) => `$${row.amount}`
         },
         {
             id: 'type',
             numeric: false,
             disablePadding: true,
-            label: 'T. Vta.',
-            accessor: (row) => row.type.replaceAll('CUENTA_CORRIENTE', 'CTA CTE')
+            label: 'Tipo pago',
+            accessor: 'type'
         },
         {
-            id: 'paid',
+            id: 'sale_type',
             numeric: false,
             disablePadding: true,
-            label: 'Pagado',
-            sorter: (row) => parseFloat(getSaleDifference(row).replace('$', '')) > 0 ? 1 : 0,
-            accessor: (row) => parseFloat(getSaleDifference(row).replace('$', '')) > 0 ? 'No' : 'Sí'
+            label: 'Tipo vta.',
+            sorter: (row) => row.sale.type.replace('CUENTA_CORRIENTE', 'CTA CTE'),
+            accessor: (row) => row.sale.type.replace('CUENTA_CORRIENTE', 'CTA CTE')
         },
         {
-            id: 'delivered',
+            id: 'observations',
             numeric: false,
             disablePadding: true,
-            label: 'Entregado',
-            sorter: (row) => row.is_delivered ? 1 : 0,
-            accessor: (row) => row.is_delivered ? 'Sí' : 'No'
+            label: 'Observaciones',
+            sorter: (row) => row.observations ?? '',
+            accessor: 'observations'
         },
         {
-            id: 'canceled',
+            id: 'created_by',
+            numeric: false,
+            disablePadding: true,
+            label: 'Registrado por',
+            accessor: 'created_by'
+        },
+        {
+            id: 'commission',
+            numeric: false,
+            disablePadding: true,
+            label: 'Comisión',
+            sorter: (row) => getCommissionValueByPayment(row, state.users.data.find(u => u.username === row.created_by)),
+            accessor: (row) => `$${getCommissionValueByPayment(row, state.users.data.find(u => u.username === row.created_by))}`
+        },
+        {
+            id: 'is_canceled',
             numeric: false,
             disablePadding: true,
             label: 'Cancelado',
             sorter: (row) => row.is_canceled ? 1 : 0,
-            accessor: (row) => row.is_canceled ? 'Sí' : 'No'
-        },
-        {
-            id: 'total',
-            numeric: true,
-            disablePadding: true,
-            label: 'Total',
-            sorter: (row) => getSaleTotal(row).replace('$', ''),
-            accessor: (row) => getSaleTotal(row)
+            accessor: (row) => (
+                <Box sx={{ textAlign: 'center' }}>
+                    <FormControlLabel
+                        control={<Checkbox />}
+                        checked={row.is_canceled}
+                        onChange={e => {
+                            setFormData({
+                                ...row,
+                                is_canceled: e.target.checked
+                            })
+                            setOpen(true)
+                        }}
+                    />
+                </Box>
+            )
         }
     ]
 
     return (
         <Layout title="Comisiones">
             <DataGridWithBackendPagination
-                loading={loadingSales || disabled}
+                loading={loadingPayments || loadingUsers || disabled}
                 headCells={headCells}
-                rows={state.sales.data}
-                entityKey="sales"
-                salesAdapter="Comissions"
-                getter={getSales}
-                setOpen={setOpen}
+                rows={state.payments.data}
+                entityKey="payments"
+                getter={getPayments}
                 setFormData={setFormData}
-                contentHeader={
-                    <SaleFilter
-                        showDate
-                        salesAdapter="Comissions"
-                        width={{ main: '100%', client: '15%', id: '15%', date: '15%', btn: '10%' }}
-                    />
-                }
+                contentHeader={<PaymentFilter />}
             />
-            <ModalComponent open={open === 'SETTINGS'} onClose={() => setOpen(null)} reduceWidth={900}>
-                <Typography variant="h6" marginBottom={1} textAlign="center">
-                    Confirmar cancelación de venta
+            <ModalComponent open={open} onClose={() => setOpen(null)} reduceWidth={900}>
+                <Typography variant="h6" align="center" marginBottom={2}>
+                    {`Se marcará el pago n° ${formData.id} como ${formData.is_canceled ? '' : 'no'} cancelado.`}
                 </Typography>
                 <Box sx={{ display: 'flex', gap: 1, justifyContent: 'center' }}>
-                    <Button type="button" variant="outlined" onClick={() => setOpen(null)} sx={{ width: '35%' }}>
+                    <Button type="button" variant="outlined" onClick={() => setOpen(null)}>
                         Cancelar
                     </Button>
-                    <Button
-                        type="button"
-                        variant="contained"
-                        disabled={disabled}
-                        sx={{ width: '35%' }}
-                        onClick={() => cancelSale(formData, reset)}
-                    >
+                    <Button type="button" variant="contained" onClick={() => cancelPayment(formData)}>
                         Confirmar
                     </Button>
                 </Box>
             </ModalComponent>
         </Layout>
-    );
+    )
 }

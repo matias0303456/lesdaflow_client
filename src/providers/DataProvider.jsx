@@ -8,6 +8,8 @@ const reducer = (state, action) => {
             return { ...state, products: action.payload }
         case 'SALES':
             return { ...state, sales: action.payload }
+        case 'PAYMENTS':
+            return { ...state, payments: action.payload }
         case 'USERS':
             return { ...state, users: action.payload }
         case 'REGISTERS':
@@ -44,6 +46,14 @@ const initialState = {
         page: 0,
         offset: 5,
         filter_fields: { client: '', work_place: '', id: '', user: '', date: '', type: '', loaded: false },
+        filters: ''
+    },
+    'payments': {
+        count: 0,
+        data: [],
+        page: 0,
+        offset: 5,
+        filter_fields: { sale_id: '', from: '', to: '', p_type: '', created_by: '', loaded: false },
         filters: ''
     },
     'users': {
