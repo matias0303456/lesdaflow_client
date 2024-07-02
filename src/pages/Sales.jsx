@@ -47,7 +47,7 @@ export function Sales() {
     } = useSales()
     const { loadingProducts, getProducts } = useProducts()
     const { loadingClients, getClients } = useClients()
-    const { loadingUsers, getUsers } = useUsers()
+    const { getUsers } = useUsers()
     const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
         defaultData: {
             id: '',
@@ -77,7 +77,9 @@ export function Sales() {
     useEffect(() => {
         getClients()
         getProducts()
-        getUsers()
+        if (auth?.user.role === 'ADMINISTRADOR' || auth?.user.role === 'CHOFER') {
+            getUsers()
+        }
     }, [])
 
     useEffect(() => {
@@ -180,7 +182,7 @@ export function Sales() {
     return (
         <Layout title="Ventas">
             <DataGridWithBackendPagination
-                loading={loadingClients || loadingSales || loadingProducts || loadingUsers || disabled}
+                loading={loadingClients || loadingSales || loadingProducts || disabled}
                 headCells={headCells}
                 rows={state.sales.data}
                 entityKey="sales"
@@ -205,7 +207,7 @@ export function Sales() {
                         </Box>
                         <SaleFilter
                             showWorkPlace
-                            showSeller
+                            showSeller={auth?.user.role === 'ADMINISTRADOR' || auth?.user.role === 'CHOFER'}
                             showType
                             width={{
                                 main: '80%',

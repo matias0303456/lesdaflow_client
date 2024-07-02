@@ -163,6 +163,6 @@ export const nav_items = [
         can_access: ['ADMINISTRADOR', 'VENDEDOR']
       }
     ],
-    can_access: ['ADMINISTRADOR', 'CHOFER', 'VENDEDOR']
+    can_access: ['ADMINISTRADOR', 'VENDEDOR']
   }
 ]
