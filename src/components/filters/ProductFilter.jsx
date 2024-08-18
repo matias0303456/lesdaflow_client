@@ -37,7 +37,7 @@ export function ProductFilter() {
 
     useEffect(() => {
         const { code, details, supplier_id, loaded } = state.products.filter_fields
-        if (code.length > 0 || details.length > 0 || supplier_id.length > 0) {
+        if (code.length > 0 || details.length > 0 || supplier_id.toString().length > 0) {
             dispatch({
                 type: 'PRODUCTS',
                 payload: {

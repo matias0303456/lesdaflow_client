@@ -323,7 +323,7 @@ export function DataGridWithBackendPagination({
               </Table>
             </TableContainer>
             <TablePagination
-              rowsPerPageOptions={[5, 10, 25]}
+              rowsPerPageOptions={[5, 10, 25, 50, 100]}
               component="div"
               count={-1}
               rowsPerPage={state[entityKey].offset}

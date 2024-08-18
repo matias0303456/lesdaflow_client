@@ -66,7 +66,7 @@ export function AddProductsToSale({
                             id="product-autocomplete"
                             options={products.filter(p =>
                                 !saleProducts.map(sp => sp.product_id).includes(p.id) && getStock(p) > 0)
-                                .map(p => ({ label: `Código ${p.code} / Detalle ${p.details}`, id: p.id }))}
+                                .map(p => ({ label: `${p.code} - ${p.details}`, id: p.id }))}
                             noOptionsText="No hay productos disponibles."
                             onChange={(e, value) => handleAdd({ idx: saleProducts.length, product_id: value?.id ?? '' })}
                             renderInput={(params) => <TextField {...params} label="Producto *" />}
@@ -122,7 +122,7 @@ export function AddProductsToSale({
                                                 })}
                                             />
                                         </TableCell>
-                                        <TableCell>${getProductSalePrice(p)}</TableCell>
+                                        <TableCell>${getProductSalePrice(p).toFixed(2)}</TableCell>
                                         <TableCell>{getStock(p)}</TableCell>
                                         <TableCell>${(currentAmount * getProductSalePrice(p)).toFixed(2)}</TableCell>
                                         {(open === 'NEW' || open === 'CONVERT' || (open === 'EDIT' && auth?.user.role === 'ADMINISTRADOR')) &&

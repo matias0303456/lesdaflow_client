@@ -115,8 +115,8 @@ export function Sales() {
             numeric: false,
             disablePadding: true,
             label: 'Vdor.',
-            sorter: (row) => row.client.user.name,
-            accessor: (row) => row.client.user.name
+            sorter: (row) => auth?.user.role === 'ADMINISTRADOR' ? row.client.user.name : row.created_by,
+            accessor: (row) => auth?.user.role === 'ADMINISTRADOR' ? row.client.user.name : row.created_by
         },
         {
             id: 'client_name',

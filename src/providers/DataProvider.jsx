@@ -28,7 +28,7 @@ const initialState = {
         count: 0,
         data: [],
         page: 0,
-        offset: 5,
+        offset: 25,
         filter_fields: { first_name: '', last_name: '', work_place: '', loaded: false },
         filters: ''
     },
@@ -36,7 +36,7 @@ const initialState = {
         count: 0,
         data: [],
         page: 0,
-        offset: 5,
+        offset: 25,
         filter_fields: { code: '', details: '', supplier_id: '', loaded: false },
         filters: ''
     },
@@ -44,7 +44,7 @@ const initialState = {
         count: 0,
         data: [],
         page: 0,
-        offset: 5,
+        offset: 25,
         filter_fields: { client: '', work_place: '', id: '', user: '', date: '', type: '', loaded: false },
         filters: ''
     },
@@ -52,7 +52,7 @@ const initialState = {
         count: 0,
         data: [],
         page: 0,
-        offset: 5,
+        offset: 25,
         filter_fields: { sale_id: '', from: '', to: '', p_type: '', created_by: '', loaded: false },
         filters: ''
     },
@@ -60,7 +60,7 @@ const initialState = {
         count: 0,
         data: [],
         page: 0,
-        offset: 5,
+        offset: 25,
         filter_fields: { name: '', role: '', loaded: false },
         filters: ''
     },
@@ -68,7 +68,7 @@ const initialState = {
         count: 0,
         data: [],
         page: 0,
-        offset: 5,
+        offset: 25,
         filter_fields: { user: '', loaded: false },
         filters: ''
     },
@@ -76,7 +76,7 @@ const initialState = {
         count: 0,
         data: [],
         page: 0,
-        offset: 5,
+        offset: 25,
         filter_fields: { name: '', loaded: false },
         filters: ''
     },
@@ -84,7 +84,7 @@ const initialState = {
         count: 0,
         data: [],
         page: 0,
-        offset: 5,
+        offset: 25,
         filter_fields: { from: '', to: '', user: '', client: '', loaded: false },
         filters: ''
     }
