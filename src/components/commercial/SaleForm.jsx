@@ -62,6 +62,7 @@ export function SaleForm({
     })
 
     const [valueTab, setValueTab] = useState(0)
+    const [confirmed, setConfirmed] = useState(false)
 
     useEffect(() => {
         if (openPayment === 'EDIT') setValueTab(2)
@@ -133,7 +134,16 @@ export function SaleForm({
             </Box>
             {valueTab === 0 &&
                 <Box sx={{ p: 1 }}>
-                    <form onChange={handleChange} onSubmit={(e) => handleSubmit(e, formData, validate, reset, setDisabled)}>
+                    <form onChange={handleChange} onSubmit={(e) => {
+                        e.preventDefault();
+                        if (confirmed) {
+                            handleSubmit(e, formData, validate, reset, setDisabled)
+                            setConfirmed(false)
+                        } else {
+                            setConfirmed(true)
+                        }
+                    }
+                    }>
                         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                             <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 2 }}>
                                 <FormControl sx={{ width: '60%' }}>
@@ -257,6 +267,11 @@ export function SaleForm({
                                 <Input value={getCurrentTotal(formData, saleProducts, state.products.data)} id="total" type="number" name="total" disabled />
                             </FormControl>
                         </Box>
+                        {confirmed &&
+                            <Typography variant="body1" color="red" marginTop={2} align="center">
+                                Confirme los datos de la venta antes de guardar
+                            </Typography>
+                        }
                         <FormControl sx={{
                             display: 'flex',
                             flexDirection: 'row',
@@ -362,6 +377,6 @@ export function SaleForm({
                     </Box>
                 </Box>
             }
-        </ModalComponent>
+        </ModalComponent >
     )
 }
