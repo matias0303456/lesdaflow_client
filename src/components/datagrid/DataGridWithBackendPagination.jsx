@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { useState, useMemo, useContext, useEffect } from 'react'
+import { useState, useMemo, useContext, useEffect, useCallback } from 'react'
 import Box from '@mui/material/Box'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
@@ -28,6 +28,7 @@ import { EnhancedTableHead } from './EnhancedTableHead'
 
 import { deadlineIsPast, getStock, saleIsCanceled, saleIsPrepared } from '../../utils/helpers'
 import { getComparator, stableSort } from '../../utils/dataGrid'
+import { debounce } from 'lodash'
 
 export function DataGridWithBackendPagination({
   children,
@@ -90,6 +91,10 @@ export function DataGridWithBackendPagination({
     [order, orderBy, state[entityKey].page, state[entityKey].offset, rows, headCells]
   )
 
+  const handleGetter = useCallback(debounce((salesFilter) => {
+    getter(`?page=${state[entityKey].page}&offset=${state[entityKey].offset}${state[entityKey].filters.replace('&type=', '').replace('CONTADO', '&type=CONTADO').replace('POXIPOL', '&type=POXIPOL')}${salesAdapter && salesAdapter === 'CurrentAccount' ? '&type=CUENTA_CORRIENTE' : ''}${salesFilter}`)
+  }, state[entityKey].filters.length === 0 ? 500 : 10), [state[entityKey].filters])
+
   useEffect(() => {
     let salesFilter = ''
     if (salesAdapter) {
@@ -103,247 +108,248 @@ export function DataGridWithBackendPagination({
         salesFilter = pendingFilter ? '&pending=true' : ''
       }
     }
-    getter(`?page=${state[entityKey].page}&offset=${state[entityKey].offset}${state[entityKey].filters.replace('&type=', '').replace('CONTADO', '&type=CONTADO').replace('POXIPOL', '&type=POXIPOL')}${salesAdapter && salesAdapter === 'CurrentAccount' ? '&type=CUENTA_CORRIENTE' : ''}${salesFilter}`)
+    handleGetter(salesFilter)
+    return () => {
+      handleGetter.cancel()
+    }
   }, [state[entityKey].page, state[entityKey].offset, state[entityKey].filters, salesAdapter, pendingFilter])
 
   return (
-    <>
+    <Box sx={{ width: '100%', backgroundColor: '#fff', padding: 1 }}>
+      <Box sx={{ marginBottom: 3 }}>
+        {contentHeader}
+      </Box>
       {loading ?
         <Box sx={{ width: '100%' }}>
           <LinearProgress />
         </Box> :
-        <Box sx={{ width: '100%', backgroundColor: '#fff', padding: 1 }}>
-          <Box sx={{ marginBottom: 3 }}>
-            {contentHeader}
-          </Box>
-          <Paper sx={{ width: '100%', mb: 2 }}>
-            <TableContainer>
-              <Table
-                sx={{ minWidth: 750, fontWeight: "bold" }}
-                aria-labelledby="tableTitle"
-                size="small"
-              >
-                <EnhancedTableHead
-                  headCells={headCells}
-                  order={order}
-                  orderBy={orderBy}
-                  onRequestSort={handleRequestSort}
-                />
-                <TableBody>
-                  {
-                    visibleRows && visibleRows.length > 0 ? (
-                      visibleRows.map((row, index) => {
-                        return (
-                          <TableRow
-                            role="checkbox"
-                            tabIndex={-1}
-                            key={row.id}
-                            width="100px"
+        <Paper sx={{ width: '100%', mb: 2 }}>
+          <TableContainer>
+            <Table
+              sx={{ minWidth: 750, fontWeight: "bold" }}
+              aria-labelledby="tableTitle"
+              size="small"
+            >
+              <EnhancedTableHead
+                headCells={headCells}
+                order={order}
+                orderBy={orderBy}
+                onRequestSort={handleRequestSort}
+              />
+              <TableBody>
+                {
+                  visibleRows && visibleRows.length > 0 ? (
+                    visibleRows.map((row, index) => {
+                      return (
+                        <TableRow
+                          role="checkbox"
+                          tabIndex={-1}
+                          key={row.id}
+                          width="100px"
+                        >
+                          <TableCell
+                            sx={{ wordWrap: "", width: "auto" }}
                           >
-                            <TableCell
-                              sx={{ wordWrap: "", width: "auto" }}
-                            >
-                              <Box sx={{ display: "flex", alignItems: "center", padding: "1px", gap: "1rem", width: "auto", }}>
-                                {showExcelAction &&
-                                  <Tooltip
-                                    title="Imprimir Excel"
-                                    onClick={() => window.open(showExcelAction, '_blank')}
-                                  >
-                                    <IconButton className="rounded-full bg-black/20 opacity-50 hover:bg-[#288bcd] hover:text-white">
-                                      <SiMicrosoftexcel className="w-4 h-4" />
-                                    </IconButton>
-                                  </Tooltip>
-                                }
-                                {showPDFAction &&
-                                  <Tooltip
-                                    title="Imprimir PDF"
-                                    onClick={() => window.open(showPDFAction + row.id, '_blank')}
-                                  >
-                                    <IconButton className="rounded-full bg-black/20 opacity-50 hover:bg-[#288bcd] hover:text-white">
-                                      <PictureAsPdfSharpIcon className="w-4 h-4" />
-                                    </IconButton>
-                                  </Tooltip>
-                                }
-                                {showViewAction &&
-                                  <Tooltip
-                                    title="Visualizar"
-                                    onClick={() => {
-                                      if (setFormData) setFormData(rows.find((r) => r.id === row.id))
-                                      if (setOpen) setOpen("VIEW")
-                                    }}
-                                  >
-                                    <IconButton className="rounded-full bg-black/20 opacity-50 hover:bg-[#288bcd] hover:text-white">
-                                      <SearchSharpIcon className="w-4 h-4" />
-                                    </IconButton>
-                                  </Tooltip>
-                                }
-                                {showEditAction &&
-                                  <>
-                                    {(entityKey !== 'clients' || row.user_id === auth?.user.id) &&
-                                      <Tooltip
-                                        title="Editar"
-                                        onClick={() => {
-                                          if (setFormData) setFormData(rows.find((r) => r.id === row.id))
-                                          if (setOpen) setOpen("EDIT")
-                                        }}
-                                      >
-                                        <IconButton className="rounded-full bg-black/20 opacity-50 hover:bg-[#288bcd] hover:text-white">
-                                          <EditIcon className="w-4 h-4" />
-                                        </IconButton>
-                                      </Tooltip>
-                                    }
-                                  </>
-                                }
-                                {showDeleteAction &&
-                                  <>
-                                    {(entityKey !== 'clients' || row.user_id === auth?.user.id) &&
-                                      <Tooltip
-                                        title="Borrar"
-                                        onClick={() => {
-                                          if (setFormData) setFormData(rows.find((r) => r.id === row.id))
-                                          if (setOpen) setOpen("DELETE")
-                                        }}
-                                      >
-                                        <IconButton className="rounded-full bg-black/20 opacity-50 hover:bg-[#288bcd] hover:text-white">
-                                          <CloseIcon className="w-4 h-4" />
-                                        </IconButton>
-                                      </Tooltip>
-                                    }
-                                  </>
-                                }
-                                {showSettingsAction &&
-                                  <>
-                                    {(entityKey !== 'sales' ||
-                                      (showSettingsAction === 'Preparar venta' && !saleIsPrepared(row)) ||
-                                      (showSettingsAction === 'Registrar entrega' && !row.is_delivered) ||
-                                      (showSettingsAction === 'Registrar cancelación' && !saleIsCanceled(row))
-                                    ) &&
-                                      <Tooltip
-                                        title={showSettingsAction}
-                                        onClick={() => {
-                                          if (setFormData) setFormData(rows.find((r) => r.id === row.id))
-                                          if (setOpen) setOpen("SETTINGS")
-                                        }}
-                                      >
-                                        <IconButton className="rounded-full bg-black/20 opacity-50 hover:bg-[#078BCD]">
-                                          <SettingsIcon className="w-4 h-4 hover:text-white" />
-                                        </IconButton>
-                                      </Tooltip>
-                                    }
-                                  </>
-                                }
-                                {showConvertToSale &&
-                                  <Tooltip
-                                    title={showConvertToSale}
-                                    onClick={() => {
-                                      if (setFormData) setFormData(rows.find((r) => r.id === row.id))
-                                      if (setOpenNewSale) setOpenNewSale("CONVERT")
-                                    }}
-                                  >
-                                    <IconButton className="rounded-full bg-black/20 opacity-50 hover:bg-[#078BCD]">
-                                      <StorefrontSharpIcon className="w-4 h-4 hover:text-white" />
-                                    </IconButton>
-                                  </Tooltip>
-                                }
-                                {showInput &&
-                                  <Tooltip
-                                    title={showInput}
-                                    onClick={() => {
-                                      if (setFormDataMovement) setFormDataMovement(rows.find((r) => r.id === row.id))
-                                      if (setOpenNewMovement) setOpenNewMovement("NEW_INCOME")
-                                    }}
-                                  >
-                                    <IconButton className="rounded-full bg-black/20 opacity-50 hover:bg-[#078BCD]">
-                                      <InputSharpIcon className="w-4 h-4 hover:text-white" />
-                                    </IconButton>
-                                  </Tooltip>
-                                }
-                                {showOutput &&
-                                  <Tooltip
-                                    title={showOutput}
-                                    onClick={() => {
-                                      if (setFormDataMovement) setFormDataMovement(rows.find((r) => r.id === row.id))
-                                      if (setOpenNewMovement) setOpenNewMovement("NEW_OUTCOME")
-                                    }}
-                                  >
-                                    <IconButton className="rounded-full bg-black/20 opacity-50 hover:bg-[#078BCD]">
-                                      <OutputSharpIcon className="w-4 h-4 hover:text-white" />
-                                    </IconButton>
-                                  </Tooltip>
-                                }
-                              </Box>
-                            </TableCell>
-                            {headCells
-                              .map((cell) => cell.accessor)
-                              .map((accessor) => (
-                                <TableCell
-                                  key={accessor}
-                                  align="inherit"
-                                  sx={{
-                                    color:
-                                      (deadlineColor === "sales" &&
-                                        deadlineIsPast(row)) ||
-                                        // (deadlineColor ===
-                                        //   "clients" &&
-                                        //   row.sales.some((s) =>
-                                        //     deadlineIsPast(s)
-                                        //   )) ||
-                                        (deadlineColor ===
-                                          "products" &&
-                                          row.min_stock >
-                                          getStock(row))
-                                        ? "red"
-                                        : "",
+                            <Box sx={{ display: "flex", alignItems: "center", padding: "1px", gap: "1rem", width: "auto", }}>
+                              {showExcelAction &&
+                                <Tooltip
+                                  title="Imprimir Excel"
+                                  onClick={() => window.open(showExcelAction, '_blank')}
+                                >
+                                  <IconButton className="rounded-full bg-black/20 opacity-50 hover:bg-[#288bcd] hover:text-white">
+                                    <SiMicrosoftexcel className="w-4 h-4" />
+                                  </IconButton>
+                                </Tooltip>
+                              }
+                              {showPDFAction &&
+                                <Tooltip
+                                  title="Imprimir PDF"
+                                  onClick={() => window.open(showPDFAction + row.id, '_blank')}
+                                >
+                                  <IconButton className="rounded-full bg-black/20 opacity-50 hover:bg-[#288bcd] hover:text-white">
+                                    <PictureAsPdfSharpIcon className="w-4 h-4" />
+                                  </IconButton>
+                                </Tooltip>
+                              }
+                              {showViewAction &&
+                                <Tooltip
+                                  title="Visualizar"
+                                  onClick={() => {
+                                    if (setFormData) setFormData(rows.find((r) => r.id === row.id))
+                                    if (setOpen) setOpen("VIEW")
                                   }}
                                 >
-                                  {typeof accessor === "function"
-                                    ? accessor(row, index)
-                                    : row[accessor]}
-                                </TableCell>
-                              ))}
-                          </TableRow>
-                        )
-                      })
-                    ) : (
-                      <TableRow>
-                        <TableCell
-                          colSpan={headCells.length + 1}
-                          align="inherit"
-                          sx={{
-                            fontSize: "1rem",
-                            textAlign: 'center'
-                          }}
-                        >
-                          No se encontraron registros
-                        </TableCell>
-                      </TableRow>
-                    )
-                  }
-                </TableBody>
-              </Table>
-            </TableContainer>
-            <TablePagination
-              rowsPerPageOptions={[5, 10, 25, 50, 100]}
-              component="div"
-              count={-1}
-              rowsPerPage={state[entityKey].offset}
-              labelRowsPerPage="Registros por página"
-              labelDisplayedRows={({ from, to }) => `${from}–${to} de ${state[entityKey].count}`}
-              page={state[entityKey].page}
-              onPageChange={handleChangePage}
-              onRowsPerPageChange={handleChangeRowsPerPage}
-              slotProps={{
-                actions: {
-                  nextButton: {
-                    disabled: ((state[entityKey].page + 1) * state[entityKey].offset) >= state[entityKey].count
-                  }
+                                  <IconButton className="rounded-full bg-black/20 opacity-50 hover:bg-[#288bcd] hover:text-white">
+                                    <SearchSharpIcon className="w-4 h-4" />
+                                  </IconButton>
+                                </Tooltip>
+                              }
+                              {showEditAction &&
+                                <>
+                                  {(entityKey !== 'clients' || row.user_id === auth?.user.id) &&
+                                    <Tooltip
+                                      title="Editar"
+                                      onClick={() => {
+                                        if (setFormData) setFormData(rows.find((r) => r.id === row.id))
+                                        if (setOpen) setOpen("EDIT")
+                                      }}
+                                    >
+                                      <IconButton className="rounded-full bg-black/20 opacity-50 hover:bg-[#288bcd] hover:text-white">
+                                        <EditIcon className="w-4 h-4" />
+                                      </IconButton>
+                                    </Tooltip>
+                                  }
+                                </>
+                              }
+                              {showDeleteAction &&
+                                <>
+                                  {(entityKey !== 'clients' || row.user_id === auth?.user.id) &&
+                                    <Tooltip
+                                      title="Borrar"
+                                      onClick={() => {
+                                        if (setFormData) setFormData(rows.find((r) => r.id === row.id))
+                                        if (setOpen) setOpen("DELETE")
+                                      }}
+                                    >
+                                      <IconButton className="rounded-full bg-black/20 opacity-50 hover:bg-[#288bcd] hover:text-white">
+                                        <CloseIcon className="w-4 h-4" />
+                                      </IconButton>
+                                    </Tooltip>
+                                  }
+                                </>
+                              }
+                              {showSettingsAction &&
+                                <>
+                                  {(entityKey !== 'sales' ||
+                                    (showSettingsAction === 'Preparar venta' && !saleIsPrepared(row)) ||
+                                    (showSettingsAction === 'Registrar entrega' && !row.is_delivered) ||
+                                    (showSettingsAction === 'Registrar cancelación' && !saleIsCanceled(row))
+                                  ) &&
+                                    <Tooltip
+                                      title={showSettingsAction}
+                                      onClick={() => {
+                                        if (setFormData) setFormData(rows.find((r) => r.id === row.id))
+                                        if (setOpen) setOpen("SETTINGS")
+                                      }}
+                                    >
+                                      <IconButton className="rounded-full bg-black/20 opacity-50 hover:bg-[#078BCD]">
+                                        <SettingsIcon className="w-4 h-4 hover:text-white" />
+                                      </IconButton>
+                                    </Tooltip>
+                                  }
+                                </>
+                              }
+                              {showConvertToSale &&
+                                <Tooltip
+                                  title={showConvertToSale}
+                                  onClick={() => {
+                                    if (setFormData) setFormData(rows.find((r) => r.id === row.id))
+                                    if (setOpenNewSale) setOpenNewSale("CONVERT")
+                                  }}
+                                >
+                                  <IconButton className="rounded-full bg-black/20 opacity-50 hover:bg-[#078BCD]">
+                                    <StorefrontSharpIcon className="w-4 h-4 hover:text-white" />
+                                  </IconButton>
+                                </Tooltip>
+                              }
+                              {showInput &&
+                                <Tooltip
+                                  title={showInput}
+                                  onClick={() => {
+                                    if (setFormDataMovement) setFormDataMovement(rows.find((r) => r.id === row.id))
+                                    if (setOpenNewMovement) setOpenNewMovement("NEW_INCOME")
+                                  }}
+                                >
+                                  <IconButton className="rounded-full bg-black/20 opacity-50 hover:bg-[#078BCD]">
+                                    <InputSharpIcon className="w-4 h-4 hover:text-white" />
+                                  </IconButton>
+                                </Tooltip>
+                              }
+                              {showOutput &&
+                                <Tooltip
+                                  title={showOutput}
+                                  onClick={() => {
+                                    if (setFormDataMovement) setFormDataMovement(rows.find((r) => r.id === row.id))
+                                    if (setOpenNewMovement) setOpenNewMovement("NEW_OUTCOME")
+                                  }}
+                                >
+                                  <IconButton className="rounded-full bg-black/20 opacity-50 hover:bg-[#078BCD]">
+                                    <OutputSharpIcon className="w-4 h-4 hover:text-white" />
+                                  </IconButton>
+                                </Tooltip>
+                              }
+                            </Box>
+                          </TableCell>
+                          {headCells
+                            .map((cell) => cell.accessor)
+                            .map((accessor) => (
+                              <TableCell
+                                key={accessor}
+                                align="inherit"
+                                sx={{
+                                  color:
+                                    (deadlineColor === "sales" &&
+                                      deadlineIsPast(row)) ||
+                                      // (deadlineColor ===
+                                      //   "clients" &&
+                                      //   row.sales.some((s) =>
+                                      //     deadlineIsPast(s)
+                                      //   )) ||
+                                      (deadlineColor ===
+                                        "products" &&
+                                        row.min_stock >
+                                        getStock(row))
+                                      ? "red"
+                                      : "",
+                                }}
+                              >
+                                {typeof accessor === "function"
+                                  ? accessor(row, index)
+                                  : row[accessor]}
+                              </TableCell>
+                            ))}
+                        </TableRow>
+                      )
+                    })
+                  ) : (
+                    <TableRow>
+                      <TableCell
+                        colSpan={headCells.length + 1}
+                        align="inherit"
+                        sx={{
+                          fontSize: "1rem",
+                          textAlign: 'center'
+                        }}
+                      >
+                        No se encontraron registros
+                      </TableCell>
+                    </TableRow>
+                  )
                 }
-              }}
-            />
-          </Paper>
-          {children}
-        </Box>
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <TablePagination
+            rowsPerPageOptions={[5, 10, 25, 50, 100]}
+            component="div"
+            count={-1}
+            rowsPerPage={state[entityKey].offset}
+            labelRowsPerPage="Registros por página"
+            labelDisplayedRows={({ from, to }) => `${from}–${to} de ${state[entityKey].count}`}
+            page={state[entityKey].page}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+            slotProps={{
+              actions: {
+                nextButton: {
+                  disabled: ((state[entityKey].page + 1) * state[entityKey].offset) >= state[entityKey].count
+                }
+              }
+            }}
+          />
+        </Paper>
       }
-    </>
+      {children}
+    </Box>
   )
 }
