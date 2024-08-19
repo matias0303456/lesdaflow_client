@@ -51,8 +51,8 @@ export function UserFilter() {
     }, [state.users.filter_fields])
 
     return (
-        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, width: '40%', justifyContent: 'space-between' }}>
-            <FormControl sx={{ width: '30%' }}>
+        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, width: { xs: '100%', md: '60%', lg: '40%' }, justifyContent: 'space-between' }}>
+            <FormControl sx={{ width: { xs: '100%', sm: '30%' } }}>
                 <InputLabel htmlFor="name">Nombre</InputLabel>
                 <Input
                     id="name"
@@ -62,7 +62,7 @@ export function UserFilter() {
                     onChange={handleChange}
                 />
             </FormControl>
-            <FormControl sx={{ width: '30%' }}>
+            <FormControl sx={{ width: { xs: '100%', sm: '30%' } }}>
                 <InputLabel id="role-select">Rol</InputLabel>
                 <Select
                     labelId="role-select"
