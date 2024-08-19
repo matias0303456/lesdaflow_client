@@ -54,7 +54,7 @@ export function BudgetForm({
                         <Autocomplete
                             disablePortal
                             id="client-autocomplete"
-                            value={formData.client_id.toString().length > 0 ? `${state.clients.data.find(c => c.id === formData.client_id)?.first_name} - ${state.clients.data.find(c => c.id === formData.client_id)?.last_name}` : ''}
+                            value={formData.client_id.toString().length > 0 ? `${state.clients.data.find(c => c.id === formData.client_id)?.first_name} - ${state.clients.data.find(c => c.id === formData.client_id)?.last_name} (${state.clients.data.find(c => c.id === formData.client_id)?.work_place})` : ''}
                             options={state.clients.data.map(c => ({ label: `${c.first_name} ${c.last_name} (${c.work_place})`, id: c.id }))}
                             noOptionsText="No hay clientes registrados."
                             onChange={(e, value) => handleChange({ target: { name: 'client_id', value: value?.id ?? '' } })}

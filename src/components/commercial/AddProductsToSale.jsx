@@ -14,7 +14,8 @@ export function AddProductsToSale({
     setMissing,
     idsToDelete,
     setIdsToDelete,
-    open
+    open,
+    formData
 }) {
 
     const { auth } = useContext(AuthContext)
@@ -64,8 +65,14 @@ export function AddProductsToSale({
                         <Autocomplete
                             disablePortal
                             id="product-autocomplete"
-                            options={products.filter(p =>
-                                !saleProducts.map(sp => sp.product_id).includes(p.id) && getStock(p) > 0)
+                            options={products.filter(p => {
+                                return !saleProducts.map(sp => sp.product_id).includes(p.id) && getStock(p) > 0 &&
+                                    (
+                                        (formData.type === 'CONTADO' && p.cash) ||
+                                        (formData.type === 'CUENTA_CORRIENTE' && p.cta_cte) ||
+                                        (formData.type === 'POXIPOL' && p.poxipol)
+                                    )
+                            })
                                 .map(p => ({ label: `${p.code} - ${p.details}`, id: p.id }))}
                             noOptionsText="No hay productos disponibles."
                             onChange={(e, value) => handleAdd({ idx: saleProducts.length, product_id: value?.id ?? '' })}
