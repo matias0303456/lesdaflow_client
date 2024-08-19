@@ -93,7 +93,7 @@ export function DataGridWithBackendPagination({
 
   const handleGetter = useCallback(debounce((salesFilter) => {
     getter(`?page=${state[entityKey].page}&offset=${state[entityKey].offset}${state[entityKey].filters.replace('&type=', '').replace('CONTADO', '&type=CONTADO').replace('POXIPOL', '&type=POXIPOL')}${salesAdapter && salesAdapter === 'CurrentAccount' ? '&type=CUENTA_CORRIENTE' : ''}${salesFilter}`)
-  }, state[entityKey].filters.length === 0 ? 500 : 10), [state[entityKey].filters])
+  }, state[entityKey].filters.length === 0 ? 500 : 10), [state[entityKey].page, state[entityKey].offset, state[entityKey].filters, salesAdapter, pendingFilter])
 
   useEffect(() => {
     let salesFilter = ''
