@@ -173,7 +173,13 @@ export function SalesToDeliver() {
                 showPDFAction={`${REPORT_URL}/sales-pdf-or-puppeteer?token=${auth?.token}&id=`}
                 showSettingsAction="Registrar entrega"
                 showEditAction
-                contentHeader={<SaleFilter showDate width={{ main: '100%', client: '15%', id: '15%', date: '15%', btn: '10%' }} />}
+                contentHeader={<SaleFilter showDate width={{
+                    main: { xs: '100%', md: '100%' },
+                    client: { xs: '100%', md: '15%' },
+                    id: { xs: '100%', md: '15%' },
+                    date: { xs: '100%', md: '15%' },
+                    btn: { xs: '100%', md: '10%' }
+                }} />}
             />
             <SaleForm
                 saleProducts={saleProducts}
