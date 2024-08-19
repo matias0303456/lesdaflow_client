@@ -7,12 +7,13 @@ import { AuthContext } from "../providers/AuthProvider";
 import { DataContext } from "../providers/DataProvider";
 import { useForm } from "../hooks/useForm";
 import { useSales } from "../hooks/useSales";
+import { useUsers } from "../hooks/useUsers";
 
 import { Layout } from "../components/common/Layout";
 import { DataGridWithBackendPagination } from "../components/datagrid/DataGridWithBackendPagination";
 import { SaleFilter } from '../components/filters/SaleFilter'
 
-import { getAccountStatus, getDeadline, getSaleDifference, getSaleTotal } from "../utils/helpers";
+import { getAccountStatus, getDeadline, getSaleDifference, getSaleTotal, getCommissionValueBySale } from "../utils/helpers";
 import { REPORT_URL } from "../utils/urls";
 
 export function CurrentAccount() {
@@ -22,13 +23,18 @@ export function CurrentAccount() {
 
   const navigate = useNavigate()
 
+  const { getUsers } = useUsers()
   const { loadingSales, setOpen, getSales } = useSales()
   const { setFormData } = useForm({
     defaultData: {}
   })
 
   useEffect(() => {
-    if (auth?.user.role !== 'ADMINISTRADOR' && auth?.user.role !== 'VENDEDOR') navigate('/prep-ventas')
+    if (auth?.user.role !== 'ADMINISTRADOR' && auth?.user.role !== 'VENDEDOR') {
+      navigate('/prep-ventas')
+    } else {
+      getUsers()
+    }
   }, [])
 
   const [pendingFilter, setPendingFilter] = useState(true)
@@ -103,6 +109,14 @@ export function CurrentAccount() {
       sorter: (row) => getAccountStatus(row),
       accessor: (row) => getAccountStatus(row)
     },
+    {
+      id: 'commission',
+      numeric: false,
+      disablePadding: true,
+      label: 'Com. actual',
+      sorter: (row) => `$${getCommissionValueBySale(row, state.users.data.find(u => u.username === row.created_by))}`,
+      accessor: (row) => `$${getCommissionValueBySale(row, state.users.data.find(u => u.username === row.created_by))}`
+    }
   ];
 
   return (

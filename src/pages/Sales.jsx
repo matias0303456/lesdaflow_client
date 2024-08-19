@@ -18,7 +18,7 @@ import { DataGridWithBackendPagination } from "../components/datagrid/DataGridWi
 import { SaleForm } from "../components/commercial/SaleForm";
 
 import { REPORT_URL } from "../utils/urls";
-import { deadlineIsPast, getSaleDifference, getSaleTotal } from "../utils/helpers";
+import { deadlineIsPast, getCommissionValueBySale, getSaleDifference, getSaleTotal } from "../utils/helpers";
 
 export function Sales() {
 
@@ -77,9 +77,7 @@ export function Sales() {
     useEffect(() => {
         getClients()
         getProducts()
-        if (auth?.user.role === 'ADMINISTRADOR' || auth?.user.role === 'CHOFER') {
-            getUsers()
-        }
+        getUsers()
     }, [])
 
     useEffect(() => {
@@ -115,8 +113,8 @@ export function Sales() {
             numeric: false,
             disablePadding: true,
             label: 'Vdor.',
-            sorter: (row) => auth?.user.role === 'ADMINISTRADOR' ? row.client.user.name : row.created_by,
-            accessor: (row) => auth?.user.role === 'ADMINISTRADOR' ? row.client.user.name : row.created_by
+            sorter: (row) => auth?.user.role === 'ADMINISTRADOR' ? row.created_by : row.client.user.name,
+            accessor: (row) => auth?.user.role === 'ADMINISTRADOR' ? row.created_by : row.client.user.name
         },
         {
             id: 'client_name',
@@ -176,6 +174,14 @@ export function Sales() {
             label: 'Entregado',
             sorter: (row) => row.is_delivered ? 1 : 0,
             accessor: (row) => row.is_delivered ? 'Sí' : 'No'
+        },
+        {
+            id: 'commission',
+            numeric: false,
+            disablePadding: true,
+            label: 'Com. actual',
+            sorter: (row) => `$${getCommissionValueBySale(row, state.users.data.find(u => u.username === row.created_by))}`,
+            accessor: (row) => `$${getCommissionValueBySale(row, state.users.data.find(u => u.username === row.created_by))}`
         }
     ]
 
