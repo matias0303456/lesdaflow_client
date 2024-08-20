@@ -214,7 +214,7 @@ export function Users() {
                 </FormControl>
                 <FormControl sx={{ width: { xs: '100%', sm: '30%' } }}>
                   <InputLabel htmlFor="username">Usuario *</InputLabel>
-                  <Input id="username" type="text" name="username" value={formData.username} disabled={open === 'VIEW'} />
+                  <Input id="username" type="text" name="username" value={formData.username} disabled={open === 'VIEW' || open === 'EDIT'} />
                   {errors.username?.type === 'required' &&
                     <Typography variant="caption" color="red" marginTop={1}>
                       * El usuario es requerido.
