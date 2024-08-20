@@ -42,15 +42,14 @@ export function AddProductsToSale({
     }
 
     const handleChangeAmount = data => {
-        if (data.amount.toString().length > 0) {
-            setSaleProducts([
-                ...saleProducts.filter(sp => sp.product_id !== data.product_id),
-                {
-                    ...saleProducts.find(sp => sp.product_id === data.product_id),
-                    ...data
-                }
-            ].sort((a, b) => open === 'NEW' ? a.idx - b.idx : a.id - b.id));
-        }
+        setSaleProducts([
+            ...saleProducts.filter(sp => sp.product_id !== data.product_id),
+            {
+                ...saleProducts.find(sp => sp.product_id === data.product_id),
+                ...data,
+                amount: data.amount.toString().length > 0 ? data.amount : 0
+            }
+        ].sort((a, b) => open === 'NEW' ? a.idx - b.idx : a.id - b.id));
     }
 
     const handleDeleteProduct = (spId, pId) => {

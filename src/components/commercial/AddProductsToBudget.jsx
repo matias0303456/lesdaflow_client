@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Autocomplete, Button, FormControl, Input, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from "@mui/material";
 import CancelSharpIcon from '@mui/icons-material/CancelSharp';
 
@@ -17,6 +17,8 @@ export function AddProductsToBudget({
 
     const [value, setValue] = useState('')
 
+    const inputRefs = useRef({});
+
     const handleAdd = data => {
         if (data.product_id.toString().length > 0) {
             setMissing(false)
@@ -24,22 +26,24 @@ export function AddProductsToBudget({
                 ...budgetProducts.filter(bp => bp.product_id !== data.product_id),
                 data
             ])
+
             setTimeout(() => {
-                setValue('')
-            }, 1000)
+                if (inputRefs.current[data.product_id]) {
+                    inputRefs.current[data.product_id].focus();
+                }
+            }, 100);
         }
     }
 
     const handleChangeAmount = data => {
-        if (data.amount.toString().length > 0) {
-            setBudgetProducts([
-                ...budgetProducts.filter(bp => bp.product_id !== data.product_id),
-                {
-                    ...budgetProducts.find(bp => bp.product_id === data.product_id),
-                    ...data
-                }
-            ].sort((a, b) => open === 'NEW' ? a.idx - b.idx : a.id - b.id))
-        }
+        setBudgetProducts([
+            ...budgetProducts.filter(bp => bp.product_id !== data.product_id),
+            {
+                ...budgetProducts.find(bp => bp.product_id === data.product_id),
+                ...data,
+                amount: data.amount.toString().length > 0 ? data.amount : 0
+            }
+        ].sort((a, b) => open === 'NEW' ? a.idx - b.idx : a.id - b.id))
     }
 
     const handleDeleteProduct = (bpId, pId) => {
@@ -122,6 +126,7 @@ export function AddProductsToBudget({
                                                     product_id: p.id,
                                                     amount: e.target.value
                                                 })}
+                                                inputRef={el => inputRefs.current[bp.product_id] = el}
                                             />
                                         </TableCell>
                                         <TableCell>${getProductSalePrice(p).toFixed(2)}</TableCell>
