@@ -185,12 +185,12 @@ export function Products() {
                                 </Button>
                             }
                             <Button variant="outlined" color='success' onClick={() => {
-                                window.open(`${REPORT_URL}/products-excel?token=${auth?.token}`, '_blank')
+                                window.open(`${REPORT_URL}/products-excel?token=${auth?.token}&for_client=true`, '_blank')
                             }}>
                                 Excel
                             </Button>
                             <Button variant="outlined" color='error' onClick={() => {
-                                window.open(`${REPORT_URL}/products-pdf?token=${auth?.token}`, '_blank')
+                                window.open(`${REPORT_URL}/products-pdf?token=${auth?.token}&for_client=true`, '_blank')
                             }}>
                                 PDF
                             </Button>
