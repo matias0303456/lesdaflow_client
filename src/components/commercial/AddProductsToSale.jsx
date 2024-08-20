@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { Autocomplete, Box, Button, FormControl, Input, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from "@mui/material";
 import CancelSharpIcon from '@mui/icons-material/CancelSharp';
 
@@ -18,20 +18,26 @@ export function AddProductsToSale({
     formData
 }) {
 
-    const { auth } = useContext(AuthContext)
+    const { auth } = useContext(AuthContext);
 
     const [value, setValue] = useState('')
 
+    const inputRefs = useRef({});  // Crear un objeto para almacenar referencias
+
     const handleAdd = data => {
         if (data.product_id.toString().length > 0) {
-            setMissing(false)
+            setMissing(false);
             setSaleProducts([
                 ...saleProducts.filter(sp => sp.product_id !== data.product_id),
                 data
-            ])
+            ]);
+
+            // Enfocar el input correspondiente
             setTimeout(() => {
-                setValue('')
-            }, 1000)
+                if (inputRefs.current[data.product_id]) {
+                    inputRefs.current[data.product_id].focus();
+                }
+            }, 100); // Timeout pequeño para asegurar que el render se haya completado
         }
     }
 
@@ -43,17 +49,17 @@ export function AddProductsToSale({
                     ...saleProducts.find(sp => sp.product_id === data.product_id),
                     ...data
                 }
-            ].sort((a, b) => open === 'NEW' ? a.idx - b.idx : a.id - b.id))
+            ].sort((a, b) => open === 'NEW' ? a.idx - b.idx : a.id - b.id));
         }
     }
 
     const handleDeleteProduct = (spId, pId) => {
-        setMissing(false)
+        setMissing(false);
         setSaleProducts([
             ...saleProducts.filter(sp => sp.product_id !== pId),
-        ])
+        ]);
         if (open === 'EDIT' || open === 'CONVERT') {
-            setIdsToDelete([...idsToDelete, spId])
+            setIdsToDelete([...idsToDelete, spId]);
         }
     }
 
@@ -75,7 +81,7 @@ export function AddProductsToSale({
                             })
                                 .map(p => ({ label: `${p.code} - ${p.details}`, id: p.id }))}
                             noOptionsText="No hay productos disponibles."
-                            onChange={(e, value) => handleAdd({ idx: saleProducts.length, product_id: value?.id ?? '' })}
+                            onChange={(_, value) => handleAdd({ idx: saleProducts.length, product_id: value?.id ?? '' })}
                             renderInput={(params) => <TextField {...params} label="Producto *" />}
                             isOptionEqualToValue={(option, value) => option.code === value.code || value.length === 0}
                             onInputChange={(e, value) => setValue(value)}
@@ -109,8 +115,8 @@ export function AddProductsToSale({
                                 <TableCell align="center" colSpan={7}>No hay productos agregados a esta venta.</TableCell>
                             </TableRow> :
                             saleProducts.map(sp => {
-                                const p = products.find(p => p.id === sp.product_id)
-                                const currentAmount = isNaN(parseInt(sp.amount)) ? 0 : parseInt(sp.amount)
+                                const p = products.find(p => p.id === sp.product_id);
+                                const currentAmount = isNaN(parseInt(sp.amount)) ? 0 : parseInt(sp.amount);
                                 return (
                                     <TableRow
                                         key={sp.product_id}
@@ -120,6 +126,7 @@ export function AddProductsToSale({
                                         <TableCell align="center">{p.details}</TableCell>
                                         <TableCell align="center">
                                             <Input
+                                                id={`input_${sp.product_id}`}
                                                 type="number"
                                                 value={sp.amount}
                                                 disabled={open === 'VIEW' || (open === 'EDIT' && auth?.user.role !== 'ADMINISTRADOR')}
@@ -127,6 +134,7 @@ export function AddProductsToSale({
                                                     product_id: p.id,
                                                     amount: e.target.value
                                                 })}
+                                                inputRef={el => inputRefs.current[sp.product_id] = el} // Asignar referencia al input
                                             />
                                         </TableCell>
                                         <TableCell>${getProductSalePrice(p).toFixed(2)}</TableCell>

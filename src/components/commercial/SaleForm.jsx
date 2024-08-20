@@ -91,6 +91,7 @@ export function SaleForm({
         setIdsToDelete([])
         setIsBlocked(false)
         setValueTab(0)
+        setConfirmed(false)
     }
 
     function a11yProps(index) {
@@ -169,26 +170,48 @@ export function SaleForm({
                                         </Typography>
                                     }
                                 </FormControl>
-                                <FormControl sx={{ width: '40%' }}>
-                                    <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
-                                        <DatePicker
-                                            label="Fecha"
-                                            value={new Date(formData.date)}
-                                            onChange={value => handleChange({
-                                                target: {
-                                                    name: 'date',
-                                                    value: new Date(value.toISOString())
-                                                }
-                                            })}
-                                            disabled={open === 'VIEW' || (open === 'EDIT' && auth?.user.role !== 'ADMINISTRADOR')}
-                                        />
-                                    </LocalizationProvider>
-                                    {errors.date?.type === 'required' &&
-                                        <Typography variant="caption" color="red" marginTop={1}>
-                                            * La fecha es requerida.
-                                        </Typography>
-                                    }
-                                </FormControl>
+                                <Box sx={{ width: '40%', display: 'flex', justifyContent: 'space-around' }}>
+                                    <FormControlLabel
+                                        control={<Checkbox disabled={open === 'VIEW' || (open === 'EDIT' && auth?.user.role !== 'ADMINISTRADOR')} />}
+                                        label="Cuenta Corriente"
+                                        checked={formData.type === 'CUENTA_CORRIENTE'}
+                                        onChange={e => {
+                                            if (e.target.checked) {
+                                                setFormData({
+                                                    ...formData,
+                                                    type: 'CUENTA_CORRIENTE',
+                                                    discount: 0
+                                                })
+                                            }
+                                        }}
+                                    />
+                                    <FormControlLabel
+                                        control={<Checkbox disabled={open === 'VIEW' || (open === 'EDIT' && auth?.user.role !== 'ADMINISTRADOR')} />}
+                                        label="Contado"
+                                        checked={formData.type === 'CONTADO'}
+                                        onChange={e => {
+                                            if (e.target.checked) {
+                                                setFormData({
+                                                    ...formData,
+                                                    type: 'CONTADO'
+                                                })
+                                            }
+                                        }}
+                                    />
+                                    <FormControlLabel
+                                        control={<Checkbox disabled={open === 'VIEW' || (open === 'EDIT' && auth?.user.role !== 'ADMINISTRADOR')} />}
+                                        label="Poxipol"
+                                        checked={formData.type === 'POXIPOL'}
+                                        onChange={e => {
+                                            if (e.target.checked) {
+                                                setFormData({
+                                                    ...formData,
+                                                    type: 'POXIPOL'
+                                                })
+                                            }
+                                        }}
+                                    />
+                                </Box>
                             </Box>
                             <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 2 }}>
                                 <AddProductsToSale
@@ -213,48 +236,26 @@ export function SaleForm({
                                             disabled={formData.type === 'CUENTA_CORRIENTE' || open === 'VIEW' || (open === 'EDIT' && auth?.user.role !== 'ADMINISTRADOR')}
                                         />
                                     </FormControl>
-                                    <Box sx={{ display: 'flex', justifyContent: 'space-around' }}>
-                                        <FormControlLabel
-                                            control={<Checkbox disabled={open === 'VIEW' || (open === 'EDIT' && auth?.user.role !== 'ADMINISTRADOR')} />}
-                                            label="Cuenta Corriente"
-                                            checked={formData.type === 'CUENTA_CORRIENTE'}
-                                            onChange={e => {
-                                                if (e.target.checked) {
-                                                    setFormData({
-                                                        ...formData,
-                                                        type: 'CUENTA_CORRIENTE',
-                                                        discount: 0
-                                                    })
-                                                }
-                                            }}
-                                        />
-                                        <FormControlLabel
-                                            control={<Checkbox disabled={open === 'VIEW' || (open === 'EDIT' && auth?.user.role !== 'ADMINISTRADOR')} />}
-                                            label="Contado"
-                                            checked={formData.type === 'CONTADO'}
-                                            onChange={e => {
-                                                if (e.target.checked) {
-                                                    setFormData({
-                                                        ...formData,
-                                                        type: 'CONTADO'
-                                                    })
-                                                }
-                                            }}
-                                        />
-                                        <FormControlLabel
-                                            control={<Checkbox disabled={open === 'VIEW' || (open === 'EDIT' && auth?.user.role !== 'ADMINISTRADOR')} />}
-                                            label="Poxipol"
-                                            checked={formData.type === 'POXIPOL'}
-                                            onChange={e => {
-                                                if (e.target.checked) {
-                                                    setFormData({
-                                                        ...formData,
-                                                        type: 'POXIPOL'
-                                                    })
-                                                }
-                                            }}
-                                        />
-                                    </Box>
+                                    <FormControl>
+                                        <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
+                                            <DatePicker
+                                                label="Fecha"
+                                                value={new Date(formData.date)}
+                                                onChange={value => handleChange({
+                                                    target: {
+                                                        name: 'date',
+                                                        value: new Date(value.toISOString())
+                                                    }
+                                                })}
+                                                disabled={open === 'VIEW' || (open === 'EDIT' && auth?.user.role !== 'ADMINISTRADOR')}
+                                            />
+                                        </LocalizationProvider>
+                                        {errors.date?.type === 'required' &&
+                                            <Typography variant="caption" color="red" marginTop={1}>
+                                                * La fecha es requerida.
+                                            </Typography>
+                                        }
+                                    </FormControl>
                                 </Box>
                             </Box>
                         </Box>
@@ -292,7 +293,7 @@ export function SaleForm({
                                     disabled={disabled || isBlocked}
                                     sx={{ width: '50%' }}
                                 >
-                                    Guardar
+                                    {confirmed ? 'Guardar' : 'Confirmar'}
                                 </Button>
                             }
                         </FormControl>
