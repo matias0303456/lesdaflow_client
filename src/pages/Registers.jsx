@@ -115,7 +115,7 @@ export function Registers() {
                 <ModalComponent open={open === 'NEW' || open === 'SETTINGS' || open === 'VIEW'} onClose={() => reset(setOpen)}>
                     <Typography variant="h6" sx={{ marginBottom: 2 }}>
                         {open === 'NEW' && 'Apertura de caja'}
-                        {open === 'VIEW' && `Caja ${formData.user.first_name} ${formData.user.last_name}`}
+                        {open === 'VIEW' && `Caja ${formData.user.name}`}
                         {open === 'SETTINGS' && 'Cerrar caja'}
                     </Typography>
                     <form onChange={handleChange} onSubmit={(e) => handleSubmit(e, formData, reset, setDisabled, setOpen)}>
