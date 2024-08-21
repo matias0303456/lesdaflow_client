@@ -178,7 +178,11 @@ export function SalesReady() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {saleProducts.map(sp => (
+              {saleProducts.sort((a, b) => {
+                if (a.product.code > b.product.code) return 1
+                if (a.product.code < b.product.code) return -1
+                return 0
+              }).map(sp => (
                 <TableRow key={sp.id}>
                   <TableCell align="center">{sp.product.code}</TableCell>
                   <TableCell align="center">{sp.product.details}</TableCell>

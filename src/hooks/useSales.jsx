@@ -157,7 +157,11 @@ export function useSales() {
                     ]
                 }
             })
-            setSaleProducts([data, ...saleProducts.filter(sp => sp.id !== data.id)])
+            setSaleProducts([data, ...saleProducts.filter(sp => sp.id !== data.id)].sort((a, b) => {
+                if (a.product.code > b.product.code) return 1
+                if (a.product.code < b.product.code) return -1
+                return 0
+            }))
             setMessage('Producto preparado correctamente.')
             setSeverity('success')
         } else {
@@ -172,32 +176,32 @@ export function useSales() {
             const req = { id: sp.id, is_prepared }
             return put(req, '/update-sale-product')
         }))
-        // if (result.every(r => r.status === 'fulfilled' && r.value.status === 200)) {
-        //     dispatch({
-        //         type: 'SALES',
-        //         payload: {
-        //             ...state.sales,
-        //             data: [
-        //                 {
-        //                     ...state.sales.data.find(s => s.id === data.sale_id),
-        //                     sale_products: [
-        //                         data,
-        //                         ...state.sales.data.find(s => s.id === data.sale_id).sale_products
-        //                             .filter(sp => sp.id !== data.id)
-        //                     ]
-        //                 },
-        //                 ...state.sales.data.filter(s => s.id !== data.sale_id)
-        //             ]
-        //         }
-        //     })
-        //     setSaleProducts([data, ...saleProducts.filter(sp => sp.id !== data.id)])
-        //     setMessage('Productos preparados correctamente.')
-        //     setSeverity('success')
-        // } else {
-        //     setMessage('Ocurrió un error. Actualice la página.')
-        //     setSeverity('error')
-        // }
-        // setOpenMessage(true)
+        if (result.every(r => r.status === 'fulfilled' && r.value.status === 200)) {
+            dispatch({
+                type: 'SALES',
+                payload: {
+                    ...state.sales,
+                    data: [
+                        {
+                            ...state.sales.data.find(s => s.id === result[0].value.data.sale_id),
+                            sale_products: result.map(r => r.value.data)
+                        },
+                        ...state.sales.data.filter(s => s.id !== result[0].value.data.sale_id)
+                    ]
+                }
+            })
+            setSaleProducts(result.map(r => r.value.data).sort((a, b) => {
+                if (a.product.code > b.product.code) return 1
+                if (a.product.code < b.product.code) return -1
+                return 0
+            }))
+            setMessage('Productos preparados correctamente.')
+            setSeverity('success')
+        } else {
+            setMessage('Ocurrió un error. Actualice la página.')
+            setSeverity('error')
+        }
+        setOpenMessage(true)
     }
 
     async function deliverSale(formData, reset) {
