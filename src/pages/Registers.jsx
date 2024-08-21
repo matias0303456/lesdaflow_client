@@ -101,7 +101,7 @@ export function Registers() {
                 setOpen={setOpen}
                 setFormData={setFormData}
                 showSettingsAction="Cerrar caja"
-                showPDFAction={`${REPORT_URL}/register-payments?token=${auth?.token}&id=`}
+                showPDFAction={`${REPORT_URL}/register-details?token=${auth?.token}&id=`}
                 showViewAction
                 contentHeader={
                     <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 2, justifyContent: 'space-between' }}>
