@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 import { AuthContext } from "../providers/AuthProvider";
 import { MessageContext } from "../providers/MessageProvider";
+import { DataContext } from "../providers/DataProvider";
 import { useApi } from "./useApi";
 
 import { CHANGE_PASSWORD_URL } from "../utils/urls";
@@ -11,6 +12,7 @@ export function useAuth() {
 
     const { setAuth } = useContext(AuthContext)
     const { setMessage, setOpenMessage, setSeverity } = useContext(MessageContext)
+    const { resetContext } = useContext(DataContext);
 
     const navigate = useNavigate()
 
@@ -18,6 +20,7 @@ export function useAuth() {
 
     const handleLogout = () => {
         setAuth(null);
+        resetContext()
         localStorage.removeItem('auth_mga');
         navigate("/login");
     }

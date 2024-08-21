@@ -1,4 +1,7 @@
+// src/context/DataContext.js
+
 import { createContext, useReducer } from "react";
+import { initialState } from "../utils/initialState";
 
 const reducer = (state, action) => {
     switch (action.type) {
@@ -18,90 +21,28 @@ const reducer = (state, action) => {
             return { ...state, suppliers: action.payload }
         case 'BUDGETS':
             return { ...state, budgets: action.payload }
+        case 'RESET':
+            return initialState;
         default:
-            return state
-    }
-}
-
-const initialState = {
-    'clients': {
-        count: 0,
-        data: [],
-        page: 0,
-        offset: 25,
-        filter_fields: { first_name: '', last_name: '', work_place: '', loaded: false },
-        filters: ''
-    },
-    'products': {
-        count: 0,
-        data: [],
-        page: 0,
-        offset: 25,
-        filter_fields: { code: '', details: '', supplier_id: '', loaded: false },
-        filters: ''
-    },
-    'sales': {
-        count: 0,
-        data: [],
-        page: 0,
-        offset: 25,
-        filter_fields: { client: '', work_place: '', id: '', user: '', date: '', type: '', loaded: false },
-        filters: ''
-    },
-    'payments': {
-        count: 0,
-        data: [],
-        page: 0,
-        offset: 25,
-        filter_fields: { sale_id: '', from: '', to: '', p_type: '', created_by: '', loaded: false },
-        filters: ''
-    },
-    'users': {
-        count: 0,
-        data: [],
-        page: 0,
-        offset: 25,
-        filter_fields: { name: '', role: '', loaded: false },
-        filters: ''
-    },
-    'registers': {
-        count: 0,
-        data: [],
-        page: 0,
-        offset: 25,
-        filter_fields: { user: '', loaded: false },
-        filters: ''
-    },
-    'suppliers': {
-        count: 0,
-        data: [],
-        page: 0,
-        offset: 25,
-        filter_fields: { name: '', loaded: false },
-        filters: ''
-    },
-    'budgets': {
-        count: 0,
-        data: [],
-        page: 0,
-        offset: 25,
-        filter_fields: { from: '', to: '', user: '', client: '', loaded: false },
-        filters: ''
+            return state;
     }
 }
 
 export const DataContext = createContext({
     state: initialState,
     dispatch: () => { }
-})
+});
 
 export function DataProvider({ children }) {
+    const [state, dispatch] = useReducer(reducer, initialState);
 
-    const [state, dispatch] = useReducer(reducer, initialState)
+    const resetContext = () => {
+        dispatch({ type: 'RESET' });
+    };
 
     return (
-        <DataContext.Provider value={{ state, dispatch }}>
+        <DataContext.Provider value={{ state, dispatch, resetContext }}>
             {children}
         </DataContext.Provider>
-    )
+    );
 }
