@@ -179,7 +179,10 @@ export function Users() {
         showViewAction
         contentHeader={
           <Box sx={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: 'space-between' }}>
-            <Button variant="outlined" size="medium" onClick={() => setOpen("NEW")}>
+            <Button variant="outlined" size="medium" onClick={() => {
+              reset()
+              setOpen("NEW")
+            }}>
               Agregar
             </Button>
             <UserFilter />

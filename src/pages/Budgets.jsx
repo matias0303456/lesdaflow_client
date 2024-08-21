@@ -191,7 +191,10 @@ export function Budgets() {
                 contentHeader={
                     <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 2, justifyContent: 'space-between' }}>
                         <Box sx={{ display: 'flex', gap: 1 }}>
-                            <Button variant="outlined" onClick={() => setOpen('NEW')}>
+                            <Button variant="outlined" onClick={() => {
+                                reset()
+                                setOpen('NEW')
+                            }}>
                                 Agregar
                             </Button>
                             <Button variant="outlined" color='success' onClick={() => {

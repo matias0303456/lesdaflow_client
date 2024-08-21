@@ -105,7 +105,10 @@ export function Registers() {
                 showViewAction
                 contentHeader={
                     <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 2, justifyContent: 'space-between' }}>
-                        <Button variant="outlined" onClick={() => setOpen('NEW')}>
+                        <Button variant="outlined" onClick={() => {
+                            reset()
+                            setOpen('NEW')
+                        }}>
                             Apertura caja
                         </Button>
                         {auth?.user.role === 'ADMINISTRADOR' && <RegisterFilter />}
