@@ -167,6 +167,39 @@ export function useSales() {
         setOpenMessage(true)
     }
 
+    async function prepareAllSaleProducts(is_prepared) {
+        const result = await Promise.allSettled(saleProducts.map(sp => {
+            const req = { id: sp.id, is_prepared }
+            return put(req, '/update-sale-product')
+        }))
+        // if (result.every(r => r.status === 'fulfilled' && r.value.status === 200)) {
+        //     dispatch({
+        //         type: 'SALES',
+        //         payload: {
+        //             ...state.sales,
+        //             data: [
+        //                 {
+        //                     ...state.sales.data.find(s => s.id === data.sale_id),
+        //                     sale_products: [
+        //                         data,
+        //                         ...state.sales.data.find(s => s.id === data.sale_id).sale_products
+        //                             .filter(sp => sp.id !== data.id)
+        //                     ]
+        //                 },
+        //                 ...state.sales.data.filter(s => s.id !== data.sale_id)
+        //             ]
+        //         }
+        //     })
+        //     setSaleProducts([data, ...saleProducts.filter(sp => sp.id !== data.id)])
+        //     setMessage('Productos preparados correctamente.')
+        //     setSeverity('success')
+        // } else {
+        //     setMessage('Ocurrió un error. Actualice la página.')
+        //     setSeverity('error')
+        // }
+        // setOpenMessage(true)
+    }
+
     async function deliverSale(formData, reset) {
         const { status, data } = await put({ ...formData, is_delivered: true })
         if (status === 200) {
@@ -211,6 +244,7 @@ export function useSales() {
         prepareSaleProduct,
         deliverSale,
         getSalesByClient,
-        salesByClient
+        salesByClient,
+        prepareAllSaleProducts
     }
 }

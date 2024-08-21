@@ -30,7 +30,8 @@ export function SalesReady() {
     getSales,
     saleProducts,
     setSaleProducts,
-    prepareSaleProduct
+    prepareSaleProduct,
+    prepareAllSaleProducts
   } = useSales()
   const { formData, setFormData } = useForm({
     defaultData: {
@@ -165,7 +166,15 @@ export function SalesReady() {
                 <TableCell align="center">Código</TableCell>
                 <TableCell align="center">Producto</TableCell>
                 <TableCell align="center">Cantidad</TableCell>
-                <TableCell align="center">Preparado</TableCell>
+                <TableCell align="center">
+                  <FormControlLabel
+                    sx={{ ml: .1 }}
+                    control={<Checkbox />}
+                    label="Preparado"
+                    checked={saleProducts.every(sp => sp.is_prepared)}
+                    onChange={async e => await prepareAllSaleProducts(e.target.checked)}
+                  />
+                </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
