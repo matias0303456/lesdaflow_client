@@ -91,13 +91,6 @@ export function Comissions() {
             accessor: (row) => format(new Date(row.date), 'dd/MM/yyyy')
         },
         {
-            id: 'type',
-            numeric: false,
-            disablePadding: true,
-            label: 'Tipo',
-            accessor: (row) => row.type.replace('CUENTA_CORRIENTE', 'CTA CTE')
-        },
-        {
             id: 'value',
             numeric: false,
             disablePadding: true,
@@ -282,7 +275,7 @@ export function Comissions() {
                     </FormControl>
                 </Box>
                 <ModalComponent open={open === 'HISTORIC'} onClose={handleCloseCommissions}>
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start' }}>
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', flexWrap: 'wrap' }}>
                         <Typography variant="h6" sx={{ marginBottom: 2 }}>
                             {`Historial de comisiones - ${commissions[0]?.user?.name ?? ''}`}
                         </Typography>
@@ -356,13 +349,34 @@ export function Comissions() {
                             </Box>
                         }
                     </Box>
-                    <Box sx={{ width: '50%', m: 'auto', my: 2 }}>
-                        <DataGridWithFrontendPagination
-                            headCells={commissionsHeadCells}
-                            rows={commissions}
-                            defaultOrderBy="date"
-                            minWidth={0}
-                        />
+                    <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', justifyContent: 'center', my: 2 }}>
+                        <Box sx={{ width: { xs: '100%', lg: '30%' } }}>
+                            <Typography>CUENTA CORRIENTE</Typography>
+                            <DataGridWithFrontendPagination
+                                headCells={commissionsHeadCells}
+                                rows={commissions.filter(c => c.type === 'CUENTA_CORRIENTE')}
+                                defaultOrderBy="date"
+                                minWidth={0}
+                            />
+                        </Box>
+                        <Box sx={{ width: { xs: '100%', lg: '30%' } }}>
+                            <Typography>CONTADO</Typography>
+                            <DataGridWithFrontendPagination
+                                headCells={commissionsHeadCells}
+                                rows={commissions.filter(c => c.type === 'CONTADO')}
+                                defaultOrderBy="date"
+                                minWidth={0}
+                            />
+                        </Box>
+                        <Box sx={{ width: { xs: '100%', lg: '30%' } }}>
+                            <Typography>POXIPOL</Typography>
+                            <DataGridWithFrontendPagination
+                                headCells={commissionsHeadCells}
+                                rows={commissions.filter(c => c.type === 'POXIPOL')}
+                                defaultOrderBy="date"
+                                minWidth={0}
+                            />
+                        </Box>
                     </Box>
                     <Button variant="outlined" onClick={handleCloseCommissions} sx={{ float: 'right' }}>
                         Cerrar
