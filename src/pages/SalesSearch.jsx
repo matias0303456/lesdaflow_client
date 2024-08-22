@@ -166,17 +166,17 @@ export function SalesSearch() {
                 {auth?.user.role === 'ADMINISTRADOR' ? (
                   [
                     <MenuItem value="" key="select">Seleccione</MenuItem>,
-                    ...(state.users.data.filter(u => u.role === 'VENDEDOR').length > 0
-                      ? state.users.data.filter(u => u.role === 'VENDEDOR').map((u) => (
+                    ...(state.users.data.filter(u => u.role !== 'CHOFER').length > 0
+                      ? state.users.data.filter(u => u.role !== 'CHOFER').map((u) => (
                         <MenuItem key={u.id} value={u.username}>
-                          {`${u.first_name} ${u.last_name}`.toUpperCase()}
+                          {`${u.name}`.toUpperCase()}
                         </MenuItem>
                       ))
                       : [<MenuItem key="no-results">No se encontraron resultados</MenuItem>])
                   ]
                 ) : (
                   <MenuItem value={auth?.user.id} key={auth?.user.id}>
-                    {`${auth?.user.first_name} ${auth?.user.last_name}`.toUpperCase()}
+                    {`${auth?.user.name}`.toUpperCase()}
                   </MenuItem>
                 )}
               </Select>

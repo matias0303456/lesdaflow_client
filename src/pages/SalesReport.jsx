@@ -138,7 +138,7 @@ export function SalesReport() {
                   ]
                 ) : (
                   <MenuItem value={auth?.user.id} key={auth?.user.username}>
-                    {`${auth?.user.first_name} ${auth?.user.last_name}`.toUpperCase()}
+                    {`${auth?.user.name}`.toUpperCase()}
                   </MenuItem>
                 )}
               </Select>

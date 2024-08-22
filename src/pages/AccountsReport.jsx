@@ -76,7 +76,7 @@ export function AccountsReport() {
                     {state.users.data.length > 0 ? (
                       state.users.data.map((u) => (
                         <MenuItem key={u.id} value={u.id}>
-                          {`${u.first_name} ${u.last_name}`.toUpperCase()}
+                          {`${u.name}`.toUpperCase()}
                         </MenuItem>
                       ))
                     ) : (
@@ -84,7 +84,7 @@ export function AccountsReport() {
                     )}
                   </> :
                   <MenuItem value={auth?.user.id}>
-                    {`${auth?.user.first_name} ${auth?.user.last_name}`.toUpperCase()}
+                    {`${auth?.user.name}`.toUpperCase()}
                   </MenuItem>
                 }
               </Select>
