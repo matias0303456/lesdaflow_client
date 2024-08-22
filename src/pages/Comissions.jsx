@@ -4,7 +4,7 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import es from 'date-fns/locale/es';
-import { Box, Button, FormControl, Input, InputLabel, LinearProgress, MenuItem, Select, Typography } from "@mui/material";
+import { Box, Button, FormControl, Input, InputLabel, MenuItem, Select, Typography } from "@mui/material";
 import { format } from "date-fns";
 
 import { AuthContext } from "../providers/AuthProvider";
@@ -18,6 +18,7 @@ import { DataGridWithFrontendPagination } from "../components/datagrid/DataGridW
 import { ModalComponent } from "../components/common/ModalComponent";
 
 import { getSaleTotal } from "../utils/helpers";
+import { REPORT_URL } from "../utils/urls";
 
 export function Comissions() {
 
@@ -40,8 +41,6 @@ export function Comissions() {
         setNewCommissionDate,
         newCommissionType,
         setNewCommissionType,
-        loadingTables,
-        setLoadingTables,
         calculations,
         setCalculations,
         handleCalculateCommissions
@@ -49,7 +48,7 @@ export function Comissions() {
     const { getUsers } = useUsers()
     const { formData, handleChange } = useForm({
         defaultData: {
-            // from: new Date(Date.now()),
+            from: new Date(Date.now()),
             to: new Date(Date.now()),
             user: auth?.user.role !== 'ADMINISTRADOR' ? auth?.user.name : ''
         }
@@ -70,7 +69,6 @@ export function Comissions() {
                 await getCommissions(user_id)
             } else {
                 setCommissions([])
-                setLoadingTables(false)
                 setCalculations({
                     seller: '',
                     'CUENTA_CORRIENTE': {
@@ -95,13 +93,11 @@ export function Comissions() {
 
     useEffect(() => {
         (async () => {
-            setLoadingTables(true)
             const { user, to } = formData
-            if (formData.user.toString().length > 0) {
+            if (user.toString().length > 0) {
                 const user_id = auth?.user.role === 'ADMINISTRADOR' ? user : auth?.user.id
                 await handleCalculateCommissions({ to, user_id })
             }
-            setLoadingTables(false)
         })()
     }, [formData, commissions])
 
@@ -171,7 +167,7 @@ export function Comissions() {
                 </Typography>
                 <form className="mb-3">
                     <Box sx={{ display: "flex", alignItems: "end", justifyContent: "start", gap: 2, padding: 2 }}>
-                        {/* <FormControl variant="standard" sx={{ width: "16.5%", color: "#59656b" }}>
+                        <FormControl variant="standard" sx={{ width: "16.5%", color: "#59656b" }}>
                             <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
                                 <DatePicker
                                     label="Inicio período"
@@ -184,7 +180,7 @@ export function Comissions() {
                                     })}
                                 />
                             </LocalizationProvider>
-                        </FormControl> */}
+                        </FormControl>
                         <FormControl variant="standard" sx={{ width: "16.5%", color: "#59656b" }}>
                             <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
                                 <DatePicker
@@ -238,6 +234,17 @@ export function Comissions() {
                                 )}
                             </Select>
                         </FormControl>
+                        <Button
+                            variant="outlined"
+                            color='error'
+                            disabled={formData.user.toString().length === 0}
+                            onClick={() => {
+                                const { user, from, to } = formData
+                                const user_id = auth?.user.role === 'ADMINISTRADOR' ? user : auth?.user.id
+                                window.open(`${REPORT_URL}/calculate-commissions?token=${auth?.token}&user=${user_id}&from=${from.toISOString()}&to=${to.toISOString()}`, '_blank')
+                            }}>
+                            PDF
+                        </Button>
                     </Box>
                 </form>
             </Box>
@@ -425,71 +432,66 @@ export function Comissions() {
                 >
                     Boletas
                 </Typography>
-                {loadingTables ?
-                    <Box sx={{ width: '100%', p: 5 }}>
-                        <LinearProgress />
-                    </Box> :
-                    <Box sx={{
-                        display: 'flex',
-                        alignItems: 'start',
-                        justifyContent: 'center',
-                        flexWrap: 'wrap',
-                        mt: 1,
-                        gap: { xs: 1, lg: 3 }
-                    }}>
-                        <Box sx={{ width: { xs: '100%', lg: '30%' } }}>
-                            <Typography variant="h6">
-                                Cuentas corrientes
-                            </Typography>
-                            <DataGridWithFrontendPagination
-                                headCells={salesHeadCells}
-                                rows={calculations['CUENTA_CORRIENTE'].sales}
-                                minWidth={0}
-                                labelRowsPerPage="Reg. Página"
-                            />
-                            <Typography variant="h6" align="right">
-                                Total: {calculations['CUENTA_CORRIENTE'].total}
-                            </Typography>
-                            <Typography variant="h6" align="right">
-                                Comisión: {calculations['CUENTA_CORRIENTE'].commission}
-                            </Typography>
-                        </Box>
-                        <Box sx={{ width: { xs: '100%', lg: '30%' } }}>
-                            <Typography variant="h6">
-                                Contado
-                            </Typography>
-                            <DataGridWithFrontendPagination
-                                headCells={salesHeadCells}
-                                rows={calculations['CONTADO'].sales}
-                                minWidth={0}
-                                labelRowsPerPage="Reg. Página"
-                            />
-                            <Typography variant="h6" align="right">
-                                Total: {calculations['CONTADO'].total}
-                            </Typography>
-                            <Typography variant="h6" align="right">
-                                Comisión: {calculations['CONTADO'].commission}
-                            </Typography>
-                        </Box>
-                        <Box sx={{ width: { xs: '100%', lg: '30%' } }}>
-                            <Typography variant="h6">
-                                Poxipol
-                            </Typography>
-                            <DataGridWithFrontendPagination
-                                headCells={salesHeadCells}
-                                rows={calculations['POXIPOL'].sales}
-                                minWidth={0}
-                                labelRowsPerPage="Reg. Página"
-                            />
-                            <Typography variant="h6" align="right">
-                                Total: {calculations['POXIPOL'].total}
-                            </Typography>
-                            <Typography variant="h6" align="right">
-                                Comisión: {calculations['POXIPOL'].commission}
-                            </Typography>
-                        </Box>
+                <Box sx={{
+                    display: 'flex',
+                    alignItems: 'start',
+                    justifyContent: 'center',
+                    flexWrap: 'wrap',
+                    mt: 1,
+                    gap: { xs: 1, lg: 3 }
+                }}>
+                    <Box sx={{ width: { xs: '100%', lg: '30%' } }}>
+                        <Typography variant="h6">
+                            Cuentas corrientes
+                        </Typography>
+                        <DataGridWithFrontendPagination
+                            headCells={salesHeadCells}
+                            rows={calculations['CUENTA_CORRIENTE'].sales}
+                            minWidth={0}
+                            labelRowsPerPage="Reg. Página"
+                        />
+                        <Typography variant="h6" align="right">
+                            Total: {calculations['CUENTA_CORRIENTE'].total}
+                        </Typography>
+                        <Typography variant="h6" align="right">
+                            Comisión: {calculations['CUENTA_CORRIENTE'].commission}
+                        </Typography>
                     </Box>
-                }
+                    <Box sx={{ width: { xs: '100%', lg: '30%' } }}>
+                        <Typography variant="h6">
+                            Contado
+                        </Typography>
+                        <DataGridWithFrontendPagination
+                            headCells={salesHeadCells}
+                            rows={calculations['CONTADO'].sales}
+                            minWidth={0}
+                            labelRowsPerPage="Reg. Página"
+                        />
+                        <Typography variant="h6" align="right">
+                            Total: {calculations['CONTADO'].total}
+                        </Typography>
+                        <Typography variant="h6" align="right">
+                            Comisión: {calculations['CONTADO'].commission}
+                        </Typography>
+                    </Box>
+                    <Box sx={{ width: { xs: '100%', lg: '30%' } }}>
+                        <Typography variant="h6">
+                            Poxipol
+                        </Typography>
+                        <DataGridWithFrontendPagination
+                            headCells={salesHeadCells}
+                            rows={calculations['POXIPOL'].sales}
+                            minWidth={0}
+                            labelRowsPerPage="Reg. Página"
+                        />
+                        <Typography variant="h6" align="right">
+                            Total: {calculations['POXIPOL'].total}
+                        </Typography>
+                        <Typography variant="h6" align="right">
+                            Comisión: {calculations['POXIPOL'].commission}
+                        </Typography>
+                    </Box>
+                </Box>
             </Box>
         </Layout>
     )
