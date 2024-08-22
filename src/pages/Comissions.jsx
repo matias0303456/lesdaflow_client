@@ -16,7 +16,6 @@ import { Layout } from "../components/common/Layout";
 import { DataGridWithBackendPagination } from "../components/datagrid/DataGridWithBackendPagination";
 
 import { usePayments } from "../hooks/usePayments";
-import { getCommissionValueByPayment } from "../utils/helpers";
 import { useUsers } from "../hooks/useUsers";
 import { ModalComponent } from "../components/common/ModalComponent";
 import { PaymentFilter } from "../components/filters/PaymentFilter";

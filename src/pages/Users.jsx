@@ -37,10 +37,7 @@ export function Users() {
       address: '',
       username: '',
       password: '',
-      role: 'VENDEDOR',
-      cta_cte_commission: 0,
-      contado_commission: 0,
-      poxipol_commission: 0
+      role: 'VENDEDOR'
     },
     rules: {
       name: {
@@ -355,8 +352,8 @@ export function Users() {
                   }
                 </FormControl>
               </Box>
-              <Box sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', gap: { xs: 2, sm: 1 } }}>
-                <FormControl sx={{ width: { xs: '100%', sm: '25%' } }}>
+              <Box sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'start', gap: { xs: 3, md: 6, xl: 9 } }}>
+                <FormControl sx={{ width: { xs: '100%', sm: '30%' } }}>
                   <InputLabel htmlFor="address">Dirección *</InputLabel>
                   <Input id="address" type="text" name="address" value={formData.address} disabled={open === 'VIEW'} />
                   {errors.address?.type === 'required' &&
@@ -370,7 +367,7 @@ export function Users() {
                     </Typography>
                   }
                 </FormControl>
-                <FormControl sx={{ width: { xs: '100%', sm: '20%' } }}>
+                <FormControl sx={{ width: { xs: '100%', sm: '30%' } }}>
                   <InputLabel id="role-select">Rol</InputLabel>
                   <Select
                     labelId="role-select"
@@ -386,38 +383,6 @@ export function Users() {
                     <MenuItem value="CHOFER">CHOFER</MenuItem>
                   </Select>
                 </FormControl>
-                <Box sx={{ width: { xs: '100%', sm: '50%' }, display: 'flex', gap: 1 }}>
-                  <FormControl>
-                    <InputLabel htmlFor="cta_cte_commission">Com. Cta. Cte.</InputLabel>
-                    <Input
-                      id="cta_cte_commission"
-                      type="number"
-                      name="cta_cte_commission"
-                      value={formData.cta_cte_commission.toString()}
-                      disabled={open === 'VIEW'}
-                    />
-                  </FormControl>
-                  <FormControl>
-                    <InputLabel htmlFor="contado_commission">Com. Contado</InputLabel>
-                    <Input
-                      id="contado_commission"
-                      type="number"
-                      name="contado_commission"
-                      value={formData.contado_commission.toString()}
-                      disabled={open === 'VIEW'}
-                    />
-                  </FormControl>
-                  <FormControl>
-                    <InputLabel htmlFor="poxipol_commission">Com. Poxipol</InputLabel>
-                    <Input
-                      id="poxipol_commission"
-                      type="number"
-                      name="poxipol_commission"
-                      value={formData.poxipol_commission.toString()}
-                      disabled={open === 'VIEW'}
-                    />
-                  </FormControl>
-                </Box>
               </Box>
             </Box>
             <FormControl sx={{
