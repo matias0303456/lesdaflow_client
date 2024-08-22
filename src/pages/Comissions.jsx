@@ -18,6 +18,8 @@ import { Layout } from "../components/common/Layout";
 import { DataGridWithFrontendPagination } from "../components/datagrid/DataGridWithFrontendPagination";
 import { ModalComponent } from "../components/common/ModalComponent";
 
+import { getSaleTotal } from "../utils/helpers";
+
 export function Comissions() {
 
     const { auth } = useContext(AuthContext)
@@ -34,7 +36,9 @@ export function Comissions() {
         setNewCommissionValue,
         handleSubmit,
         setCommissions,
-        handleCloseCommissions
+        handleCloseCommissions,
+        newCommissionDate,
+        setNewCommissionDate
     } = useCommissions()
     const { getSales } = useSales()
     const { getUsers, loadingUsers } = useUsers()
@@ -68,11 +72,11 @@ export function Comissions() {
 
     const commissionsHeadCells = [
         {
-            id: 'id',
+            id: 'date',
             numeric: false,
             disablePadding: true,
-            label: '#',
-            accessor: 'id'
+            label: 'Fecha corte',
+            accessor: (row) => format(new Date(row.date), 'dd/MM/yyyy')
         },
         {
             id: 'value',
@@ -81,13 +85,6 @@ export function Comissions() {
             label: 'Valor',
             accessor: (row) => `${row.value}%`
         },
-        {
-            id: 'created_at',
-            numeric: false,
-            disablePadding: true,
-            label: 'Fecha act.',
-            accessor: (row) => format(new Date(row.created_at), 'dd/MM/yyyy')
-        }
     ]
 
     const salesHeadCells = [
@@ -115,7 +112,7 @@ export function Comissions() {
             numeric: false,
             disablePadding: true,
             label: 'Monto',
-            accessor: (row) => 'asdasd'
+            accessor: (row) => getSaleTotal(row)
         }
     ]
 
@@ -248,30 +245,50 @@ export function Comissions() {
                         <Typography variant="h6" sx={{ marginBottom: 2 }}>
                             {`Historial de comisiones - ${commissions[0]?.user?.name ?? ''}`}
                         </Typography>
-                        <Box sx={{ display: 'flex', gap: 1 }}>
-                            <FormControl>
-                                <InputLabel htmlFor="current">Actualizar valor</InputLabel>
-                                <Input
-                                    type="number"
-                                    id="value"
-                                    name="value"
-                                    value={newCommissionValue}
-                                    onChange={e => setNewCommissionValue(Math.abs(e.target.value))}
-                                />
-                            </FormControl>
-                            <Button
-                                variant="outlined"
-                                disabled={newCommissionValue <= 0}
-                                onClick={(e) => handleSubmit(e, { user_id: formData.user, value: newCommissionValue })}
-                            >
-                                Agregar
-                            </Button>
-                        </Box>
+                        {auth?.user.role === 'ADMINISTRADOR' &&
+                            <Box sx={{ display: 'flex', gap: 2, alignItems: 'start', justifyContent: 'end' }}>
+                                <FormControl sx={{ width: '30%' }}>
+                                    <InputLabel htmlFor="current">Nuevo valor</InputLabel>
+                                    <Input
+                                        type="number"
+                                        id="value"
+                                        name="value"
+                                        value={newCommissionValue}
+                                        onChange={e => setNewCommissionValue(Math.abs(e.target.value))}
+                                    />
+                                </FormControl>
+                                <FormControl variant="standard" sx={{ width: "30%", color: "#59656b" }}>
+                                    <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
+                                        <DatePicker
+                                            label="Fecha de corte"
+                                            value={new Date(newCommissionDate)}
+                                            onChange={value => setNewCommissionDate(new Date(value.toISOString()))}
+                                        />
+                                    </LocalizationProvider>
+                                </FormControl>
+                                <Button
+                                    variant="outlined"
+                                    sx={{ width: '20%' }}
+                                    disabled={newCommissionValue <= 0}
+                                    onClick={(e) => handleSubmit(e, {
+                                        user_id: formData.user,
+                                        value: newCommissionValue,
+                                        date: newCommissionDate
+                                    })}
+                                >
+                                    Agregar
+                                </Button>
+                            </Box>
+                        }
                     </Box>
-                    <DataGridWithFrontendPagination
-                        headCells={commissionsHeadCells}
-                        rows={commissions}
-                    />
+                    <Box sx={{ width: '50%', m: 'auto', my: 2 }}>
+                        <DataGridWithFrontendPagination
+                            headCells={commissionsHeadCells}
+                            rows={commissions}
+                            defaultOrderBy="date"
+                            minWidth={0}
+                        />
+                    </Box>
                     <Button variant="outlined" onClick={handleCloseCommissions} sx={{ float: 'right' }}>
                         Cerrar
                     </Button>

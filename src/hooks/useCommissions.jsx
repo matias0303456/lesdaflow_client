@@ -15,6 +15,7 @@ export function useCommissions() {
     const [loadingCommissions, setLoadingCommissions] = useState(true)
     const [open, setOpen] = useState(null)
     const [newCommissionValue, setNewCommissionValue] = useState(0)
+    const [newCommissionDate, setNewCommissionDate] = useState(new Date(Date.now()))
 
     async function getCommissions(user_id) {
         const { status, data } = await get(`/${user_id}`)
@@ -60,6 +61,7 @@ export function useCommissions() {
     const handleCloseCommissions = () => {
         setOpen(null)
         setNewCommissionValue(0)
+        setNewCommissionDate(new Date(Date.now()))
     }
 
     return {
@@ -74,6 +76,8 @@ export function useCommissions() {
         handleDelete,
         newCommissionValue,
         setNewCommissionValue,
-        handleCloseCommissions
+        handleCloseCommissions,
+        newCommissionDate,
+        setNewCommissionDate
     }
 }
