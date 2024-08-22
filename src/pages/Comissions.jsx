@@ -4,10 +4,8 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import es from 'date-fns/locale/es';
-import { Box, Button, FormControl, IconButton, Input, InputLabel, MenuItem, Select, Typography } from "@mui/material";
+import { Box, Button, FormControl, Input, InputLabel, LinearProgress, MenuItem, Select, Typography } from "@mui/material";
 import { format } from "date-fns";
-import CloseIcon from "@mui/icons-material/Close";
-
 
 import { AuthContext } from "../providers/AuthProvider";
 import { DataContext } from "../providers/DataProvider";
@@ -23,25 +21,23 @@ import { ModalComponent } from "../components/common/ModalComponent";
 export function Comissions() {
 
     const { auth } = useContext(AuthContext)
-    const { state } = useContext(DataContext)
+    const { state, dispatch } = useContext(DataContext)
 
     const navigate = useNavigate()
 
     const {
         getCommissions,
         commissions,
-        loadingCommissions,
         open,
         setOpen,
         newCommissionValue,
         setNewCommissionValue,
         handleSubmit,
-        handleDelete,
         setCommissions,
         handleCloseCommissions
     } = useCommissions()
     const { getSales } = useSales()
-    const { getUsers } = useUsers()
+    const { getUsers, loadingUsers } = useUsers()
     const { formData, handleChange } = useForm({
         defaultData: {
             from: new Date(Date.now()),
@@ -51,6 +47,7 @@ export function Comissions() {
     });
 
     useEffect(() => {
+        dispatch({ type: 'SALES', payload: { ...state.sales, data: [], count: 0 } })
         if (auth?.user.role !== 'ADMINISTRADOR' && auth?.user.role !== 'VENDEDOR') {
             navigate('/prep-ventas')
         } else {
@@ -64,7 +61,7 @@ export function Comissions() {
         if (user.toString().length > 0 && username) {
             getCommissions(user)
             getSales(`?&to=${new Date(to).toISOString()}&user=${username}`)
-        }else{
+        } else {
             setCommissions([])
         }
     }, [formData, state.users.data])
@@ -90,20 +87,6 @@ export function Comissions() {
             disablePadding: true,
             label: 'Fecha act.',
             accessor: (row) => format(new Date(row.created_at), 'dd/MM/yyyy')
-        },
-        {
-            id: 'destroy',
-            numeric: false,
-            disablePadding: true,
-            label: 'Eliminar',
-            accessor: (row) => (
-                <IconButton
-                    className="rounded-full bg-black/20 opacity-50 hover:bg-[#288bcd]"
-                    aria-label="delete"
-                >
-                    <CloseIcon className="w-4 h-4 hover:text-white" />
-                </IconButton>
-            )
         }
     ]
 
@@ -122,7 +105,7 @@ export function Comissions() {
             label: 'Cliente',
             accessor: (row) => (
                 <Box>
-                    <Typography variant="body2">{row.client.first_name} {row.client.last_name}</Typography>
+                    <Typography variant="body1">{row.client.first_name} {row.client.last_name}</Typography>
                     <Typography variant="body2">{row.client.work_place}</Typography>
                 </Box>
             )
@@ -260,40 +243,101 @@ export function Comissions() {
                         />
                     </FormControl>
                 </Box>
-            </Box>
-            <ModalComponent open={open === 'HISTORIC'} onClose={handleCloseCommissions}>
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start' }}>
-                    <Typography variant="h6" sx={{ marginBottom: 2 }}>
-                        {`Historial de comisiones - ${commissions[0]?.user?.name ?? ''}`}
-                    </Typography>
-                    <Box sx={{ display: 'flex', gap: 1 }}>
-                        <FormControl>
-                            <InputLabel htmlFor="current">Actualizar valor</InputLabel>
-                            <Input
-                                type="number"
-                                id="value"
-                                name="value"
-                                value={newCommissionValue}
-                                onChange={e => setNewCommissionValue(Math.abs(e.target.value))}
-                            />
-                        </FormControl>
-                        <Button
-                            variant="outlined"
-                            disabled={newCommissionValue <= 0}
-                            onClick={(e) => handleSubmit(e, { user_id: formData.user, value: newCommissionValue })}
-                        >
-                            Agregar
-                        </Button>
+                <ModalComponent open={open === 'HISTORIC'} onClose={handleCloseCommissions}>
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start' }}>
+                        <Typography variant="h6" sx={{ marginBottom: 2 }}>
+                            {`Historial de comisiones - ${commissions[0]?.user?.name ?? ''}`}
+                        </Typography>
+                        <Box sx={{ display: 'flex', gap: 1 }}>
+                            <FormControl>
+                                <InputLabel htmlFor="current">Actualizar valor</InputLabel>
+                                <Input
+                                    type="number"
+                                    id="value"
+                                    name="value"
+                                    value={newCommissionValue}
+                                    onChange={e => setNewCommissionValue(Math.abs(e.target.value))}
+                                />
+                            </FormControl>
+                            <Button
+                                variant="outlined"
+                                disabled={newCommissionValue <= 0}
+                                onClick={(e) => handleSubmit(e, { user_id: formData.user, value: newCommissionValue })}
+                            >
+                                Agregar
+                            </Button>
+                        </Box>
                     </Box>
-                </Box>
-                <DataGridWithFrontendPagination
-                    headCells={commissionsHeadCells}
-                    rows={commissions}
-                />
-                <Button variant="outlined" onClick={handleCloseCommissions} sx={{ float: 'right' }}>
-                    Cerrar
-                </Button>
-            </ModalComponent>
+                    <DataGridWithFrontendPagination
+                        headCells={commissionsHeadCells}
+                        rows={commissions}
+                    />
+                    <Button variant="outlined" onClick={handleCloseCommissions} sx={{ float: 'right' }}>
+                        Cerrar
+                    </Button>
+                </ModalComponent>
+            </Box>
+            <Box className="w-[100%]">
+                <Typography
+                    variant="h6"
+                    sx={{
+                        width: "100%",
+                        fontSize: "14px",
+                        color: "white",
+                        paddingX: "10px",
+                        paddingY: "5px",
+                        backgroundColor: "#078BCD",
+                        borderRadius: "2px",
+                        fontWeight: "bold",
+                    }}
+                >
+                    Boletas
+                </Typography>
+                {loadingUsers ?
+                    <Box sx={{ width: '100%', p: 5 }}>
+                        <LinearProgress />
+                    </Box> :
+                    <Box sx={{
+                        display: 'flex',
+                        alignItems: 'start',
+                        justifyContent: 'center',
+                        flexWrap: 'wrap',
+                        mt: 1,
+                        gap: { xs: 1, lg: 3 }
+                    }}>
+                        <Box sx={{ width: { xs: '100%', lg: '30%' } }}>
+                            <Typography variant="h6">
+                                Cuentas corrientes
+                            </Typography>
+                            <DataGridWithFrontendPagination
+                                headCells={salesHeadCells}
+                                rows={state.sales.data.filter(s => s.type === 'CUENTA_CORRIENTE')}
+                                minWidth={0}
+                            />
+                        </Box>
+                        <Box sx={{ width: { xs: '100%', lg: '30%' } }}>
+                            <Typography variant="h6">
+                                Contado
+                            </Typography>
+                            <DataGridWithFrontendPagination
+                                headCells={salesHeadCells}
+                                rows={state.sales.data.filter(s => s.type === 'CONTADO')}
+                                minWidth={0}
+                            />
+                        </Box>
+                        <Box sx={{ width: { xs: '100%', lg: '30%' } }}>
+                            <Typography variant="h6">
+                                Poxipol
+                            </Typography>
+                            <DataGridWithFrontendPagination
+                                headCells={salesHeadCells}
+                                rows={state.sales.data.filter(s => s.type === 'POXIPOL')}
+                                minWidth={0}
+                            />
+                        </Box>
+                    </Box>
+                }
+            </Box>
         </Layout>
     )
 }
