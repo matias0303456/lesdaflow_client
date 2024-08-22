@@ -274,7 +274,7 @@ export function Comissions() {
                         />
                     </FormControl>
                 </Box>
-                <ModalComponent open={open === 'HISTORIC'} onClose={handleCloseCommissions}>
+                <ModalComponent open={open === 'HISTORIC'} onClose={handleCloseCommissions} reduceWidth={100}>
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', flexWrap: 'wrap' }}>
                         <Typography variant="h6" sx={{ marginBottom: 2 }}>
                             {`Historial de comisiones - ${commissions[0]?.user?.name ?? ''}`}
@@ -349,32 +349,35 @@ export function Comissions() {
                             </Box>
                         }
                     </Box>
-                    <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', justifyContent: 'center', my: 2 }}>
-                        <Box sx={{ width: { xs: '100%', lg: '30%' } }}>
-                            <Typography>CUENTA CORRIENTE</Typography>
+                    <Box sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', my: 2, gap: 1 }}>
+                        <Box sx={{ width: { xs: '100%', lg: '32.7%' } }}>
+                            <Typography align="center">CUENTA CORRIENTE</Typography>
                             <DataGridWithFrontendPagination
                                 headCells={commissionsHeadCells}
                                 rows={commissions.filter(c => c.type === 'CUENTA_CORRIENTE')}
                                 defaultOrderBy="date"
                                 minWidth={0}
+                                labelRowsPerPage="Reg. Página"
                             />
                         </Box>
-                        <Box sx={{ width: { xs: '100%', lg: '30%' } }}>
-                            <Typography>CONTADO</Typography>
+                        <Box sx={{ width: { xs: '100%', lg: '32.7%' } }}>
+                            <Typography align="center">CONTADO</Typography>
                             <DataGridWithFrontendPagination
                                 headCells={commissionsHeadCells}
                                 rows={commissions.filter(c => c.type === 'CONTADO')}
                                 defaultOrderBy="date"
                                 minWidth={0}
+                                labelRowsPerPage="Reg. Página"
                             />
                         </Box>
-                        <Box sx={{ width: { xs: '100%', lg: '30%' } }}>
-                            <Typography>POXIPOL</Typography>
+                        <Box sx={{ width: { xs: '100%', lg: '32.7%' } }}>
+                            <Typography align="center">POXIPOL</Typography>
                             <DataGridWithFrontendPagination
                                 headCells={commissionsHeadCells}
                                 rows={commissions.filter(c => c.type === 'POXIPOL')}
                                 defaultOrderBy="date"
                                 minWidth={0}
+                                labelRowsPerPage="Reg. Página"
                             />
                         </Box>
                     </Box>
@@ -419,6 +422,7 @@ export function Comissions() {
                                 headCells={salesHeadCells}
                                 rows={state.sales.data.filter(s => s.type === 'CUENTA_CORRIENTE')}
                                 minWidth={0}
+                                labelRowsPerPage="Reg. Página"
                             />
                         </Box>
                         <Box sx={{ width: { xs: '100%', lg: '30%' } }}>
@@ -429,6 +433,7 @@ export function Comissions() {
                                 headCells={salesHeadCells}
                                 rows={state.sales.data.filter(s => s.type === 'CONTADO')}
                                 minWidth={0}
+                                labelRowsPerPage="Reg. Página"
                             />
                         </Box>
                         <Box sx={{ width: { xs: '100%', lg: '30%' } }}>
@@ -439,6 +444,7 @@ export function Comissions() {
                                 headCells={salesHeadCells}
                                 rows={state.sales.data.filter(s => s.type === 'POXIPOL')}
                                 minWidth={0}
+                                labelRowsPerPage="Reg. Página"
                             />
                         </Box>
                     </Box>

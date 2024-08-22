@@ -34,7 +34,8 @@ export function DataGridWithFrontendPagination({
     showViewAction = false,
     showSettingsAction = false,
     showDeleteAction = false,
-    minWidth = 750
+    minWidth = 750,
+    labelRowsPerPage = "Registros por página"
 }) {
 
     const [order, setOrder] = useState(defaultOrder);
@@ -242,7 +243,7 @@ export function DataGridWithFrontendPagination({
                     component="div"
                     count={rows.length}
                     rowsPerPage={rowsPerPage}
-                    labelRowsPerPage="Registros por página"
+                    labelRowsPerPage={labelRowsPerPage}
                     labelDisplayedRows={({ from, to, count }) => `${from}–${to} de ${count}`}
                     page={page}
                     onPageChange={handleChangePage}

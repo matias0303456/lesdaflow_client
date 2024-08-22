@@ -35,7 +35,11 @@ export function useCommissions() {
         const { status, data } = await post(formData)
         if (status === 200) {
             handleCloseCommissions()
-            setCommissions([data, ...commissions])
+            setCommissions([data, ...commissions].sort((a,b) => {
+                if(a.date < b.date) return 1
+                if(a.date > b.date) return -1
+                return 0
+            }))
             setMessage('Valor creado correctamente.')
             setSeverity('success')
         } else {
