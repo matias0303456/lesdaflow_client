@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -38,7 +38,9 @@ export function Comissions() {
         setCommissions,
         handleCloseCommissions,
         newCommissionDate,
-        setNewCommissionDate
+        setNewCommissionDate,
+        newCommissionType,
+        setNewCommissionType
     } = useCommissions()
     const { getSales } = useSales()
     const { getUsers, loadingUsers } = useUsers()
@@ -50,6 +52,8 @@ export function Comissions() {
         }
     });
 
+    const [loadingTables, setLoadingTables] = useState(false)
+
     useEffect(() => {
         dispatch({ type: 'SALES', payload: { ...state.sales, data: [], count: 0 } })
         if (auth?.user.role !== 'ADMINISTRADOR' && auth?.user.role !== 'VENDEDOR') {
@@ -60,14 +64,22 @@ export function Comissions() {
     }, [])
 
     useEffect(() => {
-        const { user, to } = formData
-        const username = state.users.data.find(u => u.id === parseInt(user))?.username
-        if (user.toString().length > 0 && username) {
-            getCommissions(user)
-            getSales(`?&to=${new Date(to).toISOString()}&user=${username}`)
-        } else {
-            setCommissions([])
-        }
+        (async () => {
+            setLoadingTables(true)
+            const { user, to } = formData
+            const user_id = auth?.user.role === 'ADMINISTRADOR' ? user : auth?.user.id
+            const username = auth?.user.role === 'ADMINISTRADOR' ?
+                state.users.data.find(u => u.id === parseInt(user))?.username :
+                auth?.user.username
+            if (user.toString().length > 0 && username) {
+                await getCommissions(user_id)
+                await getSales(`?to=${new Date(to).toISOString()}${auth?.user.role === 'ADMINISTRADOR' ? `&user=${username}` : ''}`)
+                setLoadingTables(false)
+            } else {
+                setCommissions([])
+                setLoadingTables(false)
+            }
+        })()
     }, [formData, state.users.data])
 
     const commissionsHeadCells = [
@@ -77,6 +89,13 @@ export function Comissions() {
             disablePadding: true,
             label: 'Fecha corte',
             accessor: (row) => format(new Date(row.date), 'dd/MM/yyyy')
+        },
+        {
+            id: 'type',
+            numeric: false,
+            disablePadding: true,
+            label: 'Tipo',
+            accessor: (row) => row.type.replace('CUENTA_CORRIENTE', 'CTA CTE')
         },
         {
             id: 'value',
@@ -92,7 +111,7 @@ export function Comissions() {
             id: 'id',
             numeric: false,
             disablePadding: true,
-            label: 'N° bol.',
+            label: 'Bol.',
             accessor: 'id'
         },
         {
@@ -139,7 +158,7 @@ export function Comissions() {
                         <FormControl variant="standard" sx={{ width: "16.5%", color: "#59656b" }}>
                             <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
                                 <DatePicker
-                                    label="Fecha Inicio"
+                                    label="Inicio período"
                                     value={new Date(formData.from)}
                                     onChange={value => handleChange({
                                         target: {
@@ -153,7 +172,7 @@ export function Comissions() {
                         <FormControl variant="standard" sx={{ width: "16.5%", color: "#59656b" }}>
                             <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
                                 <DatePicker
-                                    label="Fecha Fin"
+                                    label="Fin período"
                                     value={new Date(formData.to)}
                                     onChange={value => handleChange({
                                         target: {
@@ -232,10 +251,32 @@ export function Comissions() {
                         Ver histórico
                     </Button>
                     <FormControl sx={{ width: '10%' }}>
-                        <InputLabel htmlFor="current">Actual</InputLabel>
+                        <InputLabel>Actual Cta. Cte.</InputLabel>
                         <Input
                             type="text"
-                            value={`${commissions[0]?.value ?? 0}%`}
+                            value={`${commissions.filter(c => {
+                                return new Date(c.date) < new Date(Date.now()) && c.type === 'CUENTA_CORRIENTE'
+                            })[0]?.value ?? 0}%`}
+                            disabled
+                        />
+                    </FormControl>
+                    <FormControl sx={{ width: '10%' }}>
+                        <InputLabel>Actual Contado</InputLabel>
+                        <Input
+                            type="text"
+                            value={`${commissions.filter(c => {
+                                return new Date(c.date) < new Date(Date.now()) && c.type === 'CONTADO'
+                            })[0]?.value ?? 0}%`}
+                            disabled
+                        />
+                    </FormControl>
+                    <FormControl sx={{ width: '10%' }}>
+                        <InputLabel>Actual Poxipol</InputLabel>
+                        <Input
+                            type="text"
+                            value={`${commissions.filter(c => {
+                                return new Date(c.date) < new Date(Date.now()) && c.type === 'POXIPOL'
+                            })[0]?.value ?? 0}%`}
                             disabled
                         />
                     </FormControl>
@@ -257,11 +298,44 @@ export function Comissions() {
                                         onChange={e => setNewCommissionValue(Math.abs(e.target.value))}
                                     />
                                 </FormControl>
+                                <FormControl
+                                    variant="standard"
+                                    sx={{
+                                        width: "20%",
+                                        color: "#59656b",
+                                        display: "flex",
+                                        alignItems: "start",
+                                        justifyContent: "center"
+                                    }}
+                                >
+                                    <InputLabel>Tipo</InputLabel>
+                                    <Select
+                                        labelId="type-select"
+                                        id="type"
+                                        value={newCommissionType}
+                                        disabled={newCommissionValue <= 0}
+                                        label="Tipo"
+                                        name="type"
+                                        onChange={(e) => setNewCommissionType(e.target.value)}
+                                        sx={{ width: "100%" }}
+                                    >
+                                        <MenuItem value="CUENTA_CORRIENTE">
+                                            CTA CTE
+                                        </MenuItem>
+                                        <MenuItem value="CONTADO">
+                                            CONTADO
+                                        </MenuItem>
+                                        <MenuItem value="POXIPOL">
+                                            POXIPOL
+                                        </MenuItem>
+                                    </Select>
+                                </FormControl>
                                 <FormControl variant="standard" sx={{ width: "30%", color: "#59656b" }}>
                                     <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
                                         <DatePicker
                                             label="Fecha de corte"
                                             value={new Date(newCommissionDate)}
+                                            disabled={newCommissionValue <= 0}
                                             onChange={value => setNewCommissionDate(new Date(value.toISOString()))}
                                         />
                                     </LocalizationProvider>
@@ -273,7 +347,8 @@ export function Comissions() {
                                     onClick={(e) => handleSubmit(e, {
                                         user_id: formData.user,
                                         value: newCommissionValue,
-                                        date: newCommissionDate
+                                        date: newCommissionDate,
+                                        type: newCommissionType
                                     })}
                                 >
                                     Agregar
@@ -310,7 +385,7 @@ export function Comissions() {
                 >
                     Boletas
                 </Typography>
-                {loadingUsers ?
+                {loadingUsers || loadingTables ?
                     <Box sx={{ width: '100%', p: 5 }}>
                         <LinearProgress />
                     </Box> :

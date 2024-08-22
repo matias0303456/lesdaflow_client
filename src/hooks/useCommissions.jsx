@@ -16,6 +16,7 @@ export function useCommissions() {
     const [open, setOpen] = useState(null)
     const [newCommissionValue, setNewCommissionValue] = useState(0)
     const [newCommissionDate, setNewCommissionDate] = useState(new Date(Date.now()))
+    const [newCommissionType, setNewCommissionType] = useState('CUENTA_CORRIENTE')
 
     async function getCommissions(user_id) {
         const { status, data } = await get(`/${user_id}`)
@@ -62,6 +63,7 @@ export function useCommissions() {
         setOpen(null)
         setNewCommissionValue(0)
         setNewCommissionDate(new Date(Date.now()))
+        setNewCommissionType('CUENTA_CORRIENTE')
     }
 
     return {
@@ -78,6 +80,8 @@ export function useCommissions() {
         setNewCommissionValue,
         handleCloseCommissions,
         newCommissionDate,
-        setNewCommissionDate
+        setNewCommissionDate,
+        newCommissionType,
+        setNewCommissionType
     }
 }
