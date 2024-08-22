@@ -82,7 +82,7 @@ export const nav_items = [
       {
         subtitle: "Comisiones",
         path: "/comisiones",
-        can_access: ['ADMINISTRADOR']
+        can_access: ['ADMINISTRADOR', 'VENDEDOR']
       }
     ],
     can_access: ['ADMINISTRADOR', 'CHOFER', 'VENDEDOR']
