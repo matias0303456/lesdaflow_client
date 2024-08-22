@@ -17,6 +17,25 @@ export function useCommissions() {
     const [newCommissionValue, setNewCommissionValue] = useState(0)
     const [newCommissionDate, setNewCommissionDate] = useState(new Date(Date.now()))
     const [newCommissionType, setNewCommissionType] = useState('CUENTA_CORRIENTE')
+    const [loadingTables, setLoadingTables] = useState(false)
+    const [calculations, setCalculations] = useState({
+        seller: '',
+        'CUENTA_CORRIENTE': {
+            sales: [],
+            total: 0,
+            commission: 0
+        },
+        'CONTADO': {
+            sales: [],
+            total: 0,
+            commission: 0
+        },
+        'POXIPOL': {
+            sales: [],
+            total: 0,
+            commission: 0
+        }
+    })
 
     async function getCommissions(user_id) {
         const { status, data } = await get(`/${user_id}`)
@@ -35,9 +54,9 @@ export function useCommissions() {
         const { status, data } = await post(formData)
         if (status === 200) {
             handleCloseCommissions()
-            setCommissions([data, ...commissions].sort((a,b) => {
-                if(a.date < b.date) return 1
-                if(a.date > b.date) return -1
+            setCommissions([data, ...commissions].sort((a, b) => {
+                if (a.date < b.date) return 1
+                if (a.date > b.date) return -1
                 return 0
             }))
             setMessage('Valor creado correctamente.')
@@ -63,11 +82,22 @@ export function useCommissions() {
         setOpen(null)
     }
 
-    const handleCloseCommissions = () => {
+    async function handleCloseCommissions() {
         setOpen(null)
         setNewCommissionValue(0)
         setNewCommissionDate(new Date(Date.now()))
         setNewCommissionType('CUENTA_CORRIENTE')
+    }
+
+    async function handleCalculateCommissions({ to, user_id }) {
+        const { status, data } = await get(`/calculate-commissions/${to.toISOString()}/${user_id}`)
+        if (status === 200) {
+            setCalculations(data)
+        } else {
+            setMessage(data.message)
+            setSeverity('error')
+            setOpenMessage(true)
+        }
     }
 
     return {
@@ -86,6 +116,11 @@ export function useCommissions() {
         newCommissionDate,
         setNewCommissionDate,
         newCommissionType,
-        setNewCommissionType
+        setNewCommissionType,
+        loadingTables,
+        setLoadingTables,
+        handleCalculateCommissions,
+        calculations,
+        setCalculations
     }
 }

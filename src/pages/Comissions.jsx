@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -12,7 +12,6 @@ import { DataContext } from "../providers/DataProvider";
 import { useForm } from "../hooks/useForm";
 import { useUsers } from "../hooks/useUsers";
 import { useCommissions } from "../hooks/useCommissions";
-import { useSales } from "../hooks/useSales";
 
 import { Layout } from "../components/common/Layout";
 import { DataGridWithFrontendPagination } from "../components/datagrid/DataGridWithFrontendPagination";
@@ -23,7 +22,7 @@ import { getSaleTotal } from "../utils/helpers";
 export function Comissions() {
 
     const { auth } = useContext(AuthContext)
-    const { state, dispatch } = useContext(DataContext)
+    const { state } = useContext(DataContext)
 
     const navigate = useNavigate()
 
@@ -40,47 +39,71 @@ export function Comissions() {
         newCommissionDate,
         setNewCommissionDate,
         newCommissionType,
-        setNewCommissionType
+        setNewCommissionType,
+        loadingTables,
+        setLoadingTables,
+        calculations,
+        setCalculations,
+        handleCalculateCommissions
     } = useCommissions()
-    const { getSales } = useSales()
-    const { getUsers, loadingUsers } = useUsers()
+    const { getUsers } = useUsers()
     const { formData, handleChange } = useForm({
         defaultData: {
-            from: new Date(Date.now()),
+            // from: new Date(Date.now()),
             to: new Date(Date.now()),
             user: auth?.user.role !== 'ADMINISTRADOR' ? auth?.user.name : ''
         }
     });
 
-    const [loadingTables, setLoadingTables] = useState(false)
-
     useEffect(() => {
-        dispatch({ type: 'SALES', payload: { ...state.sales, data: [], count: 0 } })
         if (auth?.user.role !== 'ADMINISTRADOR' && auth?.user.role !== 'VENDEDOR') {
             navigate('/prep-ventas')
-        } else {
+        } else if (auth?.user.role === 'ADMINISTRADOR') {
             getUsers()
         }
     }, [])
 
     useEffect(() => {
         (async () => {
-            setLoadingTables(true)
-            const { user, to } = formData
-            const user_id = auth?.user.role === 'ADMINISTRADOR' ? user : auth?.user.id
-            const username = auth?.user.role === 'ADMINISTRADOR' ?
-                state.users.data.find(u => u.id === parseInt(user))?.username :
-                auth?.user.username
-            if (user.toString().length > 0 && username) {
+            const user_id = auth?.user.role === 'ADMINISTRADOR' ? formData.user : auth?.user.id
+            if (formData.user.toString().length > 0) {
                 await getCommissions(user_id)
-                await getSales(`?to=${new Date(to).toISOString()}${auth?.user.role === 'ADMINISTRADOR' ? `&user=${username}` : ''}`)
-                setLoadingTables(false)
             } else {
                 setCommissions([])
                 setLoadingTables(false)
+                setCalculations({
+                    seller: '',
+                    'CUENTA_CORRIENTE': {
+                        sales: [],
+                        total: 0,
+                        commission: 0
+                    },
+                    'CONTADO': {
+                        sales: [],
+                        total: 0,
+                        commission: 0
+                    },
+                    'POXIPOL': {
+                        sales: [],
+                        total: 0,
+                        commission: 0
+                    }
+                })
             }
         })()
-    }, [formData, state.users.data])
+    }, [formData])
+
+    useEffect(() => {
+        (async () => {
+            setLoadingTables(true)
+            const { user, to } = formData
+            if (formData.user.toString().length > 0) {
+                const user_id = auth?.user.role === 'ADMINISTRADOR' ? user : auth?.user.id
+                await handleCalculateCommissions({ to, user_id })
+            }
+            setLoadingTables(false)
+        })()
+    }, [formData, commissions])
 
     const commissionsHeadCells = [
         {
@@ -148,7 +171,7 @@ export function Comissions() {
                 </Typography>
                 <form className="mb-3">
                     <Box sx={{ display: "flex", alignItems: "end", justifyContent: "start", gap: 2, padding: 2 }}>
-                        <FormControl variant="standard" sx={{ width: "16.5%", color: "#59656b" }}>
+                        {/* <FormControl variant="standard" sx={{ width: "16.5%", color: "#59656b" }}>
                             <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
                                 <DatePicker
                                     label="Inicio período"
@@ -161,11 +184,11 @@ export function Comissions() {
                                     })}
                                 />
                             </LocalizationProvider>
-                        </FormControl>
+                        </FormControl> */}
                         <FormControl variant="standard" sx={{ width: "16.5%", color: "#59656b" }}>
                             <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
                                 <DatePicker
-                                    label="Fin período"
+                                    label="Fecha"
                                     value={new Date(formData.to)}
                                     onChange={value => handleChange({
                                         target: {
@@ -402,7 +425,7 @@ export function Comissions() {
                 >
                     Boletas
                 </Typography>
-                {loadingUsers || loadingTables ?
+                {loadingTables ?
                     <Box sx={{ width: '100%', p: 5 }}>
                         <LinearProgress />
                     </Box> :
@@ -420,10 +443,16 @@ export function Comissions() {
                             </Typography>
                             <DataGridWithFrontendPagination
                                 headCells={salesHeadCells}
-                                rows={state.sales.data.filter(s => s.type === 'CUENTA_CORRIENTE')}
+                                rows={calculations['CUENTA_CORRIENTE'].sales}
                                 minWidth={0}
                                 labelRowsPerPage="Reg. Página"
                             />
+                            <Typography variant="h6" align="right">
+                                Total: {calculations['CUENTA_CORRIENTE'].total}
+                            </Typography>
+                            <Typography variant="h6" align="right">
+                                Comisión: {calculations['CUENTA_CORRIENTE'].commission}
+                            </Typography>
                         </Box>
                         <Box sx={{ width: { xs: '100%', lg: '30%' } }}>
                             <Typography variant="h6">
@@ -431,10 +460,16 @@ export function Comissions() {
                             </Typography>
                             <DataGridWithFrontendPagination
                                 headCells={salesHeadCells}
-                                rows={state.sales.data.filter(s => s.type === 'CONTADO')}
+                                rows={calculations['CONTADO'].sales}
                                 minWidth={0}
                                 labelRowsPerPage="Reg. Página"
                             />
+                            <Typography variant="h6" align="right">
+                                Total: {calculations['CONTADO'].total}
+                            </Typography>
+                            <Typography variant="h6" align="right">
+                                Comisión: {calculations['CONTADO'].commission}
+                            </Typography>
                         </Box>
                         <Box sx={{ width: { xs: '100%', lg: '30%' } }}>
                             <Typography variant="h6">
@@ -442,10 +477,16 @@ export function Comissions() {
                             </Typography>
                             <DataGridWithFrontendPagination
                                 headCells={salesHeadCells}
-                                rows={state.sales.data.filter(s => s.type === 'POXIPOL')}
+                                rows={calculations['POXIPOL'].sales}
                                 minWidth={0}
                                 labelRowsPerPage="Reg. Página"
                             />
+                            <Typography variant="h6" align="right">
+                                Total: {calculations['POXIPOL'].total}
+                            </Typography>
+                            <Typography variant="h6" align="right">
+                                Comisión: {calculations['POXIPOL'].commission}
+                            </Typography>
                         </Box>
                     </Box>
                 }
