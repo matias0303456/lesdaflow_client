@@ -107,7 +107,7 @@ export function AddProductsToSale({
                             <TableCell align="center">Detalle</TableCell>
                             <TableCell align="center">Cantidad</TableCell>
                             <TableCell align="center">Precio</TableCell>
-                            <TableCell align="center">Stock</TableCell>
+                            {open !== 'VIEW' && <TableCell align="center">Stock</TableCell>}
                             <TableCell align="center">Total det.</TableCell>
                             {(open === 'NEW' || open === 'EDIT' || open === 'CONVERT') && <TableCell align="center"></TableCell>}
                         </TableRow>
@@ -140,9 +140,9 @@ export function AddProductsToSale({
                                                 inputRef={el => inputRefs.current[sp.product_id] = el} // Asignar referencia al input
                                             />
                                         </TableCell>
-                                        <TableCell>${getProductSalePrice(p).toFixed(2)}</TableCell>
-                                        <TableCell>{getStock(p)}</TableCell>
-                                        <TableCell>${(currentAmount * getProductSalePrice(p)).toFixed(2)}</TableCell>
+                                        <TableCell>${getProductSalePrice(sp.earn && sp.buy_price ? sp : p).toFixed(2)}</TableCell>
+                                        {open !== 'VIEW' && <TableCell>{getStock(p)}</TableCell>}
+                                        <TableCell>${(currentAmount * getProductSalePrice(sp.earn && sp.buy_price ? sp : p)).toFixed(2)}</TableCell>
                                         {(open === 'NEW' || open === 'CONVERT' || (open === 'EDIT' && auth?.user.role === 'ADMINISTRADOR')) &&
                                             <TableCell align="center">
                                                 <Button type="button" onClick={() => handleDeleteProduct(sp.id, p.id)}>
