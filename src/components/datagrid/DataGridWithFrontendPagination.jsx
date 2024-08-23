@@ -39,7 +39,7 @@ export function DataGridWithFrontendPagination({
     const [order, setOrder] = useState(defaultOrder);
     const [orderBy, setOrderBy] = useState(defaultOrderBy);
     const [page, setPage] = useState(0);
-    const [rowsPerPage, setRowsPerPage] = useState(5);
+    const [rowsPerPage, setRowsPerPage] = useState(25);
 
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';
