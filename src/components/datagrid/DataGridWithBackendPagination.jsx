@@ -26,7 +26,7 @@ import { DataContext } from '../../providers/DataProvider'
 
 import { EnhancedTableHead } from './EnhancedTableHead'
 
-import { deadlineIsPast, getStock, saleIsCanceled, saleIsPrepared } from '../../utils/helpers'
+import { deadlineIsPast, getStock, saleIsPrepared } from '../../utils/helpers'
 import { getComparator, stableSort } from '../../utils/dataGrid'
 import { debounce } from 'lodash'
 
@@ -222,9 +222,7 @@ export function DataGridWithBackendPagination({
                                 <>
                                   {(entityKey !== 'sales' ||
                                     (showSettingsAction === 'Preparar venta' && !saleIsPrepared(row)) ||
-                                    (showSettingsAction === 'Registrar entrega' && !row.is_delivered) ||
-                                    (showSettingsAction === 'Registrar cancelación' && !saleIsCanceled(row))
-                                  ) &&
+                                    (showSettingsAction === 'Registrar entrega' && !row.is_delivered)) &&
                                     <Tooltip
                                       title={showSettingsAction}
                                       onClick={() => {

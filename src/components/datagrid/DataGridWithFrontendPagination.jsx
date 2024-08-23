@@ -33,7 +33,9 @@ export function DataGridWithFrontendPagination({
     showEditAction = false,
     showViewAction = false,
     showSettingsAction = false,
-    showDeleteAction = false
+    showDeleteAction = false,
+    minWidth = 750,
+    labelRowsPerPage = "Registros por página"
 }) {
 
     const [order, setOrder] = useState(defaultOrder);
@@ -68,13 +70,15 @@ export function DataGridWithFrontendPagination({
     );
     return (
         <Box sx={{ width: '100%', backgroundColor: '#fff' }}>
-            <Box sx={{ marginBottom: 3 }}>
-                {contentHeader}
-            </Box>
+            {contentHeader &&
+                <Box sx={{ marginBottom: 3 }}>
+                    {contentHeader}
+                </Box>
+            }
             <Paper sx={{ width: '100%', mb: 2 }}>
                 <TableContainer>
                     <Table
-                        sx={{ minWidth: 750, fontWeight: "bold" }}
+                        sx={{ minWidth, fontWeight: "bold" }}
                         aria-labelledby="tableTitle"
                         size="small"
                     >
@@ -239,7 +243,7 @@ export function DataGridWithFrontendPagination({
                     component="div"
                     count={rows.length}
                     rowsPerPage={rowsPerPage}
-                    labelRowsPerPage="Registros por página"
+                    labelRowsPerPage={labelRowsPerPage}
                     labelDisplayedRows={({ from, to, count }) => `${from}–${to} de ${count}`}
                     page={page}
                     onPageChange={handleChangePage}

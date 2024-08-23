@@ -18,7 +18,7 @@ import { DataGridWithBackendPagination } from "../components/datagrid/DataGridWi
 import { SaleForm } from "../components/commercial/SaleForm";
 
 import { REPORT_URL } from "../utils/urls";
-import { deadlineIsPast, getCommissionValueBySale, getSaleDifference, getSaleTotal } from "../utils/helpers";
+import { deadlineIsPast, getSaleDifference, getSaleTotal } from "../utils/helpers";
 
 export function Sales() {
 
@@ -174,14 +174,6 @@ export function Sales() {
             label: 'Entregado',
             sorter: (row) => row.is_delivered ? 1 : 0,
             accessor: (row) => row.is_delivered ? 'Sí' : 'No'
-        },
-        {
-            id: 'commission',
-            numeric: false,
-            disablePadding: true,
-            label: 'Com. actual',
-            sorter: (row) => `$${getCommissionValueBySale(row, state.users.data.find(u => u.username === row.created_by))}`,
-            accessor: (row) => `$${getCommissionValueBySale(row, state.users.data.find(u => u.username === row.created_by))}`
         }
     ]
 

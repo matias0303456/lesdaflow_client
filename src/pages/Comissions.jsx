@@ -1,20 +1,24 @@
 import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Box, Button, Checkbox, FormControlLabel, Typography } from "@mui/material";
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import es from 'date-fns/locale/es';
+import { Box, Button, FormControl, Input, InputLabel, MenuItem, Select, Typography } from "@mui/material";
 import { format } from "date-fns";
 
 import { AuthContext } from "../providers/AuthProvider";
 import { DataContext } from "../providers/DataProvider";
 import { useForm } from "../hooks/useForm";
+import { useUsers } from "../hooks/useUsers";
+import { useCommissions } from "../hooks/useCommissions";
 
 import { Layout } from "../components/common/Layout";
-import { DataGridWithBackendPagination } from "../components/datagrid/DataGridWithBackendPagination";
-
-import { usePayments } from "../hooks/usePayments";
-import { getCommissionValueByPayment } from "../utils/helpers";
-import { useUsers } from "../hooks/useUsers";
+import { DataGridWithFrontendPagination } from "../components/datagrid/DataGridWithFrontendPagination";
 import { ModalComponent } from "../components/common/ModalComponent";
-import { PaymentFilter } from "../components/filters/PaymentFilter";
+
+import { getSaleTotal } from "../utils/helpers";
+import { REPORT_URL } from "../utils/urls";
 
 export function Comissions() {
 
@@ -23,133 +27,472 @@ export function Comissions() {
 
     const navigate = useNavigate()
 
-    const { getPayments, cancelPayment, loadingPayments, open, setOpen } = usePayments()
-    const { getUsers, loadingUsers } = useUsers()
-    const { formData, setFormData, disabled } = useForm({ defaultData: {}, rules: {} })
+    const {
+        getCommissions,
+        commissions,
+        open,
+        setOpen,
+        newCommissionValue,
+        setNewCommissionValue,
+        handleSubmit,
+        setCommissions,
+        handleCloseCommissions,
+        newCommissionDate,
+        setNewCommissionDate,
+        newCommissionType,
+        setNewCommissionType,
+        calculations,
+        setCalculations,
+        handleCalculateCommissions
+    } = useCommissions()
+    const { getUsers } = useUsers()
+    const { formData, handleChange } = useForm({
+        defaultData: {
+            from: new Date(Date.now()),
+            to: new Date(Date.now()),
+            user: auth?.user.role !== 'ADMINISTRADOR' ? auth?.user.name : ''
+        }
+    });
 
     useEffect(() => {
-        if (auth?.user.role !== 'ADMINISTRADOR') {
-            navigate(auth?.user.role === 'CHOFER' ? '/prep-ventas' : "/productos")
-        } else {
+        if (auth?.user.role !== 'ADMINISTRADOR' && auth?.user.role !== 'VENDEDOR') {
+            navigate('/prep-ventas')
+        } else if (auth?.user.role === 'ADMINISTRADOR') {
             getUsers()
         }
     }, [])
 
-    const headCells = [
+    useEffect(() => {
+        (async () => {
+            const user_id = auth?.user.role === 'ADMINISTRADOR' ? formData.user : auth?.user.id
+            if (formData.user.toString().length > 0) {
+                await getCommissions(user_id)
+            } else {
+                setCommissions([])
+                setCalculations({
+                    seller: '',
+                    'CUENTA_CORRIENTE': {
+                        sales: [],
+                        total: 0,
+                        commission: 0
+                    },
+                    'CONTADO': {
+                        sales: [],
+                        total: 0,
+                        commission: 0
+                    },
+                    'POXIPOL': {
+                        sales: [],
+                        total: 0,
+                        commission: 0
+                    }
+                })
+            }
+        })()
+    }, [formData])
+
+    useEffect(() => {
+        (async () => {
+            const { user, to } = formData
+            if (user.toString().length > 0) {
+                const user_id = auth?.user.role === 'ADMINISTRADOR' ? user : auth?.user.id
+                await handleCalculateCommissions({ to, user_id })
+            }
+        })()
+    }, [formData, commissions])
+
+    const commissionsHeadCells = [
+        {
+            id: 'date',
+            numeric: false,
+            disablePadding: true,
+            label: 'Fecha corte',
+            accessor: (row) => format(new Date(row.date), 'dd/MM/yyyy')
+        },
+        {
+            id: 'value',
+            numeric: false,
+            disablePadding: true,
+            label: 'Valor',
+            accessor: (row) => `${row.value}%`
+        },
+    ]
+
+    const salesHeadCells = [
         {
             id: 'id',
             numeric: false,
             disablePadding: true,
-            label: 'N° pago',
+            label: 'Bol.',
             accessor: 'id'
         },
         {
-            id: 'sale_id',
+            id: 'client',
             numeric: false,
             disablePadding: true,
-            label: 'N° venta',
-            accessor: 'sale_id'
-        },
-        {
-            id: "date",
-            numeric: false,
-            disablePadding: true,
-            label: "Fecha",
-            accessor: (row) => format(new Date(row.date), 'dd/MM/yy')
+            label: 'Cliente',
+            accessor: (row) => (
+                <Box>
+                    <Typography variant="body1">{row.client.first_name} {row.client.last_name}</Typography>
+                    <Typography variant="body2">{row.client.work_place}</Typography>
+                </Box>
+            )
         },
         {
             id: 'amount',
             numeric: false,
             disablePadding: true,
-            label: 'Importe',
-            accessor: (row) => `$${row.amount}`
-        },
-        {
-            id: 'type',
-            numeric: false,
-            disablePadding: true,
-            label: 'Tipo pago',
-            accessor: 'type'
-        },
-        {
-            id: 'sale_type',
-            numeric: false,
-            disablePadding: true,
-            label: 'Tipo vta.',
-            sorter: (row) => row.sale.type.replace('CUENTA_CORRIENTE', 'CTA CTE'),
-            accessor: (row) => row.sale.type.replace('CUENTA_CORRIENTE', 'CTA CTE')
-        },
-        {
-            id: 'observations',
-            numeric: false,
-            disablePadding: true,
-            label: 'Observaciones',
-            sorter: (row) => row.observations ?? '',
-            accessor: 'observations'
-        },
-        {
-            id: 'created_by',
-            numeric: false,
-            disablePadding: true,
-            label: 'Registrado por',
-            accessor: 'created_by'
-        },
-        {
-            id: 'commission',
-            numeric: false,
-            disablePadding: true,
-            label: 'Comisión',
-            sorter: (row) => getCommissionValueByPayment(row, state.users.data.find(u => u.username === row.created_by)),
-            accessor: (row) => `$${getCommissionValueByPayment(row, state.users.data.find(u => u.username === row.created_by))}`
-        },
-        {
-            id: 'is_canceled',
-            numeric: false,
-            disablePadding: true,
-            label: 'Cancelado',
-            sorter: (row) => row.is_canceled ? 1 : 0,
-            accessor: (row) => (
-                <Box sx={{ textAlign: 'center' }}>
-                    <FormControlLabel
-                        control={<Checkbox />}
-                        checked={row.is_canceled}
-                        onChange={e => {
-                            setFormData({
-                                ...row,
-                                is_canceled: e.target.checked
-                            })
-                            setOpen(true)
-                        }}
-                    />
-                </Box>
-            )
+            label: 'Monto',
+            accessor: (row) => getSaleTotal(row)
         }
     ]
 
     return (
         <Layout title="Comisiones">
-            <DataGridWithBackendPagination
-                loading={loadingPayments || loadingUsers || disabled}
-                headCells={headCells}
-                rows={state.payments.data}
-                entityKey="payments"
-                getter={getPayments}
-                setFormData={setFormData}
-                contentHeader={<PaymentFilter />}
-            />
-            <ModalComponent open={open} onClose={() => setOpen(null)} reduceWidth={900}>
-                <Typography variant="h6" align="center" marginBottom={2}>
-                    {`Se marcará el pago n° ${formData.id} como ${formData.is_canceled ? '' : 'no'} cancelado.`}
+            <Box className="w-[100%]" sx={{ backgroundColor: '#fff' }}>
+                <Typography
+                    variant="h6"
+                    sx={{
+                        width: "100%",
+                        fontSize: "14px",
+                        color: "white",
+                        paddingX: "10px",
+                        paddingY: "5px",
+                        backgroundColor: "#078BCD",
+                        borderRadius: "2px",
+                        fontWeight: "bold",
+                    }}
+                >
+                    Filtros
                 </Typography>
-                <Box sx={{ display: 'flex', gap: 1, justifyContent: 'center' }}>
-                    <Button type="button" variant="outlined" onClick={() => setOpen(null)}>
-                        Cancelar
+                <form className="mb-3">
+                    <Box sx={{ display: "flex", alignItems: "end", justifyContent: "start", gap: 2, padding: 2 }}>
+                        <FormControl variant="standard" sx={{ width: "16.5%", color: "#59656b" }}>
+                            <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
+                                <DatePicker
+                                    label="Inicio período"
+                                    value={new Date(formData.from)}
+                                    onChange={value => handleChange({
+                                        target: {
+                                            name: 'from',
+                                            value: new Date(value.toISOString())
+                                        }
+                                    })}
+                                />
+                            </LocalizationProvider>
+                        </FormControl>
+                        <FormControl variant="standard" sx={{ width: "16.5%", color: "#59656b" }}>
+                            <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
+                                <DatePicker
+                                    label="Fecha"
+                                    value={new Date(formData.to)}
+                                    onChange={value => handleChange({
+                                        target: {
+                                            name: 'to',
+                                            value: new Date(value.toISOString())
+                                        }
+                                    })}
+                                />
+                            </LocalizationProvider>
+                        </FormControl>
+                        <FormControl
+                            variant="standard"
+                            sx={{
+                                width: "20%",
+                                color: "#59656b",
+                                display: "flex",
+                                alignItems: "start",
+                                justifyContent: "center"
+                            }}
+                        >
+                            <InputLabel>Vendedor</InputLabel>
+                            <Select
+                                labelId="seller-select"
+                                id="user"
+                                value={auth?.user.role === 'ADMINISTRADOR' ? formData.user : auth?.user.id}
+                                disabled={auth?.user.role !== 'ADMINISTRADOR'}
+                                label="Vendedor"
+                                name="user"
+                                onChange={handleChange}
+                                sx={{ width: "100%" }}
+                            >
+                                {auth?.user.role === 'ADMINISTRADOR' ? (
+                                    [
+                                        <MenuItem value="" key="select">Seleccione</MenuItem>,
+                                        ...(state.users.data.filter(u => u.role === 'VENDEDOR').length > 0
+                                            ? state.users.data.filter(u => u.role === 'VENDEDOR').map((u) => (
+                                                <MenuItem key={u.id} value={u.id}>
+                                                    {`${u.name}`.toUpperCase()}
+                                                </MenuItem>
+                                            ))
+                                            : [<MenuItem key="no-results">No se encontraron resultados</MenuItem>])
+                                    ]
+                                ) : (
+                                    <MenuItem value={auth?.user.id} key={auth?.user.id}>
+                                        {`${auth?.user.name}`.toUpperCase()}
+                                    </MenuItem>
+                                )}
+                            </Select>
+                        </FormControl>
+                        <Button
+                            variant="outlined"
+                            color='error'
+                            disabled={formData.user.toString().length === 0}
+                            onClick={() => {
+                                const { user, from, to } = formData
+                                const user_id = auth?.user.role === 'ADMINISTRADOR' ? user : auth?.user.id
+                                window.open(`${REPORT_URL}/calculate-commissions?token=${auth?.token}&user_id=${user_id}&from=${from.toISOString()}&to=${to.toISOString()}`, '_blank')
+                            }}>
+                            PDF
+                        </Button>
+                    </Box>
+                </form>
+            </Box>
+            <Box className="w-[100%]">
+                <Typography
+                    variant="h6"
+                    sx={{
+                        width: "100%",
+                        fontSize: "14px",
+                        color: "white",
+                        paddingX: "10px",
+                        paddingY: "5px",
+                        backgroundColor: "#078BCD",
+                        borderRadius: "2px",
+                        fontWeight: "bold",
+                    }}
+                >
+                    Valores
+                </Typography>
+                <Box sx={{ display: 'flex', gap: 3, alignItems: 'start', my: 1, mt: 2 }}>
+                    <Button
+                        type="button"
+                        variant="contained"
+                        onClick={() => setOpen('HISTORIC')}
+                        disabled={formData.user.toString().length === 0}
+                    >
+                        Ver histórico
                     </Button>
-                    <Button type="button" variant="contained" onClick={() => cancelPayment(formData)}>
-                        Confirmar
-                    </Button>
+                    <FormControl sx={{ width: '10%' }}>
+                        <InputLabel>Actual Cta. Cte.</InputLabel>
+                        <Input
+                            type="text"
+                            value={`${commissions.filter(c => {
+                                return new Date(c.date) < new Date(Date.now()) && c.type === 'CUENTA_CORRIENTE'
+                            })[0]?.value ?? 0}%`}
+                            disabled
+                        />
+                    </FormControl>
+                    <FormControl sx={{ width: '10%' }}>
+                        <InputLabel>Actual Contado</InputLabel>
+                        <Input
+                            type="text"
+                            value={`${commissions.filter(c => {
+                                return new Date(c.date) < new Date(Date.now()) && c.type === 'CONTADO'
+                            })[0]?.value ?? 0}%`}
+                            disabled
+                        />
+                    </FormControl>
+                    <FormControl sx={{ width: '10%' }}>
+                        <InputLabel>Actual Poxipol</InputLabel>
+                        <Input
+                            type="text"
+                            value={`${commissions.filter(c => {
+                                return new Date(c.date) < new Date(Date.now()) && c.type === 'POXIPOL'
+                            })[0]?.value ?? 0}%`}
+                            disabled
+                        />
+                    </FormControl>
                 </Box>
-            </ModalComponent>
+                <ModalComponent open={open === 'HISTORIC'} onClose={handleCloseCommissions} reduceWidth={100}>
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', flexWrap: 'wrap' }}>
+                        <Typography variant="h6" sx={{ marginBottom: 2 }}>
+                            {`Historial de comisiones - ${commissions[0]?.user?.name ?? ''}`}
+                        </Typography>
+                        {auth?.user.role === 'ADMINISTRADOR' &&
+                            <Box sx={{ display: 'flex', gap: 2, alignItems: 'start', justifyContent: 'end' }}>
+                                <FormControl sx={{ width: '30%' }}>
+                                    <InputLabel htmlFor="current">Nuevo valor</InputLabel>
+                                    <Input
+                                        type="number"
+                                        id="value"
+                                        name="value"
+                                        value={newCommissionValue}
+                                        onChange={e => setNewCommissionValue(Math.abs(e.target.value))}
+                                    />
+                                </FormControl>
+                                <FormControl
+                                    variant="standard"
+                                    sx={{
+                                        width: "20%",
+                                        color: "#59656b",
+                                        display: "flex",
+                                        alignItems: "start",
+                                        justifyContent: "center"
+                                    }}
+                                >
+                                    <InputLabel>Tipo</InputLabel>
+                                    <Select
+                                        labelId="type-select"
+                                        id="type"
+                                        value={newCommissionType}
+                                        disabled={newCommissionValue <= 0}
+                                        label="Tipo"
+                                        name="type"
+                                        onChange={(e) => setNewCommissionType(e.target.value)}
+                                        sx={{ width: "100%" }}
+                                    >
+                                        <MenuItem value="CUENTA_CORRIENTE">
+                                            CTA CTE
+                                        </MenuItem>
+                                        <MenuItem value="CONTADO">
+                                            CONTADO
+                                        </MenuItem>
+                                        <MenuItem value="POXIPOL">
+                                            POXIPOL
+                                        </MenuItem>
+                                    </Select>
+                                </FormControl>
+                                <FormControl variant="standard" sx={{ width: "30%", color: "#59656b" }}>
+                                    <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
+                                        <DatePicker
+                                            label="Fecha de corte"
+                                            value={new Date(newCommissionDate)}
+                                            disabled={newCommissionValue <= 0}
+                                            onChange={value => setNewCommissionDate(new Date(value.toISOString()))}
+                                        />
+                                    </LocalizationProvider>
+                                </FormControl>
+                                <Button
+                                    variant="outlined"
+                                    sx={{ width: '20%' }}
+                                    disabled={newCommissionValue <= 0}
+                                    onClick={(e) => handleSubmit(e, {
+                                        user_id: formData.user,
+                                        value: newCommissionValue,
+                                        date: newCommissionDate,
+                                        type: newCommissionType
+                                    })}
+                                >
+                                    Agregar
+                                </Button>
+                            </Box>
+                        }
+                    </Box>
+                    <Box sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', my: 2, gap: 1 }}>
+                        <Box sx={{ width: { xs: '100%', lg: '32.7%' } }}>
+                            <Typography align="center">CUENTA CORRIENTE</Typography>
+                            <DataGridWithFrontendPagination
+                                headCells={commissionsHeadCells}
+                                rows={commissions.filter(c => c.type === 'CUENTA_CORRIENTE')}
+                                defaultOrderBy="date"
+                                minWidth={0}
+                                labelRowsPerPage="Reg. Página"
+                            />
+                        </Box>
+                        <Box sx={{ width: { xs: '100%', lg: '32.7%' } }}>
+                            <Typography align="center">CONTADO</Typography>
+                            <DataGridWithFrontendPagination
+                                headCells={commissionsHeadCells}
+                                rows={commissions.filter(c => c.type === 'CONTADO')}
+                                defaultOrderBy="date"
+                                minWidth={0}
+                                labelRowsPerPage="Reg. Página"
+                            />
+                        </Box>
+                        <Box sx={{ width: { xs: '100%', lg: '32.7%' } }}>
+                            <Typography align="center">POXIPOL</Typography>
+                            <DataGridWithFrontendPagination
+                                headCells={commissionsHeadCells}
+                                rows={commissions.filter(c => c.type === 'POXIPOL')}
+                                defaultOrderBy="date"
+                                minWidth={0}
+                                labelRowsPerPage="Reg. Página"
+                            />
+                        </Box>
+                    </Box>
+                    <Button variant="outlined" onClick={handleCloseCommissions} sx={{ float: 'right' }}>
+                        Cerrar
+                    </Button>
+                </ModalComponent>
+            </Box>
+            <Box className="w-[100%]">
+                <Typography
+                    variant="h6"
+                    sx={{
+                        width: "100%",
+                        fontSize: "14px",
+                        color: "white",
+                        paddingX: "10px",
+                        paddingY: "5px",
+                        backgroundColor: "#078BCD",
+                        borderRadius: "2px",
+                        fontWeight: "bold",
+                    }}
+                >
+                    Boletas
+                </Typography>
+                <Box sx={{
+                    display: 'flex',
+                    alignItems: 'start',
+                    justifyContent: 'center',
+                    flexWrap: 'wrap',
+                    mt: 1,
+                    gap: { xs: 1, lg: 3 }
+                }}>
+                    <Box sx={{ width: { xs: '100%', lg: '30%' } }}>
+                        <Typography variant="h6">
+                            Cuentas corrientes
+                        </Typography>
+                        <DataGridWithFrontendPagination
+                            headCells={salesHeadCells}
+                            rows={calculations['CUENTA_CORRIENTE'].sales}
+                            minWidth={0}
+                            labelRowsPerPage="Reg. Página"
+                        />
+                        <Typography variant="h6" align="right">
+                            Total: {calculations['CUENTA_CORRIENTE'].total}
+                        </Typography>
+                        <Typography variant="h6" align="right">
+                            Comisión: {calculations['CUENTA_CORRIENTE'].commission}
+                        </Typography>
+                    </Box>
+                    <Box sx={{ width: { xs: '100%', lg: '30%' } }}>
+                        <Typography variant="h6">
+                            Contado
+                        </Typography>
+                        <DataGridWithFrontendPagination
+                            headCells={salesHeadCells}
+                            rows={calculations['CONTADO'].sales}
+                            minWidth={0}
+                            labelRowsPerPage="Reg. Página"
+                        />
+                        <Typography variant="h6" align="right">
+                            Total: {calculations['CONTADO'].total}
+                        </Typography>
+                        <Typography variant="h6" align="right">
+                            Comisión: {calculations['CONTADO'].commission}
+                        </Typography>
+                    </Box>
+                    <Box sx={{ width: { xs: '100%', lg: '30%' } }}>
+                        <Typography variant="h6">
+                            Poxipol
+                        </Typography>
+                        <DataGridWithFrontendPagination
+                            headCells={salesHeadCells}
+                            rows={calculations['POXIPOL'].sales}
+                            minWidth={0}
+                            labelRowsPerPage="Reg. Página"
+                        />
+                        <Typography variant="h6" align="right">
+                            Total: {calculations['POXIPOL'].total}
+                        </Typography>
+                        <Typography variant="h6" align="right">
+                            Comisión: {calculations['POXIPOL'].commission}
+                        </Typography>
+                    </Box>
+                </Box>
+            </Box>
         </Layout>
     )
 }
