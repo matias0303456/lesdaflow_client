@@ -23,7 +23,8 @@ export function FirstSection({
     openSettlement,
     setOpenSettlement,
     handleCloseSettlement,
-    createSettlement
+    createSettlement,
+    handleCalculateCommissions
 }) {
 
     const { auth } = useContext(AuthContext)
@@ -188,7 +189,7 @@ export function FirstSection({
                             <TableRow>
                                 <TableCell align="center">
                                     <Typography variant="body2">
-                                        N° BOLETAS
+                                        BOLETAS
                                     </Typography>
                                     <Typography variant="caption" color="#F00">
                                         (No podrán volver a editarse)
@@ -233,7 +234,7 @@ export function FirstSection({
                         type="button"
                         variant="contained"
                         sx={{ width: '35%' }}
-                        onClick={() => createSettlement()}
+                        onClick={() => createSettlement(handleCalculateCommissions)}
                     >
                         Confirmar
                     </Button>

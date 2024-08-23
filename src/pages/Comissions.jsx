@@ -112,6 +112,10 @@ export function Comissions() {
                 setOpenSettlement={setOpenSettlement}
                 handleCloseSettlement={handleCloseSettlement}
                 createSettlement={createSettlement}
+                handleCalculateCommissions={() => {
+                    const { user, from, to } = formData
+                    handleCalculateCommissions({ user_id: user, from, to })
+                }}
             />
             <SecondSection
                 formData={formData}

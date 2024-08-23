@@ -40,16 +40,17 @@ export function useSettlements() {
         }
     }
 
-    async function createSettlement() {
+    async function createSettlement(handleCalculateCommissions) {
         const { status, data } = await post(newSettlement)
         if (status === 200) {
-            console.log(data)
-            setOpen(null)
+            setSeverity('success')
+            handleCalculateCommissions()
+            handleCloseSettlement()
         } else {
-            setMessage(data.message)
             setSeverity('error')
-            setOpenMessage(true)
         }
+        setMessage(data.message)
+        setOpenMessage(true)
     }
 
     function handleCloseSettlement() {
