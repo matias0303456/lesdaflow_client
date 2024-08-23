@@ -241,7 +241,7 @@ export function Comissions() {
                             onClick={() => {
                                 const { user, from, to } = formData
                                 const user_id = auth?.user.role === 'ADMINISTRADOR' ? user : auth?.user.id
-                                window.open(`${REPORT_URL}/calculate-commissions?token=${auth?.token}&user=${user_id}&from=${from.toISOString()}&to=${to.toISOString()}`, '_blank')
+                                window.open(`${REPORT_URL}/calculate-commissions?token=${auth?.token}&user_id=${user_id}&from=${from.toISOString()}&to=${to.toISOString()}`, '_blank')
                             }}>
                             PDF
                         </Button>
