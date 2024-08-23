@@ -15,3 +15,4 @@ export const REPORT_URL = `${BASE_URL}/reports`
 export const PAYMENT_URL = `${BASE_URL}/payments`
 export const REGISTER_URL = `${BASE_URL}/registers`
 export const COMMISSION_URL = `${BASE_URL}/commissions`
+export const SETTLEMENT_URL = `${BASE_URL}/settlements`
