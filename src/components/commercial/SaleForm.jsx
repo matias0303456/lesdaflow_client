@@ -103,8 +103,8 @@ export function SaleForm({
 
     return (
         <ModalComponent
-            reduceWidth={300}
             p={1}
+            reduceWidth={100}
             open={open === 'NEW' || open === 'EDIT' || open === 'VIEW' || open === 'CONVERT'}
             onClose={handleClose}
         >
@@ -146,8 +146,13 @@ export function SaleForm({
                     }
                     }>
                         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                            <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 2 }}>
-                                <FormControl sx={{ width: '60%' }}>
+                            <Box sx={{
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                                flexDirection: { xs: 'column', md: 'row' },
+                                gap: 2
+                            }}>
+                                <FormControl sx={{ width: { xs: '100%', md: '60%' } }}>
                                     <Autocomplete
                                         disablePortal
                                         id="client-autocomplete"
@@ -170,7 +175,7 @@ export function SaleForm({
                                         </Typography>
                                     }
                                 </FormControl>
-                                <Box sx={{ width: '40%', display: 'flex', justifyContent: 'space-around' }}>
+                                <Box sx={{ width: { xs: '100%', md: '40%' }, display: 'flex', justifyContent: 'space-around' }}>
                                     <FormControlLabel
                                         control={<Checkbox disabled={open === 'VIEW' || (open === 'EDIT' && auth?.user.role !== 'ADMINISTRADOR')} />}
                                         label="Cuenta Corriente"
@@ -213,7 +218,12 @@ export function SaleForm({
                                     />
                                 </Box>
                             </Box>
-                            <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 2 }}>
+                            <Box sx={{
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                                flexDirection: { xs: 'column', md: 'row' },
+                                gap: 2
+                            }}>
                                 <AddProductsToSale
                                     products={state.products.data}
                                     saleProducts={saleProducts}
@@ -225,7 +235,12 @@ export function SaleForm({
                                     open={open}
                                     formData={formData}
                                 />
-                                <Box sx={{ display: 'flex', flexDirection: 'column', width: '40%', gap: 3 }}>
+                                <Box sx={{
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    width: { xs: '100%', md: '40%' },
+                                    gap: 3
+                                }}>
                                     <FormControl>
                                         <InputLabel htmlFor="discount">% Descuento</InputLabel>
                                         <Input

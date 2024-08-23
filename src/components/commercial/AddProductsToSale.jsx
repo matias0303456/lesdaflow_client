@@ -67,7 +67,7 @@ export function AddProductsToSale({
     }
 
     return (
-        <Box sx={{ display: 'flex', flexDirection: 'column', width: '60%' }}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', width: { xs: '100%', md: '60%' } }}>
             {(open === 'NEW' || (open === 'EDIT' && auth?.user.role === 'ADMINISTRADOR')) &&
                 <>
                     <FormControl>
