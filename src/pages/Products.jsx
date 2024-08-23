@@ -188,12 +188,14 @@ export function Products() {
                                 </Button>
                             }
                             <Button variant="outlined" color='success' onClick={() => {
-                                window.open(`${REPORT_URL}/products-excel?token=${auth?.token}&for_client=true`, '_blank')
+                                const { code, details, supplier_id } = state.products.filter_fields
+                                window.open(`${REPORT_URL}/products-excel?token=${auth?.token}&for_client=true&code=${code}&details=${details}&supplier_id=${supplier_id}`, '_blank')
                             }}>
                                 Excel
                             </Button>
                             <Button variant="outlined" color='error' onClick={() => {
-                                window.open(`${REPORT_URL}/products-pdf?token=${auth?.token}&for_client=true`, '_blank')
+                                const { code, details, supplier_id } = state.products.filter_fields
+                                window.open(`${REPORT_URL}/products-pdf?token=${auth?.token}&for_client=true&code=${code}&details=${details}&supplier_id=${supplier_id}`, '_blank')
                             }}>
                                 PDF
                             </Button>
