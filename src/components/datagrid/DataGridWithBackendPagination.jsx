@@ -186,7 +186,9 @@ export function DataGridWithBackendPagination({
                               }
                               {showEditAction &&
                                 <>
-                                  {(entityKey !== 'clients' || row.user_id === auth?.user.id) &&
+                                  {(entityKey !== 'clients' ||
+                                    row.user_id === auth?.user.id ||
+                                    (entityKey === 'sales' && row.settlement_id !== null)) &&
                                     <Tooltip
                                       title="Editar"
                                       onClick={() => {
@@ -203,7 +205,9 @@ export function DataGridWithBackendPagination({
                               }
                               {showDeleteAction &&
                                 <>
-                                  {(entityKey !== 'clients' || row.user_id === auth?.user.id) &&
+                                  {(entityKey !== 'clients' ||
+                                    row.user_id === auth?.user.id ||
+                                    (entityKey === 'sales' && row.settlement_id !== null)) &&
                                     <Tooltip
                                       title="Borrar"
                                       onClick={() => {
