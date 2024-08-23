@@ -15,6 +15,8 @@ export function useSettlements() {
     const [settlements, setSettlements] = useState([])
     const [newSettlement, setNewSettlement] = useState({
         seller: '',
+        from_date: new Date(Date.now()).toISOString(),
+        to_date: new Date(Date.now()).toISOString(),
         total_cta_cte: 0,
         commission_cta_cte: 0,
         last_cta_cte_value: 0,
@@ -53,6 +55,8 @@ export function useSettlements() {
     function handleCloseSettlement() {
         setNewSettlement({
             seller: '',
+            from_date: new Date(Date.now()).toISOString(),
+            to_date: new Date(Date.now()).toISOString(),
             total_cta_cte: 0,
             commission_cta_cte: 0,
             last_cta_cte_value: 0,

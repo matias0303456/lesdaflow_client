@@ -89,8 +89,8 @@ export function useCommissions() {
         setNewCommissionType('CUENTA_CORRIENTE')
     }
 
-    async function handleCalculateCommissions({ to, user_id }) {
-        const { status, data } = await get(`/calculate-commissions/${to.toISOString()}/${user_id}`)
+    async function handleCalculateCommissions({ from, to, user_id }) {
+        const { status, data } = await get(`/calculate-commissions/${from.toISOString()}/${to.toISOString()}/${user_id}`)
         if (status === 200) {
             setCalculations(data)
         } else {

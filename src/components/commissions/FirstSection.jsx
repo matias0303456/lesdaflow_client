@@ -4,7 +4,7 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import es from 'date-fns/locale/es';
-import { Box, Button, FormControl, InputLabel, MenuItem, Select, Typography } from "@mui/material";
+import { Box, Button, FormControl, InputLabel, MenuItem, Paper, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
 
 import { AuthContext } from "../../providers/AuthProvider";
 import { DataContext } from "../../providers/DataProvider";
@@ -12,10 +12,12 @@ import { DataContext } from "../../providers/DataProvider";
 import { ModalComponent } from "../common/ModalComponent";
 
 import { REPORT_URL } from "../../utils/urls";
+import { format } from "date-fns";
 
 export function FirstSection({
     formData,
     handleChange,
+    newSettlement,
     setNewSettlement,
     calculations,
     openSettlement,
@@ -127,10 +129,19 @@ export function FirstSection({
                     {auth?.user.role === 'ADMINISTRADOR' &&
                         <Button
                             variant="contained"
-                            disabled={formData.user.toString().length === 0}
+                            disabled={
+                                formData.user.toString().length === 0 ||
+                                (
+                                    calculations['CUENTA_CORRIENTE'].sales.length === 0 &&
+                                    calculations['CONTADO'].sales.length === 0 &&
+                                    calculations['POXIPOL'].sales.length === 0
+                                )
+                            }
                             onClick={() => {
                                 setNewSettlement({
                                     seller: calculations.seller,
+                                    from_date: calculations.from_date,
+                                    to_date: calculations.to_date,
                                     total_cta_cte: calculations['CUENTA_CORRIENTE'].total.replace('$', ''),
                                     commission_cta_cte: calculations['CUENTA_CORRIENTE'].commission.replace('$', ''),
                                     last_cta_cte_value: calculations['CUENTA_CORRIENTE'].last_cta_cte_value,
@@ -154,11 +165,67 @@ export function FirstSection({
                 </Box>
             </form>
             <ModalComponent open={openSettlement === 'NEW'} onClose={handleCloseSettlement}>
-                <Typography variant="h6" sx={{ color: 'white' }}>
+                <Typography variant="h6">
                     Liquidar comisiones
                 </Typography>
-
-                <Box sx={{ display: 'flex', gap: 1, justifyContent: 'center' }}>
+                <Typography variant="body1">
+                    Vendedor: {newSettlement.seller}
+                </Typography>
+                <Typography variant="body1">
+                    Período: {format(new Date(newSettlement.from_date), 'dd/MM/yyyy')} - {format(new Date(newSettlement.to_date), 'dd/MM/yyyy')}
+                </Typography>
+                <TableContainer component={Paper} sx={{ width: '70%', m: 'auto', my: 2 }}>
+                    <Table>
+                        <TableHead>
+                            <TableRow>
+                                <TableCell align="center"></TableCell>
+                                <TableCell align="center">CTA CTE</TableCell>
+                                <TableCell align="center">CONTADO</TableCell>
+                                <TableCell align="center">POXIPOL</TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            <TableRow>
+                                <TableCell align="center">
+                                    <Typography variant="body2">
+                                        N° BOLETAS
+                                    </Typography>
+                                    <Typography variant="caption" color="#F00">
+                                        (No podrán volver a editarse)
+                                    </Typography>
+                                </TableCell>
+                                <TableCell align="center">
+                                    {calculations['CUENTA_CORRIENTE'].sales.map(s => s.id).join(', ')}
+                                </TableCell>
+                                <TableCell align="center">
+                                    {calculations['CONTADO'].sales.map(s => s.id).join(', ')}
+                                </TableCell>
+                                <TableCell align="center">
+                                    {calculations['POXIPOL'].sales.map(s => s.id).join(', ')}
+                                </TableCell>
+                            </TableRow>
+                            <TableRow>
+                                <TableCell align="center">TOTAL</TableCell>
+                                <TableCell align="center">${newSettlement.total_cta_cte}</TableCell>
+                                <TableCell align="center">${newSettlement.total_contado}</TableCell>
+                                <TableCell align="center">${newSettlement.total_poxipol}</TableCell>
+                            </TableRow>
+                            <TableRow>
+                                <TableCell align="center">PORC. COMISIÓN</TableCell>
+                                <TableCell align="center">{newSettlement.last_cta_cte_value}%</TableCell>
+                                <TableCell align="center">{newSettlement.last_contado_value}%</TableCell>
+                                <TableCell align="center">{newSettlement.last_poxipol_value}%</TableCell>
+                            </TableRow>
+                            <TableRow>
+                                <TableCell align="center">MONTO COMISIÓN</TableCell>
+                                <TableCell align="center">${newSettlement.commission_cta_cte}</TableCell>
+                                <TableCell align="center">${newSettlement.commission_contado}</TableCell>
+                                <TableCell align="center">${newSettlement.commission_poxipol}</TableCell>
+                            </TableRow>
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+                <Box sx={{ display: 'flex', gap: 1, justifyContent: 'center', width: '50%', m: 'auto', mt: 4 }}>
                     <Button type="button" variant="outlined" onClick={handleCloseSettlement} sx={{ width: '35%' }}>
                         Cancelar
                     </Button>
@@ -172,6 +239,6 @@ export function FirstSection({
                     </Button>
                 </Box>
             </ModalComponent>
-        </Box>
+        </Box >
     )
 }

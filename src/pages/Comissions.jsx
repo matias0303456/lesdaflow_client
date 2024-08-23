@@ -39,6 +39,7 @@ export function Comissions() {
     const {
         open: openSettlement,
         setOpen: setOpenSettlement,
+        newSettlement,
         setNewSettlement,
         createSettlement,
         handleCloseSettlement
@@ -91,10 +92,10 @@ export function Comissions() {
 
     useEffect(() => {
         (async () => {
-            const { user, to } = formData
+            const { user, from, to } = formData
             if (user.toString().length > 0) {
                 const user_id = auth?.user.role === 'ADMINISTRADOR' ? user : auth?.user.id
-                await handleCalculateCommissions({ to, user_id })
+                await handleCalculateCommissions({ from, to, user_id })
             }
         })()
     }, [formData, commissions])
@@ -104,6 +105,7 @@ export function Comissions() {
             <FirstSection
                 formData={formData}
                 handleChange={handleChange}
+                newSettlement={newSettlement}
                 setNewSettlement={setNewSettlement}
                 calculations={calculations}
                 openSettlement={openSettlement}
