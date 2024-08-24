@@ -1,9 +1,13 @@
+import { useCallback, useContext, useEffect, useState } from "react"
 import { Box, Button, FormControl, Input, InputLabel, MenuItem, Select, Typography } from "@mui/material"
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers"
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns"
 import { es } from "date-fns/locale"
+import { getSaleDifference } from "../../utils/helpers"
+import { DataContext } from "../../providers/DataProvider"
 
 export function PaymentForm({
+    sale,
     handleSubmit,
     handleChange,
     handleCloseSale,
@@ -15,11 +19,28 @@ export function PaymentForm({
     setDisabled,
     errors
 }) {
+
+    const { state } = useContext(DataContext)
+
+    const [oldDifference, setOldDifference] = useState(getSaleDifference(sale))
+    const [newDifference, setNewDifference] = useState('$0.00')
+
+    useEffect(() => {
+        const current = state.sales.data.find(s => s.id === sale.id)
+        const result = getSaleDifference(current).replace('$', '') - parseFloat(formData.amount)
+        if (isNaN(result)) {
+            setNewDifference(getSaleDifference(current))
+        } else {
+            setNewDifference(`$${result.toFixed(2)}`)
+        }
+        setOldDifference(getSaleDifference(current))
+    }, [formData.amount, state])
+
     return (
         <form onSubmit={e => handleSubmit(e, validate, formData, reset, setDisabled)}>
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, paddingX: 3 }}>
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 2 }}>
-                    <FormControl sx={{ width: '33%' }}>
+                <Box sx={{ display: 'flex', justifyContent: 'start', gap: 2 }}>
+                    <FormControl sx={{ width: { xs: '50%', sm: '33%' } }}>
                         <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
                             <DatePicker
                                 label="Fecha"
@@ -33,7 +54,7 @@ export function PaymentForm({
                             />
                         </LocalizationProvider>
                     </FormControl>
-                    <FormControl sx={{ width: '33%' }}>
+                    <FormControl sx={{ width: { xs: '50%', sm: '33%' } }}>
                         <InputLabel id="type-select">Tipo</InputLabel>
                         <Select
                             labelId="type-select"
@@ -49,6 +70,12 @@ export function PaymentForm({
                             <MenuItem value="CHEQUE">CHEQUE</MenuItem>
                         </Select>
                     </FormControl>
+                </Box>
+                <Box sx={{ display: 'flex', justifyContent: 'start', gap: 2 }}>
+                    <FormControl sx={{ width: '33%' }}>
+                        <InputLabel id="amount">Saldo actual</InputLabel>
+                        <Input value={oldDifference} disabled />
+                    </FormControl>
                     <FormControl sx={{ width: '33%' }}>
                         <InputLabel id="amount">Importe *</InputLabel>
                         <Input
@@ -63,6 +90,10 @@ export function PaymentForm({
                                 * El importe es requerido.
                             </Typography>
                         }
+                    </FormControl>
+                    <FormControl sx={{ width: '33%' }}>
+                        <InputLabel id="amount">Nuevo saldo</InputLabel>
+                        <Input value={newDifference} disabled />
                     </FormControl>
                 </Box>
                 <FormControl>

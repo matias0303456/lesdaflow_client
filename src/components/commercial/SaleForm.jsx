@@ -332,6 +332,7 @@ export function SaleForm({
             {valueTab === 2 &&
                 <Box sx={{ p: 1 }}>
                     <PaymentForm
+                        sale={formData}
                         handleSubmit={handleSubmitPayment}
                         handleChange={handleChangePayment}
                         handleCloseSale={handleClose}
