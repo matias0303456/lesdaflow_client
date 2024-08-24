@@ -31,6 +31,7 @@ import { UpdateProductPriceBySupplier } from "./pages/UpdateProductPriceBySuppli
 import { IncomesByAmount } from "./pages/IncomesByAmount";
 // import { RegisterMovements } from "./pages/RegisterMovements";
 import { BlockedCustomers } from "./pages/BlockedCustomers";
+import { Settlements } from "./pages/Settlements";
 
 function App() {
 
@@ -77,6 +78,7 @@ function App() {
                 <Route path="/movimientos-caja" element={<Registers />} />
                 {/* <Route path="/reporte-movimientos-caja" element={<RegisterMovements />} /> */}
                 <Route path="/reportes-clientes-bloqueados" element={<BlockedCustomers />} />
+                <Route path="/liquidaciones" element={<Settlements />} />
                 <Route path="*" element={<Error />} />
               </Routes>
             </BrowserRouter>

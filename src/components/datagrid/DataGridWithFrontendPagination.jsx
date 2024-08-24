@@ -14,6 +14,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import SettingsIcon from "@mui/icons-material/Settings";
 import SearchSharpIcon from '@mui/icons-material/SearchSharp';
 import CloseIcon from "@mui/icons-material/Close";
+import PictureAsPdfSharpIcon from '@mui/icons-material/PictureAsPdfSharp'
 
 import { EnhancedTableHead } from './EnhancedTableHead';
 
@@ -35,7 +36,8 @@ export function DataGridWithFrontendPagination({
     showSettingsAction = false,
     showDeleteAction = false,
     minWidth = 750,
-    labelRowsPerPage = "Registros por página"
+    labelRowsPerPage = "Registros por página",
+    showPDFAction = false,
 }) {
 
     const [order, setOrder] = useState(defaultOrder);
@@ -122,6 +124,16 @@ export function DataGridWithFrontendPagination({
                                                             >
                                                                 <IconButton className="rounded-full bg-black/20 opacity-50 hover:bg-[#288bcd]">
                                                                     <SearchSharpIcon className="w-4 h-4 hover:text-white" />
+                                                                </IconButton>
+                                                            </Tooltip>
+                                                        }
+                                                        {showPDFAction &&
+                                                            <Tooltip
+                                                                title="Imprimir PDF"
+                                                                onClick={() => window.open(showPDFAction + row.id, '_blank')}
+                                                            >
+                                                                <IconButton className="rounded-full bg-black/20 opacity-50 hover:bg-[#288bcd] hover:text-white">
+                                                                    <PictureAsPdfSharpIcon className="w-4 h-4" />
                                                                 </IconButton>
                                                             </Tooltip>
                                                         }

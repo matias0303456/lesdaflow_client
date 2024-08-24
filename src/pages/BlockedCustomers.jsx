@@ -5,6 +5,7 @@ import { Box, Button, Typography } from "@mui/material";
 import { AuthContext } from "../providers/AuthProvider";
 
 import { Layout } from "../components/common/Layout";
+
 import { REPORT_URL } from "../utils/urls";
 
 export function BlockedCustomers() {
@@ -14,7 +15,7 @@ export function BlockedCustomers() {
   const navigate = useNavigate()
 
   useEffect(() => {
-    if (auth?.user.role !== 'ADMINISTRADOR' && auth?.user.role !== 'VENDEDOR') navigate('/prep-ventas')
+    if (auth?.user.role !== 'ADMINISTRADOR') navigate('/productos')
   }, [])
 
   return (
