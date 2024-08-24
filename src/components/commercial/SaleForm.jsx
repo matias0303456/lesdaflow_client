@@ -109,7 +109,7 @@ export function SaleForm({
             onClose={handleClose}
         >
             <Box sx={{ marginBottom: open === 'EDIT' && valueTab === 1 ? 0 : 1 }}>
-                <Tabs value={valueTab} onChange={handleChangeTab}>
+                <Tabs value={valueTab} onChange={handleChangeTab} variant="scrollable" scrollButtons="auto">
                     <Tab
                         label={open === 'EDIT' ? `Editar venta #${formData.id}` :
                             (open === 'NEW' || open === 'CONVERT') ? 'Nueva venta' :
