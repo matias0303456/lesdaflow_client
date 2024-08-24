@@ -124,8 +124,6 @@ export function CurrentAccount() {
         setOpen={setOpen}
         setFormData={setFormData}
         showPDFAction={`${REPORT_URL}/accounts-pdf?token=${auth?.token}&id=`}
-        showDeleteAction
-        showViewAction
         contentHeader={
           <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between' }}>
             <Button variant="outlined" color='error' sx={{ width: '10%' }} onClick={() => {
