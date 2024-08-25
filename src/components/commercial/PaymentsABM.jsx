@@ -9,6 +9,7 @@ import { DataGridWithFrontendPagination } from "../datagrid/DataGridWithFrontend
 import { setLocalDate } from "../../utils/helpers";
 
 export function PaymentsABM({
+    sale,
     rows,
     handleCloseSale,
     open,
@@ -68,8 +69,8 @@ export function PaymentsABM({
             <DataGridWithFrontendPagination
                 headCells={headCells}
                 rows={rows}
-                showDeleteAction={auth?.user.role === 'ADMINISTRADOR'}
-                showEditAction={auth?.user.role === 'ADMINISTRADOR'}
+                showDeleteAction={auth?.user.role === 'ADMINISTRADOR' && sale.settlement_id === null}
+                showEditAction={auth?.user.role === 'ADMINISTRADOR' && sale.settlement_id === null}
                 setOpen={setOpen}
                 setData={setFormData}
                 contentHeader={

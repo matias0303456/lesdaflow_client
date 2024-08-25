@@ -318,6 +318,7 @@ export function SaleForm({
             {valueTab === 1 &&
                 <Box sx={{ p: 0 }}>
                     <PaymentsABM
+                        sale={formData}
                         rows={state.sales.data.find(s => s.id === formData.id)?.payments ?? []}
                         handleCloseSale={handleClose}
                         open={openPayment}
