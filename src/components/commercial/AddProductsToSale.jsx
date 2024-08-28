@@ -42,18 +42,15 @@ export function AddProductsToSale({
     }
 
     const handleChangeAmount = data => {
-        const p = products.find(p => p.id === data.product_id);
         const amount = data.amount.toString().length > 0 ? data.amount : 0
-        if (getStock(p) >= amount) {
-            setSaleProducts([
-                ...saleProducts.filter(sp => sp.product_id !== data.product_id),
-                {
-                    ...saleProducts.find(sp => sp.product_id === data.product_id),
-                    ...data,
-                    amount
-                }
-            ].sort((a, b) => open === 'NEW' ? a.idx - b.idx : a.id - b.id));
-        }
+        setSaleProducts([
+            ...saleProducts.filter(sp => sp.product_id !== data.product_id),
+            {
+                ...saleProducts.find(sp => sp.product_id === data.product_id),
+                ...data,
+                amount
+            }
+        ].sort((a, b) => open === 'NEW' ? a.idx - b.idx : a.id - b.id));
     }
 
     const handleDeleteProduct = (spId, pId) => {
