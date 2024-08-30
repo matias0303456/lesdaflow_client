@@ -1,5 +1,5 @@
 import { useContext, useEffect } from "react";
-import { Box, Button, FormControl, Input, InputLabel } from "@mui/material";
+import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 
 import { DataContext } from "../../providers/DataProvider";
 import { useRegisters } from "../../hooks/useRegisters";
@@ -24,17 +24,6 @@ export function RegisterFilter() {
         })
     }
 
-    const handleReset = () => {
-        dispatch({
-            type: 'REGISTERS',
-            payload: {
-                ...state.registers,
-                filter_fields: { user: '', loaded: false },
-                filters: ''
-            }
-        })
-    }
-
     useEffect(() => {
         const { user, loaded } = state.registers.filter_fields
         if (user.length > 0) {
@@ -51,20 +40,28 @@ export function RegisterFilter() {
     }, [state.registers.filter_fields])
 
     return (
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-            <FormControl>
-                <InputLabel htmlFor="user">Caja</InputLabel>
-                <Input
-                    id="user"
-                    type="text"
-                    name="user"
-                    value={state.registers.filter_fields.user}
-                    onChange={handleChange}
-                />
-            </FormControl>
-            <Button type="button" variant="outlined" onClick={handleReset}>
-                Reiniciar filtro
-            </Button>
-        </Box>
+        <FormControl sx={{ width: '20%' }}>
+            <InputLabel htmlFor="user">Usuario</InputLabel>
+            <Select
+                labelId="user-select"
+                id="user"
+                value={state.registers.filter_fields.user}
+                label="Usuario"
+                name="user"
+                onChange={handleChange}
+                sx={{ width: "100%" }}
+            >
+                {[
+                    <MenuItem value="" key="select">Seleccione</MenuItem>,
+                    ...(state.users.data.length > 0 ?
+                        state.users.data.map((u) => (
+                            <MenuItem key={u.id} value={u.username}>
+                                {`${u.name}`.toUpperCase()}
+                            </MenuItem>
+                        ))
+                        : [<MenuItem key="no-results">No se encontraron resultados</MenuItem>])
+                ]}
+            </Select>
+        </FormControl>
     )
 }

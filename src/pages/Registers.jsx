@@ -6,6 +6,7 @@ import { AuthContext } from "../providers/AuthProvider";
 import { DataContext } from "../providers/DataProvider";
 import { useForm } from "../hooks/useForm";
 import { useRegisters } from "../hooks/useRegisters";
+import { useUsers } from "../hooks/useUsers";
 
 import { Layout } from "../components/common/Layout";
 import { ModalComponent } from "../components/common/ModalComponent";
@@ -21,9 +22,14 @@ export function Registers() {
     const { state } = useContext(DataContext)
 
     const { loadingRegisters, handleSubmit, open, setOpen, getRegisters, currentAmount, getCurrentRegister } = useRegisters()
+    const { getUsers } = useUsers()
     const { formData, setFormData, handleChange, disabled, setDisabled, reset } = useForm({
         defaultData: { id: '', user_id: auth?.user.id }
     })
+
+    useEffect(() => {
+        getUsers()
+    }, [])
 
     useEffect(() => {
         if (open === 'SETTINGS') {
