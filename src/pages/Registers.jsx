@@ -39,6 +39,14 @@ export function Registers() {
 
     const headCells = [
         {
+            id: 'id',
+            numeric: true,
+            disablePadding: false,
+            label: '#',
+            sorter: (row) => parseInt(row.id),
+            accessor: (row) => parseInt(row.id)
+        },
+        {
             id: "user",
             numeric: false,
             disablePadding: true,
