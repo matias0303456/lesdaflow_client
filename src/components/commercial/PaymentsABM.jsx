@@ -13,7 +13,8 @@ export function PaymentsABM({
     rows,
     handleCloseSale,
     open,
-    setOpen,
+    openPayment,
+    setOpenPayment,
     formData,
     reset,
     setFormData,
@@ -69,13 +70,13 @@ export function PaymentsABM({
             <DataGridWithFrontendPagination
                 headCells={headCells}
                 rows={rows}
-                showDeleteAction={auth?.user.role === 'ADMINISTRADOR' && sale.settlement_id === null}
-                showEditAction={auth?.user.role === 'ADMINISTRADOR' && sale.settlement_id === null}
-                setOpen={setOpen}
+                showDeleteAction={auth?.user.role === 'ADMINISTRADOR' && sale.settlement_id === null && open === 'EDIT'}
+                showEditAction={auth?.user.role === 'ADMINISTRADOR' && sale.settlement_id === null && open === 'EDIT'}
+                setOpen={setOpenPayment}
                 setData={setFormData}
                 contentHeader={
                     <>
-                        {open === 'DELETE' &&
+                        {openPayment === 'DELETE' &&
                             <Box sx={{ marginTop: 1 }}>
                                 <Typography variant="body1" color="#F00" textAlign="center">
                                     {`¿Borrar el pago #${formData.id}?`}
@@ -84,7 +85,7 @@ export function PaymentsABM({
                                     <Button size="small" variant="contained" onClick={() => handleDelete(formData, reset)}>
                                         Confirmar
                                     </Button>
-                                    <Button size="small" variant="outlined" onClick={() => setOpen(null)}>
+                                    <Button size="small" variant="outlined" onClick={() => setOpenPayment(null)}>
                                         Cancelar
                                     </Button>
                                 </Box>

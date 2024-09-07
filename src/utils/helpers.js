@@ -34,6 +34,7 @@ export function getSaleTotal(sale) {
 }
 
 export function getSaleDifference(sale) {
+    if (!sale.sale_products) return 0
     const saleTotal = getSaleTotal(sale).replaceAll('$', '')
     const paymentsTotal = sale.payments.reduce((prev, curr) => prev + curr.amount, 0)
     return `$${(saleTotal - paymentsTotal).toFixed(2)}`

@@ -1,10 +1,12 @@
-import { useCallback, useContext, useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import { Box, Button, FormControl, Input, InputLabel, MenuItem, Select, Typography } from "@mui/material"
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers"
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns"
 import { es } from "date-fns/locale"
-import { getSaleDifference } from "../../utils/helpers"
+
 import { DataContext } from "../../providers/DataProvider"
+
+import { getSaleDifference } from "../../utils/helpers"
 
 export function PaymentForm({
     sale,
@@ -26,14 +28,18 @@ export function PaymentForm({
     const [newDifference, setNewDifference] = useState('$0.00')
 
     useEffect(() => {
-        const current = state.sales.data.find(s => s.id === sale.id)
-        const result = getSaleDifference(current).replace('$', '') - parseFloat(formData.amount)
-        if (isNaN(result)) {
-            setNewDifference(getSaleDifference(current))
-        } else {
-            setNewDifference(`$${result.toFixed(2)}`)
+        if (sale.sale_products) {
+            const current = state.sales.data.find(s => s.id === sale.id)
+            const result = getSaleDifference(current).replace('$', '') - parseFloat(formData.amount)
+            if (isNaN(result)) {
+                setNewDifference(getSaleDifference(current))
+            } else if (result < 0) {
+                setNewDifference('$0.00')
+            } else {
+                setNewDifference(`$${result.toFixed(2)}`)
+            }
+            setOldDifference(getSaleDifference(current))
         }
-        setOldDifference(getSaleDifference(current))
     }, [formData.amount, state])
 
     return (

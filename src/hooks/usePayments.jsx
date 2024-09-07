@@ -33,10 +33,15 @@ export function usePayments() {
     }
 
     const checkDifference = (formData) => {
-        const diff = getSaleDifference(state.sales.data.find(s => s.id === formData.sale_id)).replace('$', '')
-        if (parseFloat(diff) >= parseFloat(formData.amount)) return true
-        setMessage(`El importe debe ser menor al saldo. Saldo actual: $${diff}`)
-        setSeverity('error')
+        if(formData.amount.toString().length === 0 || parseInt(formData.amount) === 0){
+            setMessage('El importe es requerido.')
+            setSeverity('error')
+        }else{
+            const diff = getSaleDifference(state.sales.data.find(s => s.id === formData.sale_id)).replace('$', '')
+            if (parseFloat(diff) >= parseFloat(formData.amount)) return true
+            setMessage(`El importe debe ser menor al saldo. Saldo actual: $${diff}`)
+            setSeverity('error')
+        }
         setOpenMessage(true)
         return false
     }

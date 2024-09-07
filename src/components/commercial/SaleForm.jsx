@@ -73,12 +73,12 @@ export function SaleForm({
     }, [open, openPayment])
 
     useEffect(() => {
-        if (valueTab === 2) {
+        if (valueTab === 2 && open === 'EDIT' && openPayment === null) {
             setOpenPayment('NEW')
         } else {
-            resetPayment(setOpenPayment)
+            if (valueTab !== 2 || open === null) resetPayment(setOpenPayment)
         }
-    }, [valueTab])
+    }, [valueTab, open])
 
     const handleChangeTab = (_, newValue) => {
         setValueTab(newValue)
@@ -321,8 +321,9 @@ export function SaleForm({
                         sale={formData}
                         rows={state.sales.data.find(s => s.id === formData.id)?.payments ?? []}
                         handleCloseSale={handleClose}
-                        open={openPayment}
-                        setOpen={setOpenPayment}
+                        open={open}
+                        openPayment={openPayment}
+                        setOpenPayment={setOpenPayment}
                         formData={formDataPayment}
                         reset={resetPayment}
                         setFormData={setFormDataPayment}
