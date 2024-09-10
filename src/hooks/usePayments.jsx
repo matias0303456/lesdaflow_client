@@ -33,7 +33,7 @@ export function usePayments() {
     }
 
     const checkDifference = (formData) => {
-        if(formData.amount.toString().length === 0 || parseInt(formData.amount) === 0){
+        if(formData.amount.toString().length === 0 || parseFloat(formData.amount) === 0){
             setMessage('El importe es requerido.')
             setSeverity('error')
         }else{
