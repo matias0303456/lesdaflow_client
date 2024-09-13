@@ -177,20 +177,30 @@ export function Products() {
                 showOutput={auth?.user.role === 'ADMINISTRADOR' && "Egresar stock"}
                 showViewAction
                 contentHeader={
-                    <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between' }}>
-                        <Box sx={{ display: 'flex', gap: 1, marginBottom: { xs: 2, lg: 0 } }}>
+                    <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: 2 }}>
+                        <Box sx={{
+                            display: 'flex',
+                            gap: 1,
+                            flexDirection: { xs: 'column', sm: 'row' },
+                            width: { xs: '100%', sm: 'auto' }
+                        }}>
                             {auth?.user.role === 'ADMINISTRADOR' &&
-                                <Button variant="outlined" onClick={() => {
-                                    reset()
-                                    setOpen('NEW')
-                                }}>
+                                <Button
+                                    variant="outlined"
+                                    onClick={() => {
+                                        reset()
+                                        setOpen('NEW')
+                                    }}>
                                     Agregar
                                 </Button>
                             }
-                            <Button variant="outlined" color='success' onClick={() => {
-                                const { code, details, supplier_id } = state.products.filter_fields
-                                window.open(`${REPORT_URL}/products-excel?token=${auth?.token}&for_client=true&code=${code}&details=${details}&supplier_id=${supplier_id}`, '_blank')
-                            }}>
+                            <Button
+                                variant="outlined"
+                                color='success'
+                                onClick={() => {
+                                    const { code, details, supplier_id } = state.products.filter_fields
+                                    window.open(`${REPORT_URL}/products-excel?token=${auth?.token}&for_client=true&code=${code}&details=${details}&supplier_id=${supplier_id}`, '_blank')
+                                }}>
                                 Excel
                             </Button>
                             <Button variant="outlined" color='error' onClick={() => {
@@ -210,7 +220,7 @@ export function Products() {
                                 <Button variant="contained" onClick={() => {
                                     window.open(`${REPORT_URL}/products-excel?token=${auth?.token}&stock=SIN_STOCK`, '_blank')
                                 }}>
-                                    Stock nulo Excel
+                                    Stoxk nulo Excel
                                 </Button>
                             }
                         </Box>

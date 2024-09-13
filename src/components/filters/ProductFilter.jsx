@@ -51,7 +51,13 @@ export function ProductFilter() {
     }, [state.products.filter_fields])
 
     return (
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flexWrap: { xs: 'wrap', sm: 'nowrap' } }}>
+        <Box sx={{
+            display: 'flex',
+            flexDirection: { xs: 'column', sm: 'row' },
+            gap: 2,
+            flexWrap: { xs: 'wrap', sm: 'nowrap' },
+            width: { xs: '100%', sm: 'auto' }
+        }}>
             <FormControl>
                 <InputLabel htmlFor="code">Código</InputLabel>
                 <Input
@@ -72,7 +78,7 @@ export function ProductFilter() {
                     onChange={handleChange}
                 />
             </FormControl>
-            <FormControl sx={{ width: { xs: '50%', sm: '30%' } }}>
+            <FormControl sx={{ width: { xs: '100%', sm: '30%' } }}>
                 <InputLabel id="supplier-select">Proveedor</InputLabel>
                 <Select
                     labelId="supplier-select"
