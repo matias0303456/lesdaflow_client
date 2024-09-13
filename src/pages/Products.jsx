@@ -203,7 +203,14 @@ export function Products() {
                                 <Button variant="contained" onClick={() => {
                                     window.open(`${REPORT_URL}/products-pdf?token=${auth?.token}&stock=SIN_STOCK`, '_blank')
                                 }}>
-                                    Stock nulo
+                                    Stock nulo PDF
+                                </Button>
+                            }
+                            {auth?.user.role === 'ADMINISTRADOR' &&
+                                <Button variant="contained" onClick={() => {
+                                    window.open(`${REPORT_URL}/products-excel?token=${auth?.token}&stock=SIN_STOCK`, '_blank')
+                                }}>
+                                    Stock nulo Excel
                                 </Button>
                             }
                         </Box>
