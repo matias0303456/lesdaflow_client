@@ -165,9 +165,9 @@ export const nav_items = [
       {
         subtitle: "Liquidaciones",
         path: "/liquidaciones",
-        can_access: ['ADMINISTRADOR']
+        can_access: ['ADMINISTRADOR', 'VENDEDOR']
       }
     ],
-    can_access: ['ADMINISTRADOR']
+    can_access: ['ADMINISTRADOR', 'VENDEDOR']
   }
 ]
