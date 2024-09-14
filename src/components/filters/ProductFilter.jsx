@@ -2,13 +2,10 @@ import { useContext, useEffect } from "react";
 import { Box, Button, FormControl, Input, InputLabel, MenuItem, Select } from "@mui/material";
 
 import { DataContext } from "../../providers/DataProvider";
-import { useProducts } from "../../hooks/useProducts";
 
 export function ProductFilter() {
 
     const { state, dispatch } = useContext(DataContext)
-
-    const { getProducts } = useProducts()
 
     const handleChange = e => {
         dispatch({
@@ -46,7 +43,13 @@ export function ProductFilter() {
                 }
             })
         } else if (loaded) {
-            getProducts(`?page=${state.products.page}&offset=${state.products.offset}`)
+            dispatch({
+                type: 'PRODUCTS',
+                payload: {
+                    ...state.products,
+                    filters: ''
+                }
+            })
         }
     }, [state.products.filter_fields])
 

@@ -2,13 +2,10 @@ import { useContext, useEffect } from "react";
 import { Box, Button, FormControl, Input, InputLabel } from "@mui/material";
 
 import { DataContext } from "../../providers/DataProvider";
-import { useClients } from "../../hooks/useClients";
 
 export function ClientFilter() {
 
     const { state, dispatch } = useContext(DataContext)
-
-    const { getClients } = useClients()
 
     const handleChange = e => {
         dispatch({
@@ -46,7 +43,13 @@ export function ClientFilter() {
                 }
             })
         } else if (loaded) {
-            getClients(`?page=${state.clients.page}&offset=${state.clients.offset}`)
+            dispatch({
+                type: 'CLIENTS',
+                payload: {
+                    ...state.clients,
+                    filters: ''
+                }
+            })
         }
     }, [state.clients.filter_fields])
 

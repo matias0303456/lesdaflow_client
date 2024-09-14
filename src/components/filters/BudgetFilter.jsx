@@ -5,13 +5,10 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { es } from "date-fns/locale";
 
 import { DataContext } from "../../providers/DataProvider";
-import { useBudgets } from "../../hooks/useBudgets";
 
 export function BudgetFilter() {
 
     const { state, dispatch } = useContext(DataContext)
-
-    const { getBudgets } = useBudgets()
 
     const handleChange = e => {
         dispatch({
@@ -51,7 +48,13 @@ export function BudgetFilter() {
                 }
             })
         } else if (loaded) {
-            getBudgets(`?page=${state.budgets.page}&offset=${state.budgets.offset}`)
+            dispatch({
+                type: 'BUDGETS',
+                payload: {
+                    ...state.budgets,
+                    filters: ''
+                }
+            })
         }
     }, [state.budgets.filter_fields])
 

@@ -2,13 +2,10 @@ import { useContext, useEffect } from "react";
 import { Box, Button, FormControl, Input, InputLabel, MenuItem, Select } from "@mui/material";
 
 import { DataContext } from "../../providers/DataProvider";
-import { useUsers } from "../../hooks/useUsers";
 
 export function UserFilter() {
 
     const { state, dispatch } = useContext(DataContext)
-
-    const { getUsers } = useUsers()
 
     const handleChange = e => {
         dispatch({
@@ -46,7 +43,13 @@ export function UserFilter() {
                 }
             })
         } else if (loaded) {
-            getUsers(`?page=${state.users.page}&offset=${state.users.offset}`)
+            dispatch({
+                type: 'USERS',
+                payload: {
+                    ...state.users,
+                    filters: ''
+                }
+            })
         }
     }, [state.users.filter_fields])
 

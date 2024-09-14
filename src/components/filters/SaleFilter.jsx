@@ -5,7 +5,6 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { es } from "date-fns/locale";
 
 import { DataContext } from "../../providers/DataProvider";
-import { useSales } from "../../hooks/useSales";
 
 export function SaleFilter({
     showWorkPlace,
@@ -20,8 +19,6 @@ export function SaleFilter({
 }) {
 
     const { state, dispatch } = useContext(DataContext)
-
-    const { getSales } = useSales()
 
     const handleChange = e => {
         dispatch({
@@ -61,21 +58,23 @@ export function SaleFilter({
                 }
             })
         } else if (loaded) {
+            let newFilters = ''
             if (salesAdapter && salesAdapter === 'CurrentAccount') {
-                dispatch({
-                    type: 'SALES',
-                    payload: {
-                        ...state.sales,
-                        filters: ''
-                    }
-                })
+                newFilters = ''
             } else if (salesAdapter && salesAdapter === 'Comissions') {
-                getSales(`?page=${state.sales.page}&offset=${state.sales.offset}&is_delivered=true`)
+                newFilters += '&is_delivered=true'
             } else if (salesAdapter === 'SalesToDeliver') {
-                getSales(`?page=${state.sales.page}&offset=${state.sales.offset}&is_prepared=true`)
+                newFilters += '&is_prepared=true'
             } else {
-                getSales(`?page=${state.sales.page}&offset=${state.sales.offset}`)
+                newFilters = ''
             }
+            dispatch({
+                type: 'SALES',
+                payload: {
+                    ...state.sales,
+                    filters: newFilters
+                }
+            })
         }
     }, [state.sales.filter_fields, salesAdapter, pendingFilter])
 

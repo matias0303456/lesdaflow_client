@@ -2,13 +2,10 @@ import { useContext, useEffect } from "react";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 
 import { DataContext } from "../../providers/DataProvider";
-import { useRegisters } from "../../hooks/useRegisters";
 
 export function RegisterFilter() {
 
     const { state, dispatch } = useContext(DataContext)
-
-    const { getRegisters } = useRegisters()
 
     const handleChange = e => {
         dispatch({
@@ -35,7 +32,13 @@ export function RegisterFilter() {
                 }
             })
         } else if (loaded) {
-            getRegisters(`?page=${state.registers.page}&offset=${state.registers.offset}`)
+            dispatch({
+                type: 'REGISTERS',
+                payload: {
+                    ...state.registers,
+                    filters: ''
+                }
+            })
         }
     }, [state.registers.filter_fields])
 

@@ -2,13 +2,10 @@ import { useContext, useEffect } from "react";
 import { Box, Button, FormControl, Input, InputLabel } from "@mui/material";
 
 import { DataContext } from "../../providers/DataProvider";
-import { useSuppliers } from "../../hooks/useSuppliers";
 
 export function SupplierFilter() {
 
     const { state, dispatch } = useContext(DataContext)
-
-    const { getSuppliers } = useSuppliers()
 
     const handleChange = e => {
         dispatch({
@@ -46,7 +43,13 @@ export function SupplierFilter() {
                 }
             })
         } else if (loaded) {
-            getSuppliers(`?page=${state.suppliers.page}&offset=${state.suppliers.offset}`)
+            dispatch({
+                type: 'SUPPLIERS',
+                payload: {
+                    ...state.suppliers,
+                    filters: ''
+                }
+            })
         }
     }, [state.suppliers.filter_fields])
 

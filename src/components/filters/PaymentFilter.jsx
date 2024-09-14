@@ -6,7 +6,6 @@ import { es } from "date-fns/locale";
 
 import { AuthContext } from "../../providers/AuthProvider";
 import { DataContext } from "../../providers/DataProvider";
-import { usePayments } from "../../hooks/usePayments";
 
 import { REPORT_URL } from "../../utils/urls";
 
@@ -14,8 +13,6 @@ export function PaymentFilter() {
 
     const { auth } = useContext(AuthContext)
     const { state, dispatch } = useContext(DataContext)
-
-    const { getPayments } = usePayments()
 
     const handleChange = e => {
         dispatch({
@@ -55,7 +52,13 @@ export function PaymentFilter() {
                 }
             })
         } else if (loaded) {
-            getPayments(`?page=${state.payments.page}&offset=${state.payments.offset}`)
+            dispatch({
+                type: 'PAYMENTS',
+                payload: {
+                    ...state.payments,
+                    filters: ''
+                }
+            })
         }
     }, [state.payments.filter_fields])
 
