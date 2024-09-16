@@ -35,8 +35,8 @@ function App() {
               <Route path="/" element={<Login />} />
               <Route path="/login" element={<Login />} />
               <Route path="/usuarios" element={<Users />} />
-              <Route path="/clientes" element={<Clients />} />
-              <Route path="/prestamos" element={<Loans />} />
+              {/* <Route path="/clientes" element={<Clients />} /> */}
+              {/* <Route path="/prestamos" element={<Loans />} /> */}
               <Route path="*" element={<Error />} />
             </Routes>
           </BrowserRouter>

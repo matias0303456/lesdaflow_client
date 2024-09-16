@@ -19,15 +19,15 @@ import { DataGridWithBackendPagination } from "../components/datagrid/DataGridWi
 export function Users() {
 
   const { auth } = useContext(AuthContext)
-  const { state } = useContext(DataContext)
 
   const navigate = useNavigate()
 
-  const { loadingUsers, getUsers, setOpen, handleSubmit, open, handleDelete, toggleActive } = useUsers()
+  const { loadingUsers, getUsers, setOpen, handleSubmit, open, handleDelete, users } = useUsers()
   const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
     defaultData: {
       id: '',
-      name: '',
+      first_name: '',
+      last_name: '',
       document_type: 'DNI',
       document_number: '',
       birth: new Date(Date.now()),
@@ -37,64 +37,69 @@ export function Users() {
       address: '',
       username: '',
       password: '',
-      role: 'VENDEDOR'
+      is_active: true
     },
     rules: {
-      name: {
+      first_name: {
         required: true,
-        maxLength: 255
+        maxLength: 55
+      },
+      last_name: {
+        required: true,
+        maxLength: 55
       },
       document_type: {
         required: true
       },
       document_number: {
         required: true,
-        maxLength: 255
+        maxLength: 15
       },
       local_phone: {
         required: true,
-        maxLength: 255
+        maxLength: 55
       },
       cell_phone: {
         required: true,
-        maxLength: 255
+        maxLength: 55
       },
       address: {
         required: true,
-        maxLength: 255
+        maxLength: 55
       },
       username: {
         required: true,
-        maxLength: 255
+        maxLength: 55
       },
       password: {
         required: true,
         minLength: 8,
-        maxLength: 255
+        maxLength: 191
       },
       email: {
-        maxLength: 255
-      },
-      role: {
-        required: true
+        maxLength: 55
       }
     }
   })
 
   const [showPassword, setShowPassword] = useState(false)
 
-  useEffect(() => {
-    if (auth?.user.role !== 'ADMINISTRADOR') navigate(auth?.user.role === 'CHOFER' ? '/prep-ventas' : "/productos")
-  }, [])
-
   const headCells = [
     {
-      id: "name",
+      id: "first_name",
       numeric: false,
       disablePadding: true,
-      label: "Nombre y Apellido",
-      sorter: (row) => row.name,
-      accessor: 'name'
+      label: "Nombre",
+      sorter: (row) => row.first_name,
+      accessor: 'first_name'
+    },
+    {
+      id: "last_name",
+      numeric: false,
+      disablePadding: true,
+      label: "Apellido",
+      sorter: (row) => row.last_name,
+      accessor: 'last_name'
     },
     {
       id: "document_number",
@@ -131,33 +136,6 @@ export function Users() {
           <span style={{ color: '#078BCD' }}>{row.address}</span>
         </Link>
       )
-    },
-    {
-      id: "role",
-      numeric: false,
-      disablePadding: true,
-      label: "Rol",
-      sorter: (row) => row.role,
-      accessor: "role"
-    },
-    {
-      id: "is_active",
-      numeric: false,
-      disablePadding: true,
-      label: "Alta/baja",
-      sorter: (row) => row.is_active ? 1 : 0,
-      accessor: (row) => (
-        <Box sx={{ textAlign: 'center' }}>
-          <FormControlLabel
-            control={<Checkbox />}
-            checked={row.is_active}
-            onChange={e => toggleActive({
-              ...row,
-              is_active: e.target.checked
-            })}
-          />
-        </Box>
-      )
     }
   ]
 
@@ -166,7 +144,7 @@ export function Users() {
       <DataGridWithBackendPagination
         loading={loadingUsers || disabled}
         headCells={headCells}
-        rows={state.users.data}
+        rows={users}
         entityKey="users"
         getter={getUsers}
         setOpen={setOpen}
