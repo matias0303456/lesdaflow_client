@@ -9,29 +9,9 @@ import { DataProvider } from "./providers/DataProvider";
 
 import { Login } from "./pages/Login";
 import { Clients } from './pages/Clients'
-// import { AccountsReport } from "./pages/AccountsReport";
 import { Users } from './pages/Users'
-import { Suppliers } from "./pages/Suppliers";
 import { Sales } from "./pages/Sales";
-import { SalesReport } from "./pages/SalesReport";
-import { Comissions } from "./pages/Comissions";
-import { Products } from './pages/Products'
-import { ProductsReport } from './pages/ProductsReport'
-import { Budgets } from "./pages/Budgets";
-import { Registers } from "./pages/Registers";
 import { Error } from './pages/Error'
-import { CurrentAccount } from "./pages/CurrentAccount";
-import { ClientsBySeller } from "./pages/ClientsBySeller";
-import { SalesSearch } from "./pages/SalesSearch";
-import { SalesReady } from "./pages/SalesReady";
-import { SalesToDeliver } from "./pages/SalesToDeliver";
-import { ProductsPriceList } from "./pages/ProductsPriceList"
-import { UpdateProductPriceByProduct } from "./pages/UpdateProductPriceByProduct";
-import { UpdateProductPriceBySupplier } from "./pages/UpdateProductPriceBySupplier";
-import { IncomesByAmount } from "./pages/IncomesByAmount";
-// import { RegisterMovements } from "./pages/RegisterMovements";
-import { BlockedCustomers } from "./pages/BlockedCustomers";
-import { Settlements } from "./pages/Settlements";
 
 function App() {
 
@@ -56,29 +36,9 @@ function App() {
               <Routes>
                 <Route path="/" element={<Login />} />
                 <Route path="/login" element={<Login />} />
-                <Route path="/clientes" element={<Clients />} />
-                <Route path="/cta-cte" element={<CurrentAccount />} />
-                {/* <Route path="/reporte-cta-cte" element={<AccountsReport />} /> */}
-                <Route path="/clientes-vendedor" element={<ClientsBySeller />} />
                 <Route path="/usuarios" element={<Users />} />
-                <Route path="/proveedores" element={<Suppliers />} />
+                <Route path="/clientes" element={<Clients />} />
                 <Route path="/ventas" element={<Sales />} />
-                <Route path="/ventas-busqueda" element={<SalesSearch />} />
-                <Route path="/reporte-ventas" element={<SalesReport />} />
-                <Route path="/comisiones" element={<Comissions />} />
-                <Route path="/prep-ventas" element={<SalesReady />} />
-                <Route path="/entrega-ventas" element={<SalesToDeliver />} />
-                <Route path="/productos" element={<Products />} />
-                <Route path="/lista-precios" element={<ProductsPriceList />} />
-                <Route path="/reporte-productos" element={<ProductsReport />} />
-                <Route path="/producto-actualiza-precio-proveedor" element={<UpdateProductPriceBySupplier />} />
-                <Route path="/producto-actualiza-precio" element={<UpdateProductPriceByProduct />} />
-                <Route path="/ingresos-cantidad" element={<IncomesByAmount />} />
-                <Route path="/presupuestos" element={<Budgets />} />
-                <Route path="/movimientos-caja" element={<Registers />} />
-                {/* <Route path="/reporte-movimientos-caja" element={<RegisterMovements />} /> */}
-                <Route path="/reportes-clientes-bloqueados" element={<BlockedCustomers />} />
-                <Route path="/liquidaciones" element={<Settlements />} />
                 <Route path="*" element={<Error />} />
               </Routes>
             </BrowserRouter>
