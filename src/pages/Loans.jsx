@@ -20,7 +20,7 @@ import { SaleForm } from "../components/commercial/SaleForm";
 import { REPORT_URL } from "../utils/urls";
 import { deadlineIsPast, getSaleDifference, getSaleTotal } from "../utils/helpers";
 
-export function Sales() {
+export function Loans() {
 
     const { auth } = useContext(AuthContext)
     const { state } = useContext(DataContext)

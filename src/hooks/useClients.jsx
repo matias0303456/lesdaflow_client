@@ -1,6 +1,6 @@
 import { useContext, useState } from "react"
 
-import { useApi } from "./useApi"
+import { useApi } from "./useQuery"
 import { MessageContext } from "../providers/MessageProvider"
 
 import { CLIENT_URL } from "../utils/urls"

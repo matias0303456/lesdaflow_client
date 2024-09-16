@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../providers/AuthProvider";
 import { MessageContext } from "../providers/MessageProvider";
 import { DataContext } from "../providers/DataProvider";
-import { useApi } from "./useApi";
+import { useApi } from "./useQuery";
 
 import { CHANGE_PASSWORD_URL } from "../utils/urls";
 

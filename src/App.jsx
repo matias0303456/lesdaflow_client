@@ -5,12 +5,11 @@ import { createTheme, ThemeProvider } from "@mui/material";
 
 import { MessageProvider } from "./providers/MessageProvider";
 import { AuthProvider } from "./providers/AuthProvider";
-import { DataProvider } from "./providers/DataProvider";
 
 import { Login } from "./pages/Login";
 import { Clients } from './pages/Clients'
 import { Users } from './pages/Users'
-import { Sales } from "./pages/Sales";
+import { Loans } from "./pages/Loans";
 import { Error } from './pages/Error'
 
 function App() {
@@ -28,23 +27,21 @@ function App() {
 
   return (
     <ThemeProvider theme={theme}>
-      <DataProvider>
-        <MessageProvider>
-          <AuthProvider>
-            <CssBaseline />
-            <BrowserRouter basename="distribuidora-mga">
-              <Routes>
-                <Route path="/" element={<Login />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/usuarios" element={<Users />} />
-                <Route path="/clientes" element={<Clients />} />
-                <Route path="/ventas" element={<Sales />} />
-                <Route path="*" element={<Error />} />
-              </Routes>
-            </BrowserRouter>
-          </AuthProvider>
-        </MessageProvider>
-      </DataProvider>
+      <MessageProvider>
+        <AuthProvider>
+          <CssBaseline />
+          <BrowserRouter basename="distribuidora-mga">
+            <Routes>
+              <Route path="/" element={<Login />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/usuarios" element={<Users />} />
+              <Route path="/clientes" element={<Clients />} />
+              <Route path="/prestamos" element={<Loans />} />
+              <Route path="*" element={<Error />} />
+            </Routes>
+          </BrowserRouter>
+        </AuthProvider>
+      </MessageProvider>
     </ThemeProvider>
   );
 }

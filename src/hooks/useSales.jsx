@@ -2,11 +2,11 @@ import { useContext, useState } from "react"
 
 import { DataContext } from "../providers/DataProvider"
 import { MessageContext } from "../providers/MessageProvider"
-import { useApi } from "./useApi"
+import { useApi } from "./useQuery"
 import { useBudgets } from "./useBudgets"
 import { useClients } from "./useClients"
 
-import { SALE_URL } from "../utils/urls"
+import { LOAN_URL } from "../utils/urls"
 import { deadlineIsPast } from "../utils/helpers"
 
 export function useSales() {
@@ -16,7 +16,7 @@ export function useSales() {
 
     const { handleDelete: deleteBudget } = useBudgets()
     const { toggleBlocked } = useClients()
-    const { get, post, put, destroy } = useApi(SALE_URL)
+    const { get, post, put, destroy } = useApi(LOAN_URL)
 
     const [loadingSales, setLoadingSales] = useState(true)
     const [open, setOpen] = useState(null)

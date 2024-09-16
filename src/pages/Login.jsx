@@ -5,7 +5,7 @@ import { Box, Button, FormControl, Input, InputLabel, Typography } from "@mui/ma
 import { useForm } from "../hooks/useForm";
 import { AuthContext } from "../providers/AuthProvider";
 import { MessageContext } from "../providers/MessageProvider";
-import { useApi } from "../hooks/useApi";
+import { useApi } from "../hooks/useQuery";
 
 import { LOGIN_URL } from "../utils/urls";
 import Logo from '../assets/logo.png'

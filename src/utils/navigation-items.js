@@ -25,7 +25,7 @@ export const nav_items = [
     submenu: [
       {
         subtitle: "ABM Préstamos",
-        path: "/ventas"
+        path: "/prestamos"
       }
     ]
   }

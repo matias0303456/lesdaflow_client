@@ -2,7 +2,7 @@ import { useContext, useState } from "react"
 
 import { MessageContext } from "../providers/MessageProvider"
 import { DataContext } from "../providers/DataProvider"
-import { useApi } from "./useApi"
+import { useApi } from "./useQuery"
 
 import { USER_URL } from "../utils/urls"
 

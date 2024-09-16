@@ -2,7 +2,7 @@ import { useContext, useState } from "react"
 
 import { DataContext } from "../providers/DataProvider"
 import { MessageContext } from "../providers/MessageProvider"
-import { useApi } from "./useApi"
+import { useApi } from "./useQuery"
 
 import { PAYMENT_URL } from "../utils/urls"
 import { getSaleDifference } from "../utils/helpers"
