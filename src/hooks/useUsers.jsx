@@ -10,9 +10,8 @@ export function useUsers() {
 
     const { setMessage, setOpenMessage, setSeverity } = useContext(MessageContext)
 
-    const [users, setUsers] = useState([])
-    const [count, setCount] = useState(0)
-    const [loadingUsers, setLoadingUsers] = useState(true)
+    const [user, setUser] = useState(null)
+    const [loadingUser, setLoadingUser] = useState(true)
     const [open, setOpen] = useState(null)
 
     const { handleQuery } = useQuery()
@@ -20,9 +19,8 @@ export function useUsers() {
     async function getUsers() {
         const { status, data } = await handleQuery({ url: USER_URL })
         if (status === STATUS_CODES.OK) {
-            setUsers(data[0])
-            setCount(data[1])
-            setLoadingUsers(false)
+            setUser(data)
+            setLoadingUser(false)
         } else {
             setMessage(data.message)
             setSeverity('error')
@@ -42,13 +40,11 @@ export function useUsers() {
             })
             if (status === STATUS_CODES.CREATED || status === STATUS_CODES.OK) {
                 if (open === 'NEW') {
-                    setUsers([data, ...users])
-                    setCount(prev => prev + 1)
                     setMessage('Usuario creado correctamente.')
                 } else {
-                    setUsers([data, ...users.filter(u => u.id !== data.id)])
                     setMessage('Usuario editado correctamente.')
                 }
+                setUser(data)
                 setSeverity('success')
                 reset(setOpen)
             } else {
@@ -60,39 +56,13 @@ export function useUsers() {
         }
     }
 
-    async function handleDelete(formData) {
-        setLoadingUsers(true)
-        const { status, data } = await handleQuery({
-            url: `${USER_URL}/${formData.id}`,
-            method: 'DELETE'
-        })
-        if (status === STATUS_CODES.OK) {
-            setUsers([data, ...users.filter(u => u.id !== data.id)])
-            setCount(prev => prev - 1)
-            setMessage('Usuario eliminado correctamente.')
-            setSeverity('success')
-        } else {
-            if (status === STATUS_CODES.DATABASE_ERROR) {
-                setMessage('El usuario tiene datos asociados.')
-            } else {
-                setMessage('Ocurrió un error. Actualice la página.')
-            }
-            setSeverity('error')
-        }
-        setOpenMessage(true)
-        setLoadingUsers(false)
-        setOpen(null)
-    }
-
     return {
-        loadingUsers,
-        setLoadingUsers,
+        loadingUser,
+        setLoadingUser,
         open,
         setOpen,
         handleSubmit,
-        handleDelete,
         getUsers,
-        users,
-        count
+        user
     }
 }

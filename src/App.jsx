@@ -6,7 +6,7 @@ import { createTheme, ThemeProvider } from "@mui/material";
 import { MessageProvider } from "./providers/MessageProvider";
 import { AuthProvider } from "./providers/AuthProvider";
 
-import { Login } from "./pages/Login";
+import { Home } from "./pages/Home";
 import { Clients } from './pages/Clients'
 import { Users } from './pages/Users'
 import { Loans } from "./pages/Loans";
@@ -32,8 +32,8 @@ function App() {
           <CssBaseline />
           <BrowserRouter basename="distribuidora-mga">
             <Routes>
-              <Route path="/" element={<Login />} />
-              <Route path="/login" element={<Login />} />
+              <Route path="/" element={<Home />} />
+              <Route path="/login" element={<Home />} />
               <Route path="/usuarios" element={<Users />} />
               {/* <Route path="/clientes" element={<Clients />} /> */}
               {/* <Route path="/prestamos" element={<Loans />} /> */}

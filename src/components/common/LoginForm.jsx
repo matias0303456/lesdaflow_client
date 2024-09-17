@@ -2,23 +2,22 @@ import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Box, Button, FormControl, Input, InputLabel, Typography } from "@mui/material";
 
-import { useForm } from "../hooks/useForm";
-import { AuthContext } from "../providers/AuthProvider";
-import { MessageContext } from "../providers/MessageProvider";
-import { useApi } from "../hooks/useQuery";
+import { useForm } from "../../hooks/useForm";
+import { AuthContext } from "../../providers/AuthProvider";
+import { MessageContext } from "../../providers/MessageProvider";
+import { useQuery } from "../../hooks/useQuery";
 
-import { LOGIN_URL } from "../utils/urls";
+import { AUTH_URL } from "../../utils/urls";
 import Logo from '../assets/logo.png'
 
-export function Login() {
+export function LoginForm({ showLogo }) {
 
     const { auth, setAuth } = useContext(AuthContext)
     const { setMessage, setOpenMessage, setSeverity } = useContext(MessageContext)
 
     const navigate = useNavigate()
 
-    const { post } = useApi(LOGIN_URL)
-
+    const { handleQuery } = useQuery()
     const { formData, handleChange, disabled, setDisabled, validate, errors } = useForm({
         defaultData: { username: '', password: '' },
         rules: {
@@ -28,17 +27,21 @@ export function Login() {
     })
 
     useEffect(() => {
-        if (auth) return navigate('/productos')
+        if (auth) return navigate('/prestamos')
     }, [])
 
     const handleSubmit = async e => {
         e.preventDefault()
         if (validate()) {
-            const { status, data } = await post(formData, true)
+            const { status, data } = await handleQuery({
+                url: AUTH_URL + '/login',
+                method: 'POST',
+                body: JSON.stringify(formData)
+            })
             if (status === 200) {
-                localStorage.setItem('auth_mga', JSON.stringify(data))
+                localStorage.setItem('auth_prestamos', JSON.stringify(data))
                 setAuth(data)
-                navigate(data.user.role === 'CHOFER' ? '/prep-ventas' : '/productos')
+                navigate('/prestamos')
             } else {
                 setMessage(data.message)
                 setSeverity('error')
@@ -51,9 +54,11 @@ export function Login() {
     return (
         <Box sx={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <Box sx={{ width: 300 }}>
-                <Box sx={{ textAlign: 'center', marginBottom: 1 }}>
-                    <img src={Logo} alt="" width={300} />
-                </Box>
+                {showLogo &&
+                    <Box sx={{ textAlign: 'center', marginBottom: 1 }}>
+                        <img src={Logo} alt="" width={300} />
+                    </Box>
+                }
                 <form onChange={handleChange} onSubmit={handleSubmit} style={{
                     boxShadow: '0 0 10px #808080',
                     padding: 25,
