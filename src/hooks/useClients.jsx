@@ -16,6 +16,10 @@ export function useClients() {
     const [count, setCount] = useState(0)
     const [open, setOpen] = useState(null)
     const [loadingClients, setLoadingClients] = useState(true)
+    const [filter, setFilter] = useState({
+        page: 0,
+        offset: 25
+    })
 
     async function getClients() {
         const { status, data } = await handleQuery({
@@ -95,6 +99,8 @@ export function useClients() {
         setOpen,
         getClients,
         clients,
-        count
+        count,
+        filter,
+        setFilter
     }
 }

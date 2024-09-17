@@ -39,7 +39,7 @@ export function Layout({ children, title }) {
 
   const menuOptions = (
     <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'column', md: 'row' }, width: '100%' }}>
-      {nav_items.filter(item => item.can_access.includes(auth.user.role)).map((item, index) => (
+      {nav_items.map((item, index) => (
         <Box key={index} sx={{
           display: 'flex',
           alignItems: 'center',

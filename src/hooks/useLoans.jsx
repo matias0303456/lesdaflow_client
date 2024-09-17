@@ -16,6 +16,10 @@ export function useLoans() {
     const [loadingLoans, setLoadingLoans] = useState(true)
     const [count, setCount] = useState(0)
     const [open, setOpen] = useState(null)
+    const [filter, setFilter] = useState({
+        page: 0,
+        offset: 25
+    })
 
     async function getLoans() {
         const { status, data } = await handleQuery({ url: LOAN_URL })
@@ -94,6 +98,8 @@ export function useLoans() {
         handleDelete,
         getLoans,
         loans,
-        count
+        count,
+        filter,
+        setFilter
     }
 }

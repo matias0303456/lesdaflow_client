@@ -25,6 +25,8 @@ export function Loans() {
         getLoans,
         loans,
         count,
+        filter,
+        setFilter
     } = useLoans()
     const { loadingClients, getClients } = useClients()
     const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
@@ -46,8 +48,11 @@ export function Loans() {
             date: {
                 required: true
             },
+            amount: {
+                required: true
+            },
             observations: {
-                maxLength: 255
+                maxLength: 191
             }
         }
     })
@@ -111,51 +116,29 @@ export function Loans() {
     ]
 
     return (
-        <Layout title="Ventas">
-            <DataGridWithBackendPagination
-                headCells={headCells}
-                rows={loans}
-                setOpen={setOpen}
-                setFormData={setFormData}
-                count={count}
-                showEditAction
-                showDeleteAction
-                showPDFAction
-                showViewAction
-                contentHeader={
-                    <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between' }}>
-                        <Button variant="outlined" onClick={() => {
-                            reset()
-                            setOpen('NEW')
-                        }}>
-                            Agregar
-                        </Button>
-                    </Box>
-                }
-            >
-                <ModalComponent open={open === 'DELETE'} onClose={() => reset(setOpen)} reduceWidth={900}>
-                    <Typography variant="h6" marginBottom={1} textAlign="center">
-                        Confirmar eliminación de préstamo
-                    </Typography>
-                    <Typography variant="body1" marginBottom={2} textAlign="center">
-                        Los datos no podrán recuperarse
-                    </Typography>
-                    <Box sx={{ display: 'flex', gap: 1, justifyContent: 'center' }}>
-                        <Button type="button" variant="outlined" onClick={() => reset(setOpen)} sx={{ width: '35%' }}>
-                            Cancelar
-                        </Button>
-                        <Button
-                            type="button"
-                            variant="contained"
-                            disabled={disabled}
-                            sx={{ width: '35%' }}
-                            onClick={() => handleDelete(formData)}
-                        >
-                            Confirmar
-                        </Button>
-                    </Box>
-                </ModalComponent>
-            </DataGridWithBackendPagination>
+        <Layout title="Préstamos">
+            <ModalComponent open={open === 'DELETE'} onClose={() => reset(setOpen)} reduceWidth={900}>
+                <Typography variant="h6" marginBottom={1} textAlign="center">
+                    Confirmar eliminación de préstamo
+                </Typography>
+                <Typography variant="body1" marginBottom={2} textAlign="center">
+                    Los datos no podrán recuperarse
+                </Typography>
+                <Box sx={{ display: 'flex', gap: 1, justifyContent: 'center' }}>
+                    <Button type="button" variant="outlined" onClick={() => reset(setOpen)} sx={{ width: '35%' }}>
+                        Cancelar
+                    </Button>
+                    <Button
+                        type="button"
+                        variant="contained"
+                        disabled={disabled}
+                        sx={{ width: '35%' }}
+                        onClick={() => handleDelete(formData)}
+                    >
+                        Confirmar
+                    </Button>
+                </Box>
+            </ModalComponent>
         </Layout>
     )
 }

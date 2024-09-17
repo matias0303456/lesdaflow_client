@@ -18,9 +18,8 @@ export function UserDropdown({ setShowUserDropdown }) {
     >
       <div className="flex w-full my-auto flex-col items-center justify-center gap-1">
         <div className="w-full h-auto pt-2 font-semibold text-center">
-          <h2>{auth?.user.name}</h2>
+          <h2>{`${auth?.user.first_name} ${auth?.user.last_name}`}</h2>
         </div>
-        <small className="text-[10px] font-thin">{auth?.user.role}</small>
       </div>
       <div className="text-xs font-thin p-3 w-full">
         <button
