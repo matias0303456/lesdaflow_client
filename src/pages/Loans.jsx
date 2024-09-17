@@ -6,7 +6,7 @@ import { format } from "date-fns";
 import { AuthContext } from "../providers/AuthProvider";
 import { useClients } from '../hooks/useClients'
 import { useForm } from "../hooks/useForm";
-import { useSales } from "../hooks/useSales";
+import { useLoans } from "../hooks/useLoans";
 import { useUsers } from "../hooks/useUsers";
 
 import { Layout } from "../components/common/Layout";
@@ -25,25 +25,16 @@ export function Loans() {
     const navigate = useNavigate()
 
     const {
-        loadingSales,
-        setSaleProducts,
+        loadingLoans,
         open,
         setOpen,
-        setMissing,
-        setIdsToDelete,
-        saleProducts,
-        missing,
-        idsToDelete,
-        saleSaved,
-        setSaleSaved,
         handleSubmit,
         handleDelete,
-        getSales,
-        isBlocked,
-        setIsBlocked
-    } = useSales()
+        getLoans,
+        loans,
+        count,
+    } = useLoans()
     const { loadingClients, getClients } = useClients()
-    const { getUsers } = useUsers()
     const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
         defaultData: {
             id: '',
@@ -67,27 +58,9 @@ export function Loans() {
     })
 
     useEffect(() => {
-        if (auth?.user.role !== 'ADMINISTRADOR' && auth?.user.role !== 'VENDEDOR') navigate('/prep-ventas')
-    }, [])
-
-    useEffect(() => {
         getClients()
-        getProducts()
-        getUsers()
+        getLoans()
     }, [])
-
-    useEffect(() => {
-        if (open === 'EDIT' || open === 'VIEW') {
-            setSaleProducts(formData.sale_products)
-        }
-    }, [formData])
-
-    useEffect(() => {
-        const currentClient = state.clients.data.find(c => c.id === parseInt(formData.client_id))
-        const currentClientSales = state.sales.data.filter(s => s.client_id === currentClient?.id)
-        const someSaleIsPast = currentClientSales.some(s => deadlineIsPast(s))
-        setIsBlocked(currentClient?.is_blocked || someSaleIsPast)
-    }, [formData.client_id])
 
     const headCells = [
         {
@@ -176,7 +149,6 @@ export function Loans() {
     return (
         <Layout title="Ventas">
             <DataGridWithBackendPagination
-                loading={loadingClients || loadingSales || loadingProducts || disabled}
                 headCells={headCells}
                 rows={state.sales.data}
                 entityKey="sales"
