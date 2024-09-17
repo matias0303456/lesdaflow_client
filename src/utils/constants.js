@@ -5,7 +5,7 @@ export const STATUS_CODES = {
     SERVER_ERROR: 500,
     BAD_REQUEST: 400,
     NOT_FOUND: 404,
-    DATABASE_ERROR: 300
+    DATABASE_ERROR: 300,
 }
 
 export const STATUS_MESSAGES = {

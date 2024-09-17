@@ -75,7 +75,7 @@ export function Users() {
   const [showPassword, setShowPassword] = useState(false)
 
   useEffect(() => {
-    getUser()
+    if (auth) getUser()
   }, [])
 
   const headCells = [
@@ -366,9 +366,9 @@ export function Users() {
             </DataGridWithBackendPagination>
           }
         </Layout> :
-        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '90vh' }}>
-          <Box sx={{ width: '30%' }}>
-            <Typography variant="h6" align="center" marginBottom={1}>
+        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+          <Box>
+            <Typography variant="h6" align="center" marginBottom={3}>
               Inicie sesión para usar el sistema
             </Typography>
             <LoginForm />

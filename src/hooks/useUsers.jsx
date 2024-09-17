@@ -16,7 +16,7 @@ export function useUsers() {
 
     const { handleQuery } = useQuery()
 
-    async function getUsers() {
+    async function getUser() {
         const { status, data } = await handleQuery({ url: USER_URL })
         if (status === STATUS_CODES.OK) {
             setUser(data)
@@ -62,7 +62,7 @@ export function useUsers() {
         open,
         setOpen,
         handleSubmit,
-        getUsers,
+        getUser,
         user
     }
 }

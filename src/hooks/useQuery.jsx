@@ -34,16 +34,16 @@ export function useQuery() {
             });
             const refreshStatus = refreshQuery.status;
             const refreshData = await refreshQuery.json();
-            if (refreshStatus === STATUS_CODES.OK) {
+            if (refreshStatus === STATUS_CODES.CREATED) {
                 setAuth({
                     access_token: refreshData.access_token,
                     refresh_token: auth?.refresh_token,
-                    me: auth?.me
+                    user: auth?.user
                 });
                 localStorage.setItem('auth_prestamos', JSON.stringify({
                     access_token: refreshData.access_token,
                     refresh_token: auth?.refresh_token,
-                    me: auth?.me
+                    user: auth?.user
                 }));
                 return handleQuery({ url, method, body, token: refreshData.access_token });
             }
