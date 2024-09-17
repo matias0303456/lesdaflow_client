@@ -12,7 +12,7 @@ import { useUsers } from "../hooks/useUsers";
 
 import { Layout } from "../components/common/Layout";
 import { ModalComponent } from "../components/common/ModalComponent";
-import { DataGridWithBackendPagination } from "../components/datagrid/DataGridWithBackendPagination";
+import { DataGridWithFrontendPagination } from "../components/datagrid/DataGridWithFrontendPagination";
 import { LoginForm } from "../components/common/LoginForm";
 
 export function Users() {
@@ -141,14 +141,14 @@ export function Users() {
             <Box sx={{ width: '100%' }}>
               <LinearProgress />
             </Box> :
-            <DataGridWithBackendPagination
+            <DataGridWithFrontendPagination
               headCells={headCells}
               rows={[user]}
               setFormData={setFormData}
               setOpen={setOpen}
+              filter={{ page: 0, offset: 1 }}
               showEditAction
               showDeleteAction
-              showViewAction
               count={1}
               contentHeader={
                 <Box sx={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: 'space-between' }}>
@@ -363,7 +363,7 @@ export function Users() {
                   </FormControl>
                 </form>
               </ModalComponent>
-            </DataGridWithBackendPagination>
+            </DataGridWithFrontendPagination>
           }
         </Layout> :
         <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>

@@ -11,14 +11,12 @@ import Paper from '@mui/material/Paper';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import EditIcon from '@mui/icons-material/Edit';
-import SettingsIcon from "@mui/icons-material/Settings";
 import SearchSharpIcon from '@mui/icons-material/SearchSharp';
 import CloseIcon from "@mui/icons-material/Close";
 import PictureAsPdfSharpIcon from '@mui/icons-material/PictureAsPdfSharp'
 
 import { EnhancedTableHead } from './EnhancedTableHead';
 
-import { deadlineIsPast, getStock } from '../../utils/helpers';
 import { getComparator, stableSort } from '../../utils/dataGrid';
 
 export function DataGridWithFrontendPagination({
@@ -28,12 +26,10 @@ export function DataGridWithFrontendPagination({
     setOpen,
     setData,
     contentHeader,
-    deadlineColor = false,
     defaultOrder = 'desc',
     defaultOrderBy = 'id',
     showEditAction = false,
     showViewAction = false,
-    showSettingsAction = false,
     showDeleteAction = false,
     minWidth = 750,
     labelRowsPerPage = "Registros por página",
@@ -71,13 +67,13 @@ export function DataGridWithFrontendPagination({
         [order, orderBy, page, rowsPerPage, rows],
     );
     return (
-        <Box sx={{ width: '100%', backgroundColor: '#fff' }}>
+        <Box sx={{ backgroundColor: '#fff' }}>
             {contentHeader &&
                 <Box sx={{ marginBottom: 3 }}>
                     {contentHeader}
                 </Box>
             }
-            <Paper sx={{ width: '100%', mb: 2 }}>
+            <Paper sx={{ mb: 2 }}>
                 <TableContainer>
                     <Table
                         sx={{ minWidth, fontWeight: "bold" }}
@@ -99,16 +95,14 @@ export function DataGridWithFrontendPagination({
                                                 role="checkbox"
                                                 tabIndex={-1}
                                                 key={row.id}
-                                                width="100px"
                                             >
-                                                <TableCell sx={{ width: "auto" }}>
+                                                <TableCell>
                                                     <Box sx={{
                                                         display: "flex",
                                                         justifyContent: "center",
                                                         alignItems: "center",
                                                         padding: "1px",
                                                         gap: "1rem",
-                                                        width: "auto",
                                                     }}>
                                                         {showViewAction &&
                                                             <Tooltip
@@ -174,51 +168,12 @@ export function DataGridWithFrontendPagination({
                                                                 </IconButton>
                                                             </Tooltip>
                                                         }
-                                                        {showSettingsAction &&
-                                                            <Tooltip
-                                                                title={showSettingsAction}
-                                                                onClick={() => {
-                                                                    setData(
-                                                                        rows.find(
-                                                                            (r) => r.id === row.id
-                                                                        )
-                                                                    );
-                                                                    setOpen("SETTING");
-                                                                }}
-                                                            >
-                                                                <IconButton
-                                                                    className="rounded-full bg-black/20 opacity-50 hover:bg-[#078BCD]"
-                                                                    aria-label="setting"
-                                                                >
-                                                                    <SettingsIcon className="w-4 h-4 hover:text-white" />
-                                                                </IconButton>
-                                                            </Tooltip>
-                                                        }
                                                     </Box>
                                                 </TableCell>
                                                 {headCells
                                                     .map((cell) => cell.accessor)
                                                     .map((accessor) => (
-                                                        <TableCell
-                                                            key={accessor}
-                                                            align="inherit"
-                                                            sx={{
-                                                                color:
-                                                                    (deadlineColor === "sales" &&
-                                                                        deadlineIsPast(row)) ||
-                                                                        // (deadlineColor ===
-                                                                        //     "clients" &&
-                                                                        //     row.sales.some((s) =>
-                                                                        //         deadlineIsPast(s)
-                                                                        //     )) ||
-                                                                        (deadlineColor ===
-                                                                            "products" &&
-                                                                            row.min_stock >
-                                                                            getStock(row))
-                                                                        ? "red"
-                                                                        : "",
-                                                            }}
-                                                        >
+                                                        <TableCell key={accessor} align="inherit">
                                                             {typeof accessor === "function"
                                                                 ? accessor(row, index)
                                                                 : row[accessor]}

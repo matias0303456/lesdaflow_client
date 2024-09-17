@@ -18,7 +18,18 @@ export function Clients() {
 
     const { auth } = useContext(AuthContext)
 
-    const { loadingClients, handleSubmit, handleDelete, open, setOpen, getClients, clients, filter, setFilter } = useClients()
+    const {
+        loadingClients,
+        handleSubmit,
+        handleDelete,
+        open,
+        setOpen,
+        getClients,
+        clients,
+        filter,
+        setFilter,
+        count
+    } = useClients()
     const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
         defaultData: {
             id: '',
@@ -132,6 +143,7 @@ export function Clients() {
                             setFormData={setFormData}
                             filter={filter}
                             setFilter={setFilter}
+                            count={count}
                             showEditAction
                             showDeleteAction
                             showViewAction

@@ -62,7 +62,7 @@ export function DataGridWithBackendPagination({
   );
 
   return (
-    <Box sx={{ width: '100%', backgroundColor: '#fff' }}>
+    <Box sx={{ backgroundColor: '#fff' }}>
       {contentHeader}
       <Paper sx={{ mb: 2 }}>
         <TableContainer>
@@ -133,7 +133,7 @@ export function DataGridWithBackendPagination({
                       {headCells.map((cell) => cell.accessor).map((accessor) => (
                         <TableCell
                           key={accessor}
-                          align="center"
+                          align="left"
                         >
                           {typeof accessor === "function"
                             ? accessor(row, index)

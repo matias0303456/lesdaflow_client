@@ -22,7 +22,7 @@ export function EnhancedTableHead({
                     <TableCell
                         key={headCell.id}
                         className='font-bold flex-1 px-4 py-1'
-                        align="inherit"
+                        align="left"
                         padding={headCell.disablePadding ? 'none' : 'normal'}
                         sortDirection={orderBy === headCell.id ? order : false}
                     >
