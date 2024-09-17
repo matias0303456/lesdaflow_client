@@ -159,7 +159,7 @@ export function Users() {
                   }}>
                     Agregar
                   </Button>
-                  <UserFilter />
+                  {/* <UserFilter /> */}
                 </Box>
               }
             >

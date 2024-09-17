@@ -8,7 +8,7 @@ import { MessageContext } from "../../providers/MessageProvider";
 import { useQuery } from "../../hooks/useQuery";
 
 import { AUTH_URL } from "../../utils/urls";
-import Logo from '../assets/logo.png'
+import Logo from '../../assets/logo.png'
 
 export function LoginForm({ showLogo }) {
 

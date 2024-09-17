@@ -15,7 +15,7 @@ import { IconButton, Tooltip } from '@mui/material';
 
 import { EnhancedTableHead } from './EnhancedTableHead';
 
-import { getComparator, stableSort } from '../../helpers/utils';
+import { getComparator, stableSort } from '../../utils/dataGrid';
 
 export function DataGridWithBackendPagination({
   children,

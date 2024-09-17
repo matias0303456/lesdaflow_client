@@ -4,8 +4,6 @@ import { Box, Button, Typography } from "@mui/material";
 import { format } from "date-fns";
 
 import { AuthContext } from "../providers/AuthProvider";
-import { DataContext } from "../providers/DataProvider";
-import { useProducts } from "../hooks/useProducts";
 import { useClients } from '../hooks/useClients'
 import { useForm } from "../hooks/useForm";
 import { useSales } from "../hooks/useSales";
@@ -23,7 +21,6 @@ import { deadlineIsPast, getSaleDifference, getSaleTotal } from "../utils/helper
 export function Loans() {
 
     const { auth } = useContext(AuthContext)
-    const { state } = useContext(DataContext)
 
     const navigate = useNavigate()
 
@@ -45,7 +42,6 @@ export function Loans() {
         isBlocked,
         setIsBlocked
     } = useSales()
-    const { loadingProducts, getProducts } = useProducts()
     const { loadingClients, getClients } = useClients()
     const { getUsers } = useUsers()
     const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({

@@ -30,13 +30,13 @@ function App() {
       <MessageProvider>
         <AuthProvider>
           <CssBaseline />
-          <BrowserRouter basename="distribuidora-mga">
+          <BrowserRouter basename="prestamos-personales">
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/login" element={<Home />} />
               <Route path="/usuarios" element={<Users />} />
-              {/* <Route path="/clientes" element={<Clients />} /> */}
-              {/* <Route path="/prestamos" element={<Loans />} /> */}
+              <Route path="/clientes" element={<Clients />} />
+              <Route path="/prestamos" element={<Loans />} />
               <Route path="*" element={<Error />} />
             </Routes>
           </BrowserRouter>

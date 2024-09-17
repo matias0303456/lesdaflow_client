@@ -1,12 +1,11 @@
 import { useContext, useState } from "react";
 import { Link } from "react-router-dom";
-import { Box, Button, Checkbox, FormControl, FormControlLabel, Input, InputLabel, MenuItem, Select, Tab, Tabs, Typography } from "@mui/material";
+import { Box, Button, FormControl, Input, InputLabel, MenuItem, Select, Tab, Tabs, Typography } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { es } from "date-fns/locale";
 
 import { AuthContext } from "../providers/AuthProvider";
-import { DataContext } from "../providers/DataProvider";
 import { useForm } from "../hooks/useForm";
 import { useClients } from "../hooks/useClients";
 
@@ -16,14 +15,12 @@ import { DataGridWithBackendPagination } from "../components/datagrid/DataGridWi
 import { ClientFilter } from "../components/filters/ClientFilter";
 
 import { REPORT_URL } from "../utils/urls";
-import { SalesByClient } from "../components/commercial/SalesByClient";
 
 export function Clients() {
 
     const { auth } = useContext(AuthContext)
-    const { state } = useContext(DataContext)
 
-    const { loadingClients, handleSubmit, handleDelete, open, setOpen, getClients, toggleBlocked } = useClients()
+    const { loadingClients, handleSubmit, handleDelete, open, setOpen, getClients, clients } = useClients()
     const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
         defaultData: {
             id: '',
@@ -37,8 +34,7 @@ export function Clients() {
             email: '',
             address: '',
             work_place: '',
-            user_id: '',
-            is_blocked: false
+            user_id: ''
         },
         rules: {
             first_name: {
@@ -143,25 +139,6 @@ export function Clients() {
             label: 'Comercio',
             sorter: (row) => row.work_place,
             accessor: 'work_place'
-        },
-        {
-            id: 'is_blocked',
-            numeric: false,
-            disablePadding: true,
-            label: 'Bloqueado',
-            sorter: (row) => row.is_blocked ? 1 : 0,
-            accessor: (row) => (
-                <Box sx={{ textAlign: 'center' }}>
-                    <FormControlLabel
-                        control={<Checkbox disabled={auth?.user.role !== 'ADMINISTRADOR'} />}
-                        checked={row.is_blocked}
-                        onChange={e => toggleBlocked({
-                            ...row,
-                            is_blocked: e.target.checked
-                        })}
-                    />
-                </Box>
-            )
         }
     ];
 
@@ -183,7 +160,7 @@ export function Clients() {
                     ]
                 }
                 loading={loadingClients || disabled}
-                rows={state.clients.data}
+                rows={clients}
                 entityKey="clients"
                 getter={getClients}
                 setOpen={setOpen}
@@ -195,8 +172,8 @@ export function Clients() {
                     <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: 1 }}>
                         <Box sx={{ display: 'flex', gap: 1 }}>
                             <Button variant="outlined" onClick={() => {
-                                   reset()
-                                   setOpen('NEW')
+                                reset()
+                                setOpen('NEW')
                             }}>
                                 Agregar
                             </Button>
@@ -380,14 +357,6 @@ export function Clients() {
                                     }
                                 </FormControl>
                             </form>
-                        </Box>
-                    }
-                    {valueTab === 1 &&
-                        <Box sx={{ p: 1 }}>
-                            <SalesByClient
-                                formData={formData}
-                                handleClose={handleClose}
-                            />
                         </Box>
                     }
                 </ModalComponent>

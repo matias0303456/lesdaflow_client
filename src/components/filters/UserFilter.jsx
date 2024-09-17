@@ -1,8 +1,6 @@
 import { useContext, useEffect } from "react";
 import { Box, Button, FormControl, Input, InputLabel, MenuItem, Select } from "@mui/material";
 
-import { DataContext } from "../../providers/DataProvider";
-
 export function UserFilter() {
 
     const { state, dispatch } = useContext(DataContext)
