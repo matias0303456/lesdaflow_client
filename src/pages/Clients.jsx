@@ -12,7 +12,6 @@ import { useClients } from "../hooks/useClients";
 import { Layout } from "../components/common/Layout";
 import { ModalComponent } from "../components/common/ModalComponent";
 import { DataGridWithBackendPagination } from "../components/datagrid/DataGridWithBackendPagination";
-import { ClientFilter } from "../components/filters/ClientFilter";
 
 import { REPORT_URL } from "../utils/urls";
 
@@ -183,7 +182,6 @@ export function Clients() {
                                 PDF
                             </Button>
                         </Box>
-                        <ClientFilter />
                     </Box>
                 }
             >

@@ -12,7 +12,6 @@ import { useUsers } from "../hooks/useUsers";
 
 import { Layout } from "../components/common/Layout";
 import { ModalComponent } from "../components/common/ModalComponent";
-import { UserFilter } from "../components/filters/UserFilter";
 import { DataGridWithBackendPagination } from "../components/datagrid/DataGridWithBackendPagination";
 import { LoginForm } from "../components/common/LoginForm";
 

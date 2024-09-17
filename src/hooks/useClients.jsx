@@ -1,26 +1,27 @@
 import { useContext, useState } from "react"
 
-import { useApi } from "./useQuery"
+import { useQuery } from "./useQuery"
 import { MessageContext } from "../providers/MessageProvider"
 
 import { CLIENT_URL } from "../utils/urls"
+import { STATUS_CODES } from "../utils/constants"
 
 export function useClients() {
 
     const { setMessage, setOpenMessage, setSeverity } = useContext(MessageContext)
 
-    const { post, put, destroy } = useApi(CLIENT_URL)
+    const { handleQuery } = useQuery()
 
     const [clients, setClients] = useState([])
     const [count, setCount] = useState(0)
     const [open, setOpen] = useState(null)
     const [loadingClients, setLoadingClients] = useState(true)
 
-    const { get } = useApi(CLIENT_URL)
-
-    async function getClients(params) {
-        const { status, data } = await get(params)
-        if (status === 200) {
+    async function getClients() {
+        const { status, data } = await handleQuery({
+            url: CLIENT_URL
+        })
+        if (status === STATUS_CODES.OK) {
             setClients(data[0])
             setCount(data[1])
             setLoadingClients(false)
@@ -34,8 +35,14 @@ export function useClients() {
     async function handleSubmit(e, validate, formData, reset, setDisabled) {
         e.preventDefault()
         if (validate()) {
-            const { status, data } = open === 'NEW' ? await post(formData) : await put(formData)
-            if (status === 200) {
+            const urls = { 'NEW': CLIENT_URL, 'EDIT': `${CLIENT_URL}/${formData.id}` }
+            const methods = { 'NEW': 'POST', 'EDIT': 'PUT' }
+            const { status, data } = await handleQuery({
+                url: urls[open],
+                method: methods[open],
+                body: formData
+            })
+            if (status === STATUS_CODES.OK || status === STATUS_CODES.CREATED) {
                 if (open === 'NEW') {
                     setClients([data, ...clients])
                     setCount(prev => prev + 1)
@@ -57,7 +64,10 @@ export function useClients() {
 
     async function handleDelete(formData) {
         setLoadingClients(true)
-        const { status, data } = await destroy(formData)
+        const { status, data } = await handleQuery({
+            url: `${CLIENT_URL}/${formData.id}`,
+            method: 'DELETE'
+        })
         if (status === 200) {
             setClients([data, ...clients.filter(c => c.id !== data.id)])
             setCount(prev => prev - 1)
