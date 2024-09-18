@@ -6,13 +6,10 @@ import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
-import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown"
-import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight"
 import { Avatar } from "@mui/material";
 
 import { AuthContext } from '../../providers/AuthProvider';
 
-import { Dropdown } from "./Dropdown"
 import { UserDropdown } from "./UserDropdown"
 
 import { nav_items } from "../../utils/navigation-items"
@@ -25,11 +22,7 @@ export function Layout({ children, title }) {
   const navigate = useNavigate()
 
   const [mobileOpen, setMobileOpen] = useState(false)
-  const [submenu, setSubmenu] = useState(null)
   const [showUserDropdown, setShowUserDropdown] = useState(false)
-  const [itemToShow, setItemToShow] = useState("")
-
-  if (!auth) return navigate('/login')
 
   const drawerWidth = 330
 
@@ -39,31 +32,21 @@ export function Layout({ children, title }) {
 
   const menuOptions = (
     <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'column', md: 'row' }, width: '100%' }}>
-      {nav_items.map((item, index) => (
-        <Box key={index} sx={{
-          display: 'flex',
-          alignItems: 'center',
-          cursor: 'pointer',
-          color: '#fff',
-          paddingY: { xs: 1, md: 0 },
-          ':hover': { backgroundColor: '#3276B1' }
-        }}
-          onMouseEnter={() => {
-            setSubmenu(true)
-            setItemToShow(item.title)
+      {nav_items.map((item) => (
+        <Box
+          key={item.name}
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            cursor: 'pointer',
+            color: '#fff',
+            paddingY: { xs: 2.5, md: 0 },
+            ':hover': { backgroundColor: '#3276B1' }
           }}
-          onMouseLeave={() => {
-            setSubmenu(false)
-            setItemToShow("")
-          }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 0.4, paddingX: 1, fontSize: 15, position: 'relative' }}>
+          onClick={() => navigate(item.path)}
+        >
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 0.4, paddingX: 1.5, fontSize: 15, position: 'relative' }}>
             <Box>{item.title}</Box>
-            {mobileOpen ? (
-              <KeyboardArrowRightIcon className='text-xs' />
-            ) : (
-              <KeyboardArrowDownIcon className='text-xs' />
-            )}
-            {submenu && itemToShow === item.title && <Dropdown item={item.submenu} />}
           </Box>
         </Box>
       ))}

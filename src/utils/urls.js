@@ -6,3 +6,4 @@ export const CLIENT_URL = `${BASE_URL}/clients`
 export const USER_URL = `${BASE_URL}/users`
 export const REPORT_URL = `${BASE_URL}/reports`
 export const PAYMENT_URL = `${BASE_URL}/payments`
+export const SETTINGS_URL = `${BASE_URL}/settings`

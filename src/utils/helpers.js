@@ -143,3 +143,10 @@ export function getBudgetTotal(budget, subtotal) {
 export function saleIsPrepared(sale) {
     return sale.sale_products.every(sp => sp.is_prepared)
 }
+
+export function a11yProps(index) {
+    return {
+        id: `simple-tab-${index}`,
+        'aria-controls': `simple-tabpanel-${index}`,
+    };
+}

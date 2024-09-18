@@ -4,4 +4,11 @@
 
 body {
     background-color: #eee !important;
+    max-width: 1700px;
+}
+
+@media (min-width:1701px) {
+    body {
+        margin: 0 auto !important;
+    }
 }

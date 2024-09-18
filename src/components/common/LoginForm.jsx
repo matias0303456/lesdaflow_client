@@ -37,7 +37,7 @@ export function LoginForm({ showLogo }) {
             const { status, data } = await handleQuery({
                 url: AUTH_URL + '/login',
                 method: 'POST',
-                body: JSON.stringify(formData)
+                body: formData
             })
             if (status === STATUS_CODES.OK) {
                 localStorage.setItem('auth_prestamos', JSON.stringify(data))
