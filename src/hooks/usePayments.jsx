@@ -6,6 +6,7 @@ import { useApi } from "./useQuery"
 
 import { PAYMENT_URL } from "../utils/urls"
 import { getSaleDifference } from "../utils/helpers"
+import { STATUS_CODES } from "../utils/constants"
 
 export function usePayments() {
 
@@ -19,7 +20,7 @@ export function usePayments() {
 
     async function getPayments(params) {
         const { status, data } = await get(params)
-        if (status === 200) {
+        if (status === STATUS_CODES.OK) {
             dispatch({
                 type: 'PAYMENTS',
                 payload: { ...state.payments, data: data[0], count: data[1] }
@@ -51,7 +52,7 @@ export function usePayments() {
         if (!checkDifference(formData)) return
         if (validate()) {
             const { status, data } = open === 'NEW' ? await post(formData) : await put(formData)
-            if (status === 200) {
+            if (status === STATUS_CODES.OK) {
                 if (open === 'NEW') {
                     dispatch({
                         type: 'SALES',
@@ -114,7 +115,7 @@ export function usePayments() {
 
     async function handleDelete(formData, reset) {
         const { status, data } = await destroy(formData)
-        if (status === 200) {
+        if (status === STATUS_CODES.OK) {
             dispatch({
                 type: 'SALES',
                 payload: {
@@ -151,7 +152,7 @@ export function usePayments() {
 
     async function cancelPayment(formData) {
         const { status, data } = await put(formData, '/cancel-payment')
-        if (status === 200) {
+        if (status === STATUS_CODES.OK) {
             dispatch({
                 type: 'PAYMENTS',
                 payload: {

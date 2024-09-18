@@ -72,8 +72,8 @@ export function useClients() {
             url: `${CLIENT_URL}/${formData.id}`,
             method: 'DELETE'
         })
-        if (status === 200) {
-            setClients([data, ...clients.filter(c => c.id !== data.id)])
+        if (status === STATUS_CODES.OK) {
+            setClients(clients.filter(c => c.id !== data.id))
             setCount(prev => prev - 1)
             setMessage('Cliente eliminado correctamente.')
             setSeverity('success')

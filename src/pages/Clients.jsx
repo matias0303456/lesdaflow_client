@@ -47,28 +47,26 @@ export function Clients() {
         rules: {
             first_name: {
                 required: true,
-                maxLength: 255
+                maxLength: 55
             },
             last_name: {
                 required: true,
-                maxLength: 255
+                maxLength: 55
             },
             document_number: {
-                maxLength: 255
+                maxLength: 15
             },
             cell_phone: {
-                required: true,
-                maxLength: 255
+                maxLength: 55
             },
             local_phone: {
-                maxLength: 255
+                maxLength: 55
             },
             address: {
-                required: true,
-                maxLength: 255
+                maxLength: 55
             },
             email: {
-                maxLength: 255
+                maxLength: 55
             }
         }
     })
@@ -159,11 +157,16 @@ export function Clients() {
                             }
                         >
                             <ModalComponent open={open === 'NEW' || open === 'EDIT' || open === 'VIEW'} onClose={handleClose}>
+                                <Typography variant="h6" sx={{ marginBottom: 2 }}>
+                                    {open === "NEW" && "Nuevo cliente"}
+                                    {open === "EDIT" && "Editar cliente"}
+                                    {open === "VIEW" && `Cliente ${formData.first_name} ${formData.last_name}`}
+                                </Typography>
                                 <form onChange={handleChange} onSubmit={(e) => handleSubmit(e, validate, formData, reset, setDisabled)}>
                                     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
                                         <Box sx={{ display: 'flex', gap: 5 }}>
                                             <FormControl sx={{ width: '50%' }}>
-                                                <InputLabel htmlFor="first_name">Nombres *</InputLabel>
+                                                <InputLabel htmlFor="first_name">Nombre *</InputLabel>
                                                 <Input id="first_name" type="text" name="first_name" value={formData.first_name} disabled={open === 'VIEW'} />
                                                 {errors.first_name?.type === 'required' &&
                                                     <Typography variant="caption" color="red" marginTop={1}>
@@ -177,7 +180,7 @@ export function Clients() {
                                                 }
                                             </FormControl>
                                             <FormControl sx={{ width: '50%' }}>
-                                                <InputLabel htmlFor="last_name">Apellidos *</InputLabel>
+                                                <InputLabel htmlFor="last_name">Apellido *</InputLabel>
                                                 <Input id="last_name" type="text" name="last_name" value={formData.last_name} disabled={open === 'VIEW'} />
                                                 {errors.last_name?.type === 'required' &&
                                                     <Typography variant="caption" color="red" marginTop={1}>
@@ -228,20 +231,10 @@ export function Clients() {
                                                         disabled={open === 'VIEW'}
                                                     />
                                                 </LocalizationProvider>
-                                                {errors.birth?.type === 'required' &&
-                                                    <Typography variant="caption" color="red" marginTop={1}>
-                                                        * La fecha de nacimiento es requerida.
-                                                    </Typography>
-                                                }
                                             </FormControl>
                                             <FormControl sx={{ width: '50%' }}>
-                                                <InputLabel htmlFor="address">Dirección *</InputLabel>
+                                                <InputLabel htmlFor="address">Dirección</InputLabel>
                                                 <Input id="address" type="text" name="address" value={formData.address} disabled={open === 'VIEW'} />
-                                                {errors.address?.type === 'required' &&
-                                                    <Typography variant="caption" color="red" marginTop={1}>
-                                                        * La dirección es requerida.
-                                                    </Typography>
-                                                }
                                                 {errors.address?.type === 'maxLength' &&
                                                     <Typography variant="caption" color="red" marginTop={1}>
                                                         * La dirección es demasiado larga.
@@ -251,13 +244,8 @@ export function Clients() {
                                         </Box>
                                         <Box sx={{ display: 'flex', gap: 5 }}>
                                             <FormControl sx={{ width: '50%' }}>
-                                                <InputLabel htmlFor="cell_phone">Celular *</InputLabel>
+                                                <InputLabel htmlFor="cell_phone">Celular</InputLabel>
                                                 <Input id="cell_phone" type="number" name="cell_phone" value={formData.cell_phone} disabled={open === 'VIEW'} />
-                                                {errors.cell_phone?.type === 'required' &&
-                                                    <Typography variant="caption" color="red" marginTop={1}>
-                                                        * El celular es requerido.
-                                                    </Typography>
-                                                }
                                                 {errors.cell_phone?.type === 'maxLength' &&
                                                     <Typography variant="caption" color="red" marginTop={1}>
                                                         * El celular es demasiado largo.

@@ -8,6 +8,7 @@ import { MessageContext } from "../../providers/MessageProvider";
 import { useQuery } from "../../hooks/useQuery";
 
 import { AUTH_URL } from "../../utils/urls";
+import { STATUS_CODES } from "../../utils/constants";
 import Logo from '../../assets/logo.png'
 
 export function LoginForm({ showLogo }) {
@@ -38,7 +39,7 @@ export function LoginForm({ showLogo }) {
                 method: 'POST',
                 body: JSON.stringify(formData)
             })
-            if (status === 200) {
+            if (status === STATUS_CODES.OK) {
                 localStorage.setItem('auth_prestamos', JSON.stringify(data))
                 setAuth(data)
                 navigate('/prestamos')

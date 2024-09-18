@@ -17,7 +17,7 @@ export function useQuery() {
                 'Content-Type': 'application/json',
                 'Authorization': token ?? auth?.access_token
             },
-            body
+            body: JSON.stringify(body)
         });
         const status = res.status;
         const data = await res.json();
