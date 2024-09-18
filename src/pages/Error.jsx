@@ -14,7 +14,7 @@ export function Error() {
         <>
             {auth ?
                 <Layout title="Error 404">
-                    <Typography variant="h6" noWrap component="div">
+                    <Typography variant="h6" noWrap component="div" sx={{ m: 1 }}>
                         Página no encontrada.
                     </Typography>
                 </Layout> :

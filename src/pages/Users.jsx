@@ -148,89 +148,90 @@ export function Users() {
       {auth ?
         <Layout title="Usuarios">
           {loadingUser ?
-            <Box sx={{ width: '100%' }}>
+            <Box sx={{ width: '100%', m: 1 }}>
               <LinearProgress />
             </Box> :
-            <DataGridWithFrontendPagination
-              headCells={headCells}
-              rows={[user]}
-              setData={setFormData}
-              setOpen={setOpen}
-              filter={{ page: 0, offset: 1 }}
-              showEditAction
-              showDeleteAction
-              showViewAction
-              count={1}
-              contentHeader={
-                <Box sx={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: 'space-between' }}>
-                  <Button variant="outlined" size="medium" onClick={() => setOpen("NEW")}>
-                    Agregar
-                  </Button>
-                  {/* <UserFilter /> */}
-                </Box>
-              }
-            >
-              <ModalComponent
-                open={open === "NEW" || open === "EDIT" || open === "VIEW"}
-                onClose={handleClose}
+            <Box sx={{ m: 1 }}>
+              <DataGridWithFrontendPagination
+                headCells={headCells}
+                rows={[user]}
+                setData={setFormData}
+                setOpen={setOpen}
+                filter={{ page: 0, offset: 1 }}
+                showEditAction
+                showDeleteAction
+                showViewAction
+                count={1}
+                contentHeader={
+                  <Box sx={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: 'start' }}>
+                    <Button variant="outlined" size="medium" onClick={() => setOpen("NEW")}>
+                      Agregar
+                    </Button>
+                  </Box>
+                }
               >
-                <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                  <Tabs value={valueTab} onChange={handleChangeTab} aria-label="basic tabs example">
-                    <Tab
-                      label={open === 'NEW' ? 'Nuevo usuario' : open === 'EDIT' ? 'Editar usuario' : `Usuario ${formData.username}`}
-                      {...a11yProps(0)}
+                <ModalComponent
+                  open={open === "NEW" || open === "EDIT" || open === "VIEW"}
+                  onClose={handleClose}
+                >
+                  <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                    <Tabs value={valueTab} onChange={handleChangeTab} aria-label="basic tabs example">
+                      <Tab
+                        label={open === 'NEW' ? 'Nuevo usuario' : open === 'EDIT' ? 'Editar usuario' : `Usuario ${formData.username}`}
+                        {...a11yProps(0)}
+                      />
+                      <Tab label="Configuración" {...a11yProps(1)} disabled={open === "VIEW"} />
+                    </Tabs>
+                  </Box>
+                  <CustomTabPanel value={valueTab} index={0}>
+                    <UsersABM
+                      formData={formData}
+                      handleChange={handleChange}
+                      handleSubmit={handleSubmit}
+                      validate={validate}
+                      reset={reset}
+                      errors={errors}
+                      open={open}
+                      setOpen={setOpen}
+                      disabled={disabled}
+                      setDisabled={setDisabled}
+                      showPassword={showPassword}
+                      setShowPassword={setShowPassword}
                     />
-                    <Tab label="Configuración" {...a11yProps(1)} disabled={open === "VIEW"} />
-                  </Tabs>
-                </Box>
-                <CustomTabPanel value={valueTab} index={0}>
-                  <UsersABM
-                    formData={formData}
-                    handleChange={handleChange}
-                    handleSubmit={handleSubmit}
-                    validate={validate}
-                    reset={reset}
-                    errors={errors}
-                    open={open}
-                    setOpen={setOpen}
-                    disabled={disabled}
-                    setDisabled={setDisabled}
-                    showPassword={showPassword}
-                    setShowPassword={setShowPassword}
-                  />
-                </CustomTabPanel>
-                <CustomTabPanel value={valueTab} index={1}>
-                  <Settings
-                    defaultData={formData.settings}
-                    user={formData}
-                    setUser={setFormData}
-                    setValueTab={setValueTab}
-                  />
-                </CustomTabPanel>
-              </ModalComponent>
-              <ModalComponent open={open === 'DELETE'} onClose={handleClose} reduceWidth={900}>
-                <Typography variant="h6" marginBottom={1} textAlign="center">
-                  ¿Darse de baja del sistema?
-                </Typography>
-                <Typography variant="body1" marginBottom={2} textAlign="center">
-                  No debe tener clientes ni préstamos asociados.
-                </Typography>
-                <Box sx={{ display: 'flex', gap: 1, justifyContent: 'center' }}>
-                  <Button type="button" variant="outlined" onClick={handleClose} sx={{ width: '35%' }}>
-                    Cancelar
-                  </Button>
-                  <Button
-                    type="button"
-                    variant="contained"
-                    disabled={disabled}
-                    sx={{ width: '35%' }}
-                    onClick={() => console.log(formData)}
-                  >
-                    Confirmar
-                  </Button>
-                </Box>
-              </ModalComponent>
-            </DataGridWithFrontendPagination>
+                  </CustomTabPanel>
+                  <CustomTabPanel value={valueTab} index={1}>
+                    <Settings
+                      defaultData={formData.settings}
+                      user={formData}
+                      setUser={setFormData}
+                      setValueTab={setValueTab}
+                    />
+                  </CustomTabPanel>
+                </ModalComponent>
+                <ModalComponent open={open === 'DELETE'} onClose={handleClose} reduceWidth={900}>
+                  <Typography variant="h6" marginBottom={1} textAlign="center">
+                    ¿Darse de baja del sistema?
+                  </Typography>
+                  <Typography variant="body1" marginBottom={2} textAlign="center">
+                    No debe tener clientes ni préstamos asociados.
+                  </Typography>
+                  <Box sx={{ display: 'flex', gap: 1, justifyContent: 'center' }}>
+                    <Button type="button" variant="outlined" onClick={handleClose} sx={{ width: '35%' }}>
+                      Cancelar
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="contained"
+                      disabled={disabled}
+                      sx={{ width: '35%' }}
+                      onClick={() => console.log(formData)}
+                    >
+                      Confirmar
+                    </Button>
+                  </Box>
+                </ModalComponent>
+              </DataGridWithFrontendPagination>
+            </Box>
           }
         </Layout> :
         <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>

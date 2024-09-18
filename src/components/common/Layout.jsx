@@ -96,7 +96,7 @@ export function Layout({ children, title }) {
           <h6 className="text-[#455a64] text-[20px] leading-7 bg-white px-4 py-2">
             {title}
           </h6>
-          <Box className="px-4 py-2 mt-2">{children}</Box>
+          {children}
         </Box>
       </Box>
     </>

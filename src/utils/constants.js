@@ -12,3 +12,5 @@ export const STATUS_MESSAGES = {
     INVALID_TOKEN: 'Token inválido.',
     TOKEN_REVOKED: 'Token revocado.'
 }
+
+export const PAYMENT_FREQUENCIES = ['MENSUAL', 'QUINCENAL', 'SEMANAL']

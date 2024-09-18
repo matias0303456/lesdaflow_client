@@ -1,10 +1,11 @@
 import { useContext, useState } from "react"
+import { format } from "date-fns"
 
 import { MessageContext } from "../providers/MessageProvider"
 import { useQuery } from "./useQuery"
 
 import { LOAN_URL } from "../utils/urls"
-import { STATUS_CODES } from "../utils/constants"
+import { PAYMENT_FREQUENCIES, STATUS_CODES } from "../utils/constants"
 
 export function useLoans() {
 
@@ -16,13 +17,10 @@ export function useLoans() {
     const [loadingLoans, setLoadingLoans] = useState(true)
     const [count, setCount] = useState(0)
     const [open, setOpen] = useState(null)
-    const [filter, setFilter] = useState({
-        page: 0,
-        offset: 25
-    })
+    const [valueTab, setValueTab] = useState(0)
 
     async function getLoans() {
-        const { status, data } = await handleQuery({ url: LOAN_URL })
+        const { status, data } = await handleQuery({ url: `${LOAN_URL}/${PAYMENT_FREQUENCIES[valueTab]}` })
         if (status === STATUS_CODES.OK) {
             setLoans(data[0])
             setCount(data[1])
@@ -89,6 +87,25 @@ export function useLoans() {
         setOpen(null)
     }
 
+    const headCells = [
+        {
+            id: "client",
+            numeric: false,
+            disablePadding: true,
+            label: "Cliente",
+            sorter: (row) => `${row.client.first_name} ${row.client.last_name}`,
+            accessor: (row) => `${row.client.first_name} ${row.client.last_name}`
+        },
+        {
+            id: "date",
+            numeric: false,
+            disablePadding: true,
+            label: "Fecha",
+            sorter: (row) => format(new Date(row.date), 'dd/MM/yyyy'),
+            accessor: (row) => format(new Date(row.date), 'dd/MM/yyyy')
+        }
+    ]
+
     return {
         loadingLoans,
         setLoadingLoans,
@@ -99,7 +116,8 @@ export function useLoans() {
         getLoans,
         loans,
         count,
-        filter,
-        setFilter
+        valueTab,
+        setValueTab,
+        headCells
     }
 }
