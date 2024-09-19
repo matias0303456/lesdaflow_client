@@ -49,7 +49,7 @@ export function SalesReport() {
     e.preventDefault()
     if (validate()) {
       const { from, to, user } = formData
-      window.open(`${REPORT_URL}/sales-pdf-or-puppeteer?token=${auth?.token}&from=${from.toISOString()}&to=${to.toISOString()}&user=${user}`, '_blank')
+      window.open(`${REPORT_URL}/venta-pdf?token=${auth?.token}&from=${from.toISOString()}&to=${to.toISOString()}&user=${user}`, '_blank')
       reset()
     }
   }

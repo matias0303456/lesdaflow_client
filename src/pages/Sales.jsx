@@ -189,7 +189,7 @@ export function Sales() {
                 setFormData={setFormData}
                 showEditAction={auth?.user.role === 'ADMINISTRADOR' || auth?.user.role === 'VENDEDOR'}
                 showDeleteAction={auth?.user.role === 'ADMINISTRADOR'}
-                showPDFAction={`${REPORT_URL}/sales-pdf-or-puppeteer?token=${auth?.token}&id=`}
+                showPDFAction={`${REPORT_URL}/venta-pdf?token=${auth?.token}&id=`}
                 showViewAction
                 contentHeader={
                     <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -260,7 +260,7 @@ export function Sales() {
                             margin: '0 auto'
                         }}
                         onClick={() => {
-                            window.open(`${REPORT_URL}/sales-pdf-or-puppeteer?token=${auth?.token}&id=${saleSaved}`, '_blank')
+                            window.open(`${REPORT_URL}/venta-pdf?token=${auth?.token}&id=${saleSaved}`, '_blank')
                             setSaleSaved(null)
                         }}
                     >

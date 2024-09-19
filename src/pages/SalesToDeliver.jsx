@@ -170,7 +170,7 @@ export function SalesToDeliver() {
                 getter={getSales}
                 setOpen={setOpen}
                 setFormData={setFormData}
-                showPDFAction={`${REPORT_URL}/sales-pdf-or-puppeteer?token=${auth?.token}&id=`}
+                showPDFAction={`${REPORT_URL}/venta-pdf?token=${auth?.token}&id=`}
                 showSettingsAction="Registrar entrega"
                 showEditAction
                 contentHeader={<SaleFilter showDate width={{

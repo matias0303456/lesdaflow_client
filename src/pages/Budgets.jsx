@@ -183,7 +183,7 @@ export function Budgets() {
                 setOpen={setOpen}
                 setOpenNewSale={setOpenNewSale}
                 setFormData={setFormData}
-                showPDFAction={`${REPORT_URL}/budgets-pdf-or-puppeteer?token=${auth?.token}&id=`}
+                showPDFAction={`${REPORT_URL}/presupuesto-pdf?token=${auth?.token}&id=`}
                 showConvertToSale="Convertir a venta"
                 showViewAction
                 showEditAction
@@ -203,7 +203,7 @@ export function Budgets() {
                                 Excel
                             </Button>
                             <Button variant="outlined" color='error' onClick={() => {
-                                window.open(`${REPORT_URL}/budgets-pdf-or-puppeteer?token=${auth?.token}`, '_blank')
+                                window.open(`${REPORT_URL}/presupuesto-pdf?token=${auth?.token}`, '_blank')
                             }}>
                                 PDF
                             </Button>

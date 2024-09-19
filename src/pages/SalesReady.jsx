@@ -146,7 +146,7 @@ export function SalesReady() {
         setOpen={setOpen}
         setFormData={setFormData}
         showSettingsAction="Preparar venta"
-        showPDFAction={`${REPORT_URL}/sales-pdf-or-puppeteer?token=${auth?.token}&id=`}
+        showPDFAction={`${REPORT_URL}/venta-pdf?token=${auth?.token}&id=`}
         contentHeader={<SaleFilter showDate width={{
           main: { xs: '100%', md: '100%' },
           client: { xs: '100%', md: '15%' },
