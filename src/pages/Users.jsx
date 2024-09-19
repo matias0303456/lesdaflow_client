@@ -308,7 +308,7 @@ export function Users() {
                   <Input id="document_number" type="text" name="document_number" value={formData.document_number} disabled={open === 'VIEW'} />
                   {errors.document_number?.type === 'required' &&
                     <Typography variant="caption" color="red" marginTop={1}>
-                      * La número de documento es requerido.
+                      * El número de documento es requerido.
                     </Typography>
                   }
                 </FormControl>

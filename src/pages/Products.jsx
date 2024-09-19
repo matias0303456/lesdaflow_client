@@ -220,7 +220,7 @@ export function Products() {
                                 <Button variant="contained" onClick={() => {
                                     window.open(`${REPORT_URL}/products-excel?token=${auth?.token}&stock=SIN_STOCK`, '_blank')
                                 }}>
-                                    Stoxk nulo Excel
+                                    Stock nulo Excel
                                 </Button>
                             }
                         </Box>
