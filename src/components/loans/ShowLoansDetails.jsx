@@ -34,11 +34,11 @@ export function ShowLoansDetails({ loans, frequency }) {
                                     <Typography>{year}</Typography>
                                 </AccordionSummary>
                                 <AccordionDetails>
-                                    {loansMonths.map(month => {
+                                    {loansMonths.map((month, idxM) => {
                                         const rows = filterRowsByMonthAndYear(loansWithPaymentDates, year, month)
                                         return (
                                             <Box key={month}>
-                                                <Typography variant="h6">
+                                                <Typography variant="h6" mt={idxM > 0 ? 2.5 : 0}>
                                                     {MONTHS[month]}
                                                 </Typography>
                                                 <PaymentHeadCells rows={rows} />
