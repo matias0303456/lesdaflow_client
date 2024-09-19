@@ -4,15 +4,11 @@ import { Box, Typography } from "@mui/material";
 
 import { Accordion, AccordionDetails, AccordionSummary } from "../common/AccordionComponent";
 
-import { filterRowsByMonthAndYear, getLoansMonths, getLoansYears, getPaymentDates, getPaymentHeadCells } from "../../utils/helpers";
-import { DataGridWithFrontendPagination } from "../datagrid/DataGridWithFrontendPagination";
+import { filterRowsByMonthAndYear, getLoansMonths, getLoansYears, getPaymentDates } from "../../utils/helpers";
 import { MONTHS } from "../../utils/constants";
+import { PaymentHeadCells } from "./PaymentHeadCells";
 
-export function ShowLoansDetails({
-    loans,
-    headCells,
-    frequency
-}) {
+export function ShowLoansDetails({ loans, frequency }) {
 
     const [expanded, setExpanded] = useState(0)
 
@@ -40,16 +36,12 @@ export function ShowLoansDetails({
                                 <AccordionDetails>
                                     {loansMonths.map(month => {
                                         const rows = filterRowsByMonthAndYear(loansWithPaymentDates, year, month)
-                                        const paymentsHeadCells = getPaymentHeadCells(rows)
                                         return (
                                             <Box key={month}>
                                                 <Typography variant="h6">
                                                     {MONTHS[month]}
                                                 </Typography>
-                                                <DataGridWithFrontendPagination
-                                                    headCells={[...headCells, ...paymentsHeadCells]}
-                                                    rows={rows}
-                                                />
+                                                <PaymentHeadCells rows={rows} />
                                             </Box>
                                         )
                                     })}

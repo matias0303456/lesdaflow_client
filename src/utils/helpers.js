@@ -1,5 +1,3 @@
-import { MONTHS } from "./constants"
-
 export function getDeadline(date) {
     const startDate = new Date(date)
     const endDate = new Date(startDate)
@@ -77,18 +75,4 @@ export function filterRowsByMonthAndYear(loansWithPaymentDates, year, month) {
     return loansWithPaymentDates.filter(l =>
         new Date(l.date).getFullYear() === year &&
         new Date(l.date).getMonth() === month)
-}
-
-export function getPaymentHeadCells(rows) {
-    const datesSet = Array.from(new Set(rows.flatMap(r => r.payment_dates)))
-    const monthsSet = Array.from(new Set(datesSet.map(ds => new Date(ds).getMonth())))
-    return monthsSet.map(m => {
-        return {
-            id: MONTHS[m],
-            numeric: false,
-            disablePadding: true,
-            label: MONTHS[m],
-            accessor: () => ''
-        }
-    })
 }

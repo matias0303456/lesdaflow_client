@@ -87,25 +87,6 @@ export function useLoans() {
         setOpen(null)
     }
 
-    const headCells = [
-        {
-            id: "client",
-            numeric: false,
-            disablePadding: true,
-            label: "Cliente",
-            sorter: (row) => `${row.client.first_name} ${row.client.last_name}`,
-            accessor: (row) => `${row.client.first_name} ${row.client.last_name}`
-        },
-        {
-            id: "date",
-            numeric: false,
-            disablePadding: true,
-            label: "Fecha",
-            sorter: (row) => format(new Date(row.date), 'dd/MM/yyyy'),
-            accessor: (row) => format(new Date(row.date), 'dd/MM/yyyy')
-        }
-    ]
-
     return {
         loadingLoans,
         setLoadingLoans,
@@ -117,7 +98,6 @@ export function useLoans() {
         loans,
         count,
         valueTab,
-        setValueTab,
-        headCells
+        setValueTab
     }
 }
