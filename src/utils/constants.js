@@ -14,3 +14,18 @@ export const STATUS_MESSAGES = {
 }
 
 export const PAYMENT_FREQUENCIES = ['MENSUAL', 'QUINCENAL', 'SEMANAL']
+
+export const MONTS = [
+    'ENERO',
+    'FEBRERO',
+    'MARZO',
+    'ABRIL',
+    'MAYO',
+    'JUNIO',
+    'JULIO',
+    'AGOSTO',
+    'SEPTIEMBRE',
+    'OCTUBRE',
+    'NOVIEMBRE',
+    'DICIEMBRE'
+]

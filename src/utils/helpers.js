@@ -37,8 +37,16 @@ export function a11yProps(index) {
     }
 }
 
-export function getLoansDates(loans) {
-    return Array.from(new Set(loans.map(l => l.date.split('T')[0])))
+export function getLoansYears(loans) {
+    const dates = loans.map(l => new Date(l.date))
+    const set = new Set(dates.map(d => d.getFullYear()))
+    return Array.from(set).sort((a, b) => b - a)
+}
+
+export function getLoansMonths(loans) {
+    const dates = loans.map(l => new Date(l.date))
+    const set = new Set(dates.map(d => d.getMonth()))
+    return Array.from(set).sort((a, b) => a - b)
 }
 
 export function getPaymentDates(startDate, paymentsAmount, frequency) {
