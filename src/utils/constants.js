@@ -15,7 +15,7 @@ export const STATUS_MESSAGES = {
 
 export const PAYMENT_FREQUENCIES = ['MENSUAL', 'QUINCENAL', 'SEMANAL']
 
-export const MONTS = [
+export const MONTHS = [
     'ENERO',
     'FEBRERO',
     'MARZO',

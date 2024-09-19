@@ -93,6 +93,7 @@ export function Loans() {
                             </Box>
                             <ShowLoansDetails
                                 loans={loans}
+                                headCells={headCells}
                                 frequency={PAYMENT_FREQUENCIES[valueTab]}
                             />
                             <ModalComponent open={open === 'DELETE'} onClose={() => reset(setOpen)} reduceWidth={900}>
