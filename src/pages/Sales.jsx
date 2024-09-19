@@ -260,7 +260,7 @@ export function Sales() {
                             margin: '0 auto'
                         }}
                         onClick={() => {
-                            window.open(`${REPORT_URL}/account-details/${auth?.token}/${saleSaved}`, '_blank')
+                            window.open(`${REPORT_URL}/sales-pdf-or-puppeteer?token=${auth?.token}&id=${saleSaved}`, '_blank')
                             setSaleSaved(null)
                         }}
                     >
