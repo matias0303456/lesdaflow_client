@@ -7,8 +7,35 @@ import { Accordion, AccordionDetails, AccordionSummary } from "../common/Accordi
 import { filterRowsByMonthAndYear, getLoansMonths, getLoansYears, getPaymentDates } from "../../utils/helpers";
 import { MONTHS } from "../../utils/constants";
 import { PaymentHeadCells } from "./PaymentHeadCells";
+import { usePayments } from "../../hooks/usePayments";
+import { useForm } from "../../hooks/useForm";
+import { ModalComponent } from "../common/ModalComponent";
+import { PaymentForm } from "./PaymentForm";
 
 export function ShowLoansDetails({ loans, frequency }) {
+
+    const { open, setOpen, handleSubmit } = usePayments()
+    const { formData, setFormData, setDisabled, disabled, reset, errors, handleChange, validate } = useForm({
+        defaultData: {
+            id: '',
+            loan_id: '',
+            amount: '',
+            date: new Date(Date.now()),
+            type: 'EFECTIVO',
+            observations: ''
+        },
+        rules: {
+            amount: {
+                required: true
+            },
+            type: {
+                required: true
+            },
+            observations: {
+                maxLength: 191
+            }
+        }
+    })
 
     const [expanded, setExpanded] = useState(0)
 
@@ -41,7 +68,12 @@ export function ShowLoansDetails({ loans, frequency }) {
                                                 <Typography variant="h6" mt={idxM > 0 ? 2.5 : 0}>
                                                     {MONTHS[month]}
                                                 </Typography>
-                                                <PaymentHeadCells rows={rows} />
+                                                <PaymentHeadCells
+                                                    rows={rows}
+                                                    setOpen={setOpen}
+                                                    formData={formData}
+                                                    setFormData={setFormData}
+                                                />
                                             </Box>
                                         )
                                     })}
@@ -54,6 +86,19 @@ export function ShowLoansDetails({ loans, frequency }) {
                     No hay datos para mostrar.
                 </Typography>
             }
+            <ModalComponent open={open === 'NEW-PAYMENT'} onClose={() => reset(setOpen)}>
+                <PaymentForm
+                    handleSubmit={handleSubmit}
+                    handleChange={handleChange}
+                    validate={validate}
+                    formData={formData}
+                    reset={reset}
+                    setOpen={setOpen}
+                    disabled={disabled}
+                    setDisabled={setDisabled}
+                    errors={errors}
+                />
+            </ModalComponent>
         </Box>
     )
 }

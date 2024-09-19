@@ -4,7 +4,7 @@ import { format } from "date-fns"
 
 import { MONTHS } from "../../utils/constants"
 
-export function PaymentHeadCells({ rows }) {
+export function PaymentHeadCells({ rows, setOpen, formData, setFormData }) {
 
     const datesSet = Array.from(new Set(rows.flatMap(r => r.payment_dates)))
     const monthsSet = Array.from(new Set(datesSet.map(ds => new Date(ds).getMonth())))
@@ -38,15 +38,20 @@ export function PaymentHeadCells({ rows }) {
                                 const paymentExists = row.payment_dates.find(pd => new Date(pd).getMonth() === m)
                                 return (
                                     <TableCell key={m} align="center">
-                                        {paymentExists ?
+                                        {paymentExists &&
                                             <>
-                                                <Checkbox />
+                                                <Checkbox
+                                                    checked={false}
+                                                    onClick={() => {
+                                                        setFormData({ ...formData, loan_id: row.id })
+                                                        setOpen('NEW-PAYMENT')
+                                                    }}
+                                                />
                                                 {/* <Chip
                                                     label="Pagado"
                                                     onClick={() => console.log(paymentExists)}
                                                 /> */}
-                                            </> :
-                                            <></>
+                                            </>
                                         }
                                     </TableCell>
                                 )
