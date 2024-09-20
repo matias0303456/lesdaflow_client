@@ -1,35 +1,3 @@
-export function getDeadline(date) {
-    const startDate = new Date(date)
-    const endDate = new Date(startDate)
-    endDate.setDate(startDate.getDate() + 20)
-    return endDate.toISOString().split('T')[0]
-}
-
-export function deadlineIsPast(row) {
-    if (row.type !== 'CUENTA_CORRIENTE') return false
-    const now = new Date(Date.now())
-    const deadline = new Date(getDeadline(row.date))
-    return deadline < now
-}
-
-export function setLocalDate(date) {
-    const original = new Date(date)
-    let newDate = new Date(original)
-    return newDate
-}
-
-export function setFromDate(date) {
-    const newDate = new Date(date)
-    newDate.setHours(0, 0, 0, 0)
-    return newDate
-}
-
-export function setToDate(date) {
-    const newDate = new Date(date)
-    newDate.setHours(23, 59, 59, 999)
-    return newDate
-}
-
 export function a11yProps(index) {
     return {
         id: `simple-tab-${index}`,
@@ -75,4 +43,27 @@ export function filterRowsByMonthAndYear(loansWithPaymentDates, year, month) {
     return loansWithPaymentDates.filter(l =>
         new Date(l.date).getFullYear() === year &&
         new Date(l.date).getMonth() === month)
+}
+
+export function getLoanTotal(loan) {
+    return parseFloat(loan.amount + ((loan.amount / 100) * loan.interest)).toFixed(2)
+}
+
+export function getPaymentAmount(loan) {
+    const total = parseFloat(getLoanTotal(loan))
+    return parseFloat(total / loan.payments_amount).toFixed(2)
+}
+
+export function getPaymentAmountWithLateFee(workOn, formData) {
+    const { loan, payment } = workOn
+    const paymentAmount = parseFloat(getPaymentAmount(loan))
+    const start = new Date(payment)
+    const end = new Date(formData.date)
+    if (end < start) return paymentAmount.toFixed(2)
+    const diffMillisecs = end - start
+    const diff = diffMillisecs / (1000 * 60 * 60 * 24)
+    const diffDays = Math.abs(Math.round(diff))
+    const iterable = Array.from({ length: diffDays })
+    const totalLateFee = iterable.reduce(day => day + ((paymentAmount / 100) * loan.late_fee), 0)
+    return parseFloat(paymentAmount + totalLateFee).toFixed(2)
 }

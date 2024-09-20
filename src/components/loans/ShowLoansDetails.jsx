@@ -38,6 +38,7 @@ export function ShowLoansDetails({ loans, frequency }) {
     })
 
     const [expanded, setExpanded] = useState(0)
+    const [workOn, setWorkOn] = useState(null)
 
     const handleChangeExpanded = (panel) => (_, newExpanded) => {
         setExpanded(newExpanded ? panel : false)
@@ -73,6 +74,7 @@ export function ShowLoansDetails({ loans, frequency }) {
                                                     setOpen={setOpen}
                                                     formData={formData}
                                                     setFormData={setFormData}
+                                                    setWorkOn={setWorkOn}
                                                 />
                                             </Box>
                                         )
@@ -86,17 +88,24 @@ export function ShowLoansDetails({ loans, frequency }) {
                     No hay datos para mostrar.
                 </Typography>
             }
-            <ModalComponent open={open === 'NEW-PAYMENT'} onClose={() => reset(setOpen)}>
+            <ModalComponent
+                open={open === 'NEW-PAYMENT'}
+                reduceWidth={1000}
+                p={2}
+                onClose={() => reset(setOpen)}
+            >
                 <PaymentForm
                     handleSubmit={handleSubmit}
                     handleChange={handleChange}
                     validate={validate}
                     formData={formData}
+                    setFormData={setFormData}
                     reset={reset}
                     setOpen={setOpen}
                     disabled={disabled}
                     setDisabled={setDisabled}
                     errors={errors}
+                    workOn={workOn}
                 />
             </ModalComponent>
         </Box>
