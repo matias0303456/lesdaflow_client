@@ -26,6 +26,7 @@ export function Loans() {
         handleDelete,
         getLoans,
         loans,
+        setLoans,
         valueTab,
         setValueTab
     } = useLoans()
@@ -92,6 +93,7 @@ export function Loans() {
                             </Box>
                             <ShowLoansDetails
                                 loans={loans}
+                                setLoans={setLoans}
                                 frequency={PAYMENT_FREQUENCIES[valueTab]}
                             />
                             <ModalComponent open={open === 'DELETE'} onClose={() => reset(setOpen)} reduceWidth={900}>

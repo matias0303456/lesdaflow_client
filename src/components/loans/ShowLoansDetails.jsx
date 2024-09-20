@@ -12,7 +12,7 @@ import { useForm } from "../../hooks/useForm";
 import { ModalComponent } from "../common/ModalComponent";
 import { PaymentForm } from "./PaymentForm";
 
-export function ShowLoansDetails({ loans, frequency }) {
+export function ShowLoansDetails({ loans, setLoans, frequency }) {
 
     const { open, setOpen, handleSubmit } = usePayments()
     const { formData, setFormData, setDisabled, disabled, reset, errors, handleChange, validate } = useForm({
@@ -106,6 +106,8 @@ export function ShowLoansDetails({ loans, frequency }) {
                     setDisabled={setDisabled}
                     errors={errors}
                     workOn={workOn}
+                    loans={loans}
+                    setLoans={setLoans}
                 />
             </ModalComponent>
         </Box>

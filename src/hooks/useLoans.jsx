@@ -95,6 +95,7 @@ export function useLoans() {
         handleDelete,
         getLoans,
         loans,
+        setLoans,
         count,
         valueTab,
         setValueTab

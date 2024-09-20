@@ -40,23 +40,26 @@ export function PaymentHeadCells({ rows, setOpen, formData, setFormData, setWork
                             <TableCell align="center">{row.late_fee}</TableCell>
                             <TableCell align="center">{row.observations}</TableCell>
                             {monthsSet.map(m => {
-                                const paymentExists = row.payment_dates.find(pd => new Date(pd).getMonth() === m)
+                                const paymentCorresponds = row.payment_dates.find(pd => new Date(pd).getMonth() === m)
+                                const paymentExists = row.payments.find(p => new Date(p.date).getMonth() === m)
                                 return (
                                     <TableCell key={m} align="center">
-                                        {paymentExists &&
+                                        {paymentCorresponds &&
                                             <>
-                                                <Checkbox
-                                                    checked={false}
-                                                    onClick={() => {
-                                                        setWorkOn({ loan: row, payment: paymentExists })
-                                                        setFormData({ ...formData, loan_id: row.id })
-                                                        setOpen('NEW-PAYMENT')
-                                                    }}
-                                                />
-                                                {/* <Chip
-                                                    label="Pagado"
-                                                    onClick={() => console.log(paymentExists)}
-                                                /> */}
+                                                {paymentExists ?
+                                                    <Chip
+                                                        label="Pagado"
+                                                        onClick={() => console.log(paymentExists)}
+                                                    /> :
+                                                    <Checkbox
+                                                        checked={false}
+                                                        onClick={() => {
+                                                            setWorkOn({ loan: row, payment: paymentCorresponds })
+                                                            setFormData({ ...formData, loan_id: row.id })
+                                                            setOpen('NEW-PAYMENT')
+                                                        }}
+                                                    />
+                                                }
                                             </>
                                         }
                                     </TableCell>

@@ -19,7 +19,9 @@ export function PaymentForm({
     disabled,
     setDisabled,
     errors,
-    workOn
+    workOn,
+    loans,
+    setLoans
 }) {
 
     useEffect(() => {
@@ -34,7 +36,7 @@ export function PaymentForm({
             <Typography variant="h6" mb={4}>
                 Nuevo pago - {format(new Date(workOn.payment), 'dd/MM/yyyy')}
             </Typography>
-            <form onSubmit={e => handleSubmit(e, validate, formData, reset, setDisabled)}>
+            <form onSubmit={e => handleSubmit(e, validate, formData, reset, setDisabled, loans, setLoans)}>
                 <Box sx={{
                     display: 'flex',
                     flexDirection: 'column',
