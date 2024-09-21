@@ -18,8 +18,8 @@ export function usePayments() {
     const handleSubmit = async (e, validate, formData, reset, setDisabled, loans, setLoans) => {
         e.preventDefault()
         if (validate()) {
-            const urls = { 'NEW-PAYMENT': PAYMENT_URL, 'EDIT': `${PAYMENT_URL}/${formData.id}` }
-            const methods = { 'NEW-PAYMENT': 'POST', 'EDIT': 'PUT' }
+            const urls = { 'NEW-PAYMENT': PAYMENT_URL, 'PAYMENT-DETAILS': `${PAYMENT_URL}/${formData.id}` }
+            const methods = { 'NEW-PAYMENT': 'POST', 'PAYMENT-DETAILS': 'PUT' }
             const { status, data } = await handleQuery({
                 url: urls[open],
                 method: methods[open],
@@ -39,7 +39,7 @@ export function usePayments() {
                     setMessage('Pago creado correctamente.')
                 } else {
                     setLoans([
-                        { ...loan, payments: [data, loan.payments.filter(p => p.id !== data.id)] },
+                        { ...loan, payments: [data, ...loan.payments.filter(p => p.id !== data.id)] },
                         ...loans.filter(l => l.id !== data.loan_id)
                     ].sort((a, b) => {
                         if (a.id < b.id) return -1
@@ -59,7 +59,8 @@ export function usePayments() {
         }
     }
 
-    async function handleDelete(formData, loans, setLoans) {
+    async function handleDelete(e, formData, loans, setLoans) {
+        e.preventDefault()
         const { status, data } = await handleQuery({
             url: `${PAYMENT_URL}/${formData.id}`,
             method: 'DELETE'
@@ -67,7 +68,7 @@ export function usePayments() {
         if (status === STATUS_CODES.OK) {
             const loan = loans.find(l => l.id === data.loan_id)
             setLoans([
-                { ...loan, payments: loan.payments.filter(p => p.id !== data.id) },
+                { ...loan, payments: [...loan.payments.filter(p => p.id !== data.id)] },
                 ...loans.filter(l => l.id !== data.loan_id)
             ].sort((a, b) => {
                 if (a.id < b.id) return -1

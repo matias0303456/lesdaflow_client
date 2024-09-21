@@ -14,7 +14,7 @@ import { PaymentForm } from "./PaymentForm";
 
 export function ShowLoansDetails({ loans, setLoans, frequency }) {
 
-    const { open, setOpen, handleSubmit } = usePayments()
+    const { open, setOpen, handleSubmit, handleDelete } = usePayments()
     const { formData, setFormData, setDisabled, disabled, reset, errors, handleChange, validate } = useForm({
         defaultData: {
             id: '',
@@ -89,7 +89,7 @@ export function ShowLoansDetails({ loans, setLoans, frequency }) {
                 </Typography>
             }
             <ModalComponent
-                open={open === 'NEW-PAYMENT'}
+                open={open === 'NEW-PAYMENT' || open === 'PAYMENT-DETAILS'}
                 reduceWidth={1000}
                 p={2}
                 onClose={() => reset(setOpen)}
@@ -108,6 +108,8 @@ export function ShowLoansDetails({ loans, setLoans, frequency }) {
                     workOn={workOn}
                     loans={loans}
                     setLoans={setLoans}
+                    open={open}
+                    handleDelete={handleDelete}
                 />
             </ModalComponent>
         </Box>

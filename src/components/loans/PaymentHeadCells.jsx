@@ -49,13 +49,21 @@ export function PaymentHeadCells({ rows, setOpen, formData, setFormData, setWork
                                                 {paymentExists ?
                                                     <Chip
                                                         label="Pagado"
-                                                        onClick={() => console.log(paymentExists)}
+                                                        onClick={() => {
+                                                            setWorkOn({ loan: row, payment: paymentCorresponds })
+                                                            setFormData(paymentExists)
+                                                            setOpen('PAYMENT-DETAILS')
+                                                        }}
                                                     /> :
                                                     <Checkbox
                                                         checked={false}
                                                         onClick={() => {
                                                             setWorkOn({ loan: row, payment: paymentCorresponds })
-                                                            setFormData({ ...formData, loan_id: row.id })
+                                                            setFormData({
+                                                                ...formData,
+                                                                date: new Date(paymentCorresponds),
+                                                                loan_id: row.id
+                                                            })
                                                             setOpen('NEW-PAYMENT')
                                                         }}
                                                     />

@@ -1,10 +1,11 @@
 /* eslint-disable react/prop-types */
-import { useEffect } from "react"
-import { Box, Button, FormControl, Input, InputLabel, MenuItem, Select, Typography } from "@mui/material"
+import { useEffect, useState } from "react"
+import { Box, Button, FormControl, IconButton, Input, InputLabel, MenuItem, Select, Tooltip, Typography } from "@mui/material"
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers"
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns"
 import { es } from "date-fns/locale"
 import { format } from "date-fns"
+import DeleteIcon from '@mui/icons-material/Delete';
 
 import { getPaymentAmount, getPaymentAmountWithLateFee } from "../../utils/helpers"
 
@@ -21,8 +22,12 @@ export function PaymentForm({
     errors,
     workOn,
     loans,
-    setLoans
+    setLoans,
+    open,
+    handleDelete
 }) {
+
+    const [confirmDelete, setConfirmDelete] = useState(false)
 
     useEffect(() => {
         setFormData({
@@ -33,10 +38,26 @@ export function PaymentForm({
 
     return (
         <>
-            <Typography variant="h6" mb={4}>
-                Nuevo pago - {format(new Date(workOn.payment), 'dd/MM/yyyy')}
-            </Typography>
-            <form onSubmit={e => handleSubmit(e, validate, formData, reset, setDisabled, loans, setLoans)}>
+            <Box sx={{ display: 'flex', alignItems: 'center', mb: 3, gap: 1 }}>
+                <Typography variant="h6">
+                    {open === 'NEW-PAYMENT' && `Nuevo pago - ${format(new Date(workOn.payment), 'dd/MM/yyyy')}`}
+                    {open === 'PAYMENT-DETAILS' && `Editar pago - ${format(new Date(workOn.payment), 'dd/MM/yyyy')}`}
+                </Typography>
+                {open === 'PAYMENT-DETAILS' &&
+                    <Tooltip title="Eliminar pago">
+                        <IconButton onClick={() => setConfirmDelete(true)}>
+                            <DeleteIcon />
+                        </IconButton>
+                    </Tooltip>
+                }
+            </Box>
+            <form onSubmit={e => {
+                if (confirmDelete) {
+                    handleDelete(e, formData, loans, setLoans)
+                } else {
+                    handleSubmit(e, validate, formData, reset, setDisabled, loans, setLoans)
+                }
+            }}>
                 <Box sx={{
                     display: 'flex',
                     flexDirection: 'column',
@@ -51,6 +72,7 @@ export function PaymentForm({
                                 <DatePicker
                                     label="Fecha"
                                     value={new Date(formData.date)}
+                                    disabled={open === 'PAYMENT-DETAILS' || confirmDelete}
                                     onChange={value => handleChange({
                                         target: {
                                             name: 'date',
@@ -69,6 +91,7 @@ export function PaymentForm({
                                 label="Proveedor"
                                 name="type"
                                 sx={{ width: '100%' }}
+                                disabled={confirmDelete}
                                 onChange={handleChange}
                             >
                                 <MenuItem value="EFECTIVO">EFECTIVO</MenuItem>
@@ -83,6 +106,7 @@ export function PaymentForm({
                             id="observations"
                             name="observations"
                             value={formData.observations}
+                            disabled={confirmDelete}
                             onChange={handleChange}
                         />
                         {errors.observations?.type === 'maxLength' &&
@@ -106,31 +130,47 @@ export function PaymentForm({
                         </FormControl>
                     </Box>
                 </Box>
-                <Box sx={{ display: 'flex', justifyContent: 'end' }}>
+                {open === 'PAYMENT-DETAILS' && confirmDelete &&
+                    <>
+                        <Typography variant="h6" color="#F00" align="center" mt={5}>
+                            ¿Desea eliminar este pago?
+                        </Typography>
+                        <Typography variant="body1" color="#F00" align="center">
+                            Los datos no podrán recuperarse.
+                        </Typography>
+                    </>
+                }
+                <Box sx={{ display: 'flex', justifyContent: 'end', mt: confirmDelete ? 2 : 5 }}>
                     <FormControl sx={{
                         display: 'flex',
                         flexDirection: 'row',
                         gap: 1,
                         justifyContent: 'center',
                         margin: '0 auto',
-                        marginTop: 5,
                         width: { xs: '100%', md: '50%' }
                     }}>
                         <Button
                             type="button"
                             variant="outlined"
                             sx={{ width: '33%' }}
-                            onClick={() => reset(setOpen)}
+                            onClick={() => {
+                                if (confirmDelete) {
+                                    setConfirmDelete(false)
+                                } else {
+                                    reset(setOpen)
+                                }
+                            }}
                         >
                             Cancelar
                         </Button>
                         <Button
                             type="submit"
                             variant="contained"
+                            color={confirmDelete ? "error" : 'primary'}
                             disabled={disabled}
                             sx={{ width: '33%' }}
                         >
-                            Guardar
+                            {confirmDelete ? 'Eliminar' : 'Guardar'}
                         </Button>
                     </FormControl>
                 </Box>
