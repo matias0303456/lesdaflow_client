@@ -50,6 +50,7 @@ export function Settings({ defaultData, user, setUser, setValueTab }) {
                         variant="outlined"
                         id="late_fee"
                         name="late_fee"
+                        InputProps={{ inputProps: { step: 0.01 } }}
                         value={formData.late_fee}
                         onChange={e => handleChange({
                             target: {

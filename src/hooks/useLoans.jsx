@@ -14,15 +14,13 @@ export function useLoans() {
 
     const [loans, setLoans] = useState([])
     const [loadingLoans, setLoadingLoans] = useState(true)
-    const [count, setCount] = useState(0)
     const [open, setOpen] = useState(null)
     const [valueTab, setValueTab] = useState(0)
 
     async function getLoans() {
         const { status, data } = await handleQuery({ url: `${LOAN_URL}/${PAYMENT_FREQUENCIES[valueTab]}` })
         if (status === STATUS_CODES.OK) {
-            setLoans(data[0])
-            setCount(data[1])
+            setLoans(data)
             setLoadingLoans(false)
         } else {
             setMessage(data.message)
@@ -44,7 +42,6 @@ export function useLoans() {
             if (status === STATUS_CODES.CREATED || status === STATUS_CODES.OK) {
                 if (open === 'NEW') {
                     setLoans([data, ...loans])
-                    setCount(prev => prev + 1)
                     setMessage('Préstamo creado correctamente.')
                 } else {
                     setLoans([data, ...loans.filter(l => l.id !== data.id)])
@@ -70,7 +67,6 @@ export function useLoans() {
         })
         if (status === STATUS_CODES.OK) {
             setLoans([data, ...loans.filter(l => l.id !== data.id)])
-            setCount(prev => prev - 1)
             setMessage('Préstamo eliminado correctamente.')
             setSeverity('success')
         } else {
@@ -96,7 +92,6 @@ export function useLoans() {
         getLoans,
         loans,
         setLoans,
-        count,
         valueTab,
         setValueTab
     }

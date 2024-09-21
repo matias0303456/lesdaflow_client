@@ -12,7 +12,7 @@ import { useForm } from "../../hooks/useForm";
 import { ModalComponent } from "../common/ModalComponent";
 import { PaymentForm } from "./PaymentForm";
 
-export function ShowLoansDetails({ loans, setLoans, frequency }) {
+export function ShowLoansDetails({ loans, setLoans, frequency, workOn, setWorkOn }) {
 
     const { open, setOpen, handleSubmit, handleDelete } = usePayments()
     const { formData, setFormData, setDisabled, disabled, reset, errors, handleChange, validate } = useForm({
@@ -38,7 +38,6 @@ export function ShowLoansDetails({ loans, setLoans, frequency }) {
     })
 
     const [expanded, setExpanded] = useState(0)
-    const [workOn, setWorkOn] = useState(null)
 
     const handleChangeExpanded = (panel) => (_, newExpanded) => {
         setExpanded(newExpanded ? panel : false)
@@ -51,9 +50,9 @@ export function ShowLoansDetails({ loans, setLoans, frequency }) {
     const loansYears = getLoansYears(loansWithPaymentDates)
 
     return (
-        <Box>
+        <>
             {loans.length > 0 ?
-                <Box sx={{ p: 2 }}>
+                <>
                     {loansYears.map((year, idx) => {
                         const loansMonths = getLoansMonths(loansWithPaymentDates.filter(l => new Date(l.date).getFullYear() === year))
                         return (
@@ -83,7 +82,7 @@ export function ShowLoansDetails({ loans, setLoans, frequency }) {
                             </Accordion>
                         )
                     })}
-                </Box> :
+                </> :
                 <Typography variant="body1" align="center" mt={3}>
                     No hay datos para mostrar.
                 </Typography>
@@ -112,6 +111,6 @@ export function ShowLoansDetails({ loans, setLoans, frequency }) {
                     handleDelete={handleDelete}
                 />
             </ModalComponent>
-        </Box>
+        </>
     )
 }
