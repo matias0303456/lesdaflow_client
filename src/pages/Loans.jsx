@@ -31,7 +31,8 @@ export function Loans() {
         loans,
         setLoans,
         valueTab,
-        setValueTab
+        setValueTab,
+        handleSubmit
     } = useLoans()
     const { loadingClients, getClients, clients } = useClients()
     const { loadingUser, getUser, user } = useUsers()
@@ -80,10 +81,6 @@ export function Loans() {
     const handleChangeTab = (_, newValueTab) => setValueTab(newValueTab)
     const handleClose = () => reset(setOpen)
 
-    useEffect(() => {
-        console.log(formData)
-    }, [formData])
-
     return (
         <>
             {auth ?
@@ -122,10 +119,10 @@ export function Loans() {
                                     {open === 'NEW' && 'Nuevo préstamo'}
                                     {open === 'EDIT' && `Editar préstamo #${formData.id}`}
                                 </Typography>
-                                <form onChange={handleChange}>
-                                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-                                        <Box sx={{ display: 'flex', gap: 2 }}>
-                                            <FormControl sx={{ width: '33%' }}>
+                                <form onChange={handleChange} onSubmit={e => handleSubmit(e, formData, validate, reset, setDisabled)}>
+                                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: { xs: 2, sm: 3 } }}>
+                                        <Box sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', gap: { xs: 2, sm: 1 } }}>
+                                            <FormControl sx={{ width: { xs: '100%', sm: '32%' } }}>
                                                 <Autocomplete
                                                     disablePortal
                                                     options={clients.map(c => ({ id: c.id, label: `${c.first_name} ${c.last_name}` }))}
@@ -141,7 +138,7 @@ export function Loans() {
                                                     </Typography>
                                                 }
                                             </FormControl>
-                                            <FormControl sx={{ width: '33%' }}>
+                                            <FormControl sx={{ width: { xs: '100%', sm: '32%' } }}>
                                                 <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
                                                     <DatePicker
                                                         label="Fecha"
@@ -155,7 +152,7 @@ export function Loans() {
                                                     />
                                                 </LocalizationProvider>
                                             </FormControl>
-                                            <FormControl sx={{ width: '33%' }}>
+                                            <FormControl sx={{ width: { xs: '100%', sm: '32%' } }}>
                                                 <TextField
                                                     type="number"
                                                     label="Monto"
@@ -178,8 +175,30 @@ export function Loans() {
                                                 }
                                             </FormControl>
                                         </Box>
-                                        <Box sx={{ display: 'flex', gap: 2 }}>
-                                            <FormControl sx={{ width: '33%' }}>
+                                        <Box sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', gap: { xs: 2, sm: 1 } }}>
+                                            <FormControl sx={{ width: { xs: '100%', sm: '32%' } }}>
+                                                <TextField
+                                                    type="number"
+                                                    label="Interés"
+                                                    variant="outlined"
+                                                    id="interest"
+                                                    name="interest"
+                                                    InputProps={{ inputProps: { step: 0.01 } }}
+                                                    value={formData.interest}
+                                                    onChange={e => handleChange({
+                                                        target: {
+                                                            name: 'interest',
+                                                            value: Math.abs(parseInt(e.target.value))
+                                                        }
+                                                    })}
+                                                />
+                                                {errors.interest?.type === 'required' &&
+                                                    <Typography variant="caption" color="red" marginTop={1}>
+                                                        * El interés es requerido.
+                                                    </Typography>
+                                                }
+                                            </FormControl>
+                                            <FormControl sx={{ width: { xs: '100%', sm: '32%' } }}>
                                                 <TextField
                                                     type="number"
                                                     label="Cant. pagos"
@@ -201,15 +220,7 @@ export function Loans() {
                                                     </Typography>
                                                 }
                                             </FormControl>
-                                            <FormControl sx={{ width: '33%' }}>
-                                                <InputLabel id="payments_frequency">Frecuencia pagos</InputLabel>
-                                                <Input
-                                                    type="text"
-                                                    disabled
-                                                    value={formData.payments_frequency}
-                                                />
-                                            </FormControl>
-                                            <FormControl sx={{ width: '33%' }}>
+                                            <FormControl sx={{ width: { xs: '100%', sm: '32%' } }}>
                                                 <TextField
                                                     type="number"
                                                     label="Interés por mora"
@@ -232,25 +243,35 @@ export function Loans() {
                                                 }
                                             </FormControl>
                                         </Box>
-                                        <FormControl>
-                                            <InputLabel id="observations">Observaciones</InputLabel>
-                                            <Input
-                                                id="observations"
-                                                name="observations"
-                                                value={formData.observations}
-                                            />
-                                            {errors.observations?.type === 'maxLength' &&
-                                                <Typography variant="caption" color="red" marginTop={1}>
-                                                    * Las observaciones son demasiado largas.
-                                                </Typography>
-                                            }
-                                        </FormControl>
+                                        <Box sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', gap: { xs: 2, sm: 1 } }}>
+                                            <FormControl sx={{ width: { xs: '100%', sm: '32%' } }}>
+                                                <InputLabel id="payments_frequency">Frecuencia pagos</InputLabel>
+                                                <Input
+                                                    type="text"
+                                                    disabled
+                                                    value={formData.payments_frequency}
+                                                />
+                                            </FormControl>
+                                            <FormControl sx={{ width: { xs: '100%', sm: '65%' } }}>
+                                                <InputLabel id="observations">Observaciones</InputLabel>
+                                                <Input
+                                                    id="observations"
+                                                    name="observations"
+                                                    value={formData.observations}
+                                                />
+                                                {errors.observations?.type === 'maxLength' &&
+                                                    <Typography variant="caption" color="red" marginTop={1}>
+                                                        * Las observaciones son demasiado largas.
+                                                    </Typography>
+                                                }
+                                            </FormControl>
+                                        </Box>
                                         <Box sx={{ display: 'flex', gap: 1, justifyContent: 'center', mt: 3 }}>
                                             <Button
                                                 type="button"
                                                 variant="outlined"
                                                 onClick={handleClose}
-                                                sx={{ width: '35%' }}
+                                                sx={{ width: { xs: '50%', sm: '35%' } }}
                                             >
                                                 Cancelar
                                             </Button>
@@ -258,7 +279,7 @@ export function Loans() {
                                                 type="button"
                                                 variant="contained"
                                                 disabled={disabled}
-                                                sx={{ width: '35%' }}
+                                                sx={{ width: { xs: '50%', sm: '35%' } }}
                                             >
                                                 Confirmar
                                             </Button>
