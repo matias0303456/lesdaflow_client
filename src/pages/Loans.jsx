@@ -110,8 +110,6 @@ export function Loans() {
                                     loans={loans}
                                     setLoans={setLoans}
                                     frequency={PAYMENT_FREQUENCIES[valueTab]}
-                                    workOn={formData}
-                                    setWorkOn={setFormData}
                                 />
                             </Box>
                             <ModalComponent open={open === 'NEW' || open === 'EDIT'} onClose={handleClose} reduceWidth={900}>
@@ -128,9 +126,9 @@ export function Loans() {
                                                     options={clients.map(c => ({ id: c.id, label: `${c.first_name} ${c.last_name}` }))}
                                                     renderInput={(params) => <TextField {...params} label="Cliente" />}
                                                     name="client_id"
-                                                    value={formData.client_id.toString().length > 0 ? `${clients.find(c => c.id === formData.client_id)?.first_name} ${clients.find(c => c.id === formData.client_id)?.last_name}` : ''}
+                                                    value={formData.client_id?.toString().length > 0 ? `${clients.find(c => c.id === formData.client_id)?.first_name} ${clients.find(c => c.id === formData.client_id)?.last_name}` : ''}
                                                     onChange={(_, value) => handleChange({ target: { name: 'client_id', value: value?.id ?? '' } })}
-                                                    isOptionEqualToValue={(option, value) => formData.client_id.toString().length === 0 || value === option.label}
+                                                    isOptionEqualToValue={(option, value) => formData.client_id?.toString().length === 0 || value === option.label}
                                                 />
                                                 {errors.client_id?.type === 'required' &&
                                                     <Typography variant="caption" color="red" marginTop={1}>
@@ -276,7 +274,7 @@ export function Loans() {
                                                 Cancelar
                                             </Button>
                                             <Button
-                                                type="button"
+                                                type="submit"
                                                 variant="contained"
                                                 disabled={disabled}
                                                 sx={{ width: { xs: '50%', sm: '35%' } }}

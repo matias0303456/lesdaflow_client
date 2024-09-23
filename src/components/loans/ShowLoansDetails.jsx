@@ -12,7 +12,7 @@ import { useForm } from "../../hooks/useForm";
 import { ModalComponent } from "../common/ModalComponent";
 import { PaymentForm } from "./PaymentForm";
 
-export function ShowLoansDetails({ loans, setLoans, frequency, workOn, setWorkOn }) {
+export function ShowLoansDetails({ loans, setLoans, frequency }) {
 
     const { open, setOpen, handleSubmit, handleDelete } = usePayments()
     const { formData, setFormData, setDisabled, disabled, reset, errors, handleChange, validate } = useForm({
@@ -38,6 +38,7 @@ export function ShowLoansDetails({ loans, setLoans, frequency, workOn, setWorkOn
     })
 
     const [expanded, setExpanded] = useState(0)
+    const [workOn, setWorkOn] = useState(null)
 
     const handleChangeExpanded = (panel) => (_, newExpanded) => {
         setExpanded(newExpanded ? panel : false)
