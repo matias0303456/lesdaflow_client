@@ -10,7 +10,7 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import SearchSharpIcon from '@mui/icons-material/SearchSharp'
 import EditIcon from '@mui/icons-material/Edit'
-import CloseIcon from "@mui/icons-material/Close"
+import DeleteIcon from '@mui/icons-material/Delete';
 import { IconButton, Tooltip } from '@mui/material';
 
 import { EnhancedTableHead } from './EnhancedTableHead';
@@ -124,7 +124,7 @@ export function DataGridWithBackendPagination({
                               }}
                             >
                               <IconButton>
-                                <CloseIcon />
+                                <DeleteIcon />
                               </IconButton>
                             </Tooltip>
                           }

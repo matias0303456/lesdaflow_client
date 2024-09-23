@@ -1,11 +1,20 @@
 /* eslint-disable react/prop-types */
-import { Checkbox, Chip, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material"
+import { Checkbox, Chip, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip } from "@mui/material"
 import { format } from "date-fns"
+import DeleteIcon from '@mui/icons-material/Delete';
 
 import { MONTHS } from "../../utils/constants"
 import { getLoanTotal, getPaymentAmount } from "../../utils/helpers"
 
-export function PaymentHeadCells({ rows, setOpen, formData, setFormData, setWorkOn }) {
+export function PaymentHeadCells({
+    rows,
+    setOpen,
+    formData,
+    setFormData,
+    setWorkOn,
+    setFormDataLoan,
+    setOpenLoan
+}) {
 
     const datesSet = Array.from(new Set(rows.flatMap(r => r.payment_dates)))
     const monthsSet = Array.from(new Set(datesSet.map(ds => new Date(ds).getMonth())))
@@ -15,6 +24,7 @@ export function PaymentHeadCells({ rows, setOpen, formData, setFormData, setWork
             <Table>
                 <TableHead>
                     <TableRow>
+                        <TableCell align="center"></TableCell>
                         <TableCell align="center">#</TableCell>
                         <TableCell align="center">Cliente</TableCell>
                         <TableCell align="center">Fecha</TableCell>
@@ -30,6 +40,14 @@ export function PaymentHeadCells({ rows, setOpen, formData, setFormData, setWork
                 <TableBody>
                     {rows.map(row => (
                         <TableRow key={row.id}>
+                            <TableCell align="center" onClick={() => {
+                                setFormDataLoan(row)
+                                setOpenLoan('DELETE')
+                            }}>
+                                <Tooltip title="Borrar">
+                                    <DeleteIcon sx={{ cursor: 'pointer' }} />
+                                </Tooltip>
+                            </TableCell>
                             <TableCell align="center">{row.id}</TableCell>
                             <TableCell align="center">{`${row.client.first_name} ${row.client.last_name}`}</TableCell>
                             <TableCell align="center">{format(new Date(row.date), 'dd/MM/yyyy')}</TableCell>

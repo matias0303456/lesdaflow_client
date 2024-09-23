@@ -110,6 +110,8 @@ export function Loans() {
                                     loans={loans}
                                     setLoans={setLoans}
                                     frequency={PAYMENT_FREQUENCIES[valueTab]}
+                                    setFormDataLoan={setFormData}
+                                    setOpenLoan={setOpen}
                                 />
                             </Box>
                             <ModalComponent open={open === 'NEW' || open === 'EDIT'} onClose={handleClose} reduceWidth={900}>

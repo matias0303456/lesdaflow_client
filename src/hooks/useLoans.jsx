@@ -59,14 +59,14 @@ export function useLoans() {
         }
     }
 
-    async function handleDelete(formData) {
+    async function handleDelete(formData,) {
         setLoadingLoans(true)
         const { status, data } = await handleQuery({
             url: `${LOAN_URL}/${formData.id}`,
             method: 'DELETE'
         })
         if (status === STATUS_CODES.OK) {
-            setLoans([data, ...loans.filter(l => l.id !== data.id)])
+            setLoans([...loans.filter(l => l.id !== data.id)])
             setMessage('Préstamo eliminado correctamente.')
             setSeverity('success')
         } else {

@@ -12,7 +12,7 @@ import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import EditIcon from '@mui/icons-material/Edit';
 import SearchSharpIcon from '@mui/icons-material/SearchSharp';
-import CloseIcon from "@mui/icons-material/Close";
+import DeleteIcon from '@mui/icons-material/Delete';
 import PictureAsPdfSharpIcon from '@mui/icons-material/PictureAsPdfSharp'
 
 import { EnhancedTableHead } from './EnhancedTableHead';
@@ -164,7 +164,7 @@ export function DataGridWithFrontendPagination({
                                                                     className="rounded-full bg-black/20 opacity-50 hover:bg-[#288bcd]"
                                                                     aria-label="delete"
                                                                 >
-                                                                    <CloseIcon className="w-4 h-4 hover:text-white" />
+                                                                    <DeleteIcon className="w-4 h-4 hover:text-white" />
                                                                 </IconButton>
                                                             </Tooltip>
                                                         }
