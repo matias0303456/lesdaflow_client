@@ -1,6 +1,6 @@
 import { useContext, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Box, Button, FormControl, Input, InputLabel, LinearProgress, MenuItem, Select, Typography } from "@mui/material";
+import { Box, Button, Checkbox, FormControl, FormControlLabel, Input, InputLabel, LinearProgress, MenuItem, Select, Typography } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { es } from "date-fns/locale";
@@ -28,7 +28,8 @@ export function Clients() {
         clients,
         filter,
         setFilter,
-        count
+        count,
+        toggleActive
     } = useClients()
     const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
         defaultData: {
@@ -72,7 +73,7 @@ export function Clients() {
     })
 
     useEffect(() => {
-        getClients()
+        getClients('?include_inactive=true')
     }, [])
 
     const handleClose = () => {
@@ -122,6 +123,25 @@ export function Clients() {
                 <Link target="_blank" to={`https://www.google.com/maps?q=${row.address}`}>
                     <span style={{ color: '#078BCD' }}>{row.address}</span>
                 </Link>
+            )
+        },
+        {
+            id: 'is_active',
+            numeric: false,
+            disablePadding: true,
+            label: 'Activo',
+            sorter: (row) => row.is_active ? 1 : 0,
+            accessor: (row) => (
+                <Box sx={{ textAlign: 'center' }}>
+                    <FormControlLabel
+                        control={<Checkbox />}
+                        checked={row.is_active}
+                        onChange={e => toggleActive({
+                            ...row,
+                            is_active: e.target.checked
+                        })}
+                    />
+                </Box>
             )
         }
     ];

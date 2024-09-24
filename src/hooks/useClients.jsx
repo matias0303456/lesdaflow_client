@@ -21,9 +21,9 @@ export function useClients() {
         offset: 25
     })
 
-    async function getClients() {
+    async function getClients(params) {
         const { status, data } = await handleQuery({
-            url: CLIENT_URL
+            url: `${CLIENT_URL}${params ? params : ''}`
         })
         if (status === STATUS_CODES.OK) {
             setClients(data[0])
@@ -66,6 +66,23 @@ export function useClients() {
         }
     }
 
+    async function toggleActive(formData) {
+        const { status, data } = await handleQuery({
+            url: `${CLIENT_URL}/${formData.id}`,
+            method: 'PUT',
+            body: formData
+        })
+        if (status === STATUS_CODES.OK) {
+            setClients([data, ...clients.filter(c => c.id !== data.id)])
+            setMessage('Cliente modificado correctamente.')
+            setSeverity('success')
+        } else {
+            setMessage(data.message)
+            setSeverity('error')
+        }
+        setOpenMessage(true)
+    }
+
     async function handleDelete(formData) {
         setLoadingClients(true)
         const { status, data } = await handleQuery({
@@ -101,6 +118,7 @@ export function useClients() {
         clients,
         count,
         filter,
-        setFilter
+        setFilter,
+        toggleActive
     }
 }
