@@ -177,7 +177,7 @@ export function LoanForm({
                         type="submit"
                         variant="contained"
                         disabled={disabled}
-                        sx={{ width: { xs: '50%', sm: '35%' } }}
+                        sx={{ width: { xs: '50%', sm: '35%' }, color: '#FFF' }}
                     >
                         Confirmar
                     </Button>

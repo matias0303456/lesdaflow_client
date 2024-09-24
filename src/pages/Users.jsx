@@ -223,7 +223,7 @@ export function Users() {
                       type="button"
                       variant="contained"
                       disabled={disabled}
-                      sx={{ width: '35%' }}
+                      sx={{ width: '35%', color: '#FFF' }}
                       onClick={() => console.log(formData)}
                     >
                       Confirmar

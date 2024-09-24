@@ -17,7 +17,7 @@ function App() {
   const theme = createTheme({
     palette: {
       primary: {
-        main: '#078BCD',
+        main: '#6ABA41',
       },
       terciary: {
         main: '#000000'

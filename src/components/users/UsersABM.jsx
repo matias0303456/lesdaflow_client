@@ -202,7 +202,8 @@ export function UsersABM({
                 </Button>
                 {(open === 'NEW' || open === 'EDIT') &&
                     <Button type="submit" variant="contained" disabled={disabled} sx={{
-                        width: '50%'
+                        width: '50%',
+                        color: '#FFF'
                     }}>
                         Confirmar
                     </Button>

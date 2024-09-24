@@ -94,7 +94,7 @@ export function Loans() {
                                 </Tabs>
                             </Box>
                             <Box sx={{ pt: 2 }}>
-                                <Button sx={{ mb: 1 }} variant="contained" onClick={() => {
+                                <Button sx={{ mb: 1, color: '#FFF' }} variant="contained" onClick={() => {
                                     setFormData({
                                         ...formData,
                                         payments_frequency: PAYMENT_FREQUENCIES[valueTab],
@@ -145,7 +145,7 @@ export function Loans() {
                                         type="button"
                                         variant="contained"
                                         disabled={disabled}
-                                        sx={{ width: '35%' }}
+                                        sx={{ width: '35%', color: '#FFF' }}
                                         onClick={() => handleDelete(formData)}
                                     >
                                         Confirmar

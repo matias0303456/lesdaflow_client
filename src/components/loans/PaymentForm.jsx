@@ -168,7 +168,7 @@ export function PaymentForm({
                             variant="contained"
                             color={confirmDelete ? "error" : 'primary'}
                             disabled={disabled}
-                            sx={{ width: '33%' }}
+                            sx={{ width: '33%', color: '#FFF' }}
                         >
                             {confirmDelete ? 'Eliminar' : 'Guardar'}
                         </Button>

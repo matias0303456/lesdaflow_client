@@ -13,7 +13,6 @@ import { AuthContext } from '../../providers/AuthProvider';
 import { UserDropdown } from "./UserDropdown"
 
 import { nav_items } from "../../utils/navigation-items"
-import Logo from '../../assets/logo.png'
 
 export function Layout({ children, title }) {
 
@@ -41,7 +40,7 @@ export function Layout({ children, title }) {
             cursor: 'pointer',
             color: '#fff',
             paddingY: { xs: 2.5, md: 0 },
-            ':hover': { backgroundColor: '#3276B1' }
+            ':hover': { backgroundColor: '#215C03' }
           }}
           onClick={() => navigate(item.path)}
         >
@@ -56,14 +55,11 @@ export function Layout({ children, title }) {
   return (
     <>
       <Box sx={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#078BCD', paddingX: 1 }}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#6ABA41', paddingX: 1 }}>
           <IconButton color="inherit" aria-label="open drawer" edge="start" onClick={handleDrawerToggle} sx={{ mr: 2, display: { md: 'none' }, color: '#fff' }}>
             <MenuIcon />
           </IconButton>
           <Box sx={{ display: 'flex', gap: 1, height: '100%' }}>
-            <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center' }}>
-              <img src={Logo} style={{ maxWidth: 80 }} />
-            </Box>
             <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
               {menuOptions}
             </Box>

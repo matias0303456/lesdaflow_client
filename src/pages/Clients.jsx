@@ -284,7 +284,8 @@ export function Clients() {
                                             </Button>
                                             {(open === 'NEW' || open === 'EDIT') &&
                                                 <Button type="submit" variant="contained" disabled={disabled} sx={{
-                                                    width: '50%'
+                                                    width: '50%',
+                                                    color: '#FFF'
                                                 }}>
                                                     Confirmar
                                                 </Button>
@@ -307,7 +308,7 @@ export function Clients() {
                                             type="button"
                                             variant="contained"
                                             disabled={disabled}
-                                            sx={{ width: '35%' }}
+                                            sx={{ width: '35%', color: '#FFF' }}
                                             onClick={() => handleDelete(formData)}
                                         >
                                             Confirmar

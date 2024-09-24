@@ -87,7 +87,7 @@ export function Settings({ defaultData, user, setUser, setValueTab }) {
                     type="submit"
                     variant="contained"
                     disabled={disabled}
-                    sx={{ width: '50%' }}
+                    sx={{ width: '50%', color: '#FFF' }}
                 >
                     Confirmar
                 </Button>

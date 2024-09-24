@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Box, Button, FormControl, Input, InputLabel, Typography } from "@mui/material";
@@ -9,7 +10,6 @@ import { useQuery } from "../../hooks/useQuery";
 
 import { AUTH_URL } from "../../utils/urls";
 import { STATUS_CODES } from "../../utils/constants";
-import Logo from '../../assets/logo.png'
 
 export function LoginForm({ showLogo }) {
 
@@ -56,7 +56,9 @@ export function LoginForm({ showLogo }) {
         <Box sx={{ width: 300 }}>
             {showLogo &&
                 <Box sx={{ textAlign: 'center', marginBottom: 1 }}>
-                    <img src={Logo} alt="" width={300} />
+                    <Typography variant='h2' mb={3}>
+                        Préstamos Personales
+                    </Typography>
                 </Box>
             }
             <form onChange={handleChange} onSubmit={handleSubmit} style={{
@@ -103,11 +105,17 @@ export function LoginForm({ showLogo }) {
                         }
                     </FormControl>
                     <FormControl>
-                        <Button type="submit" variant="contained" sx={{
-                            width: '100%',
-                            margin: '0 auto',
-                            marginTop: 1
-                        }} disabled={disabled}>
+                        <Button
+                            type="submit"
+                            variant="contained"
+                            sx={{
+                                width: '100%',
+                                margin: '0 auto',
+                                marginTop: 1,
+                                color: '#FFF'
+                            }}
+                            disabled={disabled}
+                        >
                             INICIAR SESIÓN
                         </Button>
                     </FormControl>
