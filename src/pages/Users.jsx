@@ -159,7 +159,6 @@ export function Users() {
                 setOpen={setOpen}
                 filter={{ page: 0, offset: 1 }}
                 showEditAction
-                showDeleteAction
                 showViewAction
                 count={1}
                 contentHeader={
@@ -208,7 +207,7 @@ export function Users() {
                     />
                   </CustomTabPanel>
                 </ModalComponent>
-                <ModalComponent open={open === 'DELETE'} onClose={handleClose} reduceWidth={900}>
+                {/* <ModalComponent open={open === 'DELETE'} onClose={handleClose} reduceWidth={900}>
                   <Typography variant="h6" marginBottom={1} textAlign="center">
                     ¿Darse de baja del sistema?
                   </Typography>
@@ -229,7 +228,7 @@ export function Users() {
                       Confirmar
                     </Button>
                   </Box>
-                </ModalComponent>
+                </ModalComponent> */}
               </DataGridWithFrontendPagination>
             </Box>
           }
