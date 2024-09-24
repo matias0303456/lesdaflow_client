@@ -67,3 +67,20 @@ export function getPaymentAmountWithLateFee(workOn, formData) {
     const totalLateFee = iterable.reduce(day => day + ((paymentAmount / 100) * loan.late_fee), 0)
     return parseFloat(paymentAmount + totalLateFee).toFixed(2)
 }
+
+export function getLoansTotalInterest(loans) {
+    return loans.reduce((prev, curr) => prev + (parseFloat(getLoanTotal(curr)) - curr.amount), 0).toFixed(2)
+}
+
+export function getLoansPaidInterest(loans) {
+    return loans.reduce((prev, curr) => {
+        const loanTotalInterest = parseFloat(getLoanTotal(curr)) - curr.amount
+        return prev + ((loanTotalInterest / curr.payments_amount) * curr.payments.length)
+    }, 0).toFixed(2)
+}
+
+export function getLoansPendingInterest(loans) {
+    const totalInterest = parseFloat(getLoansTotalInterest(loans))
+    const paidInterest = parseFloat(getLoansPaidInterest(loans))
+    return parseFloat(totalInterest - paidInterest).toFixed(2)
+}

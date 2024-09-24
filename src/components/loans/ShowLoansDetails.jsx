@@ -11,6 +11,7 @@ import { usePayments } from "../../hooks/usePayments";
 import { useForm } from "../../hooks/useForm";
 import { ModalComponent } from "../common/ModalComponent";
 import { PaymentForm } from "./PaymentForm";
+import { TotalsByMonth } from "./TotalsByMonth";
 
 export function ShowLoansDetails({
     loans,
@@ -84,6 +85,7 @@ export function ShowLoansDetails({
                                                     setFormDataLoan={setFormDataLoan}
                                                     setOpenLoan={setOpenLoan}
                                                 />
+                                                <TotalsByMonth loans={rows} />
                                             </Box>
                                         )
                                     })}
