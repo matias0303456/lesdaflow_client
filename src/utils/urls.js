@@ -7,3 +7,4 @@ export const USER_URL = `${BASE_URL}/users`
 export const REPORT_URL = `${BASE_URL}/reports`
 export const PAYMENT_URL = `${BASE_URL}/payments`
 export const SETTINGS_URL = `${BASE_URL}/settings`
+export const SPENDING_URL = `${BASE_URL}/spendings`

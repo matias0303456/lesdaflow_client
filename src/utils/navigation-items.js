@@ -13,5 +13,10 @@ export const nav_items = [
     title: "Préstamos",
     name: "loans",
     path: "/prestamos"
+  },
+  {
+    title: "Gastos",
+    name: "spendings",
+    path: "/gastos"
   }
 ]

@@ -11,6 +11,7 @@ import { Clients } from './pages/Clients'
 import { Users } from './pages/Users'
 import { Loans } from "./pages/Loans";
 import { Error } from './pages/Error'
+import { Spendings } from "./pages/Spendings";
 
 function App() {
 
@@ -37,6 +38,7 @@ function App() {
               <Route path="/usuarios" element={<Users />} />
               <Route path="/clientes" element={<Clients />} />
               <Route path="/prestamos" element={<Loans />} />
+              <Route path="/gastos" element={<Spendings />} />
               <Route path="*" element={<Error />} />
             </Routes>
           </BrowserRouter>
