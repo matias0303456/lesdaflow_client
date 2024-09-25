@@ -73,8 +73,9 @@ export function Clients() {
     })
 
     useEffect(() => {
-        getClients('?include_inactive=true')
-    }, [])
+        const { page, offset } = filter
+        getClients(`?page=${page}&offset=${offset}include_inactive=true`)
+    }, [filter])
 
     const handleClose = () => {
         reset(setOpen)
