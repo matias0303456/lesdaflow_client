@@ -3,7 +3,7 @@ import { Checkbox, Chip, Paper, Table, TableBody, TableCell, TableContainer, Tab
 import { format } from "date-fns"
 import DeleteIcon from '@mui/icons-material/Delete';
 
-import { MONTHS } from "../../utils/constants"
+import { MONTHS, PAYMENT_FREQUENCIES } from "../../utils/constants"
 import { getLoanTotal, getPaymentAmount } from "../../utils/helpers"
 
 export function PaymentHeadCells({
@@ -13,11 +13,16 @@ export function PaymentHeadCells({
     setFormData,
     setWorkOn,
     setFormDataLoan,
-    setOpenLoan
+    setOpenLoan,
+    frequency
 }) {
 
     const datesSet = Array.from(new Set(rows.flatMap(r => r.payment_dates)))
-    const monthsSet = Array.from(new Set(datesSet.map(ds => new Date(ds).getMonth())))
+    const columns = {
+        [PAYMENT_FREQUENCIES[0]]: Array.from(new Set(datesSet.map(ds => new Date(ds).getMonth()))),
+        [PAYMENT_FREQUENCIES[1]]: Array.from(new Set(datesSet.map(ds => format(new Date(ds), 'dd/MM/yyyy')))),
+        [PAYMENT_FREQUENCIES[2]]: Array.from(new Set(datesSet.map(ds => format(new Date(ds), 'dd/MM/yyyy'))))
+    }
 
     return (
         <TableContainer component={Paper}>
@@ -34,7 +39,11 @@ export function PaymentHeadCells({
                         <TableCell align="center">Pago ($)</TableCell>
                         <TableCell align="center">Mora (%)</TableCell>
                         <TableCell align="center">Obs.</TableCell>
-                        {monthsSet.map(m => <TableCell key={m} align="center">{MONTHS[m].slice(0, 3)}</TableCell>)}
+                        {columns[frequency].map(i => (
+                            <TableCell key={i} align="center">
+                                {frequency === PAYMENT_FREQUENCIES[0] ? MONTHS[i].slice(0, 3) : i}
+                            </TableCell>
+                        ))}
                     </TableRow>
                 </TableHead>
                 <TableBody>
@@ -57,11 +66,17 @@ export function PaymentHeadCells({
                             <TableCell align="center">{getPaymentAmount(row)}</TableCell>
                             <TableCell align="center">{row.late_fee}</TableCell>
                             <TableCell align="center">{row.observations}</TableCell>
-                            {monthsSet.map(m => {
-                                const paymentCorresponds = row.payment_dates.find(pd => new Date(pd).getMonth() === m)
-                                const paymentExists = row.payments.find(p => new Date(p.date).getMonth() === m)
+                            {columns[frequency].map(i => {
+                                const paymentCorresponds = row.payment_dates.find(pd => {
+                                    if (frequency === PAYMENT_FREQUENCIES[0]) return new Date(pd).getMonth() === i
+                                    return new Date(pd) === i
+                                })
+                                const paymentExists = row.payments.find(p => {
+                                    if (frequency === PAYMENT_FREQUENCIES[0]) return new Date(p.date).getMonth() === i
+                                    return new Date(p.date) === i
+                                })
                                 return (
-                                    <TableCell key={m} align="center">
+                                    <TableCell key={i} align="center">
                                         {paymentCorresponds &&
                                             <>
                                                 {paymentExists ?

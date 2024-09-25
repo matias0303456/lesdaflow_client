@@ -84,6 +84,7 @@ export function ShowLoansDetails({
                                                     setWorkOn={setWorkOn}
                                                     setFormDataLoan={setFormDataLoan}
                                                     setOpenLoan={setOpenLoan}
+                                                    frequency={frequency}
                                                 />
                                                 <TotalsByMonth loans={rows} />
                                             </Box>
