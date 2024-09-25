@@ -84,3 +84,9 @@ export function getLoansPendingInterest(loans) {
     const paidInterest = parseFloat(getLoansPaidInterest(loans))
     return parseFloat(totalInterest - paidInterest).toFixed(2)
 }
+
+export function getLoansTotalInterestWithSpendings(total, includeSpendings, spendings) {
+    if (!includeSpendings) return total
+    const totalSpendings = spendings.reduce((prev, curr) => prev + curr.amount, 0)
+    return parseFloat(total - totalSpendings).toFixed(2)
+}

@@ -1,11 +1,12 @@
 import { useContext, useEffect } from "react";
-import { Box, Button, LinearProgress, Tab, Tabs, Typography } from "@mui/material";
+import { Box, Button, Checkbox, FormControlLabel, LinearProgress, Tab, Tabs, Typography } from "@mui/material";
 
 import { AuthContext } from "../providers/AuthProvider";
 import { useClients } from '../hooks/useClients'
 import { useForm } from "../hooks/useForm";
 import { useLoans } from "../hooks/useLoans";
 import { useUsers } from "../hooks/useUsers";
+import { useSpendings } from "../hooks/useSpendings";
 
 import { Layout } from "../components/common/Layout";
 import { ModalComponent } from "../components/common/ModalComponent";
@@ -30,10 +31,13 @@ export function Loans() {
         setLoans,
         valueTab,
         setValueTab,
-        handleSubmit
+        handleSubmit,
+        includeSpendings,
+        setIncludeSpendings
     } = useLoans()
     const { loadingClients, getClients, clients } = useClients()
     const { loadingUser, getUser, user } = useUsers()
+    const { spendings, getSpendings, loadingSpendings } = useSpendings()
     const { formData, setFormData, disabled, reset, setDisabled, validate, errors, handleChange } = useForm({
         defaultData: {
             id: '',
@@ -69,6 +73,7 @@ export function Loans() {
         if (auth) {
             getClients()
             getUser()
+            getSpendings()
         }
     }, [])
 
@@ -83,7 +88,7 @@ export function Loans() {
         <>
             {auth ?
                 <Layout title="Préstamos">
-                    {loadingLoans || loadingClients || loadingUser ?
+                    {loadingLoans || loadingClients || loadingUser || loadingSpendings ?
                         <Box sx={{ width: '100%', m: 1 }}>
                             <LinearProgress />
                         </Box> :
@@ -94,22 +99,32 @@ export function Loans() {
                                 </Tabs>
                             </Box>
                             <Box sx={{ pt: 2 }}>
-                                <Button sx={{ mb: 1, color: '#FFF' }} variant="contained" onClick={() => {
-                                    setFormData({
-                                        ...formData,
-                                        payments_frequency: PAYMENT_FREQUENCIES[valueTab],
-                                        late_fee: user.settings.late_fee
-                                    })
-                                    setOpen('NEW')
-                                }}>
-                                    Agregar
-                                </Button>
+                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 3 }}>
+                                    <Button sx={{ mb: 1, color: '#FFF' }} variant="contained" onClick={() => {
+                                        setFormData({
+                                            ...formData,
+                                            payments_frequency: PAYMENT_FREQUENCIES[valueTab],
+                                            late_fee: user.settings.late_fee
+                                        })
+                                        setOpen('NEW')
+                                    }}>
+                                        Agregar
+                                    </Button>
+                                    <FormControlLabel
+                                        label="Incluir gastos"
+                                        control={<Checkbox />}
+                                        checked={includeSpendings}
+                                        onChange={(e) => setIncludeSpendings(e.target.checked)}
+                                    />
+                                </Box>
                                 <ShowLoansDetails
                                     loans={loans}
                                     setLoans={setLoans}
                                     frequency={PAYMENT_FREQUENCIES[valueTab]}
                                     setFormDataLoan={setFormData}
                                     setOpenLoan={setOpen}
+                                    includeSpendings={includeSpendings}
+                                    spendings={spendings}
                                 />
                             </Box>
                             <ModalComponent open={open === 'NEW' || open === 'EDIT'} onClose={handleClose} reduceWidth={900}>

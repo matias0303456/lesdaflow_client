@@ -16,6 +16,7 @@ export function useLoans() {
     const [loadingLoans, setLoadingLoans] = useState(true)
     const [open, setOpen] = useState(null)
     const [valueTab, setValueTab] = useState(0)
+    const [includeSpendings, setIncludeSpendings] = useState(false)
 
     async function getLoans() {
         const { status, data } = await handleQuery({ url: `${LOAN_URL}/${PAYMENT_FREQUENCIES[valueTab]}` })
@@ -93,6 +94,8 @@ export function useLoans() {
         loans,
         setLoans,
         valueTab,
-        setValueTab
+        setValueTab,
+        includeSpendings,
+        setIncludeSpendings
     }
 }

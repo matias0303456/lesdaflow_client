@@ -111,7 +111,6 @@ export function Spendings() {
                                 count={count}
                                 showEditAction
                                 showDeleteAction
-                                showViewAction
                                 contentHeader={
                                     <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: 1 }}>
                                         <Button variant="outlined" onClick={() => {
