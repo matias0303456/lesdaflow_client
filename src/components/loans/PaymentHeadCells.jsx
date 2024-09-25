@@ -69,11 +69,11 @@ export function PaymentHeadCells({
                             {columns[frequency].map(i => {
                                 const paymentCorresponds = row.payment_dates.find(pd => {
                                     if (frequency === PAYMENT_FREQUENCIES[0]) return new Date(pd).getMonth() === i
-                                    return new Date(pd) === i
+                                    return format(new Date(pd), 'dd/MM/yyyy') === i
                                 })
                                 const paymentExists = row.payments.find(p => {
                                     if (frequency === PAYMENT_FREQUENCIES[0]) return new Date(p.date).getMonth() === i
-                                    return new Date(p.date) === i
+                                    return format(new Date(p.date), 'dd/MM/yyyy') === i
                                 })
                                 return (
                                     <TableCell key={i} align="center">
