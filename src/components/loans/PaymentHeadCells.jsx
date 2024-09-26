@@ -1,10 +1,15 @@
 /* eslint-disable react/prop-types */
-import { Checkbox, Chip, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip } from "@mui/material"
+import { useContext } from "react";
+import { Box, Checkbox, Chip, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip } from "@mui/material"
 import { format } from "date-fns"
 import DeleteIcon from '@mui/icons-material/Delete';
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
+
+import { AuthContext } from "../../providers/AuthProvider";
 
 import { MONTHS, PAYMENT_FREQUENCIES } from "../../utils/constants"
 import { getLoanTotal, getPaymentAmount } from "../../utils/helpers"
+import { REPORT_URL } from "../../utils/urls";
 
 export function PaymentHeadCells({
     rows,
@@ -16,6 +21,8 @@ export function PaymentHeadCells({
     setOpenLoan,
     frequency
 }) {
+
+    const { auth } = useContext(AuthContext)
 
     const datesSet = Array.from(new Set(rows.flatMap(r => r.payment_dates)))
     const columns = {
@@ -49,13 +56,24 @@ export function PaymentHeadCells({
                 <TableBody>
                     {rows.map(row => (
                         <TableRow key={row.id}>
-                            <TableCell align="center" onClick={() => {
-                                setFormDataLoan(row)
-                                setOpenLoan('DELETE')
-                            }}>
-                                <Tooltip title="Borrar">
-                                    <DeleteIcon sx={{ cursor: 'pointer' }} />
-                                </Tooltip>
+                            <TableCell align="center">
+                                <Box sx={{ display: 'flex', gap: 1 }}>
+                                    <Tooltip title="Borrar">
+                                        <DeleteIcon
+                                            sx={{ cursor: 'pointer' }}
+                                            onClick={() => {
+                                                setFormDataLoan(row)
+                                                setOpenLoan('DELETE')
+                                            }}
+                                        />
+                                    </Tooltip>
+                                    <Tooltip title="Imprimir PDF">
+                                        <PictureAsPdfIcon
+                                            sx={{ cursor: 'pointer' }}
+                                            onClick={() => window.open(`${REPORT_URL}/prestamo-pdf/${row.id}?token=${auth.access_token}`, '_blank')}
+                                        />
+                                    </Tooltip>
+                                </Box>
                             </TableCell>
                             <TableCell align="center">{row.id}</TableCell>
                             <TableCell align="center">{`${row.client.first_name} ${row.client.last_name}`}</TableCell>
@@ -66,50 +84,52 @@ export function PaymentHeadCells({
                             <TableCell align="center">{getPaymentAmount(row)}</TableCell>
                             <TableCell align="center">{row.late_fee}</TableCell>
                             <TableCell align="center">{row.observations}</TableCell>
-                            {columns[frequency].map(i => {
-                                const paymentCorresponds = row.payment_dates.find(pd => {
-                                    if (frequency === PAYMENT_FREQUENCIES[0]) return new Date(pd).getMonth() === i
-                                    return format(new Date(pd), 'dd/MM/yyyy') === i
+                            {
+                                columns[frequency].map(i => {
+                                    const paymentCorresponds = row.payment_dates.find(pd => {
+                                        if (frequency === PAYMENT_FREQUENCIES[0]) return new Date(pd).getMonth() === i
+                                        return format(new Date(pd), 'dd/MM/yyyy') === i
+                                    })
+                                    const paymentExists = row.payments.find(p => {
+                                        if (frequency === PAYMENT_FREQUENCIES[0]) return new Date(p.date).getMonth() === i
+                                        return format(new Date(p.date), 'dd/MM/yyyy') === i
+                                    })
+                                    return (
+                                        <TableCell key={i} align="center">
+                                            {paymentCorresponds &&
+                                                <>
+                                                    {paymentExists ?
+                                                        <Chip
+                                                            label="Pagado"
+                                                            onClick={() => {
+                                                                setWorkOn({ loan: row, payment: paymentCorresponds })
+                                                                setFormData(paymentExists)
+                                                                setOpen('PAYMENT-DETAILS')
+                                                            }}
+                                                        /> :
+                                                        <Checkbox
+                                                            checked={false}
+                                                            onClick={() => {
+                                                                setWorkOn({ loan: row, payment: paymentCorresponds })
+                                                                setFormData({
+                                                                    ...formData,
+                                                                    date: new Date(paymentCorresponds),
+                                                                    loan_id: row.id
+                                                                })
+                                                                setOpen('NEW-PAYMENT')
+                                                            }}
+                                                        />
+                                                    }
+                                                </>
+                                            }
+                                        </TableCell>
+                                    )
                                 })
-                                const paymentExists = row.payments.find(p => {
-                                    if (frequency === PAYMENT_FREQUENCIES[0]) return new Date(p.date).getMonth() === i
-                                    return format(new Date(p.date), 'dd/MM/yyyy') === i
-                                })
-                                return (
-                                    <TableCell key={i} align="center">
-                                        {paymentCorresponds &&
-                                            <>
-                                                {paymentExists ?
-                                                    <Chip
-                                                        label="Pagado"
-                                                        onClick={() => {
-                                                            setWorkOn({ loan: row, payment: paymentCorresponds })
-                                                            setFormData(paymentExists)
-                                                            setOpen('PAYMENT-DETAILS')
-                                                        }}
-                                                    /> :
-                                                    <Checkbox
-                                                        checked={false}
-                                                        onClick={() => {
-                                                            setWorkOn({ loan: row, payment: paymentCorresponds })
-                                                            setFormData({
-                                                                ...formData,
-                                                                date: new Date(paymentCorresponds),
-                                                                loan_id: row.id
-                                                            })
-                                                            setOpen('NEW-PAYMENT')
-                                                        }}
-                                                    />
-                                                }
-                                            </>
-                                        }
-                                    </TableCell>
-                                )
-                            })}
+                            }
                         </TableRow>
                     ))}
                 </TableBody>
             </Table>
-        </TableContainer>
+        </TableContainer >
     )
 }
