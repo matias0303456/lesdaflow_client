@@ -21,7 +21,7 @@ export function Users() {
 
   const { auth } = useContext(AuthContext)
 
-  const { loadingUser, getUser, setOpen, handleSubmit, open, user } = useUsers()
+  const { loadingUser, getUser, setOpen, handleSubmit, open, user, handleDelete } = useUsers()
   const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
     defaultData: {
       id: '',
@@ -160,6 +160,7 @@ export function Users() {
                 filter={{ page: 0, offset: 1 }}
                 showEditAction
                 showViewAction
+                showDeleteAction
                 count={1}
                 contentHeader={
                   <Box sx={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: 'start' }}>
@@ -207,12 +208,13 @@ export function Users() {
                     />
                   </CustomTabPanel>
                 </ModalComponent>
-                {/* <ModalComponent open={open === 'DELETE'} onClose={handleClose} reduceWidth={900}>
-                  <Typography variant="h6" marginBottom={1} textAlign="center">
+                <ModalComponent open={open === 'DELETE'} onClose={handleClose} reduceWidth={900}>
+                  <Typography variant="h6" marginBottom={1} color="#F00" textAlign="center">
                     ¿Darse de baja del sistema?
                   </Typography>
-                  <Typography variant="body1" marginBottom={2} textAlign="center">
-                    No debe tener clientes ni préstamos asociados.
+                  <Typography variant="body1" marginBottom={2} color="#F00" textAlign="center">
+                    Se eliminarán todos los datos relacionados (configuración, clientes, préstamos, pagos y gastos)
+                    y no podrán ser recuperados.
                   </Typography>
                   <Box sx={{ display: 'flex', gap: 1, justifyContent: 'center' }}>
                     <Button type="button" variant="outlined" onClick={handleClose} sx={{ width: '35%' }}>
@@ -222,13 +224,14 @@ export function Users() {
                       type="button"
                       variant="contained"
                       disabled={disabled}
+                      color="error"
                       sx={{ width: '35%', color: '#FFF' }}
-                      onClick={() => console.log(formData)}
+                      onClick={() => handleDelete(formData)}
                     >
                       Confirmar
                     </Button>
                   </Box>
-                </ModalComponent> */}
+                </ModalComponent>
               </DataGridWithFrontendPagination>
             </Box>
           }

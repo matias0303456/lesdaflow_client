@@ -2,6 +2,7 @@ import { useContext, useState } from "react"
 
 import { MessageContext } from "../providers/MessageProvider"
 import { useQuery } from "./useQuery"
+import { useAuth } from "./useAuth"
 
 import { USER_URL } from "../utils/urls"
 import { STATUS_CODES } from "../utils/constants"
@@ -15,6 +16,7 @@ export function useUsers() {
     const [open, setOpen] = useState(null)
 
     const { handleQuery } = useQuery()
+    const { handleLogout } = useAuth()
 
     async function getUser() {
         const { status, data } = await handleQuery({ url: USER_URL })
@@ -56,6 +58,22 @@ export function useUsers() {
         }
     }
 
+    async function handleDelete(formData) {
+        const { status, data } = await handleQuery({
+            url: `${USER_URL}/${formData.id}`,
+            method: 'DELETE'
+        })
+        if (status === STATUS_CODES.OK) {
+            setSeverity('success')
+            setOpen(null)
+            handleLogout()
+        } else {
+            setSeverity('error')
+        }
+        setMessage(data.message)
+        setOpenMessage(true)
+    }
+
     return {
         loadingUser,
         setLoadingUser,
@@ -63,6 +81,7 @@ export function useUsers() {
         setOpen,
         handleSubmit,
         getUser,
-        user
+        user,
+        handleDelete
     }
 }
