@@ -153,7 +153,7 @@ export function DataGridWithBackendPagination({
                       textAlign: 'center'
                     }}
                   >
-                    No se encontraron registros
+                    No se encontraron registros. Pruebe actualizar la página.
                   </TableCell>
                 </TableRow>
               )}

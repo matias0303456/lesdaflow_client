@@ -28,12 +28,12 @@ export function useSpendings() {
         if (status === STATUS_CODES.OK) {
             setSpendings(data[0])
             setCount(data[1])
-            setLoadingSpendings(false)
         } else {
             setMessage(data.message)
             setSeverity('error')
             setOpenMessage(true)
         }
+        setLoadingSpendings(false)
     }
 
     async function handleSubmit(e, validate, formData, reset, setDisabled) {
@@ -66,7 +66,7 @@ export function useSpendings() {
         }
     }
 
-    async function handleDelete(formData) {
+    async function handleDelete(formData, reset) {
         setLoadingSpendings(true)
         const { status, data } = await handleQuery({
             url: `${SPENDING_URL}/${formData.id}`,
@@ -83,7 +83,7 @@ export function useSpendings() {
         }
         setOpenMessage(true)
         setLoadingSpendings(false)
-        setOpen(null)
+        reset(setOpen)
     }
 
     return {

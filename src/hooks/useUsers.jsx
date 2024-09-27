@@ -22,12 +22,12 @@ export function useUsers() {
         const { status, data } = await handleQuery({ url: USER_URL })
         if (status === STATUS_CODES.OK) {
             setUser(data)
-            setLoadingUser(false)
         } else {
             setMessage(data.message)
             setSeverity('error')
             setOpenMessage(true)
         }
+        setLoadingUser(false)
     }
 
     async function handleSubmit(e, validate, formData, reset, setDisabled) {

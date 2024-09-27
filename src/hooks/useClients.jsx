@@ -28,12 +28,12 @@ export function useClients() {
         if (status === STATUS_CODES.OK) {
             setClients(data[0])
             setCount(data[1])
-            setLoadingClients(false)
         } else {
             setMessage(data.message)
             setSeverity('error')
             setOpenMessage(true)
         }
+        setLoadingClients(false)
     }
 
     async function handleSubmit(e, validate, formData, reset, setDisabled) {
@@ -83,7 +83,7 @@ export function useClients() {
         setOpenMessage(true)
     }
 
-    async function handleDelete(formData) {
+    async function handleDelete(formData, reset) {
         setLoadingClients(true)
         const { status, data } = await handleQuery({
             url: `${CLIENT_URL}/${formData.id}`,
@@ -104,7 +104,7 @@ export function useClients() {
         }
         setOpenMessage(true)
         setLoadingClients(false)
-        setOpen(null)
+        reset(setOpen)
     }
 
     return {

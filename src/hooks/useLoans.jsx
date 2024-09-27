@@ -22,12 +22,12 @@ export function useLoans() {
         const { status, data } = await handleQuery({ url: `${LOAN_URL}/${PAYMENT_FREQUENCIES[valueTab]}` })
         if (status === STATUS_CODES.OK) {
             setLoans(data)
-            setLoadingLoans(false)
         } else {
             setMessage(data.message)
             setSeverity('error')
             setOpenMessage(true)
         }
+        setLoadingLoans(false)
     }
 
     async function handleSubmit(e, formData, validate, reset, setDisabled) {
@@ -60,7 +60,7 @@ export function useLoans() {
         }
     }
 
-    async function handleDelete(formData,) {
+    async function handleDelete(formData, reset) {
         setLoadingLoans(true)
         const { status, data } = await handleQuery({
             url: `${LOAN_URL}/${formData.id}`,
@@ -80,7 +80,7 @@ export function useLoans() {
         }
         setOpenMessage(true)
         setLoadingLoans(false)
-        setOpen(null)
+        reset(setOpen)
     }
 
     return {

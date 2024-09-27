@@ -330,7 +330,7 @@ export function Clients() {
                                             variant="contained"
                                             disabled={disabled}
                                             sx={{ width: '35%', color: '#FFF' }}
-                                            onClick={() => handleDelete(formData)}
+                                            onClick={() => handleDelete(formData, reset)}
                                         >
                                             Confirmar
                                         </Button>

@@ -102,7 +102,7 @@ export function ShowLoansDetails({
                     })}
                 </> :
                 <Typography variant="body1" align="center" mt={3}>
-                    No hay datos para mostrar.
+                    No hay datos para mostrar. Pruebe actualizar la página.
                 </Typography>
             }
             <ModalComponent

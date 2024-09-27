@@ -21,7 +21,7 @@ export function AuthProvider({ children }) {
 
     const { setOpenMessage, setSeverity, setMessage } = useContext(MessageContext)
     const { handleQuery } = useQuery()
-    const { formData, errors, disabled, setDisabled, handleChange, validate } = useForm({
+    const { formData, errors, disabled, setDisabled, handleChange, validate, reset } = useForm({
         defaultData: { username: '', password: '' },
         rules: {
             username: { required: true, maxLength: 55 },
@@ -41,8 +41,10 @@ export function AuthProvider({ children }) {
                 body: formData
             })
             if (status === STATUS_CODES.OK) {
-                localStorage.setItem('solid_auth', JSON.stringify(data))
-                window.location.reload()
+                localStorage.setItem('auth_prestamos', JSON.stringify(data))
+                setAuth(data)
+                reset()
+                setSessionExpired(false)
             } else {
                 if (status === STATUS_CODES.UNAUTHORIZED) {
                     setMessage('Credenciales inválidas.')
