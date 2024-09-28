@@ -143,3 +143,9 @@ export function getBudgetTotal(budget, subtotal) {
 export function saleIsPrepared(sale) {
     return sale.sale_products.every(sp => sp.is_prepared)
 }
+
+export function getDeliveredDeadline(sale) {
+    const delivered = new Date(sale.delivered_at)
+    delivered.setDate(delivered.getDate() + 20)
+    return delivered
+}
