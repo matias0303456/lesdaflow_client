@@ -72,14 +72,14 @@ export function AddProductsToSale({
                             disablePortal
                             id="product-autocomplete"
                             options={products.filter(p => {
-                                return !saleProducts.map(sp => sp.product_id).includes(p.id) && getStock(p) > 0 &&
+                                return !saleProducts.map(sp => sp.product_id).includes(p?.id) && getStock(p) > 0 &&
                                     (
-                                        (formData.type === 'CONTADO' && p.cash) ||
-                                        (formData.type === 'CUENTA_CORRIENTE' && p.cta_cte) ||
-                                        (formData.type === 'POXIPOL' && p.poxipol)
+                                        (formData.type === 'CONTADO' && p?.cash) ||
+                                        (formData.type === 'CUENTA_CORRIENTE' && p?.cta_cte) ||
+                                        (formData.type === 'POXIPOL' && p?.poxipol)
                                     )
                             })
-                                .map(p => ({ label: `${p.code} - ${p.details}`, id: p.id }))}
+                                .map(p => ({ label: `${p?.code} - ${p?.details}`, id: p?.id }))}
                             noOptionsText="No hay productos disponibles."
                             onChange={(_, value) => handleAdd({ idx: saleProducts.length, product_id: value?.id ?? '' })}
                             renderInput={(params) => <TextField {...params} label="Producto *" />}
@@ -115,15 +115,15 @@ export function AddProductsToSale({
                                 <TableCell align="center" colSpan={7}>No hay productos agregados a esta venta.</TableCell>
                             </TableRow> :
                             saleProducts.map(sp => {
-                                const p = products.find(p => p.id === sp.product_id);
+                                const p = products.find(p => p?.id === sp.product_id);
                                 const currentAmount = isNaN(parseInt(sp.amount)) ? 0 : parseInt(sp.amount);
                                 return (
                                     <TableRow
                                         key={sp.product_id}
                                         sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                                     >
-                                        <TableCell align="center">{p.code}</TableCell>
-                                        <TableCell align="center">{p.details}</TableCell>
+                                        <TableCell align="center">{p?.code}</TableCell>
+                                        <TableCell align="center">{p?.details}</TableCell>
                                         <TableCell align="center">
                                             <Input
                                                 id={`input_${sp.product_id}`}
@@ -131,7 +131,7 @@ export function AddProductsToSale({
                                                 value={sp.amount}
                                                 disabled={open === 'VIEW' || (open === 'EDIT' && auth?.user.role !== 'ADMINISTRADOR')}
                                                 onChange={e => handleChangeAmount({
-                                                    product_id: p.id,
+                                                    product_id: p?.id,
                                                     amount: e.target.value
                                                 })}
                                                 inputRef={el => inputRefs.current[sp.product_id] = el} // Asignar referencia al input
@@ -142,7 +142,7 @@ export function AddProductsToSale({
                                         <TableCell>${(currentAmount * getProductSalePrice(sp.earn && sp.buy_price ? sp : p)).toFixed(2)}</TableCell>
                                         {(open === 'NEW' || open === 'CONVERT' || (open === 'EDIT' && auth?.user.role === 'ADMINISTRADOR')) &&
                                             <TableCell align="center">
-                                                <Button type="button" onClick={() => handleDeleteProduct(sp.id, p.id)}>
+                                                <Button type="button" onClick={() => handleDeleteProduct(sp.id, p?.id)}>
                                                     <CancelSharpIcon />
                                                 </Button>
                                             </TableCell>
