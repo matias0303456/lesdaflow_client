@@ -305,7 +305,7 @@ export function SaleForm({
                                 <Button
                                     type="submit"
                                     variant="contained"
-                                    disabled={disabled || (isBlocked && (open === 'NEW' || open === 'CONVERT'))}
+                                    disabled={disabled}
                                     sx={{ width: '50%' }}
                                 >
                                     {confirmed ? 'Guardar' : 'Confirmar'}
@@ -387,7 +387,7 @@ export function SaleForm({
                             <Button
                                 type="button"
                                 variant="contained"
-                                disabled={disabled || isBlocked}
+                                disabled={disabled}
                                 sx={{ width: '50%' }}
                                 onClick={e => handleSubmit(e, formData, validate, reset, setDisabled)}
                             >
