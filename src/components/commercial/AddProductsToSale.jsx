@@ -83,7 +83,7 @@ export function AddProductsToSale({
                             noOptionsText="No hay productos disponibles."
                             onChange={(_, value) => handleAdd({ idx: saleProducts.length, product_id: value?.id ?? '' })}
                             renderInput={(params) => <TextField {...params} label="Producto *" />}
-                            isOptionEqualToValue={(option, value) => option.code === value.code || value.length === 0}
+                            isOptionEqualToValue={(option, value) => option?.code === value?.code || value.length === 0}
                             onInputChange={(e, value) => setValue(value)}
                             value={value}
                             onBlur={() => setValue('')}
