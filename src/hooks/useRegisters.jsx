@@ -13,13 +13,11 @@ export function useRegisters() {
     const { state, dispatch } = useContext(DataContext)
     const { setMessage, setOpenMessage, setSeverity } = useContext(MessageContext)
 
-    const { post, put, destroy } = useApi(REGISTER_URL)
+    const { get, post, put, destroy } = useApi(REGISTER_URL)
 
     const [loadingRegisters, setLoadingRegisters] = useState(true)
     const [open, setOpen] = useState(null)
     const [currentAmount, setCurrentAmount] = useState('')
-
-    const { get } = useApi(REGISTER_URL)
 
     async function getRegisters(params) {
         const { status, data } = await get(params)
@@ -68,7 +66,7 @@ export function useRegisters() {
             setDisabled(false)
             return
         }
-        const { status, data } = open === 'NEW' ? await post(formData) : await put(formData)
+        const { status, data } = open === 'NEW' ? await post(formData) : open === 'EDIT' ? await put(formData) : await put(formData, '/close')
         if (status === 200) {
             if (open === 'NEW') {
                 dispatch({ type: 'REGISTERS', payload: { ...state.registers, data: [data, ...state.registers.data] } })
@@ -84,7 +82,11 @@ export function useRegisters() {
                         ]
                     }
                 })
-                setMessage('Caja cerrada correctamente.')
+                if (open === 'EDIT') {
+                    setMessage('Caja editada correctamente.')
+                } else {
+                    setMessage('Caja cerrada correctamente.')
+                }
             }
             setSeverity('success')
             reset(setOpen)
