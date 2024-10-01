@@ -84,7 +84,7 @@ export function Layout({ children, title }) {
             }
           }}
         >
-          <Box sx={{ display: { xs: 'flex', md: 'none' }, backgroundColor: '#078BCD', height: '100%' }}>
+          <Box sx={{ display: { xs: 'flex', md: 'none' }, backgroundColor: '#6ABA41', height: '100%' }}>
             {menuOptions}
           </Box>
         </Drawer>

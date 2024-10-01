@@ -127,7 +127,7 @@ export function Loans() {
                                     spendings={spendings}
                                 />
                             </Box>
-                            <ModalComponent open={open === 'NEW' || open === 'EDIT'} onClose={handleClose} reduceWidth={900}>
+                            <ModalComponent open={open === 'NEW' || open === 'EDIT'} onClose={handleClose}>
                                 <Typography variant="h6" marginBottom={3}>
                                     {open === 'NEW' && 'Nuevo préstamo'}
                                     {open === 'EDIT' && `Editar préstamo #${formData.id}`}

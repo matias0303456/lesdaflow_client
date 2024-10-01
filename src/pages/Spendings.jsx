@@ -128,7 +128,7 @@ export function Spendings() {
                                         {open === "EDIT" && "Editar gasto"}
                                     </Typography>
                                     <form onChange={handleChange} onSubmit={(e) => handleSubmit(e, validate, formData, reset, setDisabled)}>
-                                        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, width: '60%', m: '0 auto' }}>
+                                        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, width: { xs: '100%', sm: '60%' }, m: '0 auto' }}>
                                             <FormControl>
                                                 <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
                                                     <DatePicker
@@ -190,8 +190,7 @@ export function Spendings() {
                                                 gap: 1,
                                                 justifyContent: 'center',
                                                 margin: '0 auto',
-                                                marginTop: 3,
-                                                width: '50%'
+                                                marginTop: 3
                                             }}>
                                                 <Button type="button" variant="outlined" onClick={handleClose} sx={{ width: '50%' }}>
                                                     Cancelar
