@@ -31,7 +31,7 @@ function App() {
       <MessageProvider>
         <AuthProvider>
           <CssBaseline />
-          <BrowserRouter basename="prestamos-personales">
+          <BrowserRouter basename="moe-group">
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/login" element={<Home />} />

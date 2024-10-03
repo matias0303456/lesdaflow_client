@@ -57,7 +57,7 @@ export function LoginForm({ showLogo }) {
             {showLogo &&
                 <Box sx={{ textAlign: 'center', marginBottom: 1 }}>
                     <Typography variant='h2' mb={3}>
-                        Préstamos Personales
+                        MoeGroup
                     </Typography>
                 </Box>
             }
