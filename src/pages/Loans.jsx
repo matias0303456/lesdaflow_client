@@ -133,6 +133,7 @@ export function Loans() {
                                     {open === 'EDIT' && `Editar préstamo #${formData.id}`}
                                 </Typography>
                                 <LoanForm
+                                    open={open}
                                     handleChange={handleChange}
                                     handleSubmit={handleSubmit}
                                     clients={clients}

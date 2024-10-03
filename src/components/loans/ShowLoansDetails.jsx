@@ -2,16 +2,17 @@
 import { useState } from "react";
 import { Box, Typography } from "@mui/material";
 
+import { usePayments } from "../../hooks/usePayments";
+import { useForm } from "../../hooks/useForm";
+
 import { Accordion, AccordionDetails, AccordionSummary } from "../common/AccordionComponent";
+import { PaymentHeadCells } from "./PaymentHeadCells";
+import { PaymentForm } from "./PaymentForm";
+import { TotalsByMonth } from "./TotalsByMonth";
+import { ModalComponent } from "../common/ModalComponent";
 
 import { filterRowsByMonthAndYear, getLoansMonths, getLoansYears, getPaymentDates } from "../../utils/helpers";
 import { MONTHS } from "../../utils/constants";
-import { PaymentHeadCells } from "./PaymentHeadCells";
-import { usePayments } from "../../hooks/usePayments";
-import { useForm } from "../../hooks/useForm";
-import { ModalComponent } from "../common/ModalComponent";
-import { PaymentForm } from "./PaymentForm";
-import { TotalsByMonth } from "./TotalsByMonth";
 
 export function ShowLoansDetails({
     loans,
@@ -107,7 +108,6 @@ export function ShowLoansDetails({
             }
             <ModalComponent
                 open={open === 'NEW-PAYMENT' || open === 'PAYMENT-DETAILS'}
-                reduceWidth={1000}
                 p={2}
                 onClose={() => reset(setOpen)}
             >

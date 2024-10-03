@@ -2,6 +2,7 @@
 import { useContext } from "react";
 import { Box, Checkbox, Chip, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip } from "@mui/material"
 import { format } from "date-fns"
+import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 
@@ -58,6 +59,21 @@ export function PaymentHeadCells({
                         <TableRow key={row.id}>
                             <TableCell align="center">
                                 <Box sx={{ display: 'flex', gap: 1 }}>
+                                    <Tooltip title="Imprimir PDF">
+                                        <PictureAsPdfIcon
+                                            sx={{ cursor: 'pointer' }}
+                                            onClick={() => window.open(`${REPORT_URL}/prestamo-pdf/${row.id}?token=${auth.access_token}`, '_blank')}
+                                        />
+                                    </Tooltip>
+                                    <Tooltip title="Editar">
+                                        <EditIcon
+                                            sx={{ cursor: 'pointer' }}
+                                            onClick={() => {
+                                                setFormDataLoan(row)
+                                                setOpenLoan('EDIT')
+                                            }}
+                                        />
+                                    </Tooltip>
                                     <Tooltip title="Borrar">
                                         <DeleteIcon
                                             sx={{ cursor: 'pointer' }}
@@ -65,12 +81,6 @@ export function PaymentHeadCells({
                                                 setFormDataLoan(row)
                                                 setOpenLoan('DELETE')
                                             }}
-                                        />
-                                    </Tooltip>
-                                    <Tooltip title="Imprimir PDF">
-                                        <PictureAsPdfIcon
-                                            sx={{ cursor: 'pointer' }}
-                                            onClick={() => window.open(`${REPORT_URL}/prestamo-pdf/${row.id}?token=${auth.access_token}`, '_blank')}
                                         />
                                     </Tooltip>
                                 </Box>
