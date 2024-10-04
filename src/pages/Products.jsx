@@ -54,7 +54,7 @@ export function Products() {
         },
         rules: {
             code: { required: true, maxLength: 55 },
-            details: { required: true, maxLength: 55 },
+            details: { required: true, maxLength: 191 },
             buy_price: { required: true },
             min_stock: { required: true },
             earn: { required: true },
