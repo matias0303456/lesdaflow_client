@@ -44,6 +44,7 @@ export function PaymentForm({
                     {open === 'PAYMENT-DETAILS' && `Editar pago - ${format(new Date(workOn.payment), 'dd/MM/yyyy')}`}
                 </Typography>
                 {open === 'PAYMENT-DETAILS' &&
+                    loans.find(l => l.id === workOn.loan.id).payments[loans.find(l => l.id === workOn.loan.id).payments.length - 1]?.id === formData.id &&
                     <Tooltip title="Eliminar pago">
                         <IconButton onClick={() => setConfirmDelete(true)}>
                             <DeleteIcon />

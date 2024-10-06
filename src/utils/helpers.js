@@ -1,3 +1,5 @@
+import { format, isAfter } from "date-fns"
+
 export function a11yProps(index) {
     return {
         id: `simple-tab-${index}`,
@@ -89,4 +91,15 @@ export function getLoansTotalInterestWithSpendings(total, includeSpendings, spen
     if (!includeSpendings) return total
     const totalSpendings = spendings.reduce((prev, curr) => prev + curr.amount, 0)
     return parseFloat(total - totalSpendings).toFixed(2)
+}
+
+export function getNextPendingPaymentDate(loan) {
+    // Filtrar solo las fechas de pagos que aún no están realizados
+    const pendingPayments = loan.payment_dates
+        .filter(pd => {
+            const paymentExists = loan.payments.find(p => format(new Date(p.date), 'yyyy-MM-dd') === format(new Date(pd), 'yyyy-MM-dd'));
+            return !paymentExists && isAfter(new Date(pd), new Date()); // Filtrar los pagos que no existen y son futuros
+        })
+        .sort((a, b) => new Date(a) - new Date(b)); // Ordenar por fecha más cercana
+    return pendingPayments.length > 0 ? pendingPayments[0] : null; // Devolver la primera fecha de pago pendiente o null si no hay más
 }

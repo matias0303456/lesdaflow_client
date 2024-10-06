@@ -29,7 +29,13 @@ export function usePayments() {
                 const loan = loans.find(l => l.id === data.loan_id)
                 if (open === 'NEW-PAYMENT') {
                     setLoans([
-                        { ...loan, payments: [data, ...loan.payments] },
+                        {
+                            ...loan, payments: [data, ...loan.payments].sort((a, b) => {
+                                if (a.id < b.id) return -1
+                                if (a.id > b.id) return 1
+                                return 0
+                            })
+                        },
                         ...loans.filter(l => l.id !== data.loan_id)
                     ].sort((a, b) => {
                         if (a.id < b.id) return -1
@@ -39,7 +45,13 @@ export function usePayments() {
                     setMessage('Pago creado correctamente.')
                 } else {
                     setLoans([
-                        { ...loan, payments: [data, ...loan.payments.filter(p => p.id !== data.id)] },
+                        {
+                            ...loan, payments: [data, ...loan.payments.filter(p => p.id !== data.id)].sort((a, b) => {
+                                if (a.id < b.id) return -1
+                                if (a.id > b.id) return 1
+                                return 0
+                            })
+                        },
                         ...loans.filter(l => l.id !== data.loan_id)
                     ].sort((a, b) => {
                         if (a.id < b.id) return -1
