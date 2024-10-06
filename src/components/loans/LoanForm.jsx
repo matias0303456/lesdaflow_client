@@ -58,7 +58,7 @@ export function LoanForm({
                             variant="outlined"
                             id="amount"
                             name="amount"
-                            disabled={open === 'EDIT'}
+                            disabled={open === 'EDIT' && (!formData.payments || formData.payments.length > 0)}
                             InputProps={{ inputProps: { step: 0.01 } }}
                             value={formData.amount}
                             onChange={e => handleChange({
@@ -83,7 +83,7 @@ export function LoanForm({
                             variant="outlined"
                             id="interest"
                             name="interest"
-                            disabled={open === 'EDIT'}
+                            disabled={open === 'EDIT' && (!formData.payments || formData.payments.length > 0)}
                             InputProps={{ inputProps: { step: 0.01 } }}
                             value={formData.interest}
                             onChange={e => handleChange({
@@ -108,7 +108,7 @@ export function LoanForm({
                             name="payments_amount"
                             InputProps={{ inputProps: { step: 1 } }}
                             value={formData.payments_amount}
-                            disabled={open === 'EDIT'}
+                            disabled={open === 'EDIT' && (!formData.payments || formData.payments.length > 0)}
                             onChange={e => handleChange({
                                 target: {
                                     name: 'payments_amount',
@@ -129,7 +129,7 @@ export function LoanForm({
                             variant="outlined"
                             id="late_fee"
                             name="late_fee"
-                            disabled={open === 'EDIT'}
+                            disabled={open === 'EDIT' && (!formData.payments || formData.payments.length > 0)}
                             InputProps={{ inputProps: { step: 0.01 } }}
                             value={formData.late_fee}
                             onChange={e => handleChange({
