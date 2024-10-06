@@ -36,17 +36,22 @@ export function Clients() {
             id: '',
             first_name: '',
             last_name: '',
-            document_type: '',
+            document_type: 'DNI',
             document_number: '',
             birth: new Date(Date.now()),
             cell_phone: '',
             local_phone: '',
             email: '',
             address: '',
-            user_id: ''
+            user_id: '',
+            work_place: ''
         },
         rules: {
             first_name: {
+                required: true,
+                maxLength: 55
+            },
+            work_place: {
                 required: true,
                 maxLength: 55
             },
@@ -87,8 +92,16 @@ export function Clients() {
             numeric: false,
             disablePadding: true,
             label: "Cliente",
-            sorter: (row) => `${row.first_name} ${row.last_name}`,
+            sorter: (row) => row.first_name,
             accessor: (row) => `${row.first_name} ${row.last_name}`
+        },
+        {
+            id: "work_place",
+            numeric: false,
+            disablePadding: true,
+            label: "Lug. trabajo",
+            sorter: (row) => row.work_place,
+            accessor: 'work_place'
         },
         {
             id: "document_number",
@@ -133,7 +146,7 @@ export function Clients() {
             label: 'Activo',
             sorter: (row) => row.is_active ? 1 : 0,
             accessor: (row) => (
-                <Box sx={{ textAlign: 'center' }}>
+                <Box sx={{ textAlign: 'start' }}>
                     <FormControlLabel
                         control={<Checkbox />}
                         checked={row.is_active}
@@ -230,7 +243,7 @@ export function Clients() {
                                                     >
                                                         <MenuItem value="DNI">DNI</MenuItem>
                                                         <MenuItem value="LE">LE</MenuItem>
-                                                        <MenuItem value="CUIL">CUIL</MenuItem>
+                                                        <MenuItem value="CUIT">CUIT</MenuItem>
                                                     </Select>
                                                 </FormControl>
                                                 <FormControl sx={{ width: '50%' }}>
@@ -282,10 +295,24 @@ export function Clients() {
                                             <Box sx={{ display: 'flex', gap: 5 }}>
                                                 <FormControl sx={{ width: '50%' }}>
                                                     <InputLabel htmlFor="email">Email</InputLabel>
-                                                    <Input id="email" type="text" name="email" value={formData.email} disabled={open === 'VIEW'} />
+                                                    <Input id="email" type="email" name="email" value={formData.email} disabled={open === 'VIEW'} />
                                                     {errors.email?.type === 'maxLength' &&
                                                         <Typography variant="caption" color="red" marginTop={1}>
                                                             * El email es deamsiado largo.
+                                                        </Typography>
+                                                    }
+                                                </FormControl>
+                                                <FormControl sx={{ width: '50%' }}>
+                                                    <InputLabel htmlFor="work_place">Lug. trabajo *</InputLabel>
+                                                    <Input id="work_place" type="text" name="work_place" value={formData.work_place} disabled={open === 'VIEW'} />
+                                                    {errors.work_place?.type === 'required' &&
+                                                        <Typography variant="caption" color="red" marginTop={1}>
+                                                            * El lugar de trabajo es requerido.
+                                                        </Typography>
+                                                    }
+                                                    {errors.work_place?.type === 'maxLength' &&
+                                                        <Typography variant="caption" color="red" marginTop={1}>
+                                                            * El lugar de trabajo es deamsiado largo.
                                                         </Typography>
                                                     }
                                                 </FormControl>
