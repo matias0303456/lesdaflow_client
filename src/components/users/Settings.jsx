@@ -55,7 +55,7 @@ export function Settings({ defaultData, user, setUser, setValueTab }) {
                         onChange={e => handleChange({
                             target: {
                                 name: 'late_fee',
-                                value: Math.abs(parseInt(e.target.value))
+                                value: Math.abs(parseFloat(e.target.value))
                             }
                         })}
                     />

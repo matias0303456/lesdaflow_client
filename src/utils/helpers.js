@@ -1,4 +1,5 @@
 import { format, isAfter } from "date-fns"
+import { PAYMENT_FREQUENCIES } from "./constants"
 
 export function a11yProps(index) {
     return {
@@ -93,11 +94,14 @@ export function getLoansTotalInterestWithSpendings(total, includeSpendings, spen
     return parseFloat(total - totalSpendings).toFixed(2)
 }
 
-export function getNextPendingPaymentDate(loan) {
+export function getNextPendingPaymentDate(loan, frequency) {
     // Filtrar solo las fechas de pagos que aún no están realizados
     const pendingPayments = loan.payment_dates
         .filter(pd => {
-            const paymentExists = loan.payments.find(p => format(new Date(p.date), 'yyyy-MM-dd') === format(new Date(pd), 'yyyy-MM-dd'));
+            const paymentExists = loan.payments.find(p => {
+                if (frequency === PAYMENT_FREQUENCIES[0]) return new Date(p.date).getMonth() === new Date(pd).getMonth();
+                return format(new Date(p.date), 'yyyy-MM-dd') === format(new Date(pd), 'yyyy-MM-dd')
+            });
             return !paymentExists && isAfter(new Date(pd), new Date()); // Filtrar los pagos que no existen y son futuros
         })
         .sort((a, b) => new Date(a) - new Date(b)); // Ordenar por fecha más cercana

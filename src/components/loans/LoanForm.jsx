@@ -64,7 +64,7 @@ export function LoanForm({
                             onChange={e => handleChange({
                                 target: {
                                     name: 'amount',
-                                    value: Math.abs(parseInt(e.target.value))
+                                    value: Math.abs(parseFloat(e.target.value))
                                 }
                             })}
                         />
@@ -89,7 +89,7 @@ export function LoanForm({
                             onChange={e => handleChange({
                                 target: {
                                     name: 'interest',
-                                    value: Math.abs(parseInt(e.target.value))
+                                    value: Math.abs(parseFloat(e.target.value))
                                 }
                             })}
                         />
@@ -135,7 +135,7 @@ export function LoanForm({
                             onChange={e => handleChange({
                                 target: {
                                     name: 'late_fee',
-                                    value: Math.abs(parseInt(e.target.value))
+                                    value: Math.abs(parseFloat(e.target.value))
                                 }
                             })}
                         />

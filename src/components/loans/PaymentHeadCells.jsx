@@ -55,7 +55,7 @@ export function PaymentHeadCells({
                 </TableHead>
                 <TableBody>
                     {rows.map(row => {
-                        const nextPendingPaymentDate = getNextPendingPaymentDate(row);
+                        const nextPendingPaymentDate = getNextPendingPaymentDate(row, frequency);
 
                         return (
                             <TableRow key={row.id}>

@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import { useEffect, useState } from "react"
-import { Box, Button, FormControl, IconButton, Input, InputLabel, MenuItem, Select, Tooltip, Typography } from "@mui/material"
+import { Box, Button, FormControl, IconButton, Input, InputLabel, MenuItem, Paper, Select, Table, TableBody, TableCell, TableContainer, TableRow, TextField, Tooltip, Typography } from "@mui/material"
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers"
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns"
 import { es } from "date-fns/locale"
@@ -30,11 +30,18 @@ export function PaymentForm({
     const [confirmDelete, setConfirmDelete] = useState(false)
 
     useEffect(() => {
-        setFormData({
-            ...formData,
-            amount: getPaymentAmountWithLateFee(workOn, formData)
-        })
-    }, [formData.date])
+        if (open === 'NEW-PAYMENT') {
+            const payments = workOn.loan.payments
+            const prev_pending = !payments || payments.length === 0 ? 0 : payments[payments.length - 1].pending
+            const total = parseFloat(getPaymentAmountWithLateFee(workOn, formData)) + prev_pending
+            setFormData({
+                ...formData,
+                prev_pending,
+                total: total.toFixed(2),
+                pending: (total - parseFloat(formData.amount.toString().length === 0 ? 0 : formData.amount)).toFixed(2)
+            })
+        }
+    }, [formData.date, formData.amount, workOn.loan, open])
 
     return (
         <>
@@ -101,6 +108,67 @@ export function PaymentForm({
                             </Select>
                         </FormControl>
                     </Box>
+                    <TableContainer component={Paper}>
+                        <Table>
+                            <TableBody>
+                                {open === 'NEW-PAYMENT' &&
+                                    <>
+                                        <TableRow>
+                                            <TableCell>Importe neto</TableCell>
+                                            <TableCell>{`$${getPaymentAmount(workOn.loan)}`}</TableCell>
+                                        </TableRow>
+                                        <TableRow>
+                                            <TableCell>Saldo anterior</TableCell>
+                                            <TableCell>{`$${formData.prev_pending}`}</TableCell>
+                                        </TableRow>
+                                        <TableRow>
+                                            <TableCell>Interés por mora</TableCell>
+                                            <TableCell>{`${workOn.loan.late_fee}%`}</TableCell>
+                                        </TableRow>
+                                    </>
+                                }
+                                <TableRow>
+                                    {open === 'NEW-PAYMENT' ?
+                                        <>
+                                            <TableCell>Total</TableCell>
+                                            <TableCell>{`$${formData.total}`}</TableCell>
+                                        </> :
+                                        <>
+                                            <TableCell>Monto</TableCell>
+                                            <TableCell>{`$${formData.amount}`}</TableCell>
+                                        </>
+                                    }
+                                </TableRow>
+                                {open === 'NEW-PAYMENT' &&
+                                    <>
+                                        <TableRow>
+                                            <TableCell>Paga</TableCell>
+                                            <TableCell>
+                                                <TextField
+                                                    type="number"
+                                                    variant="outlined"
+                                                    id="amount"
+                                                    name="amount"
+                                                    InputProps={{ inputProps: { step: 0.01 } }}
+                                                    value={formData.amount}
+                                                    onChange={e => handleChange({
+                                                        target: {
+                                                            name: 'amount',
+                                                            value: Math.abs(parseFloat(e.target.value))
+                                                        }
+                                                    })}
+                                                />
+                                            </TableCell>
+                                        </TableRow>
+                                        <TableRow>
+                                            <TableCell>Saldo pendiente</TableCell>
+                                            <TableCell>{`$${formData.pending}`}</TableCell>
+                                        </TableRow>
+                                    </>
+                                }
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
                     <FormControl>
                         <InputLabel id="observations">Observaciones</InputLabel>
                         <Input
@@ -116,20 +184,6 @@ export function PaymentForm({
                             </Typography>
                         }
                     </FormControl>
-                    <Box sx={{ display: 'flex', gap: 2, mt: 2 }}>
-                        <FormControl sx={{ width: '33%' }}>
-                            <InputLabel id="amount">Importe</InputLabel>
-                            <Input disabled value={`$${getPaymentAmount(workOn.loan)}`} />
-                        </FormControl>
-                        <FormControl sx={{ width: '33%' }}>
-                            <InputLabel id="amount">Int. mora</InputLabel>
-                            <Input disabled value={`${workOn.loan.late_fee}%`} />
-                        </FormControl>
-                        <FormControl sx={{ width: '33%' }}>
-                            <InputLabel id="amount">Total</InputLabel>
-                            <Input disabled value={`$${formData.amount}`} />
-                        </FormControl>
-                    </Box>
                 </Box>
                 {open === 'PAYMENT-DETAILS' && confirmDelete &&
                     <>

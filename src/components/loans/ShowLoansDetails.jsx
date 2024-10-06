@@ -29,7 +29,10 @@ export function ShowLoansDetails({
         defaultData: {
             id: '',
             loan_id: '',
-            amount: '',
+            amount: 0,
+            total: 0,
+            prev_pending: 0,
+            pending: 0,
             date: new Date(Date.now()),
             type: 'EFECTIVO',
             observations: ''

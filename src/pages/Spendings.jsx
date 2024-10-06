@@ -155,7 +155,7 @@ export function Spendings() {
                                                     onChange={e => handleChange({
                                                         target: {
                                                             name: 'amount',
-                                                            value: Math.abs(parseInt(e.target.value))
+                                                            value: Math.abs(parseFloat(e.target.value))
                                                         }
                                                     })}
                                                 />
