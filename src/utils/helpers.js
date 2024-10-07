@@ -1,4 +1,4 @@
-import { format, isAfter } from "date-fns"
+import { format } from "date-fns"
 import { PAYMENT_FREQUENCIES } from "./constants"
 
 export function a11yProps(index) {
@@ -102,7 +102,7 @@ export function getNextPendingPaymentDate(loan, frequency) {
                 if (frequency === PAYMENT_FREQUENCIES[0]) return new Date(p.date).getMonth() === new Date(pd).getMonth();
                 return format(new Date(p.date), 'yyyy-MM-dd') === format(new Date(pd), 'yyyy-MM-dd')
             });
-            return !paymentExists && isAfter(new Date(pd), new Date()); // Filtrar los pagos que no existen y son futuros
+            return !paymentExists; // Filtrar los pagos que no existen y son futuros
         })
         .sort((a, b) => new Date(a) - new Date(b)); // Ordenar por fecha más cercana
     return pendingPayments.length > 0 ? pendingPayments[0] : null; // Devolver la primera fecha de pago pendiente o null si no hay más

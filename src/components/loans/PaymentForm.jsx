@@ -149,12 +149,12 @@ export function PaymentForm({
                                                     variant="outlined"
                                                     id="amount"
                                                     name="amount"
-                                                    InputProps={{ inputProps: { step: 0.01 } }}
+                                                    InputProps={{ inputProps: { step: 0.01, min: 0.01 } }}
                                                     value={formData.amount}
                                                     onChange={e => handleChange({
                                                         target: {
                                                             name: 'amount',
-                                                            value: Math.abs(parseFloat(e.target.value))
+                                                            value: e.target.value.toString().length === 0 ? 0 : Math.abs(parseFloat(e.target.value))
                                                         }
                                                     })}
                                                 />
