@@ -137,3 +137,9 @@ export function getStockTillDate(row) {
                     return prev + curr.amount
                 }, 0)
 }
+
+export function getNewBalanceAfterPayment(sale, formData) {
+    const result = parseFloat(getSaleDifference(sale).replace('$', '')) - parseFloat(formData.amount)
+    if (isNaN(result)) return getSaleDifference(sale).replace('$', '')
+    return result.toFixed(2)
+}

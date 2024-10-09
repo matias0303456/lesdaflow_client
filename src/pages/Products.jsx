@@ -121,10 +121,6 @@ export function Products() {
     }, [])
 
     useEffect(() => {
-        console.log(products)
-    }, [products])
-
-    useEffect(() => {
         const buy_price = formData.buy_price.toString().length === 0 ? 0 : parseInt(formData.buy_price)
         const earn = formData.earn.toString().length === 0 ? 0 : parseInt(formData.earn)
         setEarnPrice(`$${(buy_price + ((buy_price / 100) * earn)).toFixed(2)}`)

@@ -1,5 +1,5 @@
 import { useContext, useState } from "react";
-import { Box, Button, FormControl, Input, InputLabel, LinearProgress, MenuItem, Select, Typography } from "@mui/material";
+import { Box, Button, FormControl, Input, InputLabel, LinearProgress, MenuItem, Select, TextField, Typography } from "@mui/material";
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
@@ -16,7 +16,7 @@ import { ModalComponent } from "../ModalComponent";
 import { PaymentFilter } from "../filters/PaymentFilter";
 
 import { PAYMENT_URL } from "../../utils/urls";
-import { getSaleDifference, getSaleDifferenceByPayment } from "../../utils/helpers";
+import { getNewBalanceAfterPayment, getSaleDifference, getSaleDifferenceByPayment, getSaleTotal } from "../../utils/helpers";
 
 export function Payments({ sale, setSale, loading, setLoading }) {
 
@@ -27,7 +27,7 @@ export function Payments({ sale, setSale, loading, setLoading }) {
     const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
         defaultData: {
             id: '',
-            amount: '',
+            amount: 0,
             type: 'EFECTIVO',
             observations: '',
             sale_id: sale.id,
@@ -183,17 +183,33 @@ export function Payments({ sale, setSale, loading, setLoading }) {
                                 {open === 'NEW' && 'Nuevo pago'}
                                 {open === 'EDIT' && 'Editar pago'}
                             </Typography>
-                            <form onChange={handleChange} onSubmit={handleSubmit}>
+                            <form onSubmit={handleSubmit}>
                                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-                                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 3 }}>
-                                        <FormControl sx={{ width: '70%' }}>
-                                            <InputLabel htmlFor="amount">Monto</InputLabel>
-                                            <Input
-                                                id="amount"
+                                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-around', gap: 3 }}>
+                                        <Typography sx={{ fontWeight: 'bold' }}>
+                                            Saldo actual: {getSaleDifference(sale)}
+                                        </Typography>
+                                        <FormControl sx={{ width: '30%' }}>
+                                            <TextField
+                                                label="Monto"
                                                 type="number"
                                                 name="amount"
                                                 value={formData.amount}
                                                 disabled={auth.user.role.name !== 'ADMINISTRADOR' && open === 'EDIT'}
+                                                onChange={e => handleChange({
+                                                    target: {
+                                                        name: 'amount',
+                                                        value: parseFloat(e.target.value) <= 0 ? 0 : Math.abs(parseFloat(e.target.value))
+                                                    }
+                                                })}
+                                                InputProps={{
+                                                    inputProps: {
+                                                        step: 0.01,
+                                                    }
+                                                }}
+                                                InputLabelProps={{
+                                                    shrink: true,
+                                                }}
                                             />
                                             {errors.amount?.type === 'required' &&
                                                 <Typography variant="caption" color="red" marginTop={1}>
@@ -201,9 +217,11 @@ export function Payments({ sale, setSale, loading, setLoading }) {
                                                 </Typography>
                                             }
                                         </FormControl>
-                                        <Typography sx={{ width: '30%', fontWeight: 'bold' }}>
-                                            Saldo: {getSaleDifference(sale)}
-                                        </Typography>
+                                        {open === 'NEW' &&
+                                            <Typography sx={{ fontWeight: 'bold' }}>
+                                                Nuevo saldo: {`$${getNewBalanceAfterPayment(sale, formData)}`}
+                                            </Typography>
+                                        }
                                     </Box>
                                     <FormControl>
                                         <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
@@ -241,7 +259,7 @@ export function Payments({ sale, setSale, loading, setLoading }) {
                                     </FormControl>
                                     <FormControl>
                                         <InputLabel htmlFor="observations">Observaciones</InputLabel>
-                                        <Input id="observations" type="text" name="observations" value={formData.observations} />
+                                        <Input id="observations" type="text" name="observations" value={formData.observations} onChange={handleChange} />
                                         {errors.observations?.type === 'maxLength' &&
                                             <Typography variant="caption" color="red" marginTop={1}>
                                                 * Las observaciones son demasiado largas.

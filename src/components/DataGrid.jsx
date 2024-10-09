@@ -384,7 +384,7 @@ export function DataGrid({
     const [order, setOrder] = React.useState(defaultOrder);
     const [orderBy, setOrderBy] = React.useState(defaultOrderBy);
     const [selected, setSelected] = React.useState([]);
-    const [dense, setDense] = React.useState(true);
+    const [dense, setDense] = React.useState(false);
 
     const handleRequestSort = (event, property) => {
         if (disableSorting) return
