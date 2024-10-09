@@ -132,6 +132,10 @@ export function PaymentForm({
                                             <TableCell>Interés por mora</TableCell>
                                             <TableCell>{`${workOn.loan.late_fee_type === 'NOMINAL' ? '$' : ''}${workOn.loan.late_fee}${workOn.loan.late_fee_type === 'PORCENTUAL' ? '%' : ''} / día`}</TableCell>
                                         </TableRow>
+                                        <TableRow>
+                                            <TableCell>Días sin cálculo de mora</TableCell>
+                                            <TableCell>{workOn.loan.no_late_fee_days}</TableCell>
+                                        </TableRow>
                                     </>
                                 }
                                 <TableRow>

@@ -3,6 +3,7 @@ import { Autocomplete, Box, Button, FormControl, Input, InputLabel, MenuItem, Se
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers"
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns"
 import { es } from "date-fns/locale"
+import { useEffect } from "react";
 
 export function LoanForm({
     open,
@@ -17,8 +18,13 @@ export function LoanForm({
     setDisabled,
     handleClose
 }) {
+
+    useEffect(() => {
+        console.log(formData.no_late_fee_days)
+    }, [formData])
+
     return (
-        <form onChange={handleChange} onSubmit={e => handleSubmit(e, formData, validate, reset, setDisabled)}>
+        <form onSubmit={e => handleSubmit(e, formData, validate, reset, setDisabled)}>
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: { xs: 2, sm: 3 } }}>
                 <Box sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', gap: { xs: 2, sm: 1 } }}>
                     <FormControl sx={{ width: { xs: '100%', sm: '32%' } }}>
@@ -156,6 +162,24 @@ export function LoanForm({
                         }
                     </FormControl>
                     <FormControl sx={{ width: { xs: '100%', sm: '32%' } }}>
+                        <TextField
+                            type="number"
+                            label="Días sin cálculo de mora"
+                            variant="outlined"
+                            id="no_late_fee_days"
+                            name="no_late_fee_days"
+                            disabled={open === 'EDIT' && (!formData.payments || formData.payments.length > 0)}
+                            InputProps={{ inputProps: { step: 1 } }}
+                            value={formData.no_late_fee_days}
+                            onChange={e => handleChange({
+                                target: {
+                                    name: 'no_late_fee_days',
+                                    value: Math.abs(parseInt(e.target.value))
+                                }
+                            })}
+                        />
+                    </FormControl>
+                    <FormControl sx={{ width: { xs: '100%', sm: '32%' } }}>
                         <InputLabel id="type-select">Tipo cálculo</InputLabel>
                         <Select
                             labelId="type-select"
@@ -171,20 +195,21 @@ export function LoanForm({
                             <MenuItem value="PORCENTUAL">PORCENTUAL</MenuItem>
                         </Select>
                     </FormControl>
-                    <FormControl sx={{ width: { xs: '100%', sm: '32%' } }}>
-                        <InputLabel id="observations">Observaciones</InputLabel>
-                        <Input
-                            id="observations"
-                            name="observations"
-                            value={formData.observations}
-                        />
-                        {errors.observations?.type === 'maxLength' &&
-                            <Typography variant="caption" color="red" marginTop={1}>
-                                * Las observaciones son demasiado largas.
-                            </Typography>
-                        }
-                    </FormControl>
                 </Box>
+                <FormControl sx={{ width: '100%' }}>
+                    <InputLabel id="observations">Observaciones</InputLabel>
+                    <Input
+                        id="observations"
+                        name="observations"
+                        value={formData.observations}
+                        onChange={handleChange}
+                    />
+                    {errors.observations?.type === 'maxLength' &&
+                        <Typography variant="caption" color="red" marginTop={1}>
+                            * Las observaciones son demasiado largas.
+                        </Typography>
+                    }
+                </FormControl>
                 <Box sx={{ display: 'flex', gap: 1, justifyContent: 'center', mt: 3 }}>
                     <Button
                         type="button"
