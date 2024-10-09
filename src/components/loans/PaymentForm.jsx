@@ -28,11 +28,13 @@ export function PaymentForm({
 }) {
 
     const [confirmDelete, setConfirmDelete] = useState(false)
+    const [lastObs, setLastObs] = useState('')
 
     useEffect(() => {
         if (open === 'NEW-PAYMENT') {
             const payments = workOn.loan.payments
-            const prev_pending = !payments || payments.length === 0 ? 0 : payments[payments.length - 1].pending
+            const lastPayment = payments[payments.length - 1]
+            const prev_pending = !payments || payments.length === 0 ? 0 : lastPayment.pending
             const total = parseFloat(getPaymentAmountWithLateFee(workOn, formData)) + prev_pending
             setFormData({
                 ...formData,
@@ -40,6 +42,7 @@ export function PaymentForm({
                 total: total.toFixed(2),
                 pending: (total - parseFloat(formData.amount.toString().length === 0 ? 0 : formData.amount)).toFixed(2)
             })
+            setLastObs(lastPayment.observations)
         }
     }, [formData.date, formData.amount, workOn.loan, open])
 
@@ -122,6 +125,10 @@ export function PaymentForm({
                                             <TableCell>{`$${formData.prev_pending}`}</TableCell>
                                         </TableRow>
                                         <TableRow>
+                                            <TableCell>Obs. pago anterior</TableCell>
+                                            <TableCell>{lastObs}</TableCell>
+                                        </TableRow>
+                                        <TableRow>
                                             <TableCell>Interés por mora</TableCell>
                                             <TableCell>{`${workOn.loan.late_fee}%`}</TableCell>
                                         </TableRow>
@@ -149,14 +156,19 @@ export function PaymentForm({
                                                     variant="outlined"
                                                     id="amount"
                                                     name="amount"
-                                                    InputProps={{ inputProps: { step: 0.01, min: 0.01 } }}
-                                                    value={formData.amount}
-                                                    onChange={e => handleChange({
-                                                        target: {
-                                                            name: 'amount',
-                                                            value: e.target.value.toString().length === 0 ? 0 : Math.abs(parseFloat(e.target.value))
+                                                    InputProps={{
+                                                        inputProps: {
+                                                            step: 0.01,
+                                                            min: 0.01,
+                                                            max: formData.total ?? 0
                                                         }
-                                                    })}
+                                                    }}
+                                                    value={formData.amount}
+                                                    onChange={e => {
+                                                        let value = e.target.value.toString().length === 0 ? 0 : Math.abs(parseFloat(e.target.value))
+                                                        if (value > formData.total) value = formData.total
+                                                        handleChange({ target: { name: 'amount', value } })
+                                                    }}
                                                 />
                                             </TableCell>
                                         </TableRow>
