@@ -89,7 +89,10 @@ export function Sales() {
     useEffect(() => {
         const currentClient = state.clients.data.find(c => c.id === parseInt(formData.client_id))
         const currentClientSales = state.sales.data.filter(s => s.client_id === currentClient?.id)
-        const someSaleIsPast = currentClientSales.some(s => s.delivered_at && getDeliveredDeadline(s) < new Date(Date.now()))
+        const someSaleIsPast = currentClientSales.some(s =>
+            getDeliveredDeadline(s) < new Date(Date.now()) &&
+            parseFloat(getSaleDifference(s).replace('$', '')) > 0
+        )
         setIsBlocked(currentClient?.is_blocked || someSaleIsPast)
     }, [formData.client_id])
 

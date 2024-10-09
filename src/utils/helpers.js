@@ -145,6 +145,7 @@ export function saleIsPrepared(sale) {
 }
 
 export function getDeliveredDeadline(sale) {
+    if (!sale.delivered_at) return new Date(Date.now())
     const delivered = new Date(sale.delivered_at)
     delivered.setDate(delivered.getDate() + 20)
     return delivered
