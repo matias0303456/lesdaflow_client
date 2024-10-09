@@ -75,7 +75,7 @@ export function useSales() {
                     const currentClient = state.clients.data.find(c => c.id === parseInt(formData.client_id))
                     const currentClientSales = state.sales.data.filter(s => s.client_id === currentClient?.id)
                     const someSaleIsPast = currentClientSales.some(s => deadlineIsPast(s))
-                    if (!currentClient?.isBlocked && someSaleIsPast) toggleBlocked({ ...currentClient, is_blocked_: true })
+                    if (!currentClient?.isBlocked && someSaleIsPast) toggleBlocked({ ...currentClient, is_blocked: true })
                 } else {
                     dispatch({
                         type: 'SALES',

@@ -180,6 +180,7 @@ export function SaleForm({
                                         control={<Checkbox disabled={open === 'VIEW' || (open === 'EDIT' && auth?.user.role !== 'ADMINISTRADOR')} />}
                                         label="Cuenta Corriente"
                                         checked={formData.type === 'CUENTA_CORRIENTE'}
+                                        disabled={saleProducts.length > 0}
                                         onChange={e => {
                                             if (e.target.checked) {
                                                 setFormData({
@@ -194,6 +195,7 @@ export function SaleForm({
                                         control={<Checkbox disabled={open === 'VIEW' || (open === 'EDIT' && auth?.user.role !== 'ADMINISTRADOR')} />}
                                         label="Contado"
                                         checked={formData.type === 'CONTADO'}
+                                        disabled={saleProducts.length > 0}
                                         onChange={e => {
                                             if (e.target.checked) {
                                                 setFormData({
@@ -207,6 +209,7 @@ export function SaleForm({
                                         control={<Checkbox disabled={open === 'VIEW' || (open === 'EDIT' && auth?.user.role !== 'ADMINISTRADOR')} />}
                                         label="Poxipol"
                                         checked={formData.type === 'POXIPOL'}
+                                        disabled={saleProducts.length > 0}
                                         onChange={e => {
                                             if (e.target.checked) {
                                                 setFormData({
