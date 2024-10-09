@@ -42,7 +42,7 @@ export function PaymentForm({
                 total: total.toFixed(2),
                 pending: (total - parseFloat(formData.amount.toString().length === 0 ? 0 : formData.amount)).toFixed(2)
             })
-            setLastObs(lastPayment.observations)
+            setLastObs(lastPayment?.observations ?? '')
         }
     }, [formData.date, formData.amount, workOn.loan, open])
 
@@ -99,7 +99,7 @@ export function PaymentForm({
                                 labelId="type-select"
                                 id="type"
                                 value={formData.type}
-                                label="Proveedor"
+                                label="Tipo"
                                 name="type"
                                 sx={{ width: '100%' }}
                                 disabled={confirmDelete}
@@ -130,7 +130,7 @@ export function PaymentForm({
                                         </TableRow>
                                         <TableRow>
                                             <TableCell>Interés por mora</TableCell>
-                                            <TableCell>{`${workOn.loan.late_fee}%`}</TableCell>
+                                            <TableCell>{`${workOn.loan.late_fee_type === 'NOMINAL' ? '$' : ''}${workOn.loan.late_fee}${workOn.loan.late_fee_type === 'PORCENTUAL' ? '%' : ''} / día`}</TableCell>
                                         </TableRow>
                                     </>
                                 }

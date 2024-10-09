@@ -46,6 +46,7 @@ export function Loans() {
             interest: '',
             date: new Date(Date.now()),
             late_fee: '',
+            late_fee_type: 'NOMINAL',
             payments_amount: 1,
             payments_frequency: '',
             observations: ''

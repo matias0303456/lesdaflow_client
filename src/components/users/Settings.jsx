@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { Box, Button, FormControl, TextField } from "@mui/material"
+import { Box, Button, FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material"
 
 import { useForm } from "../../hooks/useForm"
 import { useQuery } from "../../hooks/useQuery"
@@ -43,7 +43,7 @@ export function Settings({ defaultData, user, setUser, setValueTab }) {
     return (
         <form onSubmit={handleSubmit}>
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: { xs: 3, md: 1 } }}>
-                <FormControl sx={{ width: { xs: '100%', md: '23%' } }}>
+                <FormControl sx={{ width: { xs: '100%', md: '23%' }, mb: 1 }}>
                     <TextField
                         type="number"
                         label="Interés por mora"
@@ -59,6 +59,21 @@ export function Settings({ defaultData, user, setUser, setValueTab }) {
                             }
                         })}
                     />
+                </FormControl>
+                <FormControl sx={{ width: { xs: '100%', md: '23%' } }}>
+                    <InputLabel id="type-select">Tipo</InputLabel>
+                    <Select
+                        labelId="type-select"
+                        id="type"
+                        label="Tipo"
+                        value={formData.late_fee_type}
+                        name="late_fee_type"
+                        sx={{ width: '100%' }}
+                        onChange={handleChange}
+                    >
+                        <MenuItem value="NOMINAL">NOMINAL</MenuItem>
+                        <MenuItem value="PORCENTUAL">PORCENTUAL</MenuItem>
+                    </Select>
                 </FormControl>
             </Box>
             <FormControl

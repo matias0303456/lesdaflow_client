@@ -66,6 +66,10 @@ export function getPaymentAmountWithLateFee(workOn, formData) {
     const diffMillisecs = end - start
     const diff = diffMillisecs / (1000 * 60 * 60 * 24)
     const diffDays = Math.abs(Math.round(diff))
+    if (loan.late_fee_type === 'NOMINAL') {
+        if (diffDays === 0) return paymentAmount.toFixed(2)
+        return (paymentAmount + (diffDays * loan.late_fee)).toFixed(2)
+    }
     const iterable = Array.from({ length: diffDays })
     const totalLateFee = iterable.reduce(day => day + ((paymentAmount / 100) * loan.late_fee), 0)
     return parseFloat(paymentAmount + totalLateFee).toFixed(2)

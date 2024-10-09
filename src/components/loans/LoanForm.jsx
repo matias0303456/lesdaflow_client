@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { Autocomplete, Box, Button, FormControl, Input, InputLabel, TextField, Typography } from "@mui/material";
+import { Autocomplete, Box, Button, FormControl, Input, InputLabel, MenuItem, Select, TextField, Typography } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers"
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns"
 import { es } from "date-fns/locale"
@@ -123,6 +123,16 @@ export function LoanForm({
                         }
                     </FormControl>
                     <FormControl sx={{ width: { xs: '100%', sm: '32%' } }}>
+                        <InputLabel id="payments_frequency">Frecuencia pagos</InputLabel>
+                        <Input
+                            type="text"
+                            disabled
+                            value={formData.payments_frequency}
+                        />
+                    </FormControl>
+                </Box>
+                <Box sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', gap: { xs: 2, sm: 1 } }}>
+                    <FormControl sx={{ width: { xs: '100%', sm: '32%' } }}>
                         <TextField
                             type="number"
                             label="Interés por mora"
@@ -145,17 +155,23 @@ export function LoanForm({
                             </Typography>
                         }
                     </FormControl>
-                </Box>
-                <Box sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', gap: { xs: 2, sm: 1 } }}>
                     <FormControl sx={{ width: { xs: '100%', sm: '32%' } }}>
-                        <InputLabel id="payments_frequency">Frecuencia pagos</InputLabel>
-                        <Input
-                            type="text"
-                            disabled
-                            value={formData.payments_frequency}
-                        />
+                        <InputLabel id="type-select">Tipo cálculo</InputLabel>
+                        <Select
+                            labelId="type-select"
+                            id="type"
+                            label="Tipo cálculo"
+                            disabled={open === 'EDIT' && (!formData.payments || formData.payments.length > 0)}
+                            value={formData.late_fee_type}
+                            name="late_fee_type"
+                            sx={{ width: '100%' }}
+                            onChange={handleChange}
+                        >
+                            <MenuItem value="NOMINAL">NOMINAL</MenuItem>
+                            <MenuItem value="PORCENTUAL">PORCENTUAL</MenuItem>
+                        </Select>
                     </FormControl>
-                    <FormControl sx={{ width: { xs: '100%', sm: '65%' } }}>
+                    <FormControl sx={{ width: { xs: '100%', sm: '32%' } }}>
                         <InputLabel id="observations">Observaciones</InputLabel>
                         <Input
                             id="observations"
