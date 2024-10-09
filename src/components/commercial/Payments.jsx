@@ -158,11 +158,9 @@ export function Payments({ sale, setSale, loading, setLoading }) {
     ]
 
     return (
-        <>
+        <Box sx={{ width: '100%' }}>
             {disabled || loading ?
-                <Box sx={{ width: '100%' }}>
-                    <LinearProgress />
-                </Box> :
+                <LinearProgress /> :
                 <>
                     <PaymentFilter sale={sale} setSale={setSale} />
                     <DataGrid
@@ -292,6 +290,6 @@ export function Payments({ sale, setSale, loading, setLoading }) {
                     </DataGrid>
                 </>
             }
-        </>
+        </Box>
     )
 }
