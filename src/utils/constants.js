@@ -13,7 +13,7 @@ export const STATUS_MESSAGES = {
     TOKEN_REVOKED: 'Token revocado.'
 }
 
-export const PAYMENT_FREQUENCIES = ['MENSUAL', 'QUINCENAL', 'SEMANAL']
+export const PAYMENT_FREQUENCIES = ['MENSUAL', 'QUINCENAL', 'SEMANAL', 'LIBRE']
 
 export const MONTHS = [
     'ENERO',

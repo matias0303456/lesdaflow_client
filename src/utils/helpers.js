@@ -1,4 +1,5 @@
 import { format } from "date-fns"
+
 import { PAYMENT_FREQUENCIES } from "./constants"
 
 export function a11yProps(index) {
@@ -20,18 +21,19 @@ export function getLoansMonths(loansWithPaymentDates) {
     return Array.from(set).sort((a, b) => a - b)
 }
 
-export function getPaymentDates(startDate, paymentsAmount, frequency) {
+export function getPaymentDates(loan, frequency) {
+    if (frequency === PAYMENT_FREQUENCIES[3]) return loan.payments.map(p => new Date(p.date).toISOString().split('T')[0])
     const paymentDates = []
-    for (let i = 1; i <= paymentsAmount; i++) {
-        const newDate = new Date(startDate)
+    for (let i = 1; i <= loan.payments_amount; i++) {
+        const newDate = new Date(loan.date)
         switch (frequency) {
-            case 'MENSUAL':
+            case PAYMENT_FREQUENCIES[0]:
                 newDate.setMonth(newDate.getMonth() + i)
                 break
-            case 'SEMANAL':
+            case PAYMENT_FREQUENCIES[2]:
                 newDate.setDate(newDate.getDate() + i * 7)
                 break
-            case 'QUINCENAL':
+            case PAYMENT_FREQUENCIES[1]:
                 newDate.setDate(newDate.getDate() + i * 15)
                 break
             default:

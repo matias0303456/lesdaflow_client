@@ -57,10 +57,7 @@ export function ShowLoansDetails({
         setExpanded(newExpanded ? panel : false)
     }
 
-    const loansWithPaymentDates = loans.map(l => ({
-        ...l,
-        payment_dates: getPaymentDates(l.date, l.payments_amount, frequency)
-    }))
+    const loansWithPaymentDates = loans.map(l => ({ ...l, payment_dates: getPaymentDates(l, frequency) }))
     const loansYears = getLoansYears(loansWithPaymentDates)
 
     return (

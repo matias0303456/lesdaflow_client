@@ -3,7 +3,8 @@ import { Autocomplete, Box, Button, FormControl, Input, InputLabel, MenuItem, Se
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers"
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns"
 import { es } from "date-fns/locale"
-import { useEffect } from "react";
+
+import { PAYMENT_FREQUENCIES } from "../../utils/constants";
 
 export function LoanForm({
     open,
@@ -18,11 +19,6 @@ export function LoanForm({
     setDisabled,
     handleClose
 }) {
-
-    useEffect(() => {
-        console.log(formData.no_late_fee_days)
-    }, [formData])
-
     return (
         <form onSubmit={e => handleSubmit(e, formData, validate, reset, setDisabled)}>
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: { xs: 2, sm: 3 } }}>
@@ -114,7 +110,7 @@ export function LoanForm({
                             name="payments_amount"
                             InputProps={{ inputProps: { step: 1 } }}
                             value={formData.payments_amount}
-                            disabled={open === 'EDIT' && (!formData.payments || formData.payments.length > 0)}
+                            disabled={(open === 'EDIT' && (!formData.payments || formData.payments.length > 0)) || formData.payments_frequency === PAYMENT_FREQUENCIES[3]}
                             onChange={e => handleChange({
                                 target: {
                                     name: 'payments_amount',
