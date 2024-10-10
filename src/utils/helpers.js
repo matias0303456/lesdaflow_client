@@ -30,11 +30,11 @@ export function getPaymentDates(loan, frequency) {
             case PAYMENT_FREQUENCIES[0]:
                 newDate.setMonth(newDate.getMonth() + i)
                 break
-            case PAYMENT_FREQUENCIES[2]:
-                newDate.setDate(newDate.getDate() + i * 7)
-                break
             case PAYMENT_FREQUENCIES[1]:
                 newDate.setDate(newDate.getDate() + i * 15)
+                break
+            case PAYMENT_FREQUENCIES[2]:
+                newDate.setDate(newDate.getDate() + i * 7)
                 break
             default:
                 throw new Error('Frecuencia de pagos no soportada')

@@ -1,8 +1,11 @@
 /* eslint-disable react/prop-types */
+import { useEffect, useState } from "react";
 import { Autocomplete, Box, Button, FormControl, Input, InputLabel, MenuItem, Select, TextField, Typography } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers"
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns"
 import { es } from "date-fns/locale"
+
+import { FreeLoanPaymentsAbm } from "./FreeLoanPaymentsAbm";
 
 import { PAYMENT_FREQUENCIES } from "../../utils/constants";
 
@@ -12,6 +15,7 @@ export function LoanForm({
     handleSubmit,
     clients,
     formData,
+    setFormData,
     errors,
     validate,
     reset,
@@ -19,6 +23,19 @@ export function LoanForm({
     setDisabled,
     handleClose
 }) {
+
+    const [payments, setPayments] = useState([])
+
+    useEffect(() => {
+        if (formData.payments_frequency === PAYMENT_FREQUENCIES[3]) {
+            setFormData({
+                ...formData,
+                payments_amount: payments.length,
+                payments
+            })
+        }
+    }, [payments, formData.payments_frequency])
+
     return (
         <form onSubmit={e => handleSubmit(e, formData, validate, reset, setDisabled)}>
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: { xs: 2, sm: 3 } }}>
@@ -206,6 +223,12 @@ export function LoanForm({
                         </Typography>
                     }
                 </FormControl>
+                {formData.payments_frequency === PAYMENT_FREQUENCIES[3] &&
+                    <FreeLoanPaymentsAbm
+                        payments={payments}
+                        setPayments={setPayments}
+                    />
+                }
                 <Box sx={{ display: 'flex', gap: 1, justifyContent: 'center', mt: 3 }}>
                     <Button
                         type="button"
@@ -218,7 +241,7 @@ export function LoanForm({
                     <Button
                         type="submit"
                         variant="contained"
-                        disabled={disabled}
+                        disabled={disabled || (formData.payments_frequency === PAYMENT_FREQUENCIES[3] && payments.length === 0)}
                         sx={{ width: { xs: '50%', sm: '35%' }, color: '#FFF' }}
                     >
                         Confirmar

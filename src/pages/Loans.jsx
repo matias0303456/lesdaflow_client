@@ -140,6 +140,7 @@ export function Loans() {
                                     handleSubmit={handleSubmit}
                                     clients={clients}
                                     formData={formData}
+                                    setFormData={setFormData}
                                     errors={errors}
                                     validate={validate}
                                     reset={reset}
