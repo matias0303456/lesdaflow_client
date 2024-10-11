@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { useContext, useEffect, useState } from "react"
 import { Autocomplete, Box, Button, Checkbox, FormControl, FormControlLabel, Input, InputLabel, Tab, Tabs, TextField, Typography } from "@mui/material"
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers"
@@ -180,7 +181,7 @@ export function SaleForm({
                                         control={<Checkbox disabled={open === 'VIEW' || (open === 'EDIT' && auth?.user.role !== 'ADMINISTRADOR')} />}
                                         label="Cuenta Corriente"
                                         checked={formData.type === 'CUENTA_CORRIENTE'}
-                                        disabled={saleProducts.length > 0}
+                                        disabled={saleProducts.length > 0 && auth?.user.role !== 'ADMINISTRADOR' && formData.type !== 'CUENTA_CORRIENTE' && formData.type !== 'CONTADO'}
                                         onChange={e => {
                                             if (e.target.checked) {
                                                 setFormData({
@@ -195,7 +196,7 @@ export function SaleForm({
                                         control={<Checkbox disabled={open === 'VIEW' || (open === 'EDIT' && auth?.user.role !== 'ADMINISTRADOR')} />}
                                         label="Contado"
                                         checked={formData.type === 'CONTADO'}
-                                        disabled={saleProducts.length > 0}
+                                        disabled={saleProducts.length > 0 && auth?.user.role !== 'ADMINISTRADOR' && formData.type !== 'CUENTA_CORRIENTE' && formData.type !== 'CONTADO'}
                                         onChange={e => {
                                             if (e.target.checked) {
                                                 setFormData({
@@ -209,7 +210,7 @@ export function SaleForm({
                                         control={<Checkbox disabled={open === 'VIEW' || (open === 'EDIT' && auth?.user.role !== 'ADMINISTRADOR')} />}
                                         label="Poxipol"
                                         checked={formData.type === 'POXIPOL'}
-                                        disabled={saleProducts.length > 0}
+                                        disabled={saleProducts.length > 0 && auth?.user.role !== 'ADMINISTRADOR'}
                                         onChange={e => {
                                             if (e.target.checked) {
                                                 setFormData({
