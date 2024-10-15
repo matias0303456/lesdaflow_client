@@ -98,15 +98,12 @@ export function PaymentHeadCells({
                                 <TableCell align="center">{row.late_fee}</TableCell>
                                 <TableCell align="center">{row.observations}</TableCell>
                                 {
-                                    columns[frequency].map(i => {
+                                    columns[frequency].map((i, cIdx) => {
                                         const paymentCorresponds = row.payment_dates.find(pd => {
                                             if (frequency === PAYMENT_FREQUENCIES[0]) return new Date(pd).getMonth() === i;
                                             return format(new Date(pd), 'dd/MM/yyyy') === i;
                                         });
-                                        const paymentExists = row.payments.find(p => {
-                                            if (frequency === PAYMENT_FREQUENCIES[0]) return new Date(p.date).getMonth() === i;
-                                            return format(new Date(p.date), 'dd/MM/yyyy') === i;
-                                        });
+                                        const paymentExists = row.payments.find((_, pIdx) => cIdx === pIdx);
                                         const isNextPendingPayment = paymentCorresponds && nextPendingPaymentDate && paymentCorresponds === nextPendingPaymentDate;
 
                                         return (
