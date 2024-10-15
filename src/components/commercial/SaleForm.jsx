@@ -309,7 +309,7 @@ export function SaleForm({
                                 <Button
                                     type="submit"
                                     variant="contained"
-                                    disabled={disabled || (isBlocked && open === 'NEW' || open === 'CONVERT')}
+                                    disabled={disabled || (isBlocked && (open === 'NEW' || open === 'CONVERT'))}
                                     sx={{ width: '50%' }}
                                 >
                                     {confirmed ? 'Guardar' : 'Confirmar'}
