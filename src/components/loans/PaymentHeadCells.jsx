@@ -9,7 +9,7 @@ import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import { AuthContext } from "../../providers/AuthProvider";
 
 import { MONTHS, PAYMENT_FREQUENCIES } from "../../utils/constants";
-import { getLoanTotal, getNextPendingPaymentDate, getPaymentAmount } from "../../utils/helpers";
+import { getLoanTotal, getPaymentAmount } from "../../utils/helpers";
 import { REPORT_URL } from "../../utils/urls";
 
 export function PaymentHeadCells({
@@ -56,8 +56,6 @@ export function PaymentHeadCells({
                 </TableHead>
                 <TableBody>
                     {rows.map(row => {
-                        const nextPendingPaymentDate = getNextPendingPaymentDate(row, frequency);
-
                         return (
                             <TableRow key={row.id}>
                                 <TableCell align="center">
@@ -104,7 +102,7 @@ export function PaymentHeadCells({
                                             return format(new Date(pd), 'dd/MM/yyyy') === i;
                                         });
                                         const paymentExists = row.payments.find((_, pIdx) => cIdx === pIdx);
-                                        const isNextPendingPayment = paymentCorresponds && nextPendingPaymentDate && paymentCorresponds === nextPendingPaymentDate;
+                                        const isNextPendingPayment = row.payment_dates.indexOf(paymentCorresponds) === row.payments.length
 
                                         return (
                                             <TableCell key={i} align="center">
@@ -122,7 +120,7 @@ export function PaymentHeadCells({
                                                         ) : (
                                                             <Checkbox
                                                                 checked={false}
-                                                                disabled={!isNextPendingPayment} // Solo habilitar el checkbox del próximo pago faltante
+                                                                disabled={!isNextPendingPayment}
                                                                 onClick={() => {
                                                                     setWorkOn({ loan: row, payment: paymentCorresponds });
                                                                     setFormData({
