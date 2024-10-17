@@ -33,7 +33,8 @@ export function Loans() {
         setValueTab,
         handleSubmit,
         includeSpendings,
-        setIncludeSpendings
+        setIncludeSpendings,
+        handleDeleteFreeLoanPaymentDate
     } = useLoans()
     const { loadingClients, getClients, clients } = useClients()
     const { loadingUser, getUser, user } = useUsers()
@@ -147,6 +148,7 @@ export function Loans() {
                                     disabled={disabled}
                                     setDisabled={setDisabled}
                                     handleClose={handleClose}
+                                    handleDeleteFreeLoanPaymentDate={handleDeleteFreeLoanPaymentDate}
                                 />
                             </ModalComponent>
                             <ModalComponent open={open === 'DELETE'} onClose={handleClose} reduceWidth={900}>

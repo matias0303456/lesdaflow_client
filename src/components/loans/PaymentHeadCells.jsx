@@ -29,7 +29,13 @@ export function PaymentHeadCells({
         [PAYMENT_FREQUENCIES[0]]: Array.from(new Set(datesSet.map(ds => new Date(ds).getMonth()))),
         [PAYMENT_FREQUENCIES[1]]: Array.from(new Set(datesSet.map(ds => format(new Date(ds), 'dd/MM/yyyy')))),
         [PAYMENT_FREQUENCIES[2]]: Array.from(new Set(datesSet.map(ds => format(new Date(ds), 'dd/MM/yyyy')))),
-        [PAYMENT_FREQUENCIES[3]]: Array.from(new Set(datesSet.map(ds => format(new Date(ds), 'dd/MM/yyyy'))))
+        [PAYMENT_FREQUENCIES[3]]: Array.from(new Set(datesSet.map(ds => ds.split('-').reverse().join('/')).sort((a, b) => {
+            const [diaA, mesA, añoA] = a.split('/').map(Number)
+            const [diaB, mesB, añoB] = b.split('/').map(Number)
+            const fechaA = new Date(añoA, mesA - 1, diaA)
+            const fechaB = new Date(añoB, mesB - 1, diaB)
+            return fechaA - fechaB
+        })))
     };
 
     return (

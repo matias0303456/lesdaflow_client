@@ -83,6 +83,31 @@ export function useLoans() {
         reset(setOpen)
     }
 
+    async function handleDeleteFreeLoanPaymentDate(formData) {
+        const { status, data } = await handleQuery({
+            url: `${LOAN_URL}/payment-date/${formData.id}`,
+            method: 'DELETE'
+        })
+        if (status === STATUS_CODES.OK) {
+            const loan = loans.find(l => l.id === data.loan_id)
+            setLoans([
+                { ...loan, free_loan_payment_dates: [...loan.free_loan_payment_dates.filter(p => p.id !== data.id)] },
+                ...loans.filter(l => l.id !== data.loan_id)
+            ].sort((a, b) => {
+                if (a.id < b.id) return -1
+                if (a.id > b.id) return 1
+                return 0
+            }))
+            setMessage('Fecha eliminada correctamente.')
+            setSeverity('success')
+        } else {
+            setMessage(data.message)
+            setSeverity('error')
+        }
+        setOpenMessage(true)
+        setOpen(null)
+    }
+
     return {
         loadingLoans,
         setLoadingLoans,
@@ -96,6 +121,7 @@ export function useLoans() {
         valueTab,
         setValueTab,
         includeSpendings,
-        setIncludeSpendings
+        setIncludeSpendings,
+        handleDeleteFreeLoanPaymentDate
     }
 }

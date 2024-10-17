@@ -21,17 +21,24 @@ export function LoanForm({
     reset,
     disabled,
     setDisabled,
-    handleClose
+    handleClose,
+    handleDeleteFreeLoanPaymentDate
 }) {
 
     const [payments, setPayments] = useState([])
+
+    useEffect(() => {
+        if (open === 'EDIT' && formData.payments_frequency === PAYMENT_FREQUENCIES[3]) {
+            setPayments(formData.free_loan_payment_dates)
+        }
+    }, [open])
 
     useEffect(() => {
         if (formData.payments_frequency === PAYMENT_FREQUENCIES[3]) {
             setFormData({
                 ...formData,
                 payments_amount: payments.length,
-                payments
+                payment_dates: payments
             })
         }
     }, [payments, formData.payments_frequency])
@@ -227,6 +234,9 @@ export function LoanForm({
                     <FreeLoanPaymentsAbm
                         payments={payments}
                         setPayments={setPayments}
+                        formData={formData}
+                        open={open}
+                        handleDeleteFreeLoanPaymentDate={handleDeleteFreeLoanPaymentDate}
                     />
                 }
                 <Box sx={{ display: 'flex', gap: 1, justifyContent: 'center', mt: 3 }}>

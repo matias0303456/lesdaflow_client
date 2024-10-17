@@ -20,7 +20,9 @@ export function getLoansMonths(loansWithPaymentDates) {
 }
 
 export function getPaymentDates(loan, frequency) {
-    if (frequency === PAYMENT_FREQUENCIES[3]) return loan.payments.map(p => new Date(p.date).toISOString().split('T')[0])
+    if (frequency === PAYMENT_FREQUENCIES[3]) {
+        return loan.free_loan_payment_dates.map(d => new Date(d.date).toISOString().split('T')[0])
+    }
     const paymentDates = []
     for (let i = 1; i <= loan.payments_amount; i++) {
         const newDate = new Date(loan.date)
