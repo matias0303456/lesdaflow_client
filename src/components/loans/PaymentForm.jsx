@@ -50,7 +50,7 @@ export function PaymentForm({
         <>
             <Box sx={{ display: 'flex', alignItems: 'center', mb: 3, gap: 1 }}>
                 <Typography variant="h6">
-                    {open === 'NEW-PAYMENT' && `Nuevo pago - ${format(formData.date, 'dd/MM/yyyy')}`}
+                    {open === 'NEW-PAYMENT' && `Nuevo pago - ${format(new Date(workOn.payment + 'T00:00:00'), 'dd/MM/yyyy')}`}
                     {open === 'PAYMENT-DETAILS' && `Editar pago - ${format(new Date(formData.date), 'dd/MM/yyyy')}`}
                 </Typography>
                 {open === 'PAYMENT-DETAILS' &&
@@ -130,7 +130,9 @@ export function PaymentForm({
                                         </TableRow>
                                         <TableRow>
                                             <TableCell>Interés por mora</TableCell>
-                                            <TableCell>{`${workOn.loan.late_fee_type === 'NOMINAL' ? '$' : ''}${workOn.loan.late_fee}${workOn.loan.late_fee_type === 'PORCENTUAL' ? '%' : ''} / día`}</TableCell>
+                                            <TableCell>
+                                                {`$${(parseFloat(formData.total) - parseFloat(getPaymentAmount(workOn.loan))).toFixed(2)} (${workOn.loan.late_fee_type === 'NOMINAL' ? '$' : ''}${workOn.loan.late_fee}${workOn.loan.late_fee_type === 'PORCENTUAL' ? '%' : ''} / día)`}
+                                            </TableCell>
                                         </TableRow>
                                         <TableRow>
                                             <TableCell>Días sin cálculo de mora</TableCell>

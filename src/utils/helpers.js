@@ -62,7 +62,7 @@ export function getPaymentAmount(loan) {
 export function getPaymentAmountWithLateFee(workOn, formData) {
     const { loan, payment } = workOn
     const paymentAmount = parseFloat(getPaymentAmount(loan))
-    const start = new Date(payment)
+    const start = new Date(payment + 'T00:00:00')
     const end = new Date(formData.date)
     if (end < start) return paymentAmount.toFixed(2)
     const diffMillisecs = end - start

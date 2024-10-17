@@ -26,10 +26,24 @@ export function PaymentHeadCells({
 
     const datesSet = Array.from(new Set(rows.flatMap(r => r.payment_dates)));
     const columns = {
-        [PAYMENT_FREQUENCIES[0]]: Array.from(new Set(datesSet.map(ds => new Date(ds).getMonth()))),
-        [PAYMENT_FREQUENCIES[1]]: Array.from(new Set(datesSet.map(ds => format(new Date(ds), 'dd/MM/yyyy')))),
-        [PAYMENT_FREQUENCIES[2]]: Array.from(new Set(datesSet.map(ds => format(new Date(ds), 'dd/MM/yyyy')))),
-        [PAYMENT_FREQUENCIES[3]]: Array.from(new Set(datesSet.map(ds => ds.split('-').reverse().join('/')).sort((a, b) => {
+        [PAYMENT_FREQUENCIES[0]]: Array.from(new Set(datesSet.map(ds => {
+            const date = new Date(ds + 'T00:00:00');
+            return date.getMonth();
+        }))),
+        [PAYMENT_FREQUENCIES[1]]: Array.from(new Set(datesSet.map(ds => {
+            const date = new Date(ds + 'T00:00:00');
+            return format(date, 'dd/MM/yyyy')
+
+        }))),
+        [PAYMENT_FREQUENCIES[2]]: Array.from(new Set(datesSet.map(ds => {
+            const date = new Date(ds + 'T00:00:00');
+            return format(date, 'dd/MM/yyyy')
+
+        }))),
+        [PAYMENT_FREQUENCIES[3]]: Array.from(new Set(datesSet.map(ds => {
+            const date = new Date(ds + 'T00:00:00');
+            return format(date, 'dd/MM/yyyy')
+        }).sort((a, b) => {
             const [diaA, mesA, añoA] = a.split('/').map(Number)
             const [diaB, mesB, añoB] = b.split('/').map(Number)
             const fechaA = new Date(añoA, mesA - 1, diaA)
@@ -104,11 +118,9 @@ export function PaymentHeadCells({
                                 {
                                     columns[frequency].map((i, cIdx) => {
                                         const paymentCorresponds = row.payment_dates.find(pd => {
-                                            if (frequency === PAYMENT_FREQUENCIES[0]) return new Date(pd).getMonth() === i;
-                                            if (frequency === PAYMENT_FREQUENCIES[3]) {
-                                                return pd.split('-').reverse().join('/') === i
-                                            }
-                                            return format(new Date(pd), 'dd/MM/yyyy') === i;
+                                            const date = new Date(pd + 'T00:00:00')
+                                            if (frequency === PAYMENT_FREQUENCIES[0]) return date.getMonth() === i;
+                                            return format(date, 'dd/MM/yyyy') === i;
                                         });
                                         const paymentExists = row.payments.find((p, pIdx) => {
                                             if (frequency === PAYMENT_FREQUENCIES[3]) {
@@ -137,14 +149,9 @@ export function PaymentHeadCells({
                                                                 disabled={!isNextPendingPayment}
                                                                 onClick={() => {
                                                                     setWorkOn({ loan: row, payment: paymentCorresponds });
-                                                                    let date = new Date(paymentCorresponds)
-                                                                    if (frequency === PAYMENT_FREQUENCIES[3]) {
-                                                                        date.setDate(date.getDate() + 1)
-                                                                        date.setHours(13, 0, 0, 0)
-                                                                    }
                                                                     setFormData({
                                                                         ...formData,
-                                                                        date,
+                                                                        date: new Date(paymentCorresponds + 'T00:00:00'),
                                                                         loan_id: row.id
                                                                     });
                                                                     setOpen('NEW-PAYMENT');
