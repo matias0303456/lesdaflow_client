@@ -105,9 +105,17 @@ export function PaymentHeadCells({
                                     columns[frequency].map((i, cIdx) => {
                                         const paymentCorresponds = row.payment_dates.find(pd => {
                                             if (frequency === PAYMENT_FREQUENCIES[0]) return new Date(pd).getMonth() === i;
+                                            if (frequency === PAYMENT_FREQUENCIES[3]) {
+                                                return pd.split('-').reverse().join('/') === i
+                                            }
                                             return format(new Date(pd), 'dd/MM/yyyy') === i;
                                         });
-                                        const paymentExists = row.payments.find((_, pIdx) => cIdx === pIdx);
+                                        const paymentExists = row.payments.find((p, pIdx) => {
+                                            if (frequency === PAYMENT_FREQUENCIES[3]) {
+                                                return p.date.split('T')[0].split('-').reverse().join('/') === i
+                                            }
+                                            return cIdx === pIdx
+                                        });
                                         const isNextPendingPayment = row.payment_dates.indexOf(paymentCorresponds) === row.payments.length
 
                                         return (
@@ -129,9 +137,14 @@ export function PaymentHeadCells({
                                                                 disabled={!isNextPendingPayment}
                                                                 onClick={() => {
                                                                     setWorkOn({ loan: row, payment: paymentCorresponds });
+                                                                    let date = new Date(paymentCorresponds)
+                                                                    if (frequency === PAYMENT_FREQUENCIES[3]) {
+                                                                        date.setDate(date.getDate() + 1)
+                                                                        date.setHours(13, 0, 0, 0)
+                                                                    }
                                                                     setFormData({
                                                                         ...formData,
-                                                                        date: new Date(paymentCorresponds),
+                                                                        date,
                                                                         loan_id: row.id
                                                                     });
                                                                     setOpen('NEW-PAYMENT');

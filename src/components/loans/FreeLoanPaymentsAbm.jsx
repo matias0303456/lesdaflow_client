@@ -27,7 +27,7 @@ export function FreeLoanPaymentsAbm({
                         <DatePicker
                             label="Fecha"
                             value={value}
-                            disabled={formData.payments.length > 0}
+                            disabled={formData.payments?.length > 0}
                             onChange={value => setValue(new Date(value.toISOString()))}
                         />
                     </LocalizationProvider>
@@ -51,7 +51,7 @@ export function FreeLoanPaymentsAbm({
                     <Chip
                         key={idx}
                         label={format(new Date(p.date), 'dd/MM/yyyy')}
-                        disabled={formData.payments.length > 0}
+                        disabled={formData.payments?.length > 0}
                         onDelete={() => {
                             if (open === 'EDIT') {
                                 handleDeleteFreeLoanPaymentDate(p)

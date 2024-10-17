@@ -50,8 +50,8 @@ export function PaymentForm({
         <>
             <Box sx={{ display: 'flex', alignItems: 'center', mb: 3, gap: 1 }}>
                 <Typography variant="h6">
-                    {open === 'NEW-PAYMENT' && `Nuevo pago - ${format(new Date(workOn.payment), 'dd/MM/yyyy')}`}
-                    {open === 'PAYMENT-DETAILS' && `Editar pago - ${format(new Date(workOn.payment), 'dd/MM/yyyy')}`}
+                    {open === 'NEW-PAYMENT' && `Nuevo pago - ${format(formData.date, 'dd/MM/yyyy')}`}
+                    {open === 'PAYMENT-DETAILS' && `Editar pago - ${format(new Date(formData.date), 'dd/MM/yyyy')}`}
                 </Typography>
                 {open === 'PAYMENT-DETAILS' &&
                     loans.find(l => l.id === workOn.loan.id).payments[loans.find(l => l.id === workOn.loan.id).payments.length - 1]?.id === formData.id &&
