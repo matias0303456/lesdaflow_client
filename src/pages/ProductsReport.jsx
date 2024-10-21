@@ -38,7 +38,7 @@ export function ProductsReport() {
     e.preventDefault()
     if (validate()) {
       const { supplier_id, stock } = formData
-      window.open(`${REPORT_URL}/products-pdf?token=${auth?.token}${supplier_id.length > 0 ? `&supplier_id=${supplier_id}` : ''}${stock.length > 0 ? `&stock=${stock}` : ''}`, '_blank')
+      window.open(`${REPORT_URL}/products-pdf?token=${auth?.token}${supplier_id.toString().length > 0 ? `&supplier_id=${supplier_id}` : ''}${stock.length > 0 ? `&stock=${stock}` : ''}`, '_blank')
     }
   }
 
