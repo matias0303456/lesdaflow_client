@@ -16,6 +16,7 @@ import { Sales } from "./pages/Sales";
 import { SalesReport } from "./pages/SalesReport";
 import { Comissions } from "./pages/Comissions";
 import { Products } from './pages/Products'
+import { ProductHistory } from "./pages/ProductHistory";
 import { ProductsReport } from './pages/ProductsReport'
 import { Budgets } from "./pages/Budgets";
 import { Registers } from "./pages/Registers";
@@ -69,6 +70,7 @@ function App() {
                 <Route path="/prep-ventas" element={<SalesReady />} />
                 <Route path="/entrega-ventas" element={<SalesToDeliver />} />
                 <Route path="/productos" element={<Products />} />
+                <Route path="/historial" element={<ProductHistory />} />
                 <Route path="/lista-precios" element={<ProductsPriceList />} />
                 <Route path="/reporte-productos" element={<ProductsReport />} />
                 <Route path="/producto-actualiza-precio-proveedor" element={<UpdateProductPriceBySupplier />} />

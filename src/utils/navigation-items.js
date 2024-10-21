@@ -120,6 +120,11 @@ export const nav_items = [
         subtitle: "Ingresos por cantidad",
         path: "/ingresos-cantidad",
         can_access: ['ADMINISTRADOR']
+      },
+      {
+        subtitle: "Historial",
+        path: "/historial",
+        can_access: ['ADMINISTRADOR']
       }
     ],
     can_access: ['ADMINISTRADOR', 'VENDEDOR', 'CHOFER']

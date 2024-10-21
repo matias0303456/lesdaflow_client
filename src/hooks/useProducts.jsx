@@ -17,6 +17,7 @@ export function useProducts() {
     const [loadingProducts, setLoadingProducts] = useState(true)
     const [massiveEdit, setMassiveEdit] = useState([])
     const [earnPrice, setEarnPrice] = useState(0)
+    const [productHistory, setProductHistory] = useState([])
 
     async function getProducts(params) {
         const { status, data } = await get(params)
@@ -41,6 +42,21 @@ export function useProducts() {
             setMessage(data.message)
             setSeverity('error')
             setOpenMessage(true)
+        }
+    }
+
+    async function getProductHistory(id) {
+        if (id.toString().length > 0) {
+            setLoadingProducts(true)
+            const { status, data } = await get(`/history/${id}`)
+            if (status === 200) {
+                setProductHistory(data)
+            } else {
+                setMessage(data.message)
+                setSeverity('error')
+                setOpenMessage(true)
+            }
+            setLoadingProducts(false)
         }
     }
 
@@ -142,6 +158,8 @@ export function useProducts() {
         getProducts,
         loadingProducts,
         setLoadingProducts,
-        searchProducts
+        searchProducts,
+        productHistory,
+        getProductHistory
     }
 }
