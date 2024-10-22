@@ -34,6 +34,7 @@ export function ProductHistory() {
             numeric: false,
             disablePadding: true,
             label: "#",
+            sorter: (row) => parseInt(row.idx),
             accessor: "idx",
         },
         {
@@ -41,6 +42,7 @@ export function ProductHistory() {
             numeric: false,
             disablePadding: true,
             label: "Fecha",
+            sorter: (row) => row.date,
             accessor: 'date'
         },
         {
@@ -48,13 +50,23 @@ export function ProductHistory() {
             numeric: false,
             disablePadding: true,
             label: "Tipo",
+            sorter: (row) => row.type,
             accessor: "type"
+        },
+        {
+            id: "amount",
+            numeric: false,
+            disablePadding: true,
+            label: "Cantidad",
+            sorter: (row) => parseInt(row.amount),
+            accessor: "amount"
         },
         {
             id: "created_by",
             numeric: false,
             disablePadding: true,
             label: "Creado por",
+            sorter: (row) => row.created_by,
             accessor: "created_by"
         }
     ]
