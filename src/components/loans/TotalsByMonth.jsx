@@ -7,6 +7,9 @@ export function TotalsByMonth({ loans, includeSpendings, spendings }) {
     return (
         <Box sx={{ mt: 1 }}>
             <Typography variant="body2" align="right">
+                Total prestado: {`$${loans.reduce((prev, curr) => prev + parseFloat(curr.amount), 0).toFixed(2)}`}
+            </Typography>
+            <Typography variant="body2" align="right">
                 Interés total: {`$${getLoansTotalInterestWithSpendings(getLoansTotalInterest(loans), includeSpendings, spendings)}`}
             </Typography>
             <Typography variant="body2" align="right">
