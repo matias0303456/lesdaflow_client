@@ -30,12 +30,12 @@ export function ProductHistory() {
 
     const headCells = [
         {
-            id: "idx",
+            id: "id",
             numeric: false,
             disablePadding: true,
             label: "#",
-            sorter: (row) => parseInt(row.idx),
-            accessor: "idx",
+            sorter: (row) => parseInt(row.id),
+            accessor: (row) => parseInt(row.id)
         },
         {
             id: "date",
@@ -43,7 +43,7 @@ export function ProductHistory() {
             disablePadding: true,
             label: "Fecha",
             sorter: (row) => row.date,
-            accessor: 'date'
+            accessor: (row) => row.date
         },
         {
             id: "type",
@@ -51,7 +51,7 @@ export function ProductHistory() {
             disablePadding: true,
             label: "Tipo",
             sorter: (row) => row.type,
-            accessor: "type"
+            accessor: (row) => row.type
         },
         {
             id: "amount",
@@ -59,7 +59,7 @@ export function ProductHistory() {
             disablePadding: true,
             label: "Cantidad",
             sorter: (row) => parseInt(row.amount),
-            accessor: "amount"
+            accessor: (row) => parseInt(row.amount)
         },
         {
             id: "created_by",
@@ -67,7 +67,7 @@ export function ProductHistory() {
             disablePadding: true,
             label: "Creado por",
             sorter: (row) => row.created_by,
-            accessor: "created_by"
+            accessor: (row) => row.created_by
         }
     ]
 
