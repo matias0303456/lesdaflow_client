@@ -25,6 +25,7 @@ export function PaymentHeadCells({
     const { auth } = useContext(AuthContext);
 
     const datesSet = Array.from(new Set(rows.flatMap(r => r.payment_dates)));
+    console.log({ datesSet })
     const columns = {
         [PAYMENT_FREQUENCIES[0]]: Array.from(new Set(datesSet.map(ds => {
             const date = new Date(ds + 'T00:00:00');
