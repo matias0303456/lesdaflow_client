@@ -68,6 +68,7 @@ export function PaymentHeadCells({
                         <TableCell align="center">Mora (%)</TableCell>
                         <TableCell align="center">Obs.</TableCell>
                         {columns[frequency].map(i => {
+                            console.log(columns, columns[frequency], i, MONTHS[i])
                             return (
                                 <TableCell key={i} align="center">
                                     {frequency === PAYMENT_FREQUENCIES[0] ? MONTHS[i].slice(0, 3) : i}
