@@ -29,7 +29,7 @@ export function PaymentHeadCells({
         [PAYMENT_FREQUENCIES[0]]: Array.from(new Set(datesSet.map(ds => {
             const date = new Date(ds + 'T00:00:00');
             return date.getMonth();
-        }))),
+        }))).sort(),
         [PAYMENT_FREQUENCIES[1]]: Array.from(new Set(datesSet.map(ds => {
             const date = new Date(ds + 'T00:00:00');
             return format(date, 'dd/MM/yyyy')
@@ -68,7 +68,6 @@ export function PaymentHeadCells({
                         <TableCell align="center">Mora (%)</TableCell>
                         <TableCell align="center">Obs.</TableCell>
                         {columns[frequency].map(i => {
-                            console.log(columns, columns[frequency], i, MONTHS[i])
                             return (
                                 <TableCell key={i} align="center">
                                     {frequency === PAYMENT_FREQUENCIES[0] ? MONTHS[i].slice(0, 3) : i}
