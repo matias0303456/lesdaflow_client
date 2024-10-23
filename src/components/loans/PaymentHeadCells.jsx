@@ -25,7 +25,6 @@ export function PaymentHeadCells({
     const { auth } = useContext(AuthContext);
 
     const datesSet = Array.from(new Set(rows.flatMap(r => r.payment_dates)));
-    console.log({ datesSet })
     const columns = {
         [PAYMENT_FREQUENCIES[0]]: Array.from(new Set(datesSet.map(ds => {
             const date = new Date(ds + 'T00:00:00');
@@ -68,11 +67,14 @@ export function PaymentHeadCells({
                         <TableCell align="center">Pago ($)</TableCell>
                         <TableCell align="center">Mora (%)</TableCell>
                         <TableCell align="center">Obs.</TableCell>
-                        {columns[frequency].map(i => (
-                            <TableCell key={i} align="center">
-                                {frequency === PAYMENT_FREQUENCIES[0] ? MONTHS[i].slice(0, 3) : i}
-                            </TableCell>
-                        ))}
+                        {columns[frequency].map(i => {
+                            console.log(columns, columns[frequency], i, MONTHS[i])
+                            return (
+                                <TableCell key={i} align="center">
+                                    {frequency === PAYMENT_FREQUENCIES[0] ? MONTHS[i].slice(0, 3) : i}
+                                </TableCell>
+                            )
+                        })}
                     </TableRow>
                 </TableHead>
                 <TableBody>

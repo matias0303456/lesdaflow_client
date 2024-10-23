@@ -132,7 +132,7 @@ export function LoanForm({
                             variant="outlined"
                             id="payments_amount"
                             name="payments_amount"
-                            InputProps={{ inputProps: { step: 1 } }}
+                            InputProps={{ inputProps: { step: 1, min: 1 } }}
                             value={formData.payments_amount}
                             disabled={(open === 'EDIT' && (!formData.payments || formData.payments.length > 0)) || formData.payments_frequency === PAYMENT_FREQUENCIES[3]}
                             onChange={e => handleChange({
