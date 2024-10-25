@@ -16,7 +16,7 @@ export function getLoansYears(loansWithPaymentDates) {
 export function getLoansMonths(loansWithPaymentDates) {
     const dates = loansWithPaymentDates.map(l => new Date(l.date))
     const set = new Set(dates.map(d => d.getMonth()))
-    return Array.from(set).sort((a, b) => a - b)
+    return Array.from(set).sort((a, b) => b - a)
 }
 
 export function getPaymentDates(loan, frequency) {

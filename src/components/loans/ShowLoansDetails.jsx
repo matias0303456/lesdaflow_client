@@ -72,7 +72,7 @@ export function ShowLoansDetails({
                                     <Typography>{year}</Typography>
                                 </AccordionSummary>
                                 <AccordionDetails>
-                                    {loansMonths.reverse().map((month, idxM) => {
+                                    {loansMonths.map((month, idxM) => {
                                         const rows = filterRowsByMonthAndYear(loansWithPaymentDates, year, month)
                                         return (
                                             <Box key={month}>
