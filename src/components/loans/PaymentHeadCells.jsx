@@ -135,7 +135,9 @@ export function PaymentHeadCells({
                                             return cIdx === pIdx
                                         });
                                         const isNextPendingPayment = row.payment_dates.indexOf(paymentCorresponds) === row.payments.length
-
+                                        if (row.id === 39) {
+                                            console.log({ paymentCorresponds, paymentExists, isNextPendingPayment, i, cIdx })
+                                        }
                                         return (
                                             <TableCell key={i} align="center">
                                                 {paymentCorresponds && (
