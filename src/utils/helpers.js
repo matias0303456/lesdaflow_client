@@ -56,7 +56,10 @@ export function filterRowsByMonthAndYear(loansWithPaymentDates, year, month) {
 }
 
 export function getLoanTotal(loan) {
-    return parseFloat(loan.amount + ((loan.amount / 100) * loan.interest)).toFixed(2)
+    const amount = loan.amount ?? 0
+    const interest = loan.interest ?? 0
+    const result = parseFloat(amount + ((amount / 100) * interest)).toFixed(2)
+    return isNaN(result) ? 0 : result
 }
 
 export function getPaymentAmount(loan) {

@@ -132,8 +132,8 @@ export function Loans() {
                             </Box>
                             <ModalComponent open={open === 'NEW' || open === 'EDIT'} onClose={handleClose}>
                                 <Typography variant="h6" marginBottom={3}>
-                                    {open === 'NEW' && 'Nuevo préstamo'}
-                                    {open === 'EDIT' && `Editar préstamo #${formData.id}`}
+                                    {open === 'NEW' && `Nuevo préstamo - ${formData.payments_frequency}`}
+                                    {open === 'EDIT' && `Editar préstamo #${formData.id} - ${formData.payments_frequency}`}
                                 </Typography>
                                 <LoanForm
                                     open={open}
