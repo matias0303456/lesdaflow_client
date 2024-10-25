@@ -125,10 +125,10 @@ export function PaymentHeadCells({
                                     columns[frequency].map((i, cIdx) => {
                                         const paymentCorresponds = row.payment_dates.find(pd => {
                                             const date = new Date(pd + 'T00:00:00')
-                                            if (frequency === PAYMENT_FREQUENCIES[0]) return date.getMonth() === i;
                                             if (row.id === 39) {
                                                 console.log({ date })
                                             }
+                                            if (frequency === PAYMENT_FREQUENCIES[0]) return date.getMonth() === i;
                                             return format(date, 'dd/MM/yyyy') === i;
                                         });
                                         const paymentExists = row.payments.find((p, pIdx) => {
