@@ -134,6 +134,7 @@ export function CurrentAccount() {
             <SaleFilter
               showWorkPlace
               showPending
+              showSeller={auth?.user.role === 'ADMINISTRADOR'}
               salesAdapter="CurrentAccount"
               pendingFilter={pendingFilter}
               setPendingFilter={setPendingFilter}
@@ -142,7 +143,8 @@ export function CurrentAccount() {
                 client: { xs: '100%', md: '15%' },
                 id: { xs: '100%', md: '15%' },
                 btn: { xs: '100%', md: '10%' },
-                work_place: { xs: '100%', md: '15%' }
+                work_place: { xs: '100%', md: '15%' },
+                seller: { xs: '100%', md: '15%' }
               }}
             />
           </Box>
