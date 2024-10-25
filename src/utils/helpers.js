@@ -26,11 +26,10 @@ export function getPaymentDates(loan, frequency) {
     const paymentDates = []
     for (let i = 1; i <= loan.payments_amount; i++) {
         const newDate = setLocalDate(loan)
-        // esto lo hice para no tener que modificar las fechas de los pagos ya cargados
-        const legacy = [40, 42, 43, 44, 45, 46, 47, 48, 50]
         switch (frequency) {
             case PAYMENT_FREQUENCIES[0]:
-                if (loan.id < 39 || (loan.id > 39 && legacy.includes(loan.id))) {
+                // esto lo hice para no tener que modificar las fechas de los pagos ya cargados
+                if (loan.id <= 50 && loan.id !== 39) {
                     newDate.setMonth(newDate.getMonth() + i)
                 } else {
                     newDate.setDate(newDate.getDate() + i * 30)
