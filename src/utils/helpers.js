@@ -25,10 +25,16 @@ export function getPaymentDates(loan, frequency) {
     }
     const paymentDates = []
     for (let i = 1; i <= loan.payments_amount; i++) {
-        const newDate = new Date(loan.date)
+        const newDate = setLocalDate(loan)
+        // esto lo hice para no tener que modificar las fechas de los pagos ya cargados
+        const legacy = [40, 42, 43, 44, 45, 46, 47, 48, 50]
         switch (frequency) {
             case PAYMENT_FREQUENCIES[0]:
-                newDate.setMonth(newDate.getMonth() + i)
+                if (loan.id < 39 || (loan.id > 39 && legacy.includes(loan.id))) {
+                    newDate.setMonth(newDate.getMonth() + i)
+                } else {
+                    newDate.setDate(newDate.getDate() + i * 30)
+                }
                 break
             case PAYMENT_FREQUENCIES[1]:
                 newDate.setDate(newDate.getDate() + i * 15)
@@ -96,4 +102,10 @@ export function getLoansTotalInterestWithSpendings(total, includeSpendings, spen
     if (!includeSpendings) return total
     const totalSpendings = spendings.reduce((prev, curr) => prev + curr.amount, 0)
     return parseFloat(total - totalSpendings).toFixed(2)
+}
+
+export function setLocalDate(loan) {
+    const localDate = new Date(loan.date);
+    localDate.setHours(localDate.getHours() + localDate.getTimezoneOffset() / 60);
+    return localDate;
 }

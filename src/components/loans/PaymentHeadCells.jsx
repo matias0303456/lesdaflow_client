@@ -9,7 +9,7 @@ import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import { AuthContext } from "../../providers/AuthProvider";
 
 import { MONTHS, PAYMENT_FREQUENCIES } from "../../utils/constants";
-import { getLoanTotal, getPaymentAmount } from "../../utils/helpers";
+import { getLoanTotal, getPaymentAmount, setLocalDate } from "../../utils/helpers";
 import { REPORT_URL } from "../../utils/urls";
 
 export function PaymentHeadCells({
@@ -114,7 +114,7 @@ export function PaymentHeadCells({
                                 </TableCell>
                                 <TableCell align="center">{row.id}</TableCell>
                                 <TableCell align="center">{`${row.client.first_name} ${row.client.last_name}`}</TableCell>
-                                <TableCell align="center">{format(new Date(row.date), 'dd/MM/yyyy')}</TableCell>
+                                <TableCell align="center">{format(setLocalDate(row), 'dd/MM/yyyy')}</TableCell>
                                 <TableCell align="center">{row.amount}</TableCell>
                                 <TableCell align="center">{row.interest}</TableCell>
                                 <TableCell align="center">{getLoanTotal(row)}</TableCell>
@@ -123,9 +123,6 @@ export function PaymentHeadCells({
                                 <TableCell align="center">{row.observations}</TableCell>
                                 {
                                     columns[frequency].map((i, cIdx) => {
-                                        if (row.id === 39) {
-                                            console.log(row.payment_dates)
-                                        }
                                         const paymentCorresponds = row.payment_dates.find(pd => {
                                             const date = new Date(pd + 'T00:00:00')
                                             if (frequency === PAYMENT_FREQUENCIES[0]) return date.getMonth() === i;
