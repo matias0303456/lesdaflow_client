@@ -126,6 +126,9 @@ export function PaymentHeadCells({
                                         const paymentCorresponds = row.payment_dates.find(pd => {
                                             const date = new Date(pd + 'T00:00:00')
                                             if (frequency === PAYMENT_FREQUENCIES[0]) return date.getMonth() === i;
+                                            if (row.id === 39) {
+                                                console.log({ date })
+                                            }
                                             return format(date, 'dd/MM/yyyy') === i;
                                         });
                                         const paymentExists = row.payments.find((p, pIdx) => {
@@ -135,9 +138,6 @@ export function PaymentHeadCells({
                                             return cIdx === pIdx
                                         });
                                         const isNextPendingPayment = row.payment_dates.indexOf(paymentCorresponds) === row.payments.length
-                                        if (row.id === 39) {
-                                            console.log({ paymentCorresponds, paymentExists, isNextPendingPayment, i, cIdx })
-                                        }
                                         return (
                                             <TableCell key={i} align="center">
                                                 {paymentCorresponds && (
