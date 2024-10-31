@@ -111,7 +111,7 @@ export function Sales() {
     }, [])
 
     useEffect(() => {
-        if (open === 'EDIT') {
+        if (open === 'EDIT' && saleProducts.length === 0) {
             setSaleProducts(formData.sale_products)
         }
     }, [formData])
