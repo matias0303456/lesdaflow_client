@@ -81,6 +81,17 @@ export function SaleForm({
         }
     }, [valueTab, open])
 
+    useEffect(() => {
+        if (saleProducts.length > 0 && (open === 'NEW' || open === 'CONVERT')) {
+            setSaleProducts(saleProducts.filter(sp => {
+                const p = state.products.data.find(i => i.id === sp.product_id)
+                if ((formData.type === 'CONTADO' && p?.cash) ||
+                    (formData.type === 'CUENTA_CORRIENTE' && p?.cta_cte) ||
+                    (formData.type === 'POXIPOL' && p?.poxipol)) return sp
+            }))
+        }
+    }, [formData.type])
+
     const handleChangeTab = (_, newValue) => {
         setValueTab(newValue)
     }
