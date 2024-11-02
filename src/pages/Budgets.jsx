@@ -45,7 +45,7 @@ export function Budgets() {
         missing
     } = useBudgets()
     const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
-        defaultData: { id: '', client_id: '', date: new Date(Date.now()), discount: 0 },
+        defaultData: { id: '', client_id: '', date: new Date(Date.now()), discount: 0, type: 'CUENTA_CORRIENTE' },
         rules: { client_id: { required: true }, date: { required: true } }
     })
     const {
@@ -104,7 +104,7 @@ export function Budgets() {
                 id: formData.id,
                 client_id: formData.client_id,
                 discount: formData.discount,
-                type: 'CUENTA_CORRIENTE',
+                type: formData.type,
                 date: new Date(Date.now())
             })
             setSaleProducts(formData.budget_products)
@@ -170,6 +170,13 @@ export function Budgets() {
             sorter: (row) => parseFloat(getBudgetTotal(row, getBudgetSubtotal(row.budget_products))),
             accessor: (row) => `$${getBudgetTotal(row, getBudgetSubtotal(row.budget_products))}`
         },
+        {
+            id: 'type',
+            numeric: false,
+            disablePadding: true,
+            label: 'Tipo',
+            accessor: (row) => row.type.replaceAll('CUENTA_CORRIENTE', 'CTA CTE')
+        }
     ]
 
     return (
@@ -185,12 +192,13 @@ export function Budgets() {
                 setFormData={setFormData}
                 showPDFAction={`${REPORT_URL}/presupuesto-pdf?token=${auth?.token}&id=`}
                 showConvertToSale="Convertir a venta"
+                salesAdapter="Budgets"
                 showViewAction
                 showEditAction
                 showDeleteAction
                 contentHeader={
                     <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 2, justifyContent: 'space-between' }}>
-                        <Box sx={{ display: 'flex', gap: 1 }}>
+                        <Box sx={{ display: 'flex', gap: 1, width: { xs: '100%', md: '20%' } }}>
                             <Button variant="outlined" onClick={() => {
                                 reset()
                                 setOpen('NEW')
@@ -224,6 +232,7 @@ export function Budgets() {
                     setIdsToDelete={setIdsToDelete}
                     handleChange={handleChange}
                     formData={formData}
+                    setFormData={setFormData}
                     handleSubmit={handleSubmit}
                     validate={validate}
                     disabled={disabled}

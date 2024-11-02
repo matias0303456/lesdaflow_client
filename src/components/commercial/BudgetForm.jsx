@@ -1,5 +1,6 @@
-import { useContext } from "react"
-import { Autocomplete, Box, FormControl, InputLabel, TextField, Typography, Input, Button } from "@mui/material"
+/* eslint-disable react/prop-types */
+import { useContext, useEffect } from "react"
+import { Autocomplete, Box, FormControl, InputLabel, TextField, Typography, Input, Button, FormControlLabel, Checkbox } from "@mui/material"
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers"
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns"
 import { es } from "date-fns/locale"
@@ -23,6 +24,7 @@ export function BudgetForm({
     setIdsToDelete,
     handleChange,
     formData,
+    setFormData,
     handleSubmit,
     validate,
     disabled,
@@ -31,6 +33,17 @@ export function BudgetForm({
 }) {
 
     const { state } = useContext(DataContext)
+
+    useEffect(() => {
+        if (budgetProducts.length > 0 && (open === 'NEW' || open === 'CONVERT')) {
+            setBudgetProducts(budgetProducts.filter(bp => {
+                const p = state.products.data.find(i => i.id === bp.product_id)
+                if ((formData.type === 'CONTADO' && p?.cash) ||
+                    (formData.type === 'CUENTA_CORRIENTE' && p?.cta_cte) ||
+                    (formData.type === 'POXIPOL' && p?.poxipol)) return bp
+            }))
+        }
+    }, [formData.type])
 
     return (
         <ModalComponent
@@ -88,6 +101,51 @@ export function BudgetForm({
                             </Typography>
                         }
                     </FormControl>
+                    <Box sx={{ width: '100%', display: 'flex', justifyContent: 'space-around' }}>
+                        <FormControlLabel
+                            control={<Checkbox disabled={open === 'VIEW'} />}
+                            label="Cuenta Corriente"
+                            checked={formData.type === 'CUENTA_CORRIENTE'}
+                            disabled={budgetProducts.length > 0 && formData.type !== 'CUENTA_CORRIENTE' && formData.type !== 'CONTADO'}
+                            onChange={e => {
+                                if (e.target.checked) {
+                                    setFormData({
+                                        ...formData,
+                                        type: 'CUENTA_CORRIENTE',
+                                        discount: 0
+                                    })
+                                }
+                            }}
+                        />
+                        <FormControlLabel
+                            control={<Checkbox disabled={open === 'VIEW'} />}
+                            label="Contado"
+                            checked={formData.type === 'CONTADO'}
+                            disabled={budgetProducts.length > 0 && formData.type !== 'CUENTA_CORRIENTE' && formData.type !== 'CONTADO'}
+                            onChange={e => {
+                                if (e.target.checked) {
+                                    setFormData({
+                                        ...formData,
+                                        type: 'CONTADO'
+                                    })
+                                }
+                            }}
+                        />
+                        <FormControlLabel
+                            control={<Checkbox disabled={open === 'VIEW'} />}
+                            label="Poxipol"
+                            checked={formData.type === 'POXIPOL'}
+                            disabled={budgetProducts.length > 0}
+                            onChange={e => {
+                                if (e.target.checked) {
+                                    setFormData({
+                                        ...formData,
+                                        type: 'POXIPOL'
+                                    })
+                                }
+                            }}
+                        />
+                    </Box>
                     <AddProductsToBudget
                         products={state.products.data}
                         budgetProducts={budgetProducts}

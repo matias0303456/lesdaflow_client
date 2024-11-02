@@ -60,7 +60,7 @@ export const initialState = {
         data: [],
         page: 0,
         offset: 25,
-        filter_fields: { from: '', to: '', user: '', client: '', loaded: false },
+        filter_fields: { from: '', to: '', user: '', client: '', type: '', loaded: false },
         filters: ''
     }
 }
