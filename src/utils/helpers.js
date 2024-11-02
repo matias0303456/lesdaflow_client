@@ -46,7 +46,29 @@ export function getPaymentDates(loan, frequency) {
         }
         paymentDates.push(new Date(newDate).toISOString().split('T')[0])
     }
-    return paymentDates
+    if (frequency === PAYMENT_FREQUENCIES[0]) {
+        return paymentDates.map((dateStr, index, arr) => {
+            const currentDate = new Date(dateStr + 'T00:00:00');
+
+            // Verificar si la fecha es el 31
+            if (currentDate.getDate() === 31 && index > 0) {
+                const prevDate = new Date(arr[index - 1] + 'T00:00:00');
+                // Si la fecha anterior es el 1 del mismo mes y año
+                if (
+                    prevDate.getDate() === 1 &&
+                    prevDate.getMonth() === currentDate.getMonth() &&
+                    prevDate.getFullYear() === currentDate.getFullYear()
+                ) {
+                    // Cambia la fecha al 1 del siguiente mes
+                    currentDate.setDate(1);
+                    currentDate.setMonth(currentDate.getMonth() + 1);
+                }
+            }
+            return currentDate.toISOString().split('T')[0]; // Retorna la fecha ajustada en formato 'YYYY-MM-DD'
+        })
+    } else {
+        return paymentDates
+    }
 }
 
 export function filterRowsByMonthAndYear(loansWithPaymentDates, year, month) {
