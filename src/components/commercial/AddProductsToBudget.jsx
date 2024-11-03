@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { useRef, useState } from "react";
 import { Autocomplete, Button, FormControl, Input, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from "@mui/material";
 import CancelSharpIcon from '@mui/icons-material/CancelSharp';
@@ -12,7 +13,8 @@ export function AddProductsToBudget({
     setIdsToDelete,
     open,
     missing,
-    setMissing
+    setMissing,
+    formData
 }) {
 
     const [value, setValue] = useState('')
@@ -65,7 +67,12 @@ export function AddProductsToBudget({
                             disablePortal
                             id="product-autocomplete"
                             options={products.filter(p =>
-                                !budgetProducts.map(bp => bp.product_id).includes(p.id))
+                                !budgetProducts.map(bp => bp.product_id).includes(p.id) &&
+                                (
+                                    (formData.type === 'CONTADO' && p?.cash) ||
+                                    (formData.type === 'CUENTA_CORRIENTE' && p?.cta_cte) ||
+                                    (formData.type === 'POXIPOL' && p?.poxipol)
+                                ))
                                 .map(p => ({ label: `Código ${p.code} / Detalle ${p.details}`, id: p.id }))}
                             noOptionsText="No hay productos disponibles."
                             onChange={(e, value) => handleAdd({ idx: budgetProducts.length, product_id: value?.id ?? '' })}

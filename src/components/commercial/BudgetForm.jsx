@@ -155,6 +155,7 @@ export function BudgetForm({
                         idsToDelete={idsToDelete}
                         setIdsToDelete={setIdsToDelete}
                         open={open}
+                        formData={formData}
                     />
                 </Box>
                 <Box sx={{ display: 'flex', justifyContent: 'end', gap: 2, marginTop: 3 }}>
