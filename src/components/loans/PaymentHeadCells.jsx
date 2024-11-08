@@ -27,36 +27,6 @@ export function PaymentHeadCells({
         const date = new Date(ds + 'T00:00:00')
         return format(date, 'dd/MM/yy')
     })))
-    // const columns = {
-    //     [PAYMENT_FREQUENCIES[0]]: Array.from(new Set(datesSet.map(ds => {
-    //         const date = new Date(ds + 'T00:00:00');
-    //         return format(date, 'dd/MM/yy')
-    //     }).sort((a, b) => {
-    //         const [diaA, mesA, añoA] = a.split('/').map(Number)
-    //         const [diaB, mesB, añoB] = b.split('/').map(Number)
-    //         const fechaA = new Date(añoA, mesA - 1, diaA)
-    //         const fechaB = new Date(añoB, mesB - 1, diaB)
-    //         return fechaA - fechaB
-    //     }))),
-    //     [PAYMENT_FREQUENCIES[1]]: Array.from(new Set(datesSet.map(ds => {
-    //         const date = new Date(ds + 'T00:00:00');
-    //         return format(date, 'dd/MM/yy')
-    //     }))),
-    //     [PAYMENT_FREQUENCIES[2]]: Array.from(new Set(datesSet.map(ds => {
-    //         const date = new Date(ds + 'T00:00:00');
-    //         return format(date, 'dd/MM/yy')
-    //     }))),
-    //     [PAYMENT_FREQUENCIES[3]]: Array.from(new Set(datesSet.map(ds => {
-    //         const date = new Date(ds + 'T00:00:00');
-    //         return format(date, 'dd/MM/yy')
-    //     }).sort((a, b) => {
-    //         const [diaA, mesA, añoA] = a.split('/').map(Number)
-    //         const [diaB, mesB, añoB] = b.split('/').map(Number)
-    //         const fechaA = new Date(añoA, mesA - 1, diaA)
-    //         const fechaB = new Date(añoB, mesB - 1, diaB)
-    //         return fechaA - fechaB
-    //     })))
-    // };
 
     return (
         <TableContainer component={Paper}>
@@ -116,7 +86,7 @@ export function PaymentHeadCells({
                                 </TableCell>
                                 <TableCell align="center">{row.id}</TableCell>
                                 <TableCell align="center">{`${row.client.first_name} ${row.client.last_name}`}</TableCell>
-                                <TableCell align="center">{format(setLocalDate(row), 'dd/MM/yyyy')}</TableCell>
+                                <TableCell align="center">{format(setLocalDate(row), 'dd/MM/yy')}</TableCell>
                                 <TableCell align="center">{row.amount}</TableCell>
                                 <TableCell align="center">{row.interest}</TableCell>
                                 <TableCell align="center">{getLoanTotal(row)}</TableCell>
@@ -124,13 +94,19 @@ export function PaymentHeadCells({
                                 <TableCell align="center">{row.late_fee}</TableCell>
                                 <TableCell align="center">{row.observations}</TableCell>
                                 {
-                                    columns.map((col, colIdx) => {
+                                    columns.map(col => {
                                         const paymentCorresponds = row.payment_dates.find(pd => {
                                             const date = new Date(pd + 'T00:00:00')
                                             return format(date, 'dd/MM/yy') === col;
                                         });
-                                        const paymentExists = row.payments.find((p, pIdx) => {
-                                            return colIdx === pIdx
+                                        const paymentExists = row.payments.find((_, pIdx) => {
+                                            const rowCols = columns.filter(c => {
+                                                return row.payment_dates.map(pd => {
+                                                    const pdDate = new Date(pd + 'T00:00:00')
+                                                    return format(pdDate, 'dd/MM/yy')
+                                                }).includes(c)
+                                            })
+                                            return rowCols[pIdx] === col;
                                         });
                                         const isNextPendingPayment = row.payment_dates.indexOf(paymentCorresponds) === row.payments.length
                                         return (

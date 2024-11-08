@@ -30,34 +30,20 @@ export function usePayments() {
                 if (open === 'NEW-PAYMENT') {
                     setLoans([
                         {
-                            ...loan, payments: [data, ...loan.payments].sort((a, b) => {
-                                if (a.id < b.id) return -1
-                                if (a.id > b.id) return 1
-                                return 0
-                            })
+                            ...loan,
+                            payments: [data, ...loan.payments].sort((a, b) => b.id - a.id)
                         },
                         ...loans.filter(l => l.id !== data.loan_id)
-                    ].sort((a, b) => {
-                        if (a.id < b.id) return -1
-                        if (a.id > b.id) return 1
-                        return 0
-                    }))
+                    ].sort((a, b) => b.id - a.id))
                     setMessage('Pago creado correctamente.')
                 } else {
                     setLoans([
                         {
-                            ...loan, payments: [data, ...loan.payments.filter(p => p.id !== data.id)].sort((a, b) => {
-                                if (a.id < b.id) return -1
-                                if (a.id > b.id) return 1
-                                return 0
-                            })
+                            ...loan,
+                            payments: [data, ...loan.payments.filter(p => p.id !== data.id)].sort((a, b) => b.id - a.id)
                         },
                         ...loans.filter(l => l.id !== data.loan_id)
-                    ].sort((a, b) => {
-                        if (a.id < b.id) return -1
-                        if (a.id > b.id) return 1
-                        return 0
-                    }))
+                    ].sort((a, b) => b.id - a.id))
                     setMessage('Pago editado correctamente.')
                 }
                 setSeverity('success')
@@ -80,13 +66,12 @@ export function usePayments() {
         if (status === STATUS_CODES.OK) {
             const loan = loans.find(l => l.id === data.loan_id)
             setLoans([
-                { ...loan, payments: [...loan.payments.filter(p => p.id !== data.id)] },
+                {
+                    ...loan,
+                    payments: [...loan.payments.filter(p => p.id !== data.id)]
+                },
                 ...loans.filter(l => l.id !== data.loan_id)
-            ].sort((a, b) => {
-                if (a.id < b.id) return -1
-                if (a.id > b.id) return 1
-                return 0
-            }))
+            ].sort((a, b) => b.id - a.id))
             setMessage('Pago eliminado correctamente.')
             setSeverity('success')
         } else {
