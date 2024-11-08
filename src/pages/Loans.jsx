@@ -15,6 +15,7 @@ import { ShowLoansDetails } from "../components/loans/ShowLoansDetails";
 import { LoanForm } from "../components/loans/LoanForm";
 
 import { PAYMENT_FREQUENCIES } from "../utils/constants";
+import { setPfColor } from "../utils/helpers";
 
 export function Loans() {
 
@@ -90,19 +91,28 @@ export function Loans() {
                         </Box> :
                         <Box sx={{ mx: 1 }}>
                             <Box sx={{ pt: 2 }}>
-                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 3 }}>
-                                    <Button sx={{ mb: 1, color: '#FFF' }} variant="contained" onClick={() => {
-                                        setFormData({ ...formData, late_fee: user.settings.late_fee })
-                                        setOpen('NEW')
-                                    }}>
-                                        Agregar
-                                    </Button>
-                                    <FormControlLabel
-                                        label="Incluir gastos"
-                                        control={<Checkbox />}
-                                        checked={includeSpendings}
-                                        onChange={(e) => setIncludeSpendings(e.target.checked)}
-                                    />
+                                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 3 }}>
+                                        <Button sx={{ mb: 1, color: '#FFF' }} variant="contained" onClick={() => {
+                                            setFormData({ ...formData, late_fee: user.settings.late_fee })
+                                            setOpen('NEW')
+                                        }}>
+                                            Agregar
+                                        </Button>
+                                        <FormControlLabel
+                                            label="Incluir gastos"
+                                            control={<Checkbox />}
+                                            checked={includeSpendings}
+                                            onChange={(e) => setIncludeSpendings(e.target.checked)}
+                                        />
+                                    </Box>
+                                    <Box sx={{ display: 'flex', gap: 1 }}>
+                                        {PAYMENT_FREQUENCIES.map(pf => (
+                                            <Box key={pf} sx={{ backgroundColor: setPfColor(pf), px: 1, borderRadius: 1 }}>
+                                                {pf.slice(0, 3)}
+                                            </Box>
+                                        ))}
+                                    </Box>
                                 </Box>
                                 <ShowLoansDetails
                                     loans={loans}

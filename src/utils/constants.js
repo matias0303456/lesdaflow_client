@@ -15,6 +15,8 @@ export const STATUS_MESSAGES = {
 
 export const PAYMENT_FREQUENCIES = ['MENSUAL', 'QUINCENAL', 'SEMANAL', 'LIBRE']
 
+export const PAYMENT_FREQUENCIES_COLORS = ['#a4c8f5', '#eced9f', '#7ff5c0', '#f5c1dd']
+
 export const MONTHS = [
     'ENERO',
     'FEBRERO',

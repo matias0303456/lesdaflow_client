@@ -8,7 +8,7 @@ import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 
 import { AuthContext } from "../../providers/AuthProvider";
 
-import { getLoanTotal, getPaymentAmount, setLocalDate } from "../../utils/helpers";
+import { getLoanTotal, getPaymentAmount, setLocalDate, setPfColor } from "../../utils/helpers";
 import { REPORT_URL } from "../../utils/urls";
 
 export function PaymentHeadCells({
@@ -85,7 +85,7 @@ export function PaymentHeadCells({
                 <TableBody>
                     {rows.map(row => {
                         return (
-                            <TableRow key={row.id}>
+                            <TableRow key={row.id} sx={{ backgroundColor: setPfColor(row.payments_frequency) }}>
                                 <TableCell align="center">
                                     <Box sx={{ display: 'flex', gap: 1 }}>
                                         <Tooltip title="Imprimir PDF">

@@ -1,4 +1,4 @@
-import { PAYMENT_FREQUENCIES } from "./constants"
+import { PAYMENT_FREQUENCIES, PAYMENT_FREQUENCIES_COLORS } from "./constants"
 
 export function a11yProps(index) {
     return {
@@ -132,4 +132,8 @@ export function setLocalDate(loan) {
     const localDate = new Date(loan.date);
     localDate.setHours(localDate.getHours() + localDate.getTimezoneOffset() / 60);
     return localDate;
+}
+
+export function setPfColor(frequency) {
+    return PAYMENT_FREQUENCIES_COLORS[PAYMENT_FREQUENCIES.indexOf(frequency)]
 }

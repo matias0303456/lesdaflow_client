@@ -83,6 +83,7 @@ export function LoanForm({
                             <FormControlLabel
                                 key={pf}
                                 control={<Checkbox />}
+                                disabled={open === 'EDIT'}
                                 label={pf}
                                 checked={formData.payments_frequency === pf}
                                 onChange={() => setFormData({ ...formData, payments_frequency: pf })}
