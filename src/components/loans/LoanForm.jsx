@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import { useEffect, useState } from "react";
-import { Autocomplete, Box, Button, FormControl, Input, InputLabel, MenuItem, Select, TextField, Typography } from "@mui/material";
+import { Autocomplete, Box, Button, Checkbox, FormControl, FormControlLabel, Input, InputLabel, MenuItem, Select, TextField, Typography } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers"
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns"
 import { es } from "date-fns/locale"
@@ -78,6 +78,19 @@ export function LoanForm({
                             />
                         </LocalizationProvider>
                     </FormControl>
+                    <Box sx={{ width: { xs: '100%', sm: '32%' } }}>
+                        {PAYMENT_FREQUENCIES.map(pf => (
+                            <FormControlLabel
+                                key={pf}
+                                control={<Checkbox />}
+                                label={pf}
+                                checked={formData.payments_frequency === pf}
+                                onChange={() => setFormData({ ...formData, payments_frequency: pf })}
+                            />
+                        ))}
+                    </Box>
+                </Box>
+                <Box sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', gap: { xs: 2, sm: 1 } }}>
                     <FormControl sx={{ width: { xs: '100%', sm: '32%' } }}>
                         <TextField
                             type="number"
@@ -101,8 +114,6 @@ export function LoanForm({
                             </Typography>
                         }
                     </FormControl>
-                </Box>
-                <Box sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', gap: { xs: 2, sm: 1 } }}>
                     <FormControl sx={{ width: { xs: '100%', sm: '32%' } }}>
                         <TextField
                             type="number"
@@ -125,14 +136,6 @@ export function LoanForm({
                                 * El interés es requerido.
                             </Typography>
                         }
-                    </FormControl>
-                    <FormControl sx={{ width: { xs: '100%', sm: '32%' } }}>
-                        <InputLabel id="payments_frequency">Total</InputLabel>
-                        <Input
-                            type="text"
-                            disabled
-                            value={getLoanTotal(formData)}
-                        />
                     </FormControl>
                     <FormControl sx={{ width: { xs: '100%', sm: '32%' } }}>
                         <TextField
@@ -217,20 +220,30 @@ export function LoanForm({
                         </Select>
                     </FormControl>
                 </Box>
-                <FormControl sx={{ width: '100%' }}>
-                    <InputLabel id="observations">Observaciones</InputLabel>
-                    <Input
-                        id="observations"
-                        name="observations"
-                        value={formData.observations}
-                        onChange={handleChange}
-                    />
-                    {errors.observations?.type === 'maxLength' &&
-                        <Typography variant="caption" color="red" marginTop={1}>
-                            * Las observaciones son demasiado largas.
-                        </Typography>
-                    }
-                </FormControl>
+                <Box sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', gap: { xs: 2, sm: 1 } }}>
+                    <FormControl sx={{ width: { xs: '100%', sm: '66%' } }}>
+                        <InputLabel id="observations">Observaciones</InputLabel>
+                        <Input
+                            id="observations"
+                            name="observations"
+                            value={formData.observations}
+                            onChange={handleChange}
+                        />
+                        {errors.observations?.type === 'maxLength' &&
+                            <Typography variant="caption" color="red" marginTop={1}>
+                                * Las observaciones son demasiado largas.
+                            </Typography>
+                        }
+                    </FormControl>
+                    <FormControl sx={{ width: { xs: '100%', sm: '32%' } }}>
+                        <InputLabel id="payments_frequency">Total</InputLabel>
+                        <Input
+                            type="text"
+                            disabled
+                            value={getLoanTotal(formData)}
+                        />
+                    </FormControl>
+                </Box>
                 {formData.payments_frequency === PAYMENT_FREQUENCIES[3] &&
                     <FreeLoanPaymentsAbm
                         payments={payments}
