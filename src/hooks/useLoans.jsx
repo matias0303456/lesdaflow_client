@@ -4,7 +4,7 @@ import { MessageContext } from "../providers/MessageProvider"
 import { useQuery } from "./useQuery"
 
 import { LOAN_URL } from "../utils/urls"
-import { PAYMENT_FREQUENCIES, STATUS_CODES } from "../utils/constants"
+import { STATUS_CODES } from "../utils/constants"
 
 export function useLoans() {
 
@@ -15,11 +15,10 @@ export function useLoans() {
     const [loans, setLoans] = useState([])
     const [loadingLoans, setLoadingLoans] = useState(true)
     const [open, setOpen] = useState(null)
-    const [valueTab, setValueTab] = useState(0)
     const [includeSpendings, setIncludeSpendings] = useState(false)
 
-    async function getLoans() {
-        const { status, data } = await handleQuery({ url: `${LOAN_URL}/${PAYMENT_FREQUENCIES[valueTab]}` })
+    async function getLoans(params) {
+        const { status, data } = await handleQuery({ url: `${LOAN_URL}${params ? `/${params}` : ''}` })
         if (status === STATUS_CODES.OK) {
             setLoans(data)
         } else {
@@ -118,8 +117,6 @@ export function useLoans() {
         getLoans,
         loans,
         setLoans,
-        valueTab,
-        setValueTab,
         includeSpendings,
         setIncludeSpendings,
         handleDeleteFreeLoanPaymentDate

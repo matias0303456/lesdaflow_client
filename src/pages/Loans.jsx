@@ -1,5 +1,5 @@
 import { useContext, useEffect } from "react";
-import { Box, Button, Checkbox, FormControlLabel, LinearProgress, Tab, Tabs, Typography } from "@mui/material";
+import { Box, Button, Checkbox, FormControlLabel, LinearProgress, Typography } from "@mui/material";
 
 import { AuthContext } from "../providers/AuthProvider";
 import { useClients } from '../hooks/useClients'
@@ -14,7 +14,6 @@ import { LoginForm } from "../components/common/LoginForm";
 import { ShowLoansDetails } from "../components/loans/ShowLoansDetails";
 import { LoanForm } from "../components/loans/LoanForm";
 
-import { a11yProps } from "../utils/helpers";
 import { PAYMENT_FREQUENCIES } from "../utils/constants";
 
 export function Loans() {
@@ -29,8 +28,6 @@ export function Loans() {
         getLoans,
         loans,
         setLoans,
-        valueTab,
-        setValueTab,
         handleSubmit,
         includeSpendings,
         setIncludeSpendings,
@@ -50,7 +47,7 @@ export function Loans() {
             late_fee_type: 'NOMINAL',
             no_late_fee_days: 0,
             payments_amount: 1,
-            payments_frequency: '',
+            payments_frequency: PAYMENT_FREQUENCIES[0],
             observations: ''
         },
         rules: {
@@ -77,14 +74,10 @@ export function Loans() {
             getClients()
             getUser()
             getSpendings()
+            getLoans()
         }
     }, [])
 
-    useEffect(() => {
-        if (auth) getLoans()
-    }, [valueTab])
-
-    const handleChangeTab = (_, newValueTab) => setValueTab(newValueTab)
     const handleClose = () => reset(setOpen)
 
     return (
@@ -96,19 +89,10 @@ export function Loans() {
                             <LinearProgress />
                         </Box> :
                         <Box sx={{ mx: 1 }}>
-                            <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                                <Tabs value={valueTab} onChange={handleChangeTab} aria-label="basic tabs example">
-                                    {PAYMENT_FREQUENCIES.map((f, idx) => <Tab key={f} label={f} {...a11yProps(idx)} />)}
-                                </Tabs>
-                            </Box>
                             <Box sx={{ pt: 2 }}>
                                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 3 }}>
                                     <Button sx={{ mb: 1, color: '#FFF' }} variant="contained" onClick={() => {
-                                        setFormData({
-                                            ...formData,
-                                            payments_frequency: PAYMENT_FREQUENCIES[valueTab],
-                                            late_fee: user.settings.late_fee
-                                        })
+                                        setFormData({ ...formData, late_fee: user.settings.late_fee })
                                         setOpen('NEW')
                                     }}>
                                         Agregar
@@ -123,7 +107,6 @@ export function Loans() {
                                 <ShowLoansDetails
                                     loans={loans}
                                     setLoans={setLoans}
-                                    frequency={PAYMENT_FREQUENCIES[valueTab]}
                                     setFormDataLoan={setFormData}
                                     setOpenLoan={setOpen}
                                     includeSpendings={includeSpendings}

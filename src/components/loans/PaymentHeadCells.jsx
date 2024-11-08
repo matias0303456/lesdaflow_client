@@ -8,7 +8,6 @@ import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 
 import { AuthContext } from "../../providers/AuthProvider";
 
-import { MONTHS, PAYMENT_FREQUENCIES } from "../../utils/constants";
 import { getLoanTotal, getPaymentAmount, setLocalDate } from "../../utils/helpers";
 import { REPORT_URL } from "../../utils/urls";
 
@@ -19,42 +18,45 @@ export function PaymentHeadCells({
     setFormData,
     setWorkOn,
     setFormDataLoan,
-    setOpenLoan,
-    frequency
+    setOpenLoan
 }) {
     const { auth } = useContext(AuthContext);
 
     const datesSet = Array.from(new Set(rows.flatMap(r => r.payment_dates)));
-    const columns = {
-        [PAYMENT_FREQUENCIES[0]]: Array.from(new Set(datesSet.map(ds => {
-            const date = new Date(ds + 'T00:00:00');
-            return format(date, 'dd-MM-yyyy')
-        }).sort((a, b) => {
-            const [diaA, mesA, añoA] = a.split('-').map(Number)
-            const [diaB, mesB, añoB] = b.split('-').map(Number)
-            const fechaA = new Date(añoA, mesA - 1, diaA)
-            const fechaB = new Date(añoB, mesB - 1, diaB)
-            return fechaA - fechaB
-        }).map(ds => parseInt(ds.split('-')[1] - 1)))),
-        [PAYMENT_FREQUENCIES[1]]: Array.from(new Set(datesSet.map(ds => {
-            const date = new Date(ds + 'T00:00:00');
-            return format(date, 'dd/MM/yyyy')
-        }))),
-        [PAYMENT_FREQUENCIES[2]]: Array.from(new Set(datesSet.map(ds => {
-            const date = new Date(ds + 'T00:00:00');
-            return format(date, 'dd/MM/yyyy')
-        }))),
-        [PAYMENT_FREQUENCIES[3]]: Array.from(new Set(datesSet.map(ds => {
-            const date = new Date(ds + 'T00:00:00');
-            return format(date, 'dd/MM/yyyy')
-        }).sort((a, b) => {
-            const [diaA, mesA, añoA] = a.split('/').map(Number)
-            const [diaB, mesB, añoB] = b.split('/').map(Number)
-            const fechaA = new Date(añoA, mesA - 1, diaA)
-            const fechaB = new Date(añoB, mesB - 1, diaB)
-            return fechaA - fechaB
-        })))
-    };
+    const columns = Array.from(new Set(datesSet.map(ds => {
+        const date = new Date(ds + 'T00:00:00')
+        return format(date, 'dd/MM/yy')
+    })))
+    // const columns = {
+    //     [PAYMENT_FREQUENCIES[0]]: Array.from(new Set(datesSet.map(ds => {
+    //         const date = new Date(ds + 'T00:00:00');
+    //         return format(date, 'dd/MM/yy')
+    //     }).sort((a, b) => {
+    //         const [diaA, mesA, añoA] = a.split('/').map(Number)
+    //         const [diaB, mesB, añoB] = b.split('/').map(Number)
+    //         const fechaA = new Date(añoA, mesA - 1, diaA)
+    //         const fechaB = new Date(añoB, mesB - 1, diaB)
+    //         return fechaA - fechaB
+    //     }))),
+    //     [PAYMENT_FREQUENCIES[1]]: Array.from(new Set(datesSet.map(ds => {
+    //         const date = new Date(ds + 'T00:00:00');
+    //         return format(date, 'dd/MM/yy')
+    //     }))),
+    //     [PAYMENT_FREQUENCIES[2]]: Array.from(new Set(datesSet.map(ds => {
+    //         const date = new Date(ds + 'T00:00:00');
+    //         return format(date, 'dd/MM/yy')
+    //     }))),
+    //     [PAYMENT_FREQUENCIES[3]]: Array.from(new Set(datesSet.map(ds => {
+    //         const date = new Date(ds + 'T00:00:00');
+    //         return format(date, 'dd/MM/yy')
+    //     }).sort((a, b) => {
+    //         const [diaA, mesA, añoA] = a.split('/').map(Number)
+    //         const [diaB, mesB, añoB] = b.split('/').map(Number)
+    //         const fechaA = new Date(añoA, mesA - 1, diaA)
+    //         const fechaB = new Date(añoB, mesB - 1, diaB)
+    //         return fechaA - fechaB
+    //     })))
+    // };
 
     return (
         <TableContainer component={Paper}>
@@ -71,10 +73,10 @@ export function PaymentHeadCells({
                         <TableCell align="center">Pago ($)</TableCell>
                         <TableCell align="center">Mora (%)</TableCell>
                         <TableCell align="center">Obs.</TableCell>
-                        {columns[frequency].map(i => {
+                        {columns.map(col => {
                             return (
-                                <TableCell key={i} align="center">
-                                    {frequency === PAYMENT_FREQUENCIES[0] ? MONTHS[i].slice(0, 3) : i}
+                                <TableCell key={col} align="center">
+                                    {col}
                                 </TableCell>
                             )
                         })}
@@ -122,21 +124,17 @@ export function PaymentHeadCells({
                                 <TableCell align="center">{row.late_fee}</TableCell>
                                 <TableCell align="center">{row.observations}</TableCell>
                                 {
-                                    columns[frequency].map((i, cIdx) => {
+                                    columns.map((col, colIdx) => {
                                         const paymentCorresponds = row.payment_dates.find(pd => {
                                             const date = new Date(pd + 'T00:00:00')
-                                            if (frequency === PAYMENT_FREQUENCIES[0]) return date.getMonth() === i;
-                                            return format(date, 'dd/MM/yyyy') === i;
+                                            return format(date, 'dd/MM/yy') === col;
                                         });
                                         const paymentExists = row.payments.find((p, pIdx) => {
-                                            if (frequency === PAYMENT_FREQUENCIES[3]) {
-                                                return p.date.split('T')[0].split('-').reverse().join('/') === i
-                                            }
-                                            return cIdx === pIdx
+                                            return colIdx === pIdx
                                         });
                                         const isNextPendingPayment = row.payment_dates.indexOf(paymentCorresponds) === row.payments.length
                                         return (
-                                            <TableCell key={i} align="center">
+                                            <TableCell key={col} align="center">
                                                 {paymentCorresponds && (
                                                     <>
                                                         {paymentExists ? (

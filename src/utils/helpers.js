@@ -19,14 +19,14 @@ export function getLoansMonths(loansWithPaymentDates) {
     return Array.from(set).sort((a, b) => b - a)
 }
 
-export function getPaymentDates(loan, frequency) {
-    if (frequency === PAYMENT_FREQUENCIES[3]) {
+export function getPaymentDates(loan) {
+    if (loan.payments_frequency === PAYMENT_FREQUENCIES[3]) {
         return loan.free_loan_payment_dates.map(d => new Date(d.date).toISOString().split('T')[0])
     }
     const paymentDates = []
     for (let i = 1; i <= loan.payments_amount; i++) {
         const newDate = setLocalDate(loan)
-        switch (frequency) {
+        switch (loan.payments_frequency) {
             case PAYMENT_FREQUENCIES[0]:
                 // esto lo hice para no tener que modificar las fechas de los pagos ya cargados
                 if (loan.id <= 50 && loan.id !== 39) {
@@ -46,7 +46,7 @@ export function getPaymentDates(loan, frequency) {
         }
         paymentDates.push(new Date(newDate).toISOString().split('T')[0])
     }
-    if (frequency === PAYMENT_FREQUENCIES[0]) {
+    if (loan.payments_frequency === PAYMENT_FREQUENCIES[0]) {
         return paymentDates.map((dateStr, index, arr) => {
             const currentDate = new Date(dateStr + 'T00:00:00');
 

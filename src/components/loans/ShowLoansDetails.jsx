@@ -17,7 +17,6 @@ import { MONTHS } from "../../utils/constants";
 export function ShowLoansDetails({
     loans,
     setLoans,
-    frequency,
     setFormDataLoan,
     setOpenLoan,
     includeSpendings,
@@ -57,7 +56,7 @@ export function ShowLoansDetails({
         setExpanded(newExpanded ? panel : false)
     }
 
-    const loansWithPaymentDates = loans.map(l => ({ ...l, payment_dates: getPaymentDates(l, frequency) }))
+    const loansWithPaymentDates = loans.map(l => ({ ...l, payment_dates: getPaymentDates(l) }))
     const loansYears = getLoansYears(loansWithPaymentDates)
 
     return (
@@ -87,7 +86,6 @@ export function ShowLoansDetails({
                                                     setWorkOn={setWorkOn}
                                                     setFormDataLoan={setFormDataLoan}
                                                     setOpenLoan={setOpenLoan}
-                                                    frequency={frequency}
                                                 />
                                                 <TotalsByMonth
                                                     loans={rows}
