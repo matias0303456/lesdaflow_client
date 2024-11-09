@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import { useContext } from "react";
-import { Box, Checkbox, Chip, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip } from "@mui/material"
+import { Box, Checkbox, Chip, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip, Typography } from "@mui/material"
 import { format } from "date-fns"
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -20,13 +20,8 @@ export function PaymentHeadCells({
     setFormDataLoan,
     setOpenLoan
 }) {
-    const { auth } = useContext(AuthContext);
 
-    const datesSet = Array.from(new Set(rows.flatMap(r => r.payment_dates)));
-    const columns = Array.from(new Set(datesSet.map(ds => {
-        const date = new Date(ds + 'T00:00:00')
-        return format(date, 'dd/MM/yy')
-    })))
+    const { auth } = useContext(AuthContext);
 
     return (
         <TableContainer component={Paper}>
@@ -43,13 +38,10 @@ export function PaymentHeadCells({
                         <TableCell align="center">Cuota ($)</TableCell>
                         <TableCell align="center">Mora (%)</TableCell>
                         <TableCell align="center">Obs.</TableCell>
-                        {columns.map(col => {
-                            return (
-                                <TableCell key={col} align="center">
-                                    {col}
-                                </TableCell>
-                            )
-                        })}
+                        {rows.length > 0 &&
+                            Array.from({ length: Math.max(...rows.map(r => r.payment_dates.length)) })
+                                .map((col, idx) => <TableCell key={col}>{`Cuota ${idx + 1}`}</TableCell>)
+                        }
                     </TableRow>
                 </TableHead>
                 <TableBody>
@@ -93,56 +85,43 @@ export function PaymentHeadCells({
                                 <TableCell align="center">{getPaymentAmount(row)}</TableCell>
                                 <TableCell align="center">{row.late_fee}</TableCell>
                                 <TableCell align="center">{row.observations}</TableCell>
-                                {
-                                    columns.map(col => {
-                                        const paymentCorresponds = row.payment_dates.find(pd => {
-                                            const date = new Date(pd + 'T00:00:00')
-                                            return format(date, 'dd/MM/yy') === col;
-                                        });
-                                        const paymentExists = row.payments.find((_, pIdx) => {
-                                            const rowCols = columns.filter(c => {
-                                                return row.payment_dates.map(pd => {
-                                                    const pdDate = new Date(pd + 'T00:00:00')
-                                                    return format(pdDate, 'dd/MM/yy')
-                                                }).includes(c)
-                                            })
-                                            return rowCols[pIdx] === col;
-                                        });
-                                        const isNextPendingPayment = row.payment_dates.indexOf(paymentCorresponds) === row.payments.length
-                                        return (
-                                            <TableCell key={col} align="center">
-                                                {paymentCorresponds && (
-                                                    <>
-                                                        {paymentExists ? (
-                                                            <Chip
-                                                                label="Pagado"
-                                                                onClick={() => {
-                                                                    setWorkOn({ loan: row, payment: paymentCorresponds });
-                                                                    setFormData(paymentExists);
-                                                                    setOpen('PAYMENT-DETAILS');
-                                                                }}
-                                                            />
-                                                        ) : (
-                                                            <Checkbox
-                                                                checked={false}
-                                                                disabled={!isNextPendingPayment}
-                                                                onClick={() => {
-                                                                    setWorkOn({ loan: row, payment: paymentCorresponds });
-                                                                    setFormData({
-                                                                        ...formData,
-                                                                        date: new Date(paymentCorresponds + 'T00:00:00'),
-                                                                        loan_id: row.id
-                                                                    });
-                                                                    setOpen('NEW-PAYMENT');
-                                                                }}
-                                                            />
-                                                        )}
-                                                    </>
-                                                )}
-                                            </TableCell>
-                                        );
-                                    })
-                                }
+                                {row.payment_dates.map((pd, pdIdx) => {
+                                    const paymentExists = row.payments.find((_, pIdx) => pdIdx === pIdx)
+                                    const isNextPendingPayment = pdIdx === row.payments.length
+                                    return (
+                                        <TableCell key={pd} align="center">
+                                            {paymentExists ? (
+                                                <Chip
+                                                    label="Pagado"
+                                                    onClick={() => {
+                                                        setWorkOn({ loan: row, payment: pd });
+                                                        setFormData(paymentExists);
+                                                        setOpen('PAYMENT-DETAILS');
+                                                    }}
+                                                />
+                                            ) : (
+                                                <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                                                    <Checkbox
+                                                        checked={false}
+                                                        disabled={!isNextPendingPayment}
+                                                        onClick={() => {
+                                                            setWorkOn({ loan: row, payment: pd });
+                                                            setFormData({
+                                                                ...formData,
+                                                                date: new Date(pd + 'T00:00:00'),
+                                                                loan_id: row.id
+                                                            });
+                                                            setOpen('NEW-PAYMENT');
+                                                        }}
+                                                    />
+                                                    <Typography variant="small">
+                                                        {format(new Date(pd + 'T00:00:00'), 'dd/MM/yy')}
+                                                    </Typography>
+                                                </Box>
+                                            )}
+                                        </TableCell>
+                                    )
+                                })}
                             </TableRow>
                         );
                     })}

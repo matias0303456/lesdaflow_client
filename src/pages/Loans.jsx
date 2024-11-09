@@ -61,6 +61,9 @@ export function Loans() {
             late_fee: {
                 required: true
             },
+            interest: {
+                required: true
+            },
             payments_amount: {
                 required: true
             },
