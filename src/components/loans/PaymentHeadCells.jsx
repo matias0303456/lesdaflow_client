@@ -40,7 +40,7 @@ export function PaymentHeadCells({
                         <TableCell align="center">Monto ($)</TableCell>
                         <TableCell align="center">Int. (%)</TableCell>
                         <TableCell align="center">Total ($)</TableCell>
-                        <TableCell align="center">Pago ($)</TableCell>
+                        <TableCell align="center">Cuota ($)</TableCell>
                         <TableCell align="center">Mora (%)</TableCell>
                         <TableCell align="center">Obs.</TableCell>
                         {columns.map(col => {
