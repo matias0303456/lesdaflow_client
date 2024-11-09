@@ -8,7 +8,7 @@ import { es } from "date-fns/locale"
 import { FreeLoanPaymentsAbm } from "./FreeLoanPaymentsAbm";
 
 import { PAYMENT_FREQUENCIES } from "../../utils/constants";
-import { getLoanTotal, getPaymentAmount } from "../../utils/helpers";
+import { clientHasPendingLoans, getLoanTotal, getPaymentAmount } from "../../utils/helpers";
 
 export function LoanForm({
     open,
@@ -23,7 +23,10 @@ export function LoanForm({
     disabled,
     setDisabled,
     handleClose,
-    handleDeleteFreeLoanPaymentDate
+    handleDeleteFreeLoanPaymentDate,
+    theresPendingLoans,
+    setTheresPendingLoans,
+    loansWithPaymentDates
 }) {
 
     const [payments, setPayments] = useState([])
@@ -44,6 +47,12 @@ export function LoanForm({
         }
     }, [payments, formData.payments_frequency])
 
+    useEffect(() => {
+        if (open === 'NEW') {
+            setTheresPendingLoans(clientHasPendingLoans(formData.client_id, loansWithPaymentDates))
+        }
+    }, [formData, open])
+
     return (
         <form onSubmit={e => handleSubmit(e, formData, validate, reset, setDisabled)}>
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: { xs: 2, sm: 3 } }}>
@@ -61,6 +70,11 @@ export function LoanForm({
                         {errors.client_id?.type === 'required' &&
                             <Typography variant="caption" color="red" marginTop={1}>
                                 * El cliente es requerido.
+                            </Typography>
+                        }
+                        {theresPendingLoans &&
+                            <Typography variant="caption" color="red" marginTop={1}>
+                                * El cliente tiene préstamos pendientes.
                             </Typography>
                         }
                     </FormControl>

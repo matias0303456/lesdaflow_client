@@ -138,3 +138,12 @@ export function setLocalDate(loan) {
 export function setPfColor(frequency) {
     return PAYMENT_FREQUENCIES_COLORS[PAYMENT_FREQUENCIES.indexOf(frequency)]
 }
+
+export function loanIsPending(loan) {
+    return loan.payments.length < loan.payment_dates.length
+}
+
+export function clientHasPendingLoans(id, loansWithPaymentDates) {
+    if (!id || id.toString().length === 0) return false
+    return loansWithPaymentDates.some(loan => loan.client_id === parseInt(id) && loanIsPending(loan))
+}

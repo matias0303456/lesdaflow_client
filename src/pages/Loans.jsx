@@ -15,7 +15,7 @@ import { ShowLoansDetails } from "../components/loans/ShowLoansDetails";
 import { LoanForm } from "../components/loans/LoanForm";
 
 import { PAYMENT_FREQUENCIES } from "../utils/constants";
-import { setPfColor } from "../utils/helpers";
+import { getPaymentDates, setPfColor } from "../utils/helpers";
 
 export function Loans() {
 
@@ -32,7 +32,9 @@ export function Loans() {
         handleSubmit,
         includeSpendings,
         setIncludeSpendings,
-        handleDeleteFreeLoanPaymentDate
+        handleDeleteFreeLoanPaymentDate,
+        theresPendingLoans,
+        setTheresPendingLoans
     } = useLoans()
     const { loadingClients, getClients, clients } = useClients()
     const { loadingUser, getUser, user } = useUsers()
@@ -83,6 +85,7 @@ export function Loans() {
     }, [])
 
     const handleClose = () => reset(setOpen)
+    const loansWithPaymentDates = loans.map(l => ({ ...l, payment_dates: getPaymentDates(l) }))
 
     return (
         <>
@@ -124,6 +127,7 @@ export function Loans() {
                                     setOpenLoan={setOpen}
                                     includeSpendings={includeSpendings}
                                     spendings={spendings}
+                                    loansWithPaymentDates={loansWithPaymentDates}
                                 />
                             </Box>
                             <ModalComponent open={open === 'NEW' || open === 'EDIT'} onClose={handleClose}>
@@ -145,6 +149,9 @@ export function Loans() {
                                     setDisabled={setDisabled}
                                     handleClose={handleClose}
                                     handleDeleteFreeLoanPaymentDate={handleDeleteFreeLoanPaymentDate}
+                                    theresPendingLoans={theresPendingLoans}
+                                    setTheresPendingLoans={setTheresPendingLoans}
+                                    loansWithPaymentDates={loansWithPaymentDates}
                                 />
                             </ModalComponent>
                             <ModalComponent open={open === 'DELETE'} onClose={handleClose} reduceWidth={900}>

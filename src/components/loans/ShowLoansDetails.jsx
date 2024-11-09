@@ -11,7 +11,7 @@ import { PaymentForm } from "./PaymentForm";
 import { TotalsByMonth } from "./TotalsByMonth";
 import { ModalComponent } from "../common/ModalComponent";
 
-import { filterRowsByMonthAndYear, getLoansMonths, getLoansYears, getPaymentDates } from "../../utils/helpers";
+import { filterRowsByMonthAndYear, getLoansMonths, getLoansYears } from "../../utils/helpers";
 import { MONTHS } from "../../utils/constants";
 
 export function ShowLoansDetails({
@@ -20,7 +20,8 @@ export function ShowLoansDetails({
     setFormDataLoan,
     setOpenLoan,
     includeSpendings,
-    spendings
+    spendings,
+    loansWithPaymentDates
 }) {
 
     const { open, setOpen, handleSubmit, handleDelete } = usePayments()
@@ -56,7 +57,6 @@ export function ShowLoansDetails({
         setExpanded(newExpanded ? panel : false)
     }
 
-    const loansWithPaymentDates = loans.map(l => ({ ...l, payment_dates: getPaymentDates(l) }))
     const loansYears = getLoansYears(loansWithPaymentDates)
 
     return (

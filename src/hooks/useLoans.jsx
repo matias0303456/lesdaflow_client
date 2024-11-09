@@ -16,6 +16,7 @@ export function useLoans() {
     const [loadingLoans, setLoadingLoans] = useState(true)
     const [open, setOpen] = useState(null)
     const [includeSpendings, setIncludeSpendings] = useState(false)
+    const [theresPendingLoans, setTheresPendingLoans] = useState(false)
 
     async function getLoans(params) {
         const { status, data } = await handleQuery({ url: `${LOAN_URL}${params ? `/${params}` : ''}` })
@@ -119,6 +120,8 @@ export function useLoans() {
         setLoans,
         includeSpendings,
         setIncludeSpendings,
-        handleDeleteFreeLoanPaymentDate
+        handleDeleteFreeLoanPaymentDate,
+        theresPendingLoans,
+        setTheresPendingLoans
     }
 }
