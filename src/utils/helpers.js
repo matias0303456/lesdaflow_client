@@ -86,7 +86,8 @@ export function getLoanTotal(loan) {
 
 export function getPaymentAmount(loan) {
     const total = parseFloat(getLoanTotal(loan))
-    return parseFloat(total / loan.payments_amount).toFixed(2)
+    const result = parseFloat(total / loan.payments_amount).toFixed(2)
+    return isNaN(result) ? 0 : result
 }
 
 export function getPaymentAmountWithLateFee(workOn, formData) {

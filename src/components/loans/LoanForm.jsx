@@ -8,7 +8,7 @@ import { es } from "date-fns/locale"
 import { FreeLoanPaymentsAbm } from "./FreeLoanPaymentsAbm";
 
 import { PAYMENT_FREQUENCIES } from "../../utils/constants";
-import { getLoanTotal } from "../../utils/helpers";
+import { getLoanTotal, getPaymentAmount } from "../../utils/helpers";
 
 export function LoanForm({
     open,
@@ -222,7 +222,7 @@ export function LoanForm({
                     </FormControl>
                 </Box>
                 <Box sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', gap: { xs: 2, sm: 1 } }}>
-                    <FormControl sx={{ width: { xs: '100%', sm: '66%' } }}>
+                    <FormControl sx={{ width: { xs: '100%', sm: '32%' } }}>
                         <InputLabel id="observations">Observaciones</InputLabel>
                         <Input
                             id="observations"
@@ -235,6 +235,14 @@ export function LoanForm({
                                 * Las observaciones son demasiado largas.
                             </Typography>
                         }
+                    </FormControl>
+                    <FormControl sx={{ width: { xs: '100%', sm: '32%' } }}>
+                        <InputLabel id="payments_frequency">Monto por cuota</InputLabel>
+                        <Input
+                            type="text"
+                            disabled
+                            value={getPaymentAmount(formData)}
+                        />
                     </FormControl>
                     <FormControl sx={{ width: { xs: '100%', sm: '32%' } }}>
                         <InputLabel id="payments_frequency">Total</InputLabel>
