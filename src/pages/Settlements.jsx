@@ -97,7 +97,7 @@ export function Settlements() {
             disablePadding: true,
             label: "Total",
             sorter: (row) => row.commission_poxipol + row.commission_contado + row.commission_cta_cte,
-            accessor: (row) => `$${row.commission_poxipol + row.commission_contado + row.commission_cta_cte}`
+            accessor: (row) => `$${(row.commission_poxipol + row.commission_contado + row.commission_cta_cte).toFixed(2)}`
         }
     ];
 
