@@ -37,11 +37,11 @@ export function PaymentHeadCells({
                         <TableCell align="center">Total ($)</TableCell>
                         <TableCell align="center">Cuota ($)</TableCell>
                         <TableCell align="center">Mora (%)</TableCell>
-                        <TableCell align="center">Obs.</TableCell>
                         {rows.length > 0 &&
                             Array.from({ length: Math.max(...rows.map(r => r.payment_dates.length)) })
                                 .map((col, idx) => <TableCell key={col}>{`Cuota ${idx + 1}`}</TableCell>)
                         }
+                        <TableCell align="center">Obs.</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
@@ -84,7 +84,6 @@ export function PaymentHeadCells({
                                 <TableCell align="center">{getLoanTotal(row)}</TableCell>
                                 <TableCell align="center">{getPaymentAmount(row)}</TableCell>
                                 <TableCell align="center">{row.late_fee}</TableCell>
-                                <TableCell align="center">{row.observations}</TableCell>
                                 {row.payment_dates.map((pd, pdIdx) => {
                                     const paymentExists = row.payments.find((_, pIdx) => pdIdx === pIdx)
                                     const isNextPendingPayment = pdIdx === row.payments.length
@@ -122,6 +121,10 @@ export function PaymentHeadCells({
                                         </TableCell>
                                     )
                                 })}
+                                {Array.from({
+                                    length: Math.max(...rows.map(r => r.payment_dates.length)) - row.payment_dates.length
+                                }).map((_, idx) => <TableCell key={idx} />)}
+                                <TableCell align="center">{row.observations}</TableCell>
                             </TableRow>
                         );
                     })}
