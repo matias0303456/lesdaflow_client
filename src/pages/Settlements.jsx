@@ -90,6 +90,14 @@ export function Settlements() {
             label: "Com. Poxipol",
             sorter: (row) => row.commission_poxipol,
             accessor: (row) => `$${row.commission_poxipol}`
+        },
+        {
+            id: "total",
+            numeric: false,
+            disablePadding: true,
+            label: "Total",
+            sorter: (row) => row.commission_poxipol + row.commission_contado + row.commission_cta_cte,
+            accessor: (row) => `$${row.commission_poxipol + row.commission_contado + row.commission_cta_cte}`
         }
     ];
 
