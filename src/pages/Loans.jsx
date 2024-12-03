@@ -1,12 +1,11 @@
 import { useContext, useEffect } from "react";
-import { Box, Button, Checkbox, FormControlLabel, LinearProgress, Typography } from "@mui/material";
+import { Box, Button, LinearProgress, Typography } from "@mui/material";
 
 import { AuthContext } from "../providers/AuthProvider";
 import { useClients } from '../hooks/useClients'
 import { useForm } from "../hooks/useForm";
 import { useLoans } from "../hooks/useLoans";
 import { useUsers } from "../hooks/useUsers";
-import { useSpendings } from "../hooks/useSpendings";
 
 import { Layout } from "../components/common/Layout";
 import { ModalComponent } from "../components/common/ModalComponent";
@@ -30,15 +29,12 @@ export function Loans() {
         loans,
         setLoans,
         handleSubmit,
-        includeSpendings,
-        setIncludeSpendings,
         handleDeleteFreeLoanPaymentDate,
         theresPendingLoans,
         setTheresPendingLoans
     } = useLoans()
     const { loadingClients, getClients, clients } = useClients()
     const { loadingUser, getUser, user } = useUsers()
-    const { spendings, getSpendings, loadingSpendings } = useSpendings()
     const { formData, setFormData, disabled, reset, setDisabled, validate, errors, handleChange } = useForm({
         defaultData: {
             id: '',
@@ -79,7 +75,6 @@ export function Loans() {
         if (auth) {
             getClients()
             getUser()
-            getSpendings()
             getLoans()
         }
     }, [])
@@ -91,27 +86,19 @@ export function Loans() {
         <>
             {auth ?
                 <Layout title="Préstamos">
-                    {loadingLoans || loadingClients || loadingUser || loadingSpendings ?
+                    {loadingLoans || loadingClients || loadingUser ?
                         <Box sx={{ width: '100%', m: 1 }}>
                             <LinearProgress />
                         </Box> :
                         <Box sx={{ mx: 1 }}>
                             <Box sx={{ pt: 2 }}>
                                 <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 3 }}>
-                                        <Button sx={{ mb: 1, color: '#FFF' }} variant="contained" onClick={() => {
-                                            setFormData({ ...formData, late_fee: user.settings.late_fee })
-                                            setOpen('NEW')
-                                        }}>
-                                            Agregar
-                                        </Button>
-                                        <FormControlLabel
-                                            label="Incluir gastos"
-                                            control={<Checkbox />}
-                                            checked={includeSpendings}
-                                            onChange={(e) => setIncludeSpendings(e.target.checked)}
-                                        />
-                                    </Box>
+                                    <Button sx={{ mb: 1, color: '#FFF' }} variant="contained" onClick={() => {
+                                        setFormData({ ...formData, late_fee: user.settings.late_fee })
+                                        setOpen('NEW')
+                                    }}>
+                                        Agregar
+                                    </Button>
                                     <Box sx={{ display: 'flex', gap: 1 }}>
                                         {PAYMENT_FREQUENCIES.map(pf => (
                                             <Box key={pf} sx={{ backgroundColor: setPfColor(pf), px: 1, borderRadius: 1 }}>
@@ -125,8 +112,6 @@ export function Loans() {
                                     setLoans={setLoans}
                                     setFormDataLoan={setFormData}
                                     setOpenLoan={setOpen}
-                                    includeSpendings={includeSpendings}
-                                    spendings={spendings}
                                     loansWithPaymentDates={loansWithPaymentDates}
                                 />
                             </Box>

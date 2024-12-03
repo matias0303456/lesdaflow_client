@@ -19,8 +19,6 @@ export function ShowLoansDetails({
     setLoans,
     setFormDataLoan,
     setOpenLoan,
-    includeSpendings,
-    spendings,
     loansWithPaymentDates
 }) {
 
@@ -87,11 +85,7 @@ export function ShowLoansDetails({
                                                     setFormDataLoan={setFormDataLoan}
                                                     setOpenLoan={setOpenLoan}
                                                 />
-                                                <TotalsByMonth
-                                                    loans={rows}
-                                                    includeSpendings={includeSpendings}
-                                                    spendings={spendings.filter(s => new Date(s.date).getMonth() === month)}
-                                                />
+                                                <TotalsByMonth loans={rows} />
                                             </Box>
                                         )
                                     })}

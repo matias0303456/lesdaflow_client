@@ -15,7 +15,6 @@ export function useLoans() {
     const [loans, setLoans] = useState([])
     const [loadingLoans, setLoadingLoans] = useState(true)
     const [open, setOpen] = useState(null)
-    const [includeSpendings, setIncludeSpendings] = useState(false)
     const [theresPendingLoans, setTheresPendingLoans] = useState(false)
 
     async function getLoans(params) {
@@ -118,8 +117,6 @@ export function useLoans() {
         getLoans,
         loans,
         setLoans,
-        includeSpendings,
-        setIncludeSpendings,
         handleDeleteFreeLoanPaymentDate,
         theresPendingLoans,
         setTheresPendingLoans
