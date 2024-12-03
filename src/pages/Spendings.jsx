@@ -67,6 +67,14 @@ export function Spendings() {
             accessor: 'id'
         },
         {
+            id: "available_interest",
+            numeric: false,
+            disablePadding: true,
+            label: "Int. disponible",
+            sorter: 'available_interest',
+            accessor: 'available_interest'
+        },
+        {
             id: "date",
             numeric: false,
             disablePadding: true,
@@ -89,6 +97,14 @@ export function Spendings() {
             label: "Descripción",
             sorter: (row) => row.description,
             accessor: (row) => row.description
+        },
+        {
+            id: "difference",
+            numeric: false,
+            disablePadding: true,
+            label: "Saldo",
+            sorter: 'difference',
+            accessor: 'difference'
         }
     ], [])
 
