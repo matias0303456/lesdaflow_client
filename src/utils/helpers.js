@@ -1,5 +1,5 @@
 export function getStock(product) {
-    if (!product) return
+    if (!product) return 0
     return product.incomes?.reduce((prev, curr) => {
         return prev + curr.amount
     }, 0) - product.sale_products?.reduce((prev, curr) => {
