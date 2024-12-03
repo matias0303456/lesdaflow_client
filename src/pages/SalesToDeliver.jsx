@@ -146,8 +146,8 @@ export function SalesToDeliver() {
             numeric: false,
             disablePadding: true,
             label: 'Entregado',
-            sorter: (row) => row.is_delivered ? 1 : 0,
-            accessor: (row) => row.is_delivered ? 'Sí' : 'No'
+            sorter: (row) => row.is_delivered ? format(new Date(row.delivered_at), 'dd/MM/yy') : 'No',
+            accessor: (row) => row.is_delivered ? format(new Date(row.delivered_at), 'dd/MM/yy') : 'No'
         },
         {
             id: 'total',
