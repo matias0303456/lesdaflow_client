@@ -1,4 +1,5 @@
-import { useContext, useState } from "react"
+import { useContext, useMemo, useState } from "react"
+import { format } from "date-fns";
 
 import { useQuery } from "./useQuery"
 import { MessageContext } from "../providers/MessageProvider"
@@ -14,6 +15,7 @@ export function useSpendings() {
 
     const [spendings, setSpendings] = useState([])
     const [count, setCount] = useState(0)
+    const [total, setTotal] = useState(0)
     const [open, setOpen] = useState(null)
     const [loadingSpendings, setLoadingSpendings] = useState(true)
     const [filter, setFilter] = useState({
@@ -36,6 +38,19 @@ export function useSpendings() {
         setLoadingSpendings(false)
     }
 
+    async function getTotal() {
+        const { status, data } = await handleQuery({
+            url: `${SPENDING_URL}/total`
+        })
+        if (status === STATUS_CODES.OK) {
+            setTotal(data.total)
+        } else {
+            setMessage(data.message)
+            setSeverity('error')
+            setOpenMessage(true)
+        }
+    }
+
     async function handleSubmit(e, validate, formData, reset, setDisabled) {
         e.preventDefault()
         if (validate()) {
@@ -48,8 +63,8 @@ export function useSpendings() {
             })
             if (status === STATUS_CODES.OK || status === STATUS_CODES.CREATED) {
                 if (open === 'NEW') {
-                    setSpendings([data, ...spendings])
-                    setCount(prev => prev + 1)
+                    const { page, offset } = filter
+                    getSpendings(`?page=${page}&offset=${offset}`)
                     setMessage('Gasto creado correctamente.')
                 } else {
                     setSpendings([data, ...spendings.filter(s => s.id !== data.id)])
@@ -86,6 +101,57 @@ export function useSpendings() {
         reset(setOpen)
     }
 
+    const headCells = useMemo(() => [
+        {
+            id: "id",
+            numeric: true,
+            disablePadding: false,
+            label: "#",
+            sorter: (row) => row.id,
+            accessor: 'id'
+        },
+        {
+            id: "available_interest",
+            numeric: false,
+            disablePadding: true,
+            label: "Int. disponible",
+            sorter: 'available_interest',
+            accessor: 'available_interest'
+        },
+        {
+            id: "date",
+            numeric: false,
+            disablePadding: true,
+            label: "Fecha",
+            sorter: (row) => format(new Date(row.date), 'dd/MM/yyyy'),
+            accessor: (row) => format(new Date(row.date), 'dd/MM/yyyy')
+        },
+        {
+            id: "amount",
+            numeric: false,
+            disablePadding: true,
+            label: "Monto",
+            sorter: (row) => row.amount,
+            accessor: (row) => `$${row.amount}`
+        },
+        {
+            id: "description",
+            numeric: false,
+            disablePadding: true,
+            label: "Descripción",
+            sorter: (row) => row.description,
+            accessor: (row) => row.description
+        },
+        {
+            id: "difference",
+            numeric: false,
+            disablePadding: true,
+            label: "Saldo",
+            sorter: 'difference',
+            accessor: 'difference'
+        }
+    ], [])
+
     return {
         loadingSpendings,
         setLoadingSpendings,
@@ -97,6 +163,9 @@ export function useSpendings() {
         spendings,
         count,
         filter,
-        setFilter
+        setFilter,
+        total,
+        getTotal,
+        headCells
     }
 }

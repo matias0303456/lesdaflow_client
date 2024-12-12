@@ -1,9 +1,8 @@
-import { useContext, useEffect, useMemo } from "react";
+import { useContext, useEffect } from "react";
 import { Box, Button, FormControl, Input, InputLabel, LinearProgress, TextField, Typography } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { es } from "date-fns/locale";
-import { format } from "date-fns";
 
 import { AuthContext } from "../providers/AuthProvider";
 import { useForm } from "../hooks/useForm";
@@ -28,7 +27,10 @@ export function Spendings() {
         spendings,
         filter,
         setFilter,
-        count
+        count,
+        total,
+        getTotal,
+        headCells
     } = useSpendings()
     const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
         defaultData: {
@@ -49,6 +51,10 @@ export function Spendings() {
     })
 
     useEffect(() => {
+        if (auth) getTotal()
+    }, [])
+
+    useEffect(() => {
         const { page, offset } = filter
         getSpendings(`?page=${page}&offset=${offset}`)
     }, [filter])
@@ -56,57 +62,6 @@ export function Spendings() {
     const handleClose = () => {
         reset(setOpen)
     }
-
-    const headCells = useMemo(() => [
-        {
-            id: "id",
-            numeric: true,
-            disablePadding: false,
-            label: "#",
-            sorter: (row) => row.id,
-            accessor: 'id'
-        },
-        {
-            id: "available_interest",
-            numeric: false,
-            disablePadding: true,
-            label: "Int. disponible",
-            sorter: 'available_interest',
-            accessor: 'available_interest'
-        },
-        {
-            id: "date",
-            numeric: false,
-            disablePadding: true,
-            label: "Fecha",
-            sorter: (row) => format(new Date(row.date), 'dd/MM/yyyy'),
-            accessor: (row) => format(new Date(row.date), 'dd/MM/yyyy')
-        },
-        {
-            id: "amount",
-            numeric: false,
-            disablePadding: true,
-            label: "Monto",
-            sorter: (row) => row.amount,
-            accessor: (row) => `$${row.amount}`
-        },
-        {
-            id: "description",
-            numeric: false,
-            disablePadding: true,
-            label: "Descripción",
-            sorter: (row) => row.description,
-            accessor: (row) => row.description
-        },
-        {
-            id: "difference",
-            numeric: false,
-            disablePadding: true,
-            label: "Saldo",
-            sorter: 'difference',
-            accessor: 'difference'
-        }
-    ], [])
 
     return (
         <>
@@ -128,13 +83,16 @@ export function Spendings() {
                                 showEditAction
                                 showDeleteAction
                                 contentHeader={
-                                    <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: 1 }}>
+                                    <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 1 }}>
                                         <Button variant="outlined" onClick={() => {
                                             reset()
                                             setOpen('NEW')
                                         }}>
                                             Agregar
                                         </Button>
+                                        <Typography variant="h6">
+                                            Total: {total}
+                                        </Typography>
                                     </Box>
                                 }
                             >
