@@ -105,7 +105,7 @@ export function getAccountStatus(sale) {
 }
 
 export function getRegisterTotal(register, payments, close = false) {
-    if (register.created_at === register.updated_at && !close) return '$0'
+    if (register.is_open && !close) return '$0'
     const total = payments.filter(p => {
         return p.sale.client.user_id === register.user_id &&
             new Date(p.date).getTime() > new Date(register.created_at).getTime() &&
@@ -143,3 +143,7 @@ export function getNewBalanceAfterPayment(sale, formData) {
     if (isNaN(result)) return getSaleDifference(sale).replace('$', '')
     return result.toFixed(2)
 }
+
+export function allRegistersAreClosed(state, formData) {
+    return !state.registers.data.find(r => r.id === formData.id)?.is_open
+} 

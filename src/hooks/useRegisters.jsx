@@ -13,6 +13,7 @@ export function useRegisters() {
     const { page, offset, count, setCount } = useContext(PageContext)
     const { setMessage, setOpenMessage, setSeverity } = useContext(MessageContext)
     const { post, put, destroy } = useApi(REGISTER_URL)
+    const { put: close } = useApi(REGISTER_URL + '/close')
 
     const [loadingRegisters, setLoadingRegisters] = useState(true)
     const [registers, setRegisters] = useState([])
@@ -41,7 +42,7 @@ export function useRegisters() {
 
     const someRegisterIsOpen = registers.some(r => r.is_open && r.user.id === auth.user.id) && open === 'NEW'
 
-    const registerIsClosed = (formData) => !registers.find(r => r.id === formData.id)?.is_open && open === 'EDIT'
+    const registerIsClosed = (formData) => !registers.find(r => r.id === formData.id)?.is_open && open === 'CLOSE-REGISTER'
 
     async function handleSubmit(e, formData, reset, setDisabled, setOpen) {
         e.preventDefault()
@@ -59,14 +60,17 @@ export function useRegisters() {
             setDisabled(false)
             return
         }
-        const { status, data } = open === 'NEW' ? await post(formData) : await put(formData)
+        const { status, data } = open === 'NEW' ? await post(formData) : open === 'EDIT' ? await put(formData) : await close(formData)
         if (status === 200) {
             if (open === 'NEW') {
                 setRegisters([data, ...registers])
                 setMessage('Caja abierta correctamente.')
-            } else {
+            } else if (open === 'CLOSE-REGISTER') {
                 setRegisters([data, ...registers.filter(r => r.id !== formData.id)])
                 setMessage('Caja cerrada correctamente.')
+            } else {
+                setRegisters([data, ...registers.filter(r => r.id !== formData.id)])
+                setMessage('Caja editada correctamente.')
             }
             setSeverity('success')
             reset(setOpen)

@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import * as React from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { alpha } from '@mui/material/styles';
@@ -29,6 +30,7 @@ import { SearchSharp } from '@mui/icons-material';
 import PictureAsPdfSharpIcon from '@mui/icons-material/PictureAsPdfSharp';
 import { SiMicrosoftexcel } from "react-icons/si";
 import InputSharpIcon from '@mui/icons-material/InputSharp';
+import CloseIcon from '@mui/icons-material/Close';
 
 import { AuthContext } from '../providers/AuthProvider';
 import { PageContext } from '../providers/PageProvider';
@@ -146,7 +148,8 @@ function EnhancedTableToolbar({
     rows,
     orderBy,
     order,
-    setIncomesByAmount
+    setIncomesByAmount,
+    closeRegister
 }) {
 
     const { auth } = React.useContext(AuthContext)
@@ -304,6 +307,16 @@ function EnhancedTableToolbar({
                     </IconButton>
                 </Tooltip>
             }
+            {numSelected === 1 && closeRegister &&
+                <Tooltip title="Cerrar caja" onClick={() => {
+                    setData(workOn[0])
+                    setOpen('CLOSE-REGISTER')
+                }}>
+                    <IconButton>
+                        <CloseIcon />
+                    </IconButton>
+                </Tooltip>
+            }
             {auth.user.role.name === 'ADMINISTRADOR' &&
                 pathname === '/veroshop/productos' &&
                 <Tooltip title="Ingresar por cantidad" onClick={() => {
@@ -375,6 +388,7 @@ export function DataGrid({
     defaultOrderBy = 'id',
     stopPointerEvents = false,
     setIncomesByAmount = false,
+    closeRegister = false,
     pageKey,
     getter = undefined
 }) {
@@ -472,6 +486,7 @@ export function DataGrid({
                         orderBy={orderBy}
                         order={order}
                         setIncomesByAmount={setIncomesByAmount}
+                        closeRegister={closeRegister}
                     />
                     <TableContainer>
                         <Table

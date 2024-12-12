@@ -1,6 +1,9 @@
 import { useContext } from "react";
-import { Box, Button, FormControl, LinearProgress, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
+import { Box, Button, FormControl, LinearProgress, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from "@mui/material";
 import { format } from "date-fns";
+import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { es } from "date-fns/locale";
 
 import { AuthContext } from "../providers/AuthProvider";
 import { useForm } from "../hooks/useForm";
@@ -22,7 +25,9 @@ export function Registers() {
     const { formData, setFormData, handleChange, disabled, setDisabled, reset } = useForm({
         defaultData: {
             id: '',
-            user_id: auth?.user.id
+            user_id: auth?.user.id,
+            created_at: '',
+            updated_at: ''
         }
     })
 
@@ -46,7 +51,7 @@ export function Registers() {
             numeric: false,
             disablePadding: true,
             label: 'Saldo Apertura',
-            sorter: (row) => 0.00,
+            sorter: () => 0.00,
             accessor: () => '$0.00'
         },
         {
@@ -54,8 +59,8 @@ export function Registers() {
             numeric: false,
             disablePadding: true,
             label: 'Fecha y hora Cierre',
-            sorter: (row) => row.created_at === row.updated_at ? '-' : row.updated_at,
-            accessor: (row) => row.created_at === row.updated_at ? '-' : format(setLocalDate(row.updated_at), 'dd/MM/yy HH:mm:ss')
+            sorter: (row) => row.is_open ? '-' : row.updated_at,
+            accessor: (row) => row.is_open ? '-' : format(setLocalDate(row.updated_at), 'dd/MM/yy HH:mm:ss')
         },
         {
             id: 'close_amount',
@@ -93,11 +98,12 @@ export function Registers() {
                     handlePrint
                     pageKey="registers"
                     getter={getRegisters}
+                    closeRegister
                 >
-                    <ModalComponent open={open === 'NEW' || open === 'EDIT'} onClose={() => reset(setOpen)}>
+                    <ModalComponent open={open === 'NEW' || open === 'CLOSE-REGISTER'} onClose={() => reset(setOpen)}>
                         <Typography variant="h6" sx={{ marginBottom: 2 }}>
                             {open === 'NEW' && 'Abrir caja'}
-                            {open === 'EDIT' && 'Cerrar caja'}
+                            {open === 'CLOSE-REGISTER' && 'Cerrar caja'}
                         </Typography>
                         <form onChange={handleChange} onSubmit={(e) => handleSubmit(e, formData, reset, setDisabled, setOpen)}>
                             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
@@ -124,10 +130,10 @@ export function Registers() {
                                                             <TableCell align="center">$0.00</TableCell>
                                                         </>
                                                     }
-                                                    {open === 'EDIT' &&
+                                                    {open === 'CLOSE-REGISTER' &&
                                                         <>
                                                             <TableCell align="center">
-                                                                {format(setLocalDate(formData.created_at), 'dd-MM-yyyy')}
+                                                                {format(new Date(Date.now()), 'dd-MM-yyyy')}
                                                             </TableCell>
                                                             <TableCell align="center">
                                                                 {format(setLocalDate(Date.now()), 'HH:mm:ss')}
@@ -142,6 +148,61 @@ export function Registers() {
                                         </Table>
                                     </TableContainer>
                                 </Typography>
+                                <FormControl sx={{
+                                    display: 'flex',
+                                    flexDirection: 'row',
+                                    gap: 1,
+                                    justifyContent: 'center',
+                                    margin: '0 auto',
+                                    marginTop: 1,
+                                    width: '50%'
+                                }}>
+                                    <Button type="button" variant="outlined" onClick={() => reset(setOpen)} sx={{
+                                        width: '50%'
+                                    }}>
+                                        Cancelar
+                                    </Button>
+                                    <Button type="submit" variant="contained" disabled={disabled} sx={{
+                                        width: '50%'
+                                    }}>
+                                        Guardar
+                                    </Button>
+                                </FormControl>
+                            </Box>
+                        </form>
+                    </ModalComponent>
+                    <ModalComponent open={open === 'EDIT'} onClose={() => reset(setOpen)}>
+                        <Typography variant="h6" sx={{ marginBottom: 2 }}>
+                            {`Editar caja #${formData.id}`}
+                        </Typography>
+                        <form onChange={handleChange} onSubmit={(e) => handleSubmit(e, formData, reset, setDisabled, setOpen)}>
+                            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+                                <FormControl>
+                                    <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
+                                        <DateTimePicker
+                                            label="Apertura"
+                                            value={formData.created_at.length === 0 ? new Date(Date.now()) : new Date(formData.created_at)}
+                                            name="created_at"
+                                            onChange={value => handleChange({ target: { name: 'created_at', value: new Date(value) } })}
+                                            renderInput={(params) => <TextField {...params} />}
+                                            disabled={auth.user.role.name !== 'ADMINISTRADOR'}
+                                        />
+                                    </LocalizationProvider>
+                                </FormControl>
+                                {!formData.is_open &&
+                                    <FormControl>
+                                        <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
+                                            <DateTimePicker
+                                                label="Cierre"
+                                                value={formData.updated_at.length === 0 ? new Date(Date.now()) : new Date(formData.updated_at)}
+                                                name="updated_at"
+                                                onChange={value => handleChange({ target: { name: 'updated_at', value: new Date(value) } })}
+                                                renderInput={(params) => <TextField {...params} />}
+                                                disabled={auth.user.role.name !== 'ADMINISTRADOR'}
+                                            />
+                                        </LocalizationProvider>
+                                    </FormControl>
+                                }
                                 <FormControl sx={{
                                     display: 'flex',
                                     flexDirection: 'row',
