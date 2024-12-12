@@ -65,7 +65,7 @@ export function Payments({ sale, setSale, loading, setLoading }) {
 
     async function handleSubmit(e) {
         e.preventDefault()
-        if (registers.every(r => !r.is_open)) {
+        if (registers.filter(r => r.user_id === auth.user.id).every(r => !r.is_open)) {
             setMessage('No hay una caja abierta.')
             setSeverity('error')
             setOpenMessage(true)
