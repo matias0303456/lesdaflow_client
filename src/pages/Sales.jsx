@@ -22,6 +22,7 @@ import { AddProductsToSale } from "../components/commercial/AddProductsToSale";
 
 import { CLIENT_URL, PRODUCT_URL, REPORT_URL, SALE_URL } from "../utils/urls";
 import { getAccountStatus, getCurrentSubtotal, getCurrentTotal, getDeadline, getInstallmentsAmount, getSaleDifference, getSaleTotal, setLocalDate } from "../utils/helpers";
+import { useRegisters } from "../hooks/useRegisters";
 
 export function Sales() {
 
@@ -30,6 +31,7 @@ export function Sales() {
     const { setMessage, setOpenMessage, setSeverity } = useContext(MessageContext)
     const { searchClients, setSearchClients, searchProducts, setSearchProducts } = useContext(SearchContext)
 
+    const { registers } = useRegisters()
     const { get, post, put, destroy } = useApi(SALE_URL)
     const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
         defaultData: {
@@ -134,6 +136,12 @@ export function Sales() {
 
     async function handleSubmit(e) {
         e.preventDefault()
+        if (registers.every(r => !r.is_open)) {
+            setMessage('No hay una caja abierta.')
+            setSeverity('error')
+            setOpenMessage(true)
+            return
+        }
         const submitData = {
             ...formData,
             sale_products: saleProducts,

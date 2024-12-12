@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { useContext, useState } from "react";
 import { Box, Button, FormControl, Input, InputLabel, LinearProgress, MenuItem, Select, TextField, Typography } from "@mui/material";
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
@@ -10,19 +11,21 @@ import { AuthContext } from "../../providers/AuthProvider";
 import { MessageContext } from "../../providers/MessageProvider";
 import { useApi } from "../../hooks/useApi";
 import { useForm } from "../../hooks/useForm";
+import { useRegisters } from "../../hooks/useRegisters";
 
 import { DataGrid } from "../DataGrid";
 import { ModalComponent } from "../ModalComponent";
 import { PaymentFilter } from "../filters/PaymentFilter";
 
 import { PAYMENT_URL } from "../../utils/urls";
-import { getNewBalanceAfterPayment, getSaleDifference, getSaleDifferenceByPayment, getSaleTotal } from "../../utils/helpers";
+import { getNewBalanceAfterPayment, getSaleDifference, getSaleDifferenceByPayment } from "../../utils/helpers";
 
 export function Payments({ sale, setSale, loading, setLoading }) {
 
     const { auth } = useContext(AuthContext)
     const { setMessage, setOpenMessage, setSeverity } = useContext(MessageContext)
 
+    const { registers } = useRegisters()
     const { post, put, destroy } = useApi(PAYMENT_URL)
     const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
         defaultData: {
@@ -62,6 +65,12 @@ export function Payments({ sale, setSale, loading, setLoading }) {
 
     async function handleSubmit(e) {
         e.preventDefault()
+        if (registers.every(r => !r.is_open)) {
+            setMessage('No hay una caja abierta.')
+            setSeverity('error')
+            setOpenMessage(true)
+            return
+        }
         if (!checkDifference()) return
         if (validate()) {
             setLoading(true)
@@ -152,7 +161,7 @@ export function Payments({ sale, setSale, loading, setLoading }) {
             numeric: false,
             disablePadding: true,
             label: 'Saldo',
-            accessor: (row, idx) => getSaleDifferenceByPayment(sale, idx)
+            accessor: (_, idx) => getSaleDifferenceByPayment(sale, idx)
         },
 
     ]

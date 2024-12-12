@@ -143,7 +143,3 @@ export function getNewBalanceAfterPayment(sale, formData) {
     if (isNaN(result)) return getSaleDifference(sale).replace('$', '')
     return result.toFixed(2)
 }
-
-export function allRegistersAreClosed(state, formData) {
-    return !state.registers.data.find(r => r.id === formData.id)?.is_open
-} 
