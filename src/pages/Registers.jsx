@@ -233,20 +233,22 @@ export function Registers() {
                                     />
                                 </LocalizationProvider>
                             </FormControl>
-                            <FormControl>
-                                <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
-                                    <DateTimePicker
-                                        label="Cierre"
-                                        value={new Date(formData.updated_at)}
-                                        onChange={value => handleChange({
-                                            target: {
-                                                name: 'updated_at',
-                                                value: new Date(value.toISOString())
-                                            }
-                                        })}
-                                    />
-                                </LocalizationProvider>
-                            </FormControl>
+                            {!formData.is_open &&
+                                <FormControl>
+                                    <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
+                                        <DateTimePicker
+                                            label="Cierre"
+                                            value={new Date(formData.updated_at)}
+                                            onChange={value => handleChange({
+                                                target: {
+                                                    name: 'updated_at',
+                                                    value: new Date(value.toISOString())
+                                                }
+                                            })}
+                                        />
+                                    </LocalizationProvider>
+                                </FormControl>
+                            }
                             <FormControl sx={{
                                 display: 'flex',
                                 flexDirection: 'row',
@@ -266,7 +268,7 @@ export function Registers() {
                                 < Button
                                     type="submit"
                                     variant="contained"
-                                    disabled={disabled || formData.is_open}
+                                    disabled={disabled}
                                     sx={{ width: '50%' }}
                                 >
                                     Guardar

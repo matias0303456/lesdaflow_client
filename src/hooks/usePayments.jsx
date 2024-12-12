@@ -2,6 +2,7 @@ import { useContext, useState } from "react"
 
 import { DataContext } from "../providers/DataProvider"
 import { MessageContext } from "../providers/MessageProvider"
+import { AuthContext } from "../providers/AuthProvider"
 import { useApi } from "./useApi"
 
 import { PAYMENT_URL } from "../utils/urls"
@@ -9,6 +10,7 @@ import { getSaleDifference } from "../utils/helpers"
 
 export function usePayments() {
 
+    const { auth } = useContext(AuthContext)
     const { state, dispatch } = useContext(DataContext)
     const { setMessage, setOpenMessage, setSeverity } = useContext(MessageContext)
 
@@ -33,10 +35,10 @@ export function usePayments() {
     }
 
     const checkDifference = (formData) => {
-        if(formData.amount.toString().length === 0 || parseFloat(formData.amount) === 0){
+        if (formData.amount.toString().length === 0 || parseFloat(formData.amount) === 0) {
             setMessage('El importe es requerido.')
             setSeverity('error')
-        }else{
+        } else {
             const diff = getSaleDifference(state.sales.data.find(s => s.id === formData.sale_id)).replace('$', '')
             if (parseFloat(diff) >= parseFloat(formData.amount)) return true
             setMessage(`El importe debe ser menor al saldo. Saldo actual: $${diff}`)
@@ -49,6 +51,13 @@ export function usePayments() {
     const handleSubmit = async (e, validate, formData, reset, setDisabled) => {
         e.preventDefault()
         if (!checkDifference(formData)) return
+        if (state.registers.data.filter(r => r.user_id === auth.user.id).every(r => !r.is_open)) {
+            setMessage('No hay ninguna caja abierta.')
+            setSeverity('error')
+            setOpenMessage(true)
+            setDisabled(false)
+            return
+        }
         if (validate()) {
             const { status, data } = open === 'NEW' ? await post(formData) : await put(formData)
             if (status === 200) {

@@ -9,6 +9,7 @@ import { AuthContext } from "../../providers/AuthProvider"
 import { DataContext } from "../../providers/DataProvider"
 import { usePayments } from "../../hooks/usePayments"
 import { useForm } from "../../hooks/useForm"
+import { useRegisters } from "../../hooks/useRegisters"
 
 import { AddProductsToSale } from "./AddProductsToSale"
 import { ModalComponent } from "../common/ModalComponent"
@@ -42,6 +43,7 @@ export function SaleForm({
     const { auth } = useContext(AuthContext)
     const { state } = useContext(DataContext)
 
+    const { getRegisters } = useRegisters()
     const {
         open: openPayment,
         setOpen: setOpenPayment,
@@ -64,6 +66,10 @@ export function SaleForm({
 
     const [valueTab, setValueTab] = useState(0)
     const [confirmed, setConfirmed] = useState(false)
+
+    useEffect(() => {
+        getRegisters()
+    }, [])
 
     useEffect(() => {
         if (openPayment === 'EDIT') setValueTab(2)
