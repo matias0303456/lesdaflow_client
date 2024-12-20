@@ -26,7 +26,7 @@ export function LoanForm({
     handleDeleteFreeLoanPaymentDate,
     theresPendingLoans,
     setTheresPendingLoans,
-    loansWithPaymentDates
+    loans
 }) {
 
     const [payments, setPayments] = useState([])
@@ -49,7 +49,7 @@ export function LoanForm({
 
     useEffect(() => {
         if (open === 'NEW') {
-            setTheresPendingLoans(clientHasPendingLoans(formData.client_id, loansWithPaymentDates))
+            setTheresPendingLoans(clientHasPendingLoans(formData.client_id, loans))
         }
     }, [formData, open])
 

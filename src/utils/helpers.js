@@ -7,72 +7,20 @@ export function a11yProps(index) {
     }
 }
 
-export function getLoansYears(loansWithPaymentDates) {
-    const dates = loansWithPaymentDates.map(l => new Date(l.date))
+export function getLoansYears(loans) {
+    const dates = loans.map(l => new Date(l.date))
     const set = new Set(dates.map(d => d.getFullYear()))
     return Array.from(set).sort((a, b) => b - a)
 }
 
-export function getLoansMonths(loansWithPaymentDates) {
-    const dates = loansWithPaymentDates.map(l => new Date(l.date))
+export function getLoansMonths(loans) {
+    const dates = loans.map(l => new Date(l.date))
     const set = new Set(dates.map(d => d.getMonth()))
     return Array.from(set).sort((a, b) => b - a)
 }
 
-export function getPaymentDates(loan) {
-    if (loan.payments_frequency === PAYMENT_FREQUENCIES[3]) {
-        return loan.free_loan_payment_dates.map(d => new Date(d.date).toISOString().split('T')[0])
-    }
-    const paymentDates = []
-    for (let i = 1; i <= loan.payments_amount; i++) {
-        const newDate = setLocalDate(loan)
-        switch (loan.payments_frequency) {
-            case PAYMENT_FREQUENCIES[0]:
-                // esto lo hice para no tener que modificar las fechas de los pagos ya cargados
-                if (loan.id <= 50 && loan.id !== 39) {
-                    newDate.setMonth(newDate.getMonth() + i)
-                } else {
-                    newDate.setDate(newDate.getDate() + i * 30)
-                }
-                break
-            case PAYMENT_FREQUENCIES[1]:
-                newDate.setDate(newDate.getDate() + i * 15)
-                break
-            case PAYMENT_FREQUENCIES[2]:
-                newDate.setDate(newDate.getDate() + i * 7)
-                break
-            default:
-                throw new Error('Frecuencia de pagos no soportada')
-        }
-        paymentDates.push(new Date(newDate).toISOString().split('T')[0])
-    }
-    if (loan.payments_frequency === PAYMENT_FREQUENCIES[0]) {
-        return paymentDates.map((dateStr, index, arr) => {
-            const currentDate = new Date(dateStr + 'T00:00:00');
-
-            // Verificar si la fecha es el 31
-            if (currentDate.getDate() === 31 && index > 0) {
-                const prevDate = new Date(arr[index - 1] + 'T00:00:00');
-                // Si la fecha anterior es el 1 del mismo mes y año
-                if (
-                    prevDate.getDate() === 1 &&
-                    prevDate.getMonth() === currentDate.getMonth() &&
-                    prevDate.getFullYear() === currentDate.getFullYear()
-                ) {
-                    // Cambia la fecha al 1 del siguiente mes
-                    currentDate.setDate(1);
-                    currentDate.setMonth(currentDate.getMonth() + 1);
-                }
-            }
-            return currentDate.toISOString().split('T')[0]; // Retorna la fecha ajustada en formato 'YYYY-MM-DD'
-        })
-    } else {
-        return paymentDates
-    }
-}
-
-export function filterRowsByMonthAndYear(loansWithPaymentDates, year, month) {
-    return loansWithPaymentDates.filter(l =>
+export function filterRowsByMonthAndYear(loans, year, month) {
+    return loans.filter(l =>
         new Date(l.date).getFullYear() === year &&
         new Date(l.date).getMonth() === month)
 }
@@ -137,7 +85,7 @@ export function loanIsPending(loan) {
     return loan.payments.length < loan.payment_dates.length
 }
 
-export function clientHasPendingLoans(id, loansWithPaymentDates) {
+export function clientHasPendingLoans(id, loans) {
     if (!id || id.toString().length === 0) return false
-    return loansWithPaymentDates.some(loan => loan.client_id === parseInt(id) && loanIsPending(loan))
+    return loans.some(loan => loan.client_id === parseInt(id) && loanIsPending(loan))
 }

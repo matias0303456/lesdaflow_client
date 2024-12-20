@@ -16,9 +16,10 @@ export function useLoans() {
     const [loadingLoans, setLoadingLoans] = useState(true)
     const [open, setOpen] = useState(null)
     const [theresPendingLoans, setTheresPendingLoans] = useState(false)
+    const [filter, setFilter] = useState({ from: '', to: '', pending: false })
 
     async function getLoans(params) {
-        const { status, data } = await handleQuery({ url: `${LOAN_URL}${params ? `/${params}` : ''}` })
+        const { status, data } = await handleQuery({ url: `${LOAN_URL}${params ? params : ''}` })
         if (status === STATUS_CODES.OK) {
             setLoans(data)
         } else {
@@ -119,6 +120,8 @@ export function useLoans() {
         setLoans,
         handleDeleteFreeLoanPaymentDate,
         theresPendingLoans,
-        setTheresPendingLoans
+        setTheresPendingLoans,
+        filter,
+        setFilter
     }
 }

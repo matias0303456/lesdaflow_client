@@ -1,5 +1,9 @@
 import { useContext, useEffect } from "react";
-import { Box, Button, LinearProgress, Typography } from "@mui/material";
+import { Box, Button, Checkbox, FormControl, FormControlLabel, LinearProgress, Typography } from "@mui/material";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers"
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns"
+import { format } from "date-fns";
+import { es } from "date-fns/locale"
 
 import { AuthContext } from "../providers/AuthProvider";
 import { useClients } from '../hooks/useClients'
@@ -14,7 +18,7 @@ import { ShowLoansDetails } from "../components/loans/ShowLoansDetails";
 import { LoanForm } from "../components/loans/LoanForm";
 
 import { PAYMENT_FREQUENCIES } from "../utils/constants";
-import { getPaymentDates, setPfColor } from "../utils/helpers";
+import { setPfColor } from "../utils/helpers";
 
 export function Loans() {
 
@@ -31,7 +35,9 @@ export function Loans() {
         handleSubmit,
         handleDeleteFreeLoanPaymentDate,
         theresPendingLoans,
-        setTheresPendingLoans
+        setTheresPendingLoans,
+        filter,
+        setFilter
     } = useLoans()
     const { loadingClients, getClients, clients } = useClients()
     const { loadingUser, getUser, user } = useUsers()
@@ -75,12 +81,17 @@ export function Loans() {
         if (auth) {
             getClients()
             getUser()
-            getLoans()
         }
     }, [])
 
+    useEffect(() => {
+        if (auth) {
+            const { from, to, pending } = filter
+            getLoans(`?from=${from}&to=${to}&pending=${pending}`)
+        }
+    }, [filter])
+
     const handleClose = () => reset(setOpen)
-    const loansWithPaymentDates = loans.map(l => ({ ...l, payment_dates: getPaymentDates(l) }))
 
     return (
         <>
@@ -92,13 +103,55 @@ export function Loans() {
                         </Box> :
                         <Box sx={{ mx: 1 }}>
                             <Box sx={{ pt: 2 }}>
-                                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                                    <Button sx={{ mb: 1, color: '#FFF' }} variant="contained" onClick={() => {
-                                        setFormData({ ...formData, late_fee: user.settings.late_fee })
-                                        setOpen('NEW')
-                                    }}>
-                                        Agregar
-                                    </Button>
+                                <Box sx={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'space-between',
+                                    mb: 1,
+                                    flexWrap: 'wrap',
+                                    gap: { xs: 2, lg: 0 }
+                                }}>
+                                    <Box sx={{ display: 'flex', gap: { xs: 2, md: 1 }, alignItems: 'center', flexWrap: 'wrap' }}>
+                                        <Button sx={{ color: '#FFF' }} variant="contained" onClick={() => {
+                                            setFormData({ ...formData, late_fee: user.settings.late_fee })
+                                            setOpen('NEW')
+                                        }}>
+                                            Agregar
+                                        </Button>
+                                        <FormControl sx={{ width: { xs: '100%', md: '20%' } }}>
+                                            <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
+                                                <DatePicker
+                                                    label="Desde"
+                                                    value={filter.from.length === 0 ? new Date(Date.now()) : new Date(filter.from)}
+                                                    disabled={formData.payments?.length > 0}
+                                                    onChange={value => setFilter({ ...filter, from: new Date(value).toISOString() })}
+                                                />
+                                            </LocalizationProvider>
+                                        </FormControl>
+                                        <FormControl sx={{ width: { xs: '100%', md: '20%' } }}>
+                                            <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
+                                                <DatePicker
+                                                    label="Hasta"
+                                                    value={filter.to.length === 0 ? new Date(Date.now()) : new Date(filter.to)}
+                                                    disabled={formData.payments?.length > 0}
+                                                    onChange={value => setFilter({ ...filter, to: new Date(value).toISOString() })}
+                                                />
+                                            </LocalizationProvider>
+                                        </FormControl>
+                                        <FormControlLabel
+                                            control={<Checkbox />}
+                                            label="Pendientes"
+                                            checked={filter.pending}
+                                            onChange={(e) => setFilter({ ...filter, pending: e.target.checked })}
+                                        />
+                                        <Button
+                                            variant="outlined"
+                                            sx={{ width: { xs: '100%', lg: 'auto' } }}
+                                            onClick={() => setFilter({ from: '', to: '', pending: false })}
+                                        >
+                                            Reiniciar
+                                        </Button>
+                                    </Box>
                                     <Box sx={{ display: 'flex', gap: 1 }}>
                                         {PAYMENT_FREQUENCIES.map(pf => (
                                             <Box key={pf} sx={{ backgroundColor: setPfColor(pf), px: 1, borderRadius: 1 }}>
@@ -112,7 +165,6 @@ export function Loans() {
                                     setLoans={setLoans}
                                     setFormDataLoan={setFormData}
                                     setOpenLoan={setOpen}
-                                    loansWithPaymentDates={loansWithPaymentDates}
                                 />
                             </Box>
                             <ModalComponent open={open === 'NEW' || open === 'EDIT'} onClose={handleClose}>
@@ -136,7 +188,7 @@ export function Loans() {
                                     handleDeleteFreeLoanPaymentDate={handleDeleteFreeLoanPaymentDate}
                                     theresPendingLoans={theresPendingLoans}
                                     setTheresPendingLoans={setTheresPendingLoans}
-                                    loansWithPaymentDates={loansWithPaymentDates}
+                                    loans={loans}
                                 />
                             </ModalComponent>
                             <ModalComponent open={open === 'DELETE'} onClose={handleClose} reduceWidth={900}>

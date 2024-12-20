@@ -18,8 +18,7 @@ export function ShowLoansDetails({
     loans,
     setLoans,
     setFormDataLoan,
-    setOpenLoan,
-    loansWithPaymentDates
+    setOpenLoan
 }) {
 
     const { open, setOpen, handleSubmit, handleDelete } = usePayments()
@@ -55,14 +54,14 @@ export function ShowLoansDetails({
         setExpanded(newExpanded ? panel : false)
     }
 
-    const loansYears = getLoansYears(loansWithPaymentDates)
+    const loansYears = getLoansYears(loans)
 
     return (
         <>
             {loans.length > 0 ?
                 <>
                     {loansYears.map((year, idx) => {
-                        const loansMonths = getLoansMonths(loansWithPaymentDates.filter(l => new Date(l.date).getFullYear() === year))
+                        const loansMonths = getLoansMonths(loans.filter(l => new Date(l.date).getFullYear() === year))
                         return (
                             <Accordion key={year} expanded={expanded === idx} onChange={handleChangeExpanded(idx)}>
                                 <AccordionSummary aria-controls={`${idx}d-content`} id={`${idx}d-header`}>
@@ -70,7 +69,7 @@ export function ShowLoansDetails({
                                 </AccordionSummary>
                                 <AccordionDetails>
                                     {loansMonths.map((month, idxM) => {
-                                        const rows = filterRowsByMonthAndYear(loansWithPaymentDates, year, month)
+                                        const rows = filterRowsByMonthAndYear(loans, year, month)
                                         return (
                                             <Box key={month}>
                                                 <Typography variant="h6" mt={idxM > 0 ? 2.5 : 0}>
