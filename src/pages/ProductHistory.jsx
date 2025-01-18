@@ -62,6 +62,14 @@ export function ProductHistory() {
             accessor: (row) => parseInt(row.amount)
         },
         {
+            id: "current_stock",
+            numeric: false,
+            disablePadding: true,
+            label: "Stock posterior",
+            sorter: (row) => parseInt(row.current_stock),
+            accessor: (row) => parseInt(row.current_stock)
+        },
+        {
             id: "created_by",
             numeric: false,
             disablePadding: true,
