@@ -16,7 +16,7 @@ export function useLoans() {
     const [loadingLoans, setLoadingLoans] = useState(true)
     const [open, setOpen] = useState(null)
     const [theresPendingLoans, setTheresPendingLoans] = useState(false)
-    const [filter, setFilter] = useState({ from: '', to: '', pending: false })
+    const [filter, setFilter] = useState({ from: '', to: '', id: '', client: '', pending: false })
 
     async function getLoans(params) {
         const { status, data } = await handleQuery({ url: `${LOAN_URL}${params ? params : ''}` })

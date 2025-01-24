@@ -1,9 +1,5 @@
 import { useContext, useEffect } from "react";
-import { Box, Button, Checkbox, FormControl, FormControlLabel, LinearProgress, Typography } from "@mui/material";
-import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers"
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns"
-import { format } from "date-fns";
-import { es } from "date-fns/locale"
+import { Box, Button, LinearProgress, Typography } from "@mui/material";
 
 import { AuthContext } from "../providers/AuthProvider";
 import { useClients } from '../hooks/useClients'
@@ -19,6 +15,7 @@ import { LoanForm } from "../components/loans/LoanForm";
 
 import { PAYMENT_FREQUENCIES } from "../utils/constants";
 import { setPfColor } from "../utils/helpers";
+import { LoansFilter } from "../components/loans/LoansFilter";
 
 export function Loans() {
 
@@ -86,8 +83,8 @@ export function Loans() {
 
     useEffect(() => {
         if (auth) {
-            const { from, to, pending } = filter
-            getLoans(`?from=${from}&to=${to}&pending=${pending}`)
+            const { from, to, pending, id, client } = filter
+            getLoans(`?from=${from}&to=${to}&pending=${pending}&id=${id}&client=${client}`)
         }
     }, [filter])
 
@@ -109,49 +106,16 @@ export function Loans() {
                                     justifyContent: 'space-between',
                                     mb: 1,
                                     flexWrap: 'wrap',
-                                    gap: { xs: 2, lg: 0 }
+                                    gap: 2
                                 }}>
-                                    <Box sx={{ display: 'flex', gap: { xs: 2, md: 1 }, alignItems: 'center', flexWrap: 'wrap' }}>
-                                        <Button sx={{ color: '#FFF' }} variant="contained" onClick={() => {
-                                            setFormData({ ...formData, late_fee: user.settings.late_fee })
-                                            setOpen('NEW')
-                                        }}>
-                                            Agregar
-                                        </Button>
-                                        <FormControl sx={{ width: { xs: '100%', md: '20%' } }}>
-                                            <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
-                                                <DatePicker
-                                                    label="Desde"
-                                                    value={filter.from.length === 0 ? new Date(Date.now()) : new Date(filter.from)}
-                                                    disabled={formData.payments?.length > 0}
-                                                    onChange={value => setFilter({ ...filter, from: new Date(value).toISOString() })}
-                                                />
-                                            </LocalizationProvider>
-                                        </FormControl>
-                                        <FormControl sx={{ width: { xs: '100%', md: '20%' } }}>
-                                            <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
-                                                <DatePicker
-                                                    label="Hasta"
-                                                    value={filter.to.length === 0 ? new Date(Date.now()) : new Date(filter.to)}
-                                                    disabled={formData.payments?.length > 0}
-                                                    onChange={value => setFilter({ ...filter, to: new Date(value).toISOString() })}
-                                                />
-                                            </LocalizationProvider>
-                                        </FormControl>
-                                        <FormControlLabel
-                                            control={<Checkbox />}
-                                            label="Pendientes"
-                                            checked={filter.pending}
-                                            onChange={(e) => setFilter({ ...filter, pending: e.target.checked })}
-                                        />
-                                        <Button
-                                            variant="outlined"
-                                            sx={{ width: { xs: '100%', lg: 'auto' } }}
-                                            onClick={() => setFilter({ from: '', to: '', pending: false })}
-                                        >
-                                            Reiniciar
-                                        </Button>
-                                    </Box>
+                                    <LoansFilter
+                                        formData={formData}
+                                        setFormData={setFormData}
+                                        user={user}
+                                        setOpen={setOpen}
+                                        filter={filter}
+                                        setFilter={setFilter}
+                                    />
                                     <Box sx={{ display: 'flex', gap: 1 }}>
                                         {PAYMENT_FREQUENCIES.map(pf => (
                                             <Box key={pf} sx={{ backgroundColor: setPfColor(pf), px: 1, borderRadius: 1 }}>
