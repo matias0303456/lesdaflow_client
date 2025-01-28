@@ -72,7 +72,7 @@ export function SalesReady() {
       numeric: false,
       disablePadding: true,
       label: "Fecha",
-      accessor: (row) => format(new Date(row.date), 'dd/MM/yy')
+      accessor: (row) => format(new Date(row.date), 'dd/MM/yy HH:mm')
     },
     {
       id: 'hour',
