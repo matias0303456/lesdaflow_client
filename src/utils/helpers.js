@@ -125,6 +125,11 @@ export function getProductSalePrice(product) {
     return parseFloat(parseFloat(product.buy_price) + ((parseFloat(product.buy_price) / 100) * parseFloat(product.earn)))
 }
 
+export function getProductNewBuyPriceByPercentage(product, percentage) {
+    const perc = percentage.toString().length === 0 ? 0 : parseFloat(percentage)
+    return product.buy_price + ((product.buy_price / 100) * perc)
+}
+
 export function getProductNewSalePriceByPercentage(product, percentage) {
     const perc = percentage.toString().length === 0 ? 0 : parseFloat(percentage)
     const currentPrice = getProductSalePrice(product)

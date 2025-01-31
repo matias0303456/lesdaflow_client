@@ -19,7 +19,7 @@ import { useSuppliers } from "../hooks/useSuppliers";
 import { Layout } from "../components/common/Layout";
 import { DataGridWithFrontendPagination } from "../components/datagrid/DataGridWithFrontendPagination";
 
-import { getProductNewSalePriceByPercentage, getProductSalePrice } from "../utils/helpers";
+import { getProductNewBuyPriceByPercentage, getProductNewSalePriceByPercentage, getProductSalePrice } from "../utils/helpers";
 
 export function UpdateProductPriceBySupplier() {
 
@@ -66,18 +66,34 @@ export function UpdateProductPriceBySupplier() {
       accessor: "details",
     },
     {
+      id: 'buy_price',
+      numeric: false,
+      disablePadding: true,
+      label: 'P. Actual (compra)',
+      sorter: (row) => row.buy_price,
+      accessor: 'buy_price'
+    },
+    {
       id: "sale_price",
       numeric: false,
       disablePadding: true,
-      label: "Precio Actual (venta)",
+      label: "P. Actual (venta)",
       sorter: (row) => parseFloat(getProductSalePrice(row).toFixed(2)),
       accessor: (row) => `$${getProductSalePrice(row).toFixed(2)}`
     },
     {
-      id: "new_price",
+      id: "new_buy_price",
       numeric: false,
       disablePadding: true,
-      label: "Precio Nuevo (venta)",
+      label: "P. Nuevo (compra)",
+      sorter: (row) => parseFloat(getProductNewBuyPriceByPercentage(row, formData.percentage).toFixed(2)),
+      accessor: (row) => `$${getProductNewBuyPriceByPercentage(row, formData.percentage).toFixed(2)}`
+    },
+    {
+      id: "new_sale_price",
+      numeric: false,
+      disablePadding: true,
+      label: "P. Nuevo (venta)",
       sorter: (row) => parseFloat(getProductNewSalePriceByPercentage(row, formData.percentage).toFixed(2)),
       accessor: (row) => `$${getProductNewSalePriceByPercentage(row, formData.percentage).toFixed(2)}`
     }
