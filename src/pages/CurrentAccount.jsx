@@ -127,7 +127,8 @@ export function CurrentAccount() {
         contentHeader={
           <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between' }}>
             <Button variant="outlined" color='error' sx={{ width: '10%' }} onClick={() => {
-              window.open(`${REPORT_URL}/accounts-pdf?token=${auth?.token}`, '_blank')
+              const { client, work_place, id } = state.sales.filter_fields
+              window.open(`${REPORT_URL}/accounts-pdf?token=${auth?.token}&client=${client}&work_place=${work_place}&id=${id}&pending=${pendingFilter}`, '_blank')
             }}>
               PDF
             </Button>
