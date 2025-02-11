@@ -4,10 +4,8 @@ import { DataContext } from "../providers/DataProvider"
 import { MessageContext } from "../providers/MessageProvider"
 import { useApi } from "./useApi"
 import { useBudgets } from "./useBudgets"
-import { useClients } from "./useClients"
 
 import { SALE_URL } from "../utils/urls"
-import { deadlineIsPast } from "../utils/helpers"
 
 export function useSales() {
 
@@ -15,7 +13,6 @@ export function useSales() {
     const { setMessage, setOpenMessage, setSeverity } = useContext(MessageContext)
 
     const { handleDelete: deleteBudget } = useBudgets()
-    const { toggleBlocked } = useClients()
     const { get, post, put, destroy } = useApi(SALE_URL)
 
     const [loadingSales, setLoadingSales] = useState(true)
@@ -72,10 +69,6 @@ export function useSales() {
                     } else {
                         deleteBudget(formData)
                     }
-                    const currentClient = state.clients.data.find(c => c.id === parseInt(formData.client_id))
-                    const currentClientSales = state.sales.data.filter(s => s.client_id === currentClient?.id)
-                    const someSaleIsPast = currentClientSales.some(s => deadlineIsPast(s))
-                    if (!currentClient?.isBlocked && someSaleIsPast) toggleBlocked({ ...currentClient, is_blocked: true })
                 } else {
                     dispatch({
                         type: 'SALES',
