@@ -11,12 +11,10 @@ export function useClients() {
     const { state, dispatch } = useContext(DataContext)
     const { setMessage, setOpenMessage, setSeverity } = useContext(MessageContext)
 
-    const { post, put, destroy } = useApi(CLIENT_URL)
+    const { get, post, put, destroy } = useApi(CLIENT_URL)
 
     const [open, setOpen] = useState(null)
     const [loadingClients, setLoadingClients] = useState(true)
-
-    const { get } = useApi(CLIENT_URL)
 
     async function getClients(params) {
         const { status, data } = await get(params)

@@ -14,9 +14,9 @@ import { Layout } from "../components/common/Layout";
 import { ModalComponent } from "../components/common/ModalComponent";
 import { DataGridWithBackendPagination } from "../components/datagrid/DataGridWithBackendPagination";
 import { ClientFilter } from "../components/filters/ClientFilter";
+import { SalesByClient } from "../components/commercial/SalesByClient";
 
 import { REPORT_URL } from "../utils/urls";
-import { SalesByClient } from "../components/commercial/SalesByClient";
 
 export function Clients() {
 
