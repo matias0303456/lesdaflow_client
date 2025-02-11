@@ -113,7 +113,8 @@ export function Products() {
             numeric: false,
             disablePadding: true,
             label: 'P. compra',
-            accessor: 'buy_price'
+            sorter: (row) => parseFloat(row.buy_price).toFixed(2),
+            accessor: (row) => parseFloat(row.buy_price).toFixed(2)
         },
         {
             id: 'earn',

@@ -70,8 +70,8 @@ export function UpdateProductPriceBySupplier() {
       numeric: false,
       disablePadding: true,
       label: 'P. Actual (compra)',
-      sorter: (row) => row.buy_price,
-      accessor: 'buy_price'
+      sorter: (row) => parseFloat(row.buy_price).toFixed(2),
+      accessor: (row) => parseFloat(row.buy_price).toFixed(2)
     },
     {
       id: "sale_price",
