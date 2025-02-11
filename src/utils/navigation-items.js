@@ -25,11 +25,6 @@ export const nav_items = [
         path: "/cta-cte",
         can_access: ['ADMINISTRADOR', 'VENDEDOR']
       },
-      // {
-      //   subtitle: "Reporte Cuenta Corriente",
-      //   path: "/reporte-cta-cte",
-      //   can_access: ['ADMINISTRADOR', 'VENDEDOR']
-      // },
       {
         subtitle: "Clientes por Vendedor",
         path: "/clientes-vendedor",
@@ -83,6 +78,11 @@ export const nav_items = [
         subtitle: "Comisiones",
         path: "/comisiones",
         can_access: ['ADMINISTRADOR', 'VENDEDOR']
+      },
+      {
+        subtitle: "Descuentos",
+        path: "/descuentos",
+        can_access: ['ADMINISTRADOR']
       }
     ],
     can_access: ['ADMINISTRADOR', 'CHOFER', 'VENDEDOR']
@@ -157,11 +157,6 @@ export const nav_items = [
     title: "Reportes",
     name: "reports",
     submenu: [
-      // {
-      //   subtitle: "Movimientos de cajas",
-      //   path: "/reporte-movimientos-caja",
-      //   can_access: ['ADMINISTRADOR', 'CHOFER', 'VENDEDOR']
-      // },
       {
         subtitle: "Clientes bloqueados",
         path: "/reportes-clientes-bloqueados",

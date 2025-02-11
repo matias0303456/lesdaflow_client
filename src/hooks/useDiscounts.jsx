@@ -1,11 +1,12 @@
 import { useContext, useMemo, useState } from "react"
+import { Box, Checkbox, FormControlLabel } from "@mui/material"
 
-import { useApi } from "./useApi"
 import { MessageContext } from "../providers/MessageProvider"
+import { DataContext } from "../providers/DataProvider"
+import { useForm } from "./useForm"
+import { useApi } from "./useApi"
 
 import { DISCOUNT_URL } from "../utils/urls"
-import { DataContext } from "../providers/DataProvider"
-import { Box, Checkbox, FormControlLabel } from "@mui/material"
 
 export function useDiscounts() {
 
@@ -13,6 +14,25 @@ export function useDiscounts() {
     const { setMessage, setOpenMessage, setSeverity } = useContext(MessageContext)
 
     const { get, post, put, destroy } = useApi(DISCOUNT_URL)
+    const discountFormData = useForm({
+        defaultData: {
+            id: '',
+            type: 'FECHA',
+            value: 0.01,
+            base: 0.01,
+            supplier_id: '',
+            name: '',
+            from: new Date(Date.now()),
+            to: new Date(Date.now()),
+            is_available: false
+        },
+        rules: {
+            name: {
+                required: true,
+                maxLength: 55
+            }
+        }
+    })
 
     const [open, setOpen] = useState(null)
     const [loadingDiscounts, setLoadingDiscounts] = useState(true)
@@ -175,6 +195,7 @@ export function useDiscounts() {
         open,
         setOpen,
         getDiscounts,
-        headCells
+        headCells,
+        discountFormData
     }
 }

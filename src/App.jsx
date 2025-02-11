@@ -9,12 +9,12 @@ import { DataProvider } from "./providers/DataProvider";
 
 import { Login } from "./pages/Login";
 import { Clients } from './pages/Clients'
-// import { AccountsReport } from "./pages/AccountsReport";
 import { Users } from './pages/Users'
 import { Suppliers } from "./pages/Suppliers";
 import { Sales } from "./pages/Sales";
 import { SalesReport } from "./pages/SalesReport";
 import { Comissions } from "./pages/Comissions";
+import { Discounts } from "./pages/Discounts";
 import { Products } from './pages/Products'
 import { ProductHistory } from "./pages/ProductHistory";
 import { ProductsReport } from './pages/ProductsReport'
@@ -30,7 +30,6 @@ import { ProductsPriceList } from "./pages/ProductsPriceList"
 import { UpdateProductPriceByProduct } from "./pages/UpdateProductPriceByProduct";
 import { UpdateProductPriceBySupplier } from "./pages/UpdateProductPriceBySupplier";
 import { IncomesByAmount } from "./pages/IncomesByAmount";
-// import { RegisterMovements } from "./pages/RegisterMovements";
 import { BlockedCustomers } from "./pages/BlockedCustomers";
 import { Settlements } from "./pages/Settlements";
 
@@ -59,7 +58,6 @@ function App() {
                 <Route path="/login" element={<Login />} />
                 <Route path="/clientes" element={<Clients />} />
                 <Route path="/cta-cte" element={<CurrentAccount />} />
-                {/* <Route path="/reporte-cta-cte" element={<AccountsReport />} /> */}
                 <Route path="/clientes-vendedor" element={<ClientsBySeller />} />
                 <Route path="/usuarios" element={<Users />} />
                 <Route path="/proveedores" element={<Suppliers />} />
@@ -67,6 +65,7 @@ function App() {
                 <Route path="/ventas-busqueda" element={<SalesSearch />} />
                 <Route path="/reporte-ventas" element={<SalesReport />} />
                 <Route path="/comisiones" element={<Comissions />} />
+                <Route path="/descuentos" element={<Discounts />} />
                 <Route path="/prep-ventas" element={<SalesReady />} />
                 <Route path="/entrega-ventas" element={<SalesToDeliver />} />
                 <Route path="/productos" element={<Products />} />
@@ -78,7 +77,6 @@ function App() {
                 <Route path="/ingresos-cantidad" element={<IncomesByAmount />} />
                 <Route path="/presupuestos" element={<Budgets />} />
                 <Route path="/movimientos-caja" element={<Registers />} />
-                {/* <Route path="/reporte-movimientos-caja" element={<RegisterMovements />} /> */}
                 <Route path="/reportes-clientes-bloqueados" element={<BlockedCustomers />} />
                 <Route path="/liquidaciones" element={<Settlements />} />
                 <Route path="*" element={<Error />} />

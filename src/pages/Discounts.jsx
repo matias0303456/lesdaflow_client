@@ -1,14 +1,14 @@
 import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Box, Button, FormControl, Input, InputLabel, MenuItem, Select, Typography } from "@mui/material";
+import { Box, Button, FormControl, Input, InputLabel, MenuItem, Select, TextField, Typography } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { es } from "date-fns/locale";
 
 import { AuthContext } from "../providers/AuthProvider";
 import { DataContext } from "../providers/DataProvider";
-import { useForm } from "../hooks/useForm";
 import { useDiscounts } from "../hooks/useDiscounts";
+import { useSuppliers } from "../hooks/useSuppliers";
 
 import { Layout } from "../components/common/Layout";
 import { ModalComponent } from "../components/common/ModalComponent";
@@ -21,35 +21,16 @@ export function Discounts() {
 
     const navigate = useNavigate()
 
-    const { loadingDiscounts, handleSubmit, handleDelete, open, setOpen, getDiscounts, headCells } = useDiscounts()
-    const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
-        defaultData: {
-            id: '',
-            type: 'FECHA',
-            value: '',
-            base: '',
-            supplier_id: '',
-            name: '',
-            from: new Date(Date.now()),
-            to: new Date(Date.now()),
-            is_available: false
-        },
-        rules: {
-            name: {
-                required: true,
-                maxLength: 55
-            },
-            value: {
-                required: true
-            }
-        }
-    })
+    const { getSuppliers, loadingSuppliers } = useSuppliers()
+    const { loadingDiscounts, handleSubmit, handleDelete, open, setOpen, getDiscounts, headCells, discountFormData } = useDiscounts()
+    const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = discountFormData
 
     useEffect(() => {
         if (auth?.user.role !== "ADMINISTRADOR") {
             navigate(auth?.user.role === 'CHOFER' ? '/prep-ventas' : "/productos");
         } else {
             getDiscounts()
+            getSuppliers()
         }
     }, []);
 
@@ -57,7 +38,7 @@ export function Discounts() {
         <Layout title="Descuentos">
             <DataGridWithBackendPagination
                 headCells={headCells}
-                loading={loadingDiscounts || disabled}
+                loading={loadingDiscounts || loadingSuppliers || disabled}
                 rows={state.discounts.data}
                 entityKey="discounts"
                 getter={getDiscounts}
@@ -75,165 +56,135 @@ export function Discounts() {
                 }
             >
                 <ModalComponent open={open === 'NEW' || open === 'EDIT' || open === 'VIEW'} onClose={reset}>
-                    <Box sx={{ p: 1 }}>
-                        <form onChange={handleChange} onSubmit={(e) => handleSubmit(e, validate, formData, reset, setDisabled)}>
-                            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-                                <Box sx={{ display: 'flex', gap: 5 }}>
-                                    <FormControl sx={{ width: '50%' }}>
-                                        <InputLabel htmlFor="first_name">Nombres *</InputLabel>
-                                        <Input id="first_name" type="text" name="first_name" value={formData.first_name} disabled={open === 'VIEW'} />
-                                        {errors.first_name?.type === 'required' &&
-                                            <Typography variant="caption" color="red" marginTop={1}>
-                                                * El nombre es requerido.
-                                            </Typography>
+                    <form onChange={handleChange} onSubmit={(e) => handleSubmit(e, validate, formData, reset, setDisabled)}>
+                        <FormControl>
+                            <InputLabel htmlFor="name">Nombre *</InputLabel>
+                            <Input id="name" type="text" name="name" value={formData.name} disabled={open === 'VIEW'} />
+                            {errors.name?.type === 'required' &&
+                                <Typography variant="caption" color="red" marginTop={1}>
+                                    * El nombre es requerido.
+                                </Typography>
+                            }
+                            {errors.name?.type === 'maxLength' &&
+                                <Typography variant="caption" color="red" marginTop={1}>
+                                    * El nombre es demasiado largo.
+                                </Typography>
+                            }
+                        </FormControl>
+                        <FormControl>
+                            <InputLabel id="type-select">Tipo</InputLabel>
+                            <Select
+                                labelId="type-select"
+                                id="type"
+                                value={formData.type}
+                                label="Tipo"
+                                name="type"
+                                onChange={handleChange}
+                                disabled={open === 'VIEW'}
+                            >
+                                <MenuItem value="FECHA">FECHA</MenuItem>
+                                <MenuItem value="PRODUCTO">PRODUCTO</MenuItem>
+                                <MenuItem value="PROVEEDOR">PROVEEDOR</MenuItem>
+                                <MenuItem value="MONTO">MONTO</MenuItem>
+                                <MenuItem value="TIPO">TIPO COMPRA</MenuItem>
+                            </Select>
+                        </FormControl>
+                        <FormControl>
+                            <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
+                                <DatePicker
+                                    label="Desde"
+                                    value={new Date(formData.from)}
+                                    onChange={value => handleChange({
+                                        target: {
+                                            name: 'from',
+                                            value: new Date(value.toISOString())
                                         }
-                                        {errors.first_name?.type === 'maxLength' &&
-                                            <Typography variant="caption" color="red" marginTop={1}>
-                                                * El nombre es demasiado largo.
-                                            </Typography>
+                                    })}
+                                    disabled={open === 'VIEW'}
+                                />
+                            </LocalizationProvider>
+                        </FormControl>
+                        <FormControl>
+                            <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
+                                <DatePicker
+                                    label="Hasta"
+                                    value={new Date(formData.to)}
+                                    onChange={value => handleChange({
+                                        target: {
+                                            name: 'to',
+                                            value: new Date(value.toISOString())
                                         }
-                                    </FormControl>
-                                    <FormControl sx={{ width: '50%' }}>
-                                        <InputLabel htmlFor="last_name">Apellidos *</InputLabel>
-                                        <Input id="last_name" type="text" name="last_name" value={formData.last_name} disabled={open === 'VIEW'} />
-                                        {errors.last_name?.type === 'required' &&
-                                            <Typography variant="caption" color="red" marginTop={1}>
-                                                * El apellido es requerido.
-                                            </Typography>
-                                        }
-                                        {errors.last_name?.type === 'maxLength' &&
-                                            <Typography variant="caption" color="red" marginTop={1}>
-                                                * El apellido es demasiado largo.
-                                            </Typography>
-                                        }
-                                    </FormControl>
-                                </Box>
-                                <Box sx={{ display: 'flex', gap: 5 }}>
-                                    <FormControl sx={{ width: '50%' }}>
-                                        <InputLabel id="type-select">Tipo documento</InputLabel>
-                                        <Select
-                                            labelId="type-select"
-                                            id="document_type"
-                                            value={formData.document_type}
-                                            label="Tipo documento"
-                                            name="document_type"
-                                            onChange={handleChange}
-                                            disabled={open === 'VIEW'}
-                                        >
-                                            <MenuItem value="DNI">DNI</MenuItem>
-                                            <MenuItem value="LE">LE</MenuItem>
-                                            <MenuItem value="CUIL">CUIL</MenuItem>
-                                        </Select>
-                                    </FormControl>
-                                    <FormControl sx={{ width: '50%' }}>
-                                        <InputLabel htmlFor="document_number">Nro. documento / CUIT</InputLabel>
-                                        <Input id="document_number" type="text" name="document_number" value={formData.document_number} disabled={open === 'VIEW'} />
-                                    </FormControl>
-                                </Box>
-                                <Box sx={{ display: 'flex', gap: 5 }}>
-                                    <FormControl sx={{ width: '50%' }}>
-                                        <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
-                                            <DatePicker
-                                                label="Fecha nacimiento"
-                                                value={new Date(formData.birth)}
-                                                onChange={value => handleChange({
-                                                    target: {
-                                                        name: 'birth',
-                                                        value: new Date(value.toISOString())
-                                                    }
-                                                })}
-                                                disabled={open === 'VIEW'}
-                                            />
-                                        </LocalizationProvider>
-                                        {errors.birth?.type === 'required' &&
-                                            <Typography variant="caption" color="red" marginTop={1}>
-                                                * La fecha de nacimiento es requerida.
-                                            </Typography>
-                                        }
-                                    </FormControl>
-                                    <FormControl sx={{ width: '50%' }}>
-                                        <InputLabel htmlFor="address">Dirección *</InputLabel>
-                                        <Input id="address" type="text" name="address" value={formData.address} disabled={open === 'VIEW'} />
-                                        {errors.address?.type === 'required' &&
-                                            <Typography variant="caption" color="red" marginTop={1}>
-                                                * La dirección es requerida.
-                                            </Typography>
-                                        }
-                                        {errors.address?.type === 'maxLength' &&
-                                            <Typography variant="caption" color="red" marginTop={1}>
-                                                * La dirección es demasiado larga.
-                                            </Typography>
-                                        }
-                                    </FormControl>
-                                </Box>
-                                <Box sx={{ display: 'flex', gap: 5 }}>
-                                    <FormControl sx={{ width: '50%' }}>
-                                        <InputLabel htmlFor="cell_phone">Celular *</InputLabel>
-                                        <Input id="cell_phone" type="number" name="cell_phone" value={formData.cell_phone} disabled={open === 'VIEW'} />
-                                        {errors.cell_phone?.type === 'required' &&
-                                            <Typography variant="caption" color="red" marginTop={1}>
-                                                * El celular es requerido.
-                                            </Typography>
-                                        }
-                                        {errors.cell_phone?.type === 'maxLength' &&
-                                            <Typography variant="caption" color="red" marginTop={1}>
-                                                * El celular es demasiado largo.
-                                            </Typography>
-                                        }
-                                    </FormControl>
-                                    <FormControl sx={{ width: '50%' }}>
-                                        <InputLabel htmlFor="local_phone">Teléfono</InputLabel>
-                                        <Input id="local_phone" type="number" name="local_phone" value={formData.local_phone} disabled={open === 'VIEW'} />
-                                    </FormControl>
-                                </Box>
-                                <Box sx={{ display: 'flex', gap: 5 }}>
-                                    <FormControl sx={{ width: '50%' }}>
-                                        <InputLabel htmlFor="email">Email</InputLabel>
-                                        <Input id="email" type="text" name="email" value={formData.email} disabled={open === 'VIEW'} />
-                                        {errors.email?.type === 'maxLength' &&
-                                            <Typography variant="caption" color="red" marginTop={1}>
-                                                * El email es deamsiado largo.
-                                            </Typography>
-                                        }
-                                    </FormControl>
-                                    <FormControl sx={{ width: '50%' }}>
-                                        <InputLabel htmlFor="work_place">Nombre comercio *</InputLabel>
-                                        <Input id="work_place" type="text" name="work_place" value={formData.work_place} disabled={open === 'VIEW'} />
-                                        {errors.work_place?.type === 'required' &&
-                                            <Typography variant="caption" color="red" marginTop={1}>
-                                                * El nombre del comercio es requerido.
-                                            </Typography>
-                                        }
-                                        {errors.work_place?.type === 'maxLength' &&
-                                            <Typography variant="caption" color="red" marginTop={1}>
-                                                * El nombre del comercio es demasiado largo.
-                                            </Typography>
-                                        }
-                                    </FormControl>
-                                </Box>
-                            </Box>
-                            <FormControl sx={{
-                                display: 'flex',
-                                flexDirection: 'row',
-                                gap: 1,
-                                justifyContent: 'center',
-                                margin: '0 auto',
-                                marginTop: 3,
-                                width: '50%'
-                            }}>
-                                <Button type="button" variant="outlined" onClick={reset} sx={{ width: '50%' }}>
-                                    Cancelar
+                                    })}
+                                    disabled={open === 'VIEW'}
+                                />
+                            </LocalizationProvider>
+                        </FormControl>
+                        <FormControl>
+                            <TextField
+                                type="number"
+                                label="Valor (%) *"
+                                variant="outlined"
+                                id="value"
+                                name="value"
+                                value={formData.value}
+                                disabled={open === 'VIEW'}
+                                InputProps={{ inputProps: { min: 0, step: 0.01 } }}
+                            />
+                        </FormControl>
+                        <FormControl>
+                            <TextField
+                                type="number"
+                                label="Base *"
+                                variant="outlined"
+                                id="base"
+                                name="base"
+                                value={formData.base}
+                                disabled={open === 'VIEW'}
+                                InputProps={{ inputProps: { min: 0, step: 0.01 } }}
+                            />
+                        </FormControl>
+                        <FormControl>
+                            <InputLabel id="supplier-select">Proveedor *</InputLabel>
+                            <Select
+                                labelId="supplier-select"
+                                id="supplier_id"
+                                value={formData.supplier_id}
+                                label="Proveedor"
+                                name="supplier_id"
+                                onChange={handleChange}
+                                disabled={open === 'VIEW'}
+                            >
+                                {state.suppliers.data.map(s => (
+                                    <MenuItem key={s.id} value={s.id}>{s.name}</MenuItem>
+                                ))}
+                            </Select>
+                            {errors.supplier_id?.type === 'required' &&
+                                <Typography variant="caption" color="red" marginTop={1}>
+                                    * El proveedor es requerido.
+                                </Typography>
+                            }
+                        </FormControl>
+                        <FormControl sx={{
+                            display: 'flex',
+                            flexDirection: 'row',
+                            gap: 1,
+                            justifyContent: 'center',
+                            margin: '0 auto',
+                            marginTop: 3,
+                            width: '50%'
+                        }}>
+                            <Button type="button" variant="outlined" onClick={reset} sx={{ width: '50%' }}>
+                                Cancelar
+                            </Button>
+                            {(open === 'NEW' || open === 'EDIT') &&
+                                <Button type="submit" variant="contained" disabled={disabled} sx={{
+                                    width: '50%'
+                                }}>
+                                    Confirmar
                                 </Button>
-                                {(open === 'NEW' || open === 'EDIT') &&
-                                    <Button type="submit" variant="contained" disabled={disabled} sx={{
-                                        width: '50%'
-                                    }}>
-                                        Confirmar
-                                    </Button>
-                                }
-                            </FormControl>
-                        </form>
-                    </Box>
+                            }
+                        </FormControl>
+                    </form>
                 </ModalComponent>
                 <ModalComponent open={open === 'DELETE'} onClose={() => reset(setOpen)} reduceWidth={900}>
                     <Typography variant="h6" marginBottom={1} textAlign="center">
