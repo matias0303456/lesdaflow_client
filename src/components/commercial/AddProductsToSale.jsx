@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import { useContext, useRef, useState } from "react";
-import { Autocomplete, Box, Button, FormControl, Input, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from "@mui/material";
+import { Autocomplete, Box, Button, FormControl, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from "@mui/material";
 import CancelSharpIcon from '@mui/icons-material/CancelSharp';
 
 import { AuthContext } from "../../providers/AuthProvider";
@@ -118,6 +118,7 @@ export function AddProductsToSale({
                             saleProducts.map(sp => {
                                 const p = products.find(p => p?.id === sp.product_id);
                                 const currentAmount = isNaN(parseInt(sp.amount)) ? 0 : parseInt(sp.amount);
+                                const stock = getStock(p)
                                 return (
                                     <TableRow
                                         key={sp.product_id}
@@ -125,21 +126,29 @@ export function AddProductsToSale({
                                     >
                                         <TableCell align="center">{p?.code}</TableCell>
                                         <TableCell align="center">{p?.details}</TableCell>
-                                        <TableCell align="center">
-                                            <Input
-                                                id={`input_${sp.product_id}`}
-                                                type="number"
-                                                value={sp.amount}
-                                                disabled={open === 'VIEW' || (open === 'EDIT' && auth?.user.role !== 'ADMINISTRADOR')}
-                                                onChange={e => handleChangeAmount({
-                                                    product_id: p?.id,
-                                                    amount: e.target.value
-                                                })}
-                                                inputRef={el => inputRefs.current[sp.product_id] = el} // Asignar referencia al input
-                                            />
+                                        <TableCell sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                                            <FormControl sx={{ width: { xs: '100%', sm: '30%' } }}>
+                                                <TextField
+                                                    id={`input_${sp.product_id}`}
+                                                    type="number"
+                                                    value={sp.amount}
+                                                    disabled={open === 'VIEW' || (open === 'EDIT' && auth?.user.role !== 'ADMINISTRADOR')}
+                                                    onChange={e => handleChangeAmount({
+                                                        product_id: p?.id,
+                                                        amount: e.target.value
+                                                    })}
+                                                    inputRef={el => inputRefs.current[sp.product_id] = el}
+                                                    InputProps={{ inputProps: { max: stock, step: 1 } }}
+                                                />
+                                            </FormControl>
+                                            {currentAmount > stock &&
+                                                <Typography variant="caption" color="red" marginTop={1}>
+                                                    * No hay stock suficiente.
+                                                </Typography>
+                                            }
                                         </TableCell>
                                         <TableCell>${getProductSalePrice(sp.earn && sp.buy_price ? sp : p).toFixed(2)}</TableCell>
-                                        {open !== 'VIEW' && <TableCell>{getStock(p)}</TableCell>}
+                                        {open !== 'VIEW' && <TableCell>{stock}</TableCell>}
                                         <TableCell>${(currentAmount * getProductSalePrice(sp.earn && sp.buy_price ? sp : p)).toFixed(2)}</TableCell>
                                         {(open === 'NEW' || open === 'CONVERT' || (open === 'EDIT' && auth?.user.role === 'ADMINISTRADOR')) &&
                                             <TableCell align="center">
