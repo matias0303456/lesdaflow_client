@@ -18,12 +18,10 @@ export function AddProductsToSale({
     open,
     formData
 }) {
-
     const { auth } = useContext(AuthContext);
-
-    const [value, setValue] = useState('')
-
-    const inputRefs = useRef({});  // Crear un objeto para almacenar referencias
+    const [value, setValue] = useState('');
+    const inputRefs = useRef({});
+    const autocompleteRef = useRef(null);
 
     const handleAdd = data => {
         if (data.product_id.toString().length > 0) {
@@ -33,17 +31,16 @@ export function AddProductsToSale({
                 data
             ]);
 
-            // Enfocar el input correspondiente
             setTimeout(() => {
                 if (inputRefs.current[data.product_id]) {
                     inputRefs.current[data.product_id].focus();
                 }
-            }, 100); // Timeout pequeño para asegurar que el render se haya completado
+            }, 100);
         }
-    }
+    };
 
     const handleChangeAmount = data => {
-        const amount = data.amount.toString().length > 0 ? data.amount : 0
+        const amount = data.amount.toString().length > 0 ? data.amount : 0;
         setSaleProducts([
             ...saleProducts.filter(sp => sp.product_id !== data.product_id),
             {
@@ -52,17 +49,21 @@ export function AddProductsToSale({
                 amount
             }
         ].sort((a, b) => open === 'NEW' ? a.idx - b.idx : a.id - b.id));
-    }
+
+        setTimeout(() => {
+            if (autocompleteRef.current) {
+                autocompleteRef.current.focus();
+            }
+        }, 1000);
+    };
 
     const handleDeleteProduct = (spId, pId) => {
         setMissing(false);
-        setSaleProducts([
-            ...saleProducts.filter(sp => sp.product_id !== pId),
-        ]);
+        setSaleProducts(saleProducts.filter(sp => sp.product_id !== pId));
         if (open === 'EDIT' || open === 'CONVERT') {
             setIdsToDelete([...idsToDelete, spId]);
         }
-    }
+    };
 
     return (
         <Box sx={{ display: 'flex', flexDirection: 'column', width: { xs: '100%', md: '60%' } }}>
@@ -78,12 +79,12 @@ export function AddProductsToSale({
                                         (formData.type === 'CONTADO' && p?.cash) ||
                                         (formData.type === 'CUENTA_CORRIENTE' && p?.cta_cte) ||
                                         (formData.type === 'POXIPOL' && p?.poxipol)
-                                    )
+                                    );
                             })
                                 .map(p => ({ label: `${p?.code} - ${p?.details}`, id: p?.id }))}
                             noOptionsText="No hay productos disponibles."
                             onChange={(_, value) => handleAdd({ idx: saleProducts.length, product_id: value?.id ?? '' })}
-                            renderInput={(params) => <TextField {...params} label="Producto *" />}
+                            renderInput={(params) => <TextField {...params} label="Producto *" inputRef={autocompleteRef} />}
                             isOptionEqualToValue={(option, value) => option?.code === value?.code || value.length === 0}
                             onInputChange={(e, value) => setValue(value)}
                             value={value}
@@ -118,34 +119,22 @@ export function AddProductsToSale({
                             saleProducts.map(sp => {
                                 const p = products.find(p => p?.id === sp.product_id);
                                 const currentAmount = isNaN(parseInt(sp.amount)) ? 0 : parseInt(sp.amount);
-                                const stock = getStock(p)
+                                const stock = getStock(p);
                                 return (
-                                    <TableRow
-                                        key={sp.product_id}
-                                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                                    >
+                                    <TableRow key={sp.product_id}>
                                         <TableCell align="center">{p?.code}</TableCell>
                                         <TableCell align="center">{p?.details}</TableCell>
-                                        <TableCell sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                                            <FormControl sx={{ width: { xs: '100%', sm: '30%' } }}>
+                                        <TableCell align="center">
+                                            <FormControl>
                                                 <TextField
-                                                    id={`input_${sp.product_id}`}
                                                     type="number"
                                                     value={sp.amount}
                                                     disabled={open === 'VIEW' || (open === 'EDIT' && auth?.user.role !== 'ADMINISTRADOR')}
-                                                    onChange={e => handleChangeAmount({
-                                                        product_id: p?.id,
-                                                        amount: e.target.value
-                                                    })}
+                                                    onChange={e => handleChangeAmount({ product_id: p?.id, amount: e.target.value })}
                                                     inputRef={el => inputRefs.current[sp.product_id] = el}
                                                     InputProps={{ inputProps: { max: stock, step: 1 } }}
                                                 />
                                             </FormControl>
-                                            {currentAmount > stock &&
-                                                <Typography variant="caption" color="red" marginTop={1}>
-                                                    * No hay stock suficiente.
-                                                </Typography>
-                                            }
                                         </TableCell>
                                         <TableCell>${getProductSalePrice(sp.earn && sp.buy_price ? sp : p).toFixed(2)}</TableCell>
                                         {open !== 'VIEW' && <TableCell>{stock}</TableCell>}
@@ -158,11 +147,11 @@ export function AddProductsToSale({
                                             </TableCell>
                                         }
                                     </TableRow>
-                                )
+                                );
                             })}
                     </TableBody>
                 </Table>
             </TableContainer>
         </Box>
-    )
+    );
 }
