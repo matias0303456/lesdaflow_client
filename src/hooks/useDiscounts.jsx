@@ -17,14 +17,14 @@ export function useDiscounts() {
     const discountFormData = useForm({
         defaultData: {
             id: '',
-            type: 'FECHA',
             value: 0.01,
-            base: 0.01,
+            base: 0,
             supplier_id: '',
             name: '',
             from: new Date(Date.now()),
             to: new Date(Date.now()),
-            is_available: false
+            is_available: false,
+            no_date_limit: false
         },
         rules: {
             name: {
@@ -36,6 +36,7 @@ export function useDiscounts() {
 
     const [open, setOpen] = useState(null)
     const [loadingDiscounts, setLoadingDiscounts] = useState(true)
+    const [discountProducts, setDiscountProducts] = useState([])
 
     async function getDiscounts(params) {
         const { status, data } = await get(params)
@@ -123,14 +124,6 @@ export function useDiscounts() {
             accessor: (row) => row.name
         },
         {
-            id: "type",
-            numeric: false,
-            disablePadding: true,
-            label: "Tipo",
-            sorter: (row) => row.type,
-            accessor: (row) => row.type
-        },
-        {
             id: "from",
             numeric: false,
             disablePadding: true,
@@ -150,7 +143,7 @@ export function useDiscounts() {
             id: "value",
             numeric: false,
             disablePadding: true,
-            label: "Valor",
+            label: "Tasa (%)",
             sorter: (row) => row.value,
             accessor: (row) => row.value
         },
@@ -196,6 +189,8 @@ export function useDiscounts() {
         setOpen,
         getDiscounts,
         headCells,
-        discountFormData
+        discountFormData,
+        discountProducts,
+        setDiscountProducts
     }
 }
