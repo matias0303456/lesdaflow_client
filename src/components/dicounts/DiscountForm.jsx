@@ -19,7 +19,7 @@ export function DiscountForm({
     setDisabled,
     errors,
     open,
-    setOpen,
+    handleClose,
     discountProducts,
     setDiscountProducts,
     products
@@ -109,7 +109,7 @@ export function DiscountForm({
                             name="base"
                             value={formData.base}
                             disabled={open === 'VIEW'}
-                            InputProps={{ inputProps: { min: 0.01, step: 0.01 } }}
+                            InputProps={{ inputProps: { min: 0, step: 0.01 } }}
                         />
                     </FormControl>
                     <FormControl sx={{ width: '33%' }}>
@@ -133,6 +133,7 @@ export function DiscountForm({
                     discountProducts={discountProducts}
                     setDiscountProducts={setDiscountProducts}
                     products={products}
+                    open={open}
                 />
                 <FormControl sx={{
                     display: 'flex',
@@ -143,8 +144,8 @@ export function DiscountForm({
                     marginTop: 3,
                     width: '50%'
                 }}>
-                    <Button type="button" variant="outlined" onClick={() => reset(setOpen)} sx={{ width: '50%' }}>
-                        Cancelar
+                    <Button type="button" variant="outlined" onClick={handleClose} sx={{ width: '50%' }}>
+                        {open === 'VIEW' ? 'Cerrar' : 'Cancelar'}
                     </Button>
                     {(open === 'NEW' || open === 'EDIT') &&
                         <Button

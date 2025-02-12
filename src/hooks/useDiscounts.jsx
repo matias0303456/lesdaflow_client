@@ -1,5 +1,6 @@
 import { useContext, useMemo, useState } from "react"
 import { Box, Checkbox, FormControlLabel } from "@mui/material"
+import { format } from "date-fns"
 
 import { MessageContext } from "../providers/MessageProvider"
 import { DataContext } from "../providers/DataProvider"
@@ -21,10 +22,10 @@ export function useDiscounts() {
             base: 0,
             supplier_id: '',
             name: '',
-            from: new Date(Date.now()),
-            to: new Date(Date.now()),
+            from: null,
+            to: null,
             is_available: false,
-            no_date_limit: false
+            no_date_limit: true
         },
         rules: {
             name: {
@@ -56,7 +57,7 @@ export function useDiscounts() {
     async function handleSubmit(e, validate, formData, reset, setDisabled) {
         e.preventDefault()
         if (validate()) {
-            const { status, data } = open === 'NEW' ? await post(formData) : await put(formData)
+            const { status, data } = open === 'NEW' ? await post({ ...formData, product_ids: discountProducts }) : await put(formData)
             if (status === 200) {
                 if (open === 'NEW') {
                     dispatch({ type: 'DISCOUNTS', payload: { ...state.discounts, data: [data, ...state.discounts.data] } })
@@ -107,6 +108,11 @@ export function useDiscounts() {
         setOpen(null)
     }
 
+    function handleClose() {
+        discountFormData.reset(setOpen)
+        setDiscountProducts([])
+    }
+
     const headCells = useMemo(() => [
         {
             id: 'id',
@@ -128,16 +134,16 @@ export function useDiscounts() {
             numeric: false,
             disablePadding: true,
             label: "Desde",
-            sorter: (row) => row.from,
-            accessor: (row) => row.from
+            sorter: (row) => row.from ? format(new Date(row.from), 'dd/MM/yy') : 0,
+            accessor: (row) => row.from ? format(new Date(row.from), 'dd/MM/yy') : 'S/F'
         },
         {
             id: "to",
             numeric: false,
             disablePadding: true,
             label: "Hasta",
-            sorter: (row) => row.to,
-            accessor: (row) => row.to
+            sorter: (row) => row.from ? format(new Date(row.from), 'dd/MM/yy') : 0,
+            accessor: (row) => row.from ? format(new Date(row.from), 'dd/MM/yy') : 'S/F'
         },
         {
             id: "value",
@@ -151,7 +157,7 @@ export function useDiscounts() {
             id: "base",
             numeric: false,
             disablePadding: true,
-            label: "Base",
+            label: "Base ($)",
             sorter: (row) => row.base,
             accessor: (row) => row.base
         },
@@ -160,8 +166,16 @@ export function useDiscounts() {
             numeric: false,
             disablePadding: true,
             label: "Proveedor",
-            sorter: (row) => row.supplier_id,
-            accessor: (row) => row.supplier_id
+            sorter: (row) => row.supplier_id ? row.supplier.name : 0,
+            accessor: (row) => row.supplier_id ? row.supplier.name : ''
+        },
+        {
+            id: "products",
+            numeric: false,
+            disablePadding: true,
+            label: "Productos",
+            sorter: (row) => row.discount_by_products.length > 0 ? 'Sí' : 'No',
+            accessor: (row) => row.discount_by_products.length > 0 ? 'Sí' : 'No'
         },
         {
             id: 'is_available',
@@ -191,6 +205,7 @@ export function useDiscounts() {
         headCells,
         discountFormData,
         discountProducts,
-        setDiscountProducts
+        setDiscountProducts,
+        handleClose
     }
 }

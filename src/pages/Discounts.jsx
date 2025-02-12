@@ -32,7 +32,8 @@ export function Discounts() {
         headCells,
         discountFormData,
         discountProducts,
-        setDiscountProducts
+        setDiscountProducts,
+        handleClose
     } = useDiscounts()
     const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = discountFormData
 
@@ -44,6 +45,10 @@ export function Discounts() {
             getProducts()
         }
     }, []);
+
+    useEffect(() => {
+        if (open === 'EDIT' || open === 'VIEW') setDiscountProducts(formData.discount_by_products)
+    }, [open, formData.discount_by_products])
 
     return (
         <Layout title="Descuentos">
@@ -66,7 +71,7 @@ export function Discounts() {
                     </Box>
                 }
             >
-                <ModalComponent open={open === 'NEW' || open === 'EDIT' || open === 'VIEW'} onClose={() => reset(setOpen)}>
+                <ModalComponent open={open === 'NEW' || open === 'EDIT' || open === 'VIEW'} onClose={handleClose}>
                     <Typography variant="h6" sx={{ marginBottom: 0.5 }}>
                         {open === 'NEW' && 'Nuevo descuento'}
                         {open === 'EDIT' && 'Editar descuento'}
@@ -83,13 +88,13 @@ export function Discounts() {
                         setDisabled={setDisabled}
                         errors={errors}
                         open={open}
-                        setOpen={setOpen}
+                        handleClose={handleClose}
                         discountProducts={discountProducts}
                         setDiscountProducts={setDiscountProducts}
                         products={state.products.data}
                     />
                 </ModalComponent>
-                <ModalComponent open={open === 'DELETE'} onClose={() => reset(setOpen)} reduceWidth={900}>
+                <ModalComponent open={open === 'DELETE'} onClose={handleClose} reduceWidth={900}>
                     <Typography variant="h6" marginBottom={1} textAlign="center">
                         Confirmar eliminación de cliente
                     </Typography>
@@ -97,7 +102,7 @@ export function Discounts() {
                         Los datos no podrán recuperarse
                     </Typography>
                     <Box sx={{ display: 'flex', gap: 1, justifyContent: 'center' }}>
-                        <Button type="button" variant="outlined" onClick={() => reset(setOpen)} sx={{ width: '35%' }}>
+                        <Button type="button" variant="outlined" onClick={handleClose} sx={{ width: '35%' }}>
                             Cancelar
                         </Button>
                         <Button

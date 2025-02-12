@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { Autocomplete, Box, Button, FormControl, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField } from "@mui/material";
 
-export function AddProductsToDiscount({ products, discountProducts, setDiscountProducts }) {
+export function AddProductsToDiscount({ products, discountProducts, setDiscountProducts, open }) {
 
     const [value, setValue] = useState('')
 
@@ -14,21 +14,23 @@ export function AddProductsToDiscount({ products, discountProducts, setDiscountP
 
     return (
         <Box>
-            <FormControl sx={{ width: '25%' }}>
-                <Autocomplete
-                    disablePortal
-                    id="product-autocomplete"
-                    options={products.filter(p => !discountProducts.map(dp => dp.product_id).includes(p.id))
-                        .map(p => ({ label: `Código ${p.code} / Detalle ${p.details}`, id: p.id }))}
-                    noOptionsText="No hay productos disponibles."
-                    onChange={(_, value) => handleAdd(value?.id ?? '')}
-                    renderInput={(params) => <TextField {...params} label="Agregar producto..." />}
-                    isOptionEqualToValue={(option, value) => option.code === value.code || value.length === 0}
-                    onInputChange={(_, value) => setValue(value)}
-                    value={value}
-                    onBlur={() => setValue('')}
-                />
-            </FormControl>
+            {open !== 'VIEW' &&
+                <FormControl sx={{ width: '25%' }}>
+                    <Autocomplete
+                        disablePortal
+                        id="product-autocomplete"
+                        options={products.filter(p => !discountProducts.map(dp => dp.product_id).includes(p.id))
+                            .map(p => ({ label: `Código ${p.code} / Detalle ${p.details}`, id: p.id }))}
+                        noOptionsText="No hay productos disponibles."
+                        onChange={(_, value) => handleAdd(value?.id ?? '')}
+                        renderInput={(params) => <TextField {...params} label="Agregar producto..." />}
+                        isOptionEqualToValue={(option, value) => option.code === value.code || value.length === 0}
+                        onInputChange={(_, value) => setValue(value)}
+                        value={value}
+                        onBlur={() => setValue('')}
+                    />
+                </FormControl>
+            }
             <TableContainer>
                 <Table>
                     <TableHead>
@@ -36,7 +38,7 @@ export function AddProductsToDiscount({ products, discountProducts, setDiscountP
                             <TableCell align="center">Código</TableCell>
                             <TableCell align="center">Detalle</TableCell>
                             <TableCell align="center">Proveedor</TableCell>
-                            <TableCell align="center"></TableCell>
+                            {open !== 'VIEW' && <TableCell align="center"></TableCell>}
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -45,20 +47,22 @@ export function AddProductsToDiscount({ products, discountProducts, setDiscountP
                                 <TableCell colSpan={4} align="center">No hay productos agregados.</TableCell>
                             </TableRow> :
                             discountProducts.map((dp) => {
-                                const p = products.find(p => p.id === dp)
+                                const p = open === 'NEW' ? products.find(p => p.id === dp) : dp.product
                                 return (
                                     <TableRow key={p.id}>
                                         <TableCell align="center">{p.code}</TableCell>
                                         <TableCell align="center">{p.details}</TableCell>
                                         <TableCell align="center">{p.supplier.name}</TableCell>
-                                        <TableCell align="center">
-                                            <Button
-                                                variant="outlined"
-                                                onClick={() => setDiscountProducts(discountProducts.filter(dp => dp !== p.id))}
-                                            >
-                                                Eliminar
-                                            </Button>
-                                        </TableCell>
+                                        {open !== 'VIEW' &&
+                                            <TableCell align="center">
+                                                <Button
+                                                    variant="outlined"
+                                                    onClick={() => setDiscountProducts(discountProducts.filter(dp => dp !== p.id))}
+                                                >
+                                                    Eliminar
+                                                </Button>
+                                            </TableCell>
+                                        }
                                     </TableRow>
                                 )
                             })}
