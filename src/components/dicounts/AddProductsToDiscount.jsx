@@ -12,10 +12,14 @@ export function AddProductsToDiscount({ products, discountProducts, setDiscountP
         }
     }
 
+    const handleDelete = (pId) => setDiscountProducts(discountProducts.filter(dp => {
+        return pId !== (dp.product?.id ?? dp)
+    }))
+
     return (
         <Box>
             {open !== 'VIEW' &&
-                <FormControl sx={{ width: '25%' }}>
+                <FormControl sx={{ width: { xs: '100%', sm: '25%' } }}>
                     <Autocomplete
                         disablePortal
                         id="product-autocomplete"
@@ -47,7 +51,7 @@ export function AddProductsToDiscount({ products, discountProducts, setDiscountP
                                 <TableCell colSpan={4} align="center">No hay productos agregados.</TableCell>
                             </TableRow> :
                             discountProducts.map((dp) => {
-                                const p = open === 'NEW' ? products.find(p => p.id === dp) : dp.product
+                                const p = products.find(p => p.id === (dp.product?.id ?? dp))
                                 return (
                                     <TableRow key={p.id}>
                                         <TableCell align="center">{p.code}</TableCell>
@@ -57,7 +61,8 @@ export function AddProductsToDiscount({ products, discountProducts, setDiscountP
                                             <TableCell align="center">
                                                 <Button
                                                     variant="outlined"
-                                                    onClick={() => setDiscountProducts(discountProducts.filter(dp => dp !== p.id))}
+                                                    size="sm"
+                                                    onClick={() => handleDelete(p.id)}
                                                 >
                                                     Eliminar
                                                 </Button>

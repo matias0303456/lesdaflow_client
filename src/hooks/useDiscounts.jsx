@@ -57,7 +57,8 @@ export function useDiscounts() {
     async function handleSubmit(e, validate, formData, reset, setDisabled) {
         e.preventDefault()
         if (validate()) {
-            const { status, data } = open === 'NEW' ? await post({ ...formData, product_ids: discountProducts }) : await put(formData)
+            const submitData = { ...formData, product_ids: discountProducts }
+            const { status, data } = open === 'NEW' ? await post(submitData) : await put(submitData)
             if (status === 200) {
                 if (open === 'NEW') {
                     dispatch({ type: 'DISCOUNTS', payload: { ...state.discounts, data: [data, ...state.discounts.data] } })
@@ -84,6 +85,28 @@ export function useDiscounts() {
             }
             setOpenMessage(true)
         }
+    }
+
+    async function toggleAvailability(submitData) {
+        const { status, data } = await put(submitData)
+        if (status === 200) {
+            dispatch({
+                type: 'DISCOUNTS',
+                payload: {
+                    ...state.discounts,
+                    data: [
+                        data,
+                        ...state.discounts.data.filter(d => d.id !== data.id)
+                    ]
+                }
+            })
+            setMessage('Descuento editado correctamente.')
+            setSeverity('success')
+        } else {
+            setMessage(data.message)
+            setSeverity('error')
+        }
+        setOpenMessage(true)
     }
 
     async function handleDelete(formData) {
@@ -142,8 +165,8 @@ export function useDiscounts() {
             numeric: false,
             disablePadding: true,
             label: "Hasta",
-            sorter: (row) => row.from ? format(new Date(row.from), 'dd/MM/yy') : 0,
-            accessor: (row) => row.from ? format(new Date(row.from), 'dd/MM/yy') : 'S/F'
+            sorter: (row) => row.to ? format(new Date(row.to), 'dd/MM/yy') : 0,
+            accessor: (row) => row.to ? format(new Date(row.to), 'dd/MM/yy') : 'S/F'
         },
         {
             id: "value",
@@ -188,11 +211,12 @@ export function useDiscounts() {
                     <FormControlLabel
                         control={<Checkbox />}
                         checked={row.is_available}
+                        onClick={(e) => toggleAvailability({ ...row, is_available: e.target.checked })}
                     />
                 </Box>
             )
         }
-    ], [])
+    ], [state.discounts.data])
 
     return {
         loadingDiscounts,

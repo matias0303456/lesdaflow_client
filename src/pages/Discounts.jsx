@@ -96,7 +96,7 @@ export function Discounts() {
                 </ModalComponent>
                 <ModalComponent open={open === 'DELETE'} onClose={handleClose} reduceWidth={900}>
                     <Typography variant="h6" marginBottom={1} textAlign="center">
-                        Confirmar eliminación de cliente
+                        Confirmar eliminación de descuento
                     </Typography>
                     <Typography variant="body1" marginBottom={2} textAlign="center">
                         Los datos no podrán recuperarse

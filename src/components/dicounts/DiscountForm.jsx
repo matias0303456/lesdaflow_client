@@ -44,7 +44,7 @@ export function DiscountForm({
                         </Typography>
                     }
                 </FormControl>
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 3 }}>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: { xs: 1, sm: 3 } }}>
                     <FormControl sx={{ width: '33%' }}>
                         <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
                             <DatePicker
@@ -87,7 +87,7 @@ export function DiscountForm({
                         })}
                     />
                 </Box>
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 3 }}>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: { xs: 1, sm: 3 } }}>
                     <FormControl sx={{ width: '33%' }}>
                         <TextField
                             type="number"
@@ -117,7 +117,7 @@ export function DiscountForm({
                         <Select
                             labelId="supplier-select"
                             id="supplier_id"
-                            value={formData.supplier_id}
+                            value={formData.supplier_id ?? ''}
                             label="Proveedor"
                             name="supplier_id"
                             onChange={handleChange}
