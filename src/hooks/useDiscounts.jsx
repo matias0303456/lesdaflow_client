@@ -25,7 +25,8 @@ export function useDiscounts() {
             from: null,
             to: null,
             is_available: false,
-            no_date_limit: true
+            no_date_limit: true,
+            sale_type: ''
         },
         rules: {
             name: {
@@ -185,10 +186,18 @@ export function useDiscounts() {
             accessor: (row) => row.base
         },
         {
+            id: "sale_type",
+            numeric: false,
+            disablePadding: true,
+            label: "Tipo Vta.",
+            sorter: (row) => row.sale_type ?? 0,
+            accessor: (row) => row.sale_type ? row.sale_type.replace('CUENTA_CORRIENTE', 'CTA CTE') : ''
+        },
+        {
             id: "supplier",
             numeric: false,
             disablePadding: true,
-            label: "Proveedor",
+            label: "Prov.",
             sorter: (row) => row.supplier_id ? row.supplier.name : 0,
             accessor: (row) => row.supplier_id ? row.supplier.name : ''
         },
@@ -196,7 +205,7 @@ export function useDiscounts() {
             id: "products",
             numeric: false,
             disablePadding: true,
-            label: "Productos",
+            label: "Prod.",
             sorter: (row) => row.discount_by_products.length > 0 ? 'Sí' : 'No',
             accessor: (row) => row.discount_by_products.length > 0 ? 'Sí' : 'No'
         },
