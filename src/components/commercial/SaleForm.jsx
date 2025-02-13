@@ -17,7 +17,7 @@ import { ModalComponent } from "../common/ModalComponent"
 import { PaymentsABM } from "./PaymentsABM"
 import { PaymentForm } from "./PaymentForm"
 
-import { a11yProps, getCurrentSubtotal, getCurrentTotal } from "../../utils/helpers"
+import { a11yProps, getAvailableDiscounts, getCurrentSubtotal, getCurrentTotal } from "../../utils/helpers"
 
 export function SaleForm({
     saleProducts,
@@ -68,6 +68,7 @@ export function SaleForm({
 
     const [valueTab, setValueTab] = useState(0)
     const [confirmed, setConfirmed] = useState(false)
+    const [discountApplied, setDiscountApplied] = useState(null)
 
     useEffect(() => {
         getRegisters()
@@ -264,18 +265,19 @@ export function SaleForm({
                                             labelId="discount-select"
                                             id="discount"
                                             value={formData.discount}
-                                            disabled={open === 'VIEW' || (open === 'EDIT' && auth?.user.role !== 'ADMINISTRADOR')}
+                                            disabled={formData.type === 'POXIPOL' || open === 'VIEW' || (open === 'EDIT' && auth?.user.role !== 'ADMINISTRADOR')}
                                             label="Descuento"
                                             name="discount"
                                             onChange={handleChange}
                                             sx={{ width: "100%" }}
                                         >
                                             <MenuItem value="">Ninguno</MenuItem>
-                                            {state.discounts.data.map(d => (
-                                                <MenuItem key={d.id} value={d.id}>
-                                                    {d.name}
-                                                </MenuItem>
-                                            ))}
+                                            {getAvailableDiscounts(formData, saleProducts, state.products.data, state.discounts.data)
+                                                .map(d => (
+                                                    <MenuItem key={d.id} value={d.id}>
+                                                        {d.name}
+                                                    </MenuItem>
+                                                ))}
                                         </Select>
                                     </FormControl>
                                     <FormControl>

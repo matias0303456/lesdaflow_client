@@ -162,3 +162,20 @@ export function a11yProps(index) {
         'aria-controls': `simple-tabpanel-${index}`,
     }
 }
+
+export function getAvailableDiscounts(formData, saleProducts, products, discounts) {
+    const date = new Date(formData.date)
+    const type = formData.type
+    return discounts.filter(discount => {
+        const { from, to, supplier_id, discount_by_products, sale_type } = discount
+        const discountProducts = discount_by_products.map(dbp => dbp.product_id)
+        if (
+            ((!from && !to) || (from && to && new Date(from) < date && new Date(to) > date)) &&
+            (!sale_type || sale_type === type) &&
+            (discountProducts.length === 0 || saleProducts.some(sp => {
+                const product = sp.product ?? products.find(p => p.id === sp.product_id)
+                return product.supplier_id === supplier_id || discountProducts.includes(product.id)
+            }))
+        ) return discount
+    })
+}
