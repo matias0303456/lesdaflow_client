@@ -69,6 +69,7 @@ export function SaleForm({
     const [valueTab, setValueTab] = useState(0)
     const [confirmed, setConfirmed] = useState(false)
     const [discountApplied, setDiscountApplied] = useState('')
+    const [currentTotal, setCurrentTotal] = useState('0.00')
 
     useEffect(() => {
         getRegisters()
@@ -105,22 +106,27 @@ export function SaleForm({
     useEffect(() => {
         setFormData({
             ...formData,
-            discount: state.discounts.data.find(d => d.id === discountApplied)?.value ?? ''
+            discount: typeof discountApplied !== 'string' ? discountApplied.value : ''
         })
     }, [discountApplied])
+
+    useEffect(() => {
+        setCurrentTotal(getCurrentTotal(formData, saleProducts, state.products.data))
+    }, [formData, saleProducts, state.products.data])
 
     const handleChangeTab = (_, newValue) => {
         setValueTab(newValue)
     }
 
     const handleClose = () => {
+        reset(setOpen)
         setSaleProducts([])
         setMissing(false)
-        reset(setOpen)
         setIdsToDelete([])
         setIsBlocked(false)
         setValueTab(0)
         setConfirmed(false)
+        setDiscountApplied('')
     }
 
     return (
@@ -210,6 +216,7 @@ export function SaleForm({
                                                     type: 'CUENTA_CORRIENTE',
                                                     discount: 0
                                                 })
+                                                setDiscountApplied('')
                                             }
                                         }}
                                     />
@@ -275,7 +282,7 @@ export function SaleForm({
                                             disabled={formData.type === 'POXIPOL' || open === 'VIEW' || (open === 'EDIT' && auth?.user.role !== 'ADMINISTRADOR')}
                                             label="Descuento"
                                             name="discount"
-                                            onChange={(e) => setDiscountApplied(e.target.value)}
+                                            onChange={(e) => setDiscountApplied(state.discounts.data.find(d => d.id === e.target.value))}
                                             sx={{ width: "100%" }}
                                         >
                                             <MenuItem value="">Ninguno</MenuItem>
@@ -286,6 +293,11 @@ export function SaleForm({
                                                     </MenuItem>
                                                 ))}
                                         </Select>
+                                        {discountApplied?.base > 0 && discountApplied?.base < currentTotal &&
+                                            <Typography variant="caption" color="red" marginTop={1}>
+                                                * El monto neto debe ser mayor o igual a la base del descuento: ${discountApplied.base}.
+                                            </Typography>
+                                        }
                                     </FormControl>
                                     <FormControl>
                                         <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
@@ -317,7 +329,7 @@ export function SaleForm({
                             </FormControl>
                             <FormControl>
                                 <InputLabel htmlFor="total">Total</InputLabel>
-                                <Input value={getCurrentTotal(formData, saleProducts, state.products.data)} id="total" type="number" name="total" disabled />
+                                <Input value={currentTotal} id="total" type="number" name="total" disabled />
                             </FormControl>
                         </Box>
                         {confirmed &&
@@ -341,7 +353,11 @@ export function SaleForm({
                                 <Button
                                     type="submit"
                                     variant="contained"
-                                    disabled={disabled || (isBlocked && (open === 'NEW' || open === 'CONVERT'))}
+                                    disabled={
+                                        disabled ||
+                                        (discountApplied?.base > 0 && discountApplied?.base < currentTotal) ||
+                                        (isBlocked && (open === 'NEW' || open === 'CONVERT'))
+                                    }
                                     sx={{ width: '50%' }}
                                 >
                                     {confirmed ? 'Guardar' : 'Confirmar'}
