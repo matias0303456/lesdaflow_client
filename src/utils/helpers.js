@@ -155,3 +155,10 @@ export function getDeliveredDeadline(sale) {
     delivered.setDate(delivered.getDate() + 20)
     return delivered
 }
+
+export function a11yProps(index) {
+    return {
+        id: `simple-tab-${index}`,
+        'aria-controls': `simple-tabpanel-${index}`,
+    }
+}

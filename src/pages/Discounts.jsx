@@ -11,7 +11,7 @@ import { useProducts } from "../hooks/useProducts";
 import { Layout } from "../components/common/Layout";
 import { ModalComponent } from "../components/common/ModalComponent";
 import { DataGridWithBackendPagination } from "../components/datagrid/DataGridWithBackendPagination";
-import { DiscountForm } from "../components/dicounts/DiscountForm";
+import { DiscountForm } from "../components/discounts/DiscountForm";
 
 export function Discounts() {
 

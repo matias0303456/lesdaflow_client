@@ -17,6 +17,7 @@ import { ClientFilter } from "../components/filters/ClientFilter";
 import { SalesByClient } from "../components/commercial/SalesByClient";
 
 import { REPORT_URL } from "../utils/urls";
+import { a11yProps } from "../utils/helpers";
 
 export function Clients() {
 
@@ -77,13 +78,6 @@ export function Clients() {
 
     const handleChangeTab = (_, newValue) => {
         setValueTab(newValue)
-    }
-
-    function a11yProps(index) {
-        return {
-            id: `simple-tab-${index}`,
-            'aria-controls': `simple-tabpanel-${index}`,
-        }
     }
 
     const handleClose = () => {

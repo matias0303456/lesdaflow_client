@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import { useContext, useEffect, useState } from "react"
-import { Autocomplete, Box, Button, Checkbox, FormControl, FormControlLabel, Input, InputLabel, Tab, Tabs, TextField, Typography } from "@mui/material"
+import { Autocomplete, Box, Button, Checkbox, FormControl, FormControlLabel, Input, InputLabel, MenuItem, Select, Tab, Tabs, TextField, Typography } from "@mui/material"
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers"
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns"
 import { es } from "date-fns/locale"
@@ -10,13 +10,14 @@ import { DataContext } from "../../providers/DataProvider"
 import { usePayments } from "../../hooks/usePayments"
 import { useForm } from "../../hooks/useForm"
 import { useRegisters } from "../../hooks/useRegisters"
+import { useDiscounts } from "../../hooks/useDiscounts"
 
 import { AddProductsToSale } from "./AddProductsToSale"
 import { ModalComponent } from "../common/ModalComponent"
 import { PaymentsABM } from "./PaymentsABM"
 import { PaymentForm } from "./PaymentForm"
 
-import { getCurrentSubtotal, getCurrentTotal } from "../../utils/helpers"
+import { a11yProps, getCurrentSubtotal, getCurrentTotal } from "../../utils/helpers"
 
 export function SaleForm({
     saleProducts,
@@ -44,6 +45,7 @@ export function SaleForm({
     const { state } = useContext(DataContext)
 
     const { getRegisters } = useRegisters()
+    const { getDiscounts } = useDiscounts()
     const {
         open: openPayment,
         setOpen: setOpenPayment,
@@ -69,6 +71,7 @@ export function SaleForm({
 
     useEffect(() => {
         getRegisters()
+        getDiscounts(`?is_available=true`)
     }, [])
 
     useEffect(() => {
@@ -110,13 +113,6 @@ export function SaleForm({
         setIsBlocked(false)
         setValueTab(0)
         setConfirmed(false)
-    }
-
-    function a11yProps(index) {
-        return {
-            id: `simple-tab-${index}`,
-            'aria-controls': `simple-tabpanel-${index}`,
-        }
     }
 
     return (
@@ -263,14 +259,24 @@ export function SaleForm({
                                     gap: 3
                                 }}>
                                     <FormControl>
-                                        <InputLabel htmlFor="discount">% Descuento</InputLabel>
-                                        <Input
+                                        <InputLabel>Descuento</InputLabel>
+                                        <Select
+                                            labelId="discount-select"
                                             id="discount"
-                                            type="number"
-                                            name="discount"
                                             value={formData.discount}
-                                            disabled={formData.type === 'CUENTA_CORRIENTE' || open === 'VIEW' || (open === 'EDIT' && auth?.user.role !== 'ADMINISTRADOR')}
-                                        />
+                                            disabled={open === 'VIEW' || (open === 'EDIT' && auth?.user.role !== 'ADMINISTRADOR')}
+                                            label="Descuento"
+                                            name="discount"
+                                            onChange={handleChange}
+                                            sx={{ width: "100%" }}
+                                        >
+                                            <MenuItem value="">Ninguno</MenuItem>
+                                            {state.discounts.data.map(d => (
+                                                <MenuItem key={d.id} value={d.id}>
+                                                    {d.name}
+                                                </MenuItem>
+                                            ))}
+                                        </Select>
                                     </FormControl>
                                     <FormControl>
                                         <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
