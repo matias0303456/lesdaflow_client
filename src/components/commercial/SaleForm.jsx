@@ -68,7 +68,7 @@ export function SaleForm({
 
     const [valueTab, setValueTab] = useState(0)
     const [confirmed, setConfirmed] = useState(false)
-    const [discountApplied, setDiscountApplied] = useState(null)
+    const [discountApplied, setDiscountApplied] = useState('')
 
     useEffect(() => {
         getRegisters()
@@ -101,6 +101,13 @@ export function SaleForm({
             }))
         }
     }, [formData.type])
+
+    useEffect(() => {
+        setFormData({
+            ...formData,
+            discount: state.discounts.data.find(d => d.id === discountApplied)?.value ?? ''
+        })
+    }, [discountApplied])
 
     const handleChangeTab = (_, newValue) => {
         setValueTab(newValue)
@@ -264,11 +271,11 @@ export function SaleForm({
                                         <Select
                                             labelId="discount-select"
                                             id="discount"
-                                            value={formData.discount}
+                                            value={discountApplied}
                                             disabled={formData.type === 'POXIPOL' || open === 'VIEW' || (open === 'EDIT' && auth?.user.role !== 'ADMINISTRADOR')}
                                             label="Descuento"
                                             name="discount"
-                                            onChange={handleChange}
+                                            onChange={(e) => setDiscountApplied(e.target.value)}
                                             sx={{ width: "100%" }}
                                         >
                                             <MenuItem value="">Ninguno</MenuItem>
@@ -342,9 +349,10 @@ export function SaleForm({
                             }
                         </FormControl>
                     </form>
-                </Box>
+                </Box >
             }
-            {valueTab === 1 &&
+            {
+                valueTab === 1 &&
                 <Box sx={{ p: 0 }}>
                     <PaymentsABM
                         sale={formData}
@@ -360,7 +368,8 @@ export function SaleForm({
                     />
                 </Box>
             }
-            {valueTab === 2 &&
+            {
+                valueTab === 2 &&
                 <Box sx={{ p: 1 }}>
                     <PaymentForm
                         sale={formData}
@@ -377,7 +386,8 @@ export function SaleForm({
                     />
                 </Box>
             }
-            {valueTab === 3 &&
+            {
+                valueTab === 3 &&
                 <Box sx={{ p: 1 }}>
                     <textarea
                         style={{

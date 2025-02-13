@@ -172,7 +172,7 @@ export function getAvailableDiscounts(formData, saleProducts, products, discount
         if (
             ((!from && !to) || (from && to && new Date(from) < date && new Date(to) > date)) &&
             (!sale_type || sale_type === type) &&
-            (discountProducts.length === 0 || saleProducts.some(sp => {
+            ((!supplier_id && discountProducts.length === 0) || saleProducts.some(sp => {
                 const product = sp.product ?? products.find(p => p.id === sp.product_id)
                 return product.supplier_id === supplier_id || discountProducts.includes(product.id)
             }))
