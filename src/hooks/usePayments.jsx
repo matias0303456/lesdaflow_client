@@ -4,6 +4,7 @@ import { DataContext } from "../providers/DataProvider"
 import { MessageContext } from "../providers/MessageProvider"
 import { AuthContext } from "../providers/AuthProvider"
 import { useApi } from "./useApi"
+import { useForm } from "./useForm"
 
 import { PAYMENT_URL } from "../utils/urls"
 import { getSaleDifference } from "../utils/helpers"
@@ -13,6 +14,11 @@ export function usePayments() {
     const { auth } = useContext(AuthContext)
     const { state, dispatch } = useContext(DataContext)
     const { setMessage, setOpenMessage, setSeverity } = useContext(MessageContext)
+
+    const paymentFormData = useForm({
+        defaultData: { id: '', sale_id: '', date: new Date(Date.now()), type: 'EFECTIVO', amount: '', observations: '' },
+        rules: { amount: { required: true }, observations: { maxLength: 255 } }
+    })
 
     const [loadingPayments, setLoadingPayments] = useState(true)
     const [open, setOpen] = useState(null)
@@ -189,6 +195,7 @@ export function usePayments() {
         cancelPayment,
         getPayments,
         loadingPayments,
-        setLoadingPayments
+        setLoadingPayments,
+        paymentFormData
     }
 }
