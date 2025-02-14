@@ -10,9 +10,9 @@ import { useDiscounts } from "../../hooks/useDiscounts"
 import { ModalComponent } from "../common/ModalComponent"
 import { PaymentsABM } from "./PaymentsABM"
 import { PaymentForm } from "./PaymentForm"
+import { SaleFormFields } from "./SaleFormFields"
 
 import { a11yProps, getCurrentTotal } from "../../utils/helpers"
-import { SaleFormFields } from "./SaleFormFields"
 
 export function SaleForm({
     saleProducts,
@@ -96,15 +96,8 @@ export function SaleForm({
     }, [formData.type])
 
     useEffect(() => {
-        setFormData({
-            ...formData,
-            discount: typeof discountApplied !== 'string' ? discountApplied.value : ''
-        })
-    }, [discountApplied])
-
-    useEffect(() => {
-        setCurrentTotal(getCurrentTotal(formData, saleProducts, state.products.data))
-    }, [formData, saleProducts, state.products.data])
+        setCurrentTotal(getCurrentTotal(discountApplied, saleProducts, state.products.data))
+    }, [discountApplied, saleProducts, state.products.data])
 
     const handleChangeTab = (_, newValue) => {
         setValueTab(newValue)

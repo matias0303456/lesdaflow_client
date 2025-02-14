@@ -9,20 +9,6 @@ export function getStock(product) {
     }, 0)
 }
 
-export function getCurrentSubtotal(saleProducts, products) {
-    const total = saleProducts.reduce((prev, curr) => {
-        const p = products.find(item => item.id === curr.product_id)
-        return prev + (((curr.buy_price ?? p.buy_price) + (((curr.buy_price ?? p.buy_price) / 100) * (curr.earn ?? p.earn))) * (isNaN(parseInt(curr.amount)) ? 0 : parseInt(curr.amount)))
-    }, 0)
-    return total.toFixed(2)
-}
-
-export function getCurrentTotal(formData, saleProducts, products) {
-    const subtotal = getCurrentSubtotal(saleProducts, products)
-    const discount = formData.discount.length === 0 ? 0 : parseInt(formData.discount)
-    return (subtotal - ((subtotal / 100) * discount)).toFixed(2)
-}
-
 export function getSaleSubtotal(sale) {
     const result = sale.sale_products.reduce((prev, curr) => prev + ((curr.buy_price + ((curr.buy_price / 100) * curr.earn)) * curr.amount), 0)
     return `$${result.toFixed(2)}`
@@ -178,4 +164,31 @@ export function getAvailableDiscounts(formData, saleProducts, products, discount
             }))
         ) return discount
     })
+}
+
+export function getCurrentSubtotal(saleProducts, products) {
+    const total = saleProducts.reduce((prev, curr) => {
+        const p = products.find(item => item.id === curr.product_id)
+        return prev + (((curr.buy_price ?? p.buy_price) + (((curr.buy_price ?? p.buy_price) / 100) * (curr.earn ?? p.earn))) * (isNaN(parseInt(curr.amount)) ? 0 : parseInt(curr.amount)))
+    }, 0)
+    return total.toFixed(2)
+}
+
+export function getCurrentTotal(discount, saleProducts, products) {
+    const { supplier_id, discount_by_products, value } = discount
+    const subtotal = getCurrentSubtotal(saleProducts, products)
+    if (!supplier_id && discount_by_products?.length === 0) {
+        return (subtotal - ((subtotal / 100) * value)).toFixed(2)
+    }
+    const discountProducts = discount_by_products?.map(dbp => dbp.product_id)
+    const returnValue = saleProducts.reduce((total, sp) => {
+        const product = sp.product ?? products.find(p => p.id === sp.product_id)
+        const salePrice = getProductSalePrice(product)
+        if (product.supplier_id === supplier_id || discountProducts?.includes(product.id)) {
+            const salePriceWithDiscount = salePrice - ((salePrice / 100) * value)
+            return total + salePriceWithDiscount
+        }
+        return parseFloat(total + subtotal)
+    }, 0)
+    return returnValue.toFixed(2)
 }

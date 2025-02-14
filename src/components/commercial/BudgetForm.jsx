@@ -111,8 +111,7 @@ export function BudgetForm({
                                 if (e.target.checked) {
                                     setFormData({
                                         ...formData,
-                                        type: 'CUENTA_CORRIENTE',
-                                        discount: 0
+                                        type: 'CUENTA_CORRIENTE'
                                     })
                                 }
                             }}
@@ -159,16 +158,6 @@ export function BudgetForm({
                     />
                 </Box>
                 <Box sx={{ display: 'flex', justifyContent: 'end', gap: 2, marginTop: 3 }}>
-                    <FormControl>
-                        <InputLabel htmlFor="discount">% Descuento</InputLabel>
-                        <Input
-                            id="discount"
-                            type="number"
-                            name="discount"
-                            value={formData.discount}
-                            disabled={open === 'VIEW'}
-                        />
-                    </FormControl>
                     <FormControl>
                         <InputLabel htmlFor="total">Total</InputLabel>
                         <Input

@@ -48,7 +48,6 @@ export function SalesToDeliver() {
         defaultData: {
             id: '',
             client_id: '',
-            discount: '',
             type: 'CUENTA_CORRIENTE',
             date: new Date(Date.now()),
             observations: ''

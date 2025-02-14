@@ -93,8 +93,7 @@ export function SaleFormFields({
                                     if (e.target.checked) {
                                         setFormData({
                                             ...formData,
-                                            type: 'CUENTA_CORRIENTE',
-                                            discount: 0
+                                            type: 'CUENTA_CORRIENTE'
                                         })
                                         setDiscountApplied('')
                                     }
@@ -158,7 +157,7 @@ export function SaleFormFields({
                                 <Select
                                     labelId="discount-select"
                                     id="discount"
-                                    value={discountApplied}
+                                    value={discountApplied.id ?? ''}
                                     disabled={formData.type === 'POXIPOL' || open === 'VIEW' || (open === 'EDIT' && auth?.user.role !== 'ADMINISTRADOR')}
                                     label="Descuento"
                                     name="discount"
