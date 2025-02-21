@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { useContext } from "react"
+import { useContext, useEffect } from "react"
 import { Autocomplete, Box, Button, Checkbox, FormControl, FormControlLabel, Input, InputLabel, MenuItem, Select, TextField, Typography } from "@mui/material"
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers"
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns"
@@ -40,6 +40,10 @@ export function SaleFormFields({
 
     const { auth } = useContext(AuthContext)
     const { state } = useContext(DataContext)
+
+    useEffect(() => {
+        if (saleProducts.length === 0 || discountApplied?.id) setDiscountApplied('')
+    }, [saleProducts])
 
     return (
         <Box sx={{ p: 1 }}>
@@ -172,7 +176,7 @@ export function SaleFormFields({
                                             </MenuItem>
                                         ))}
                                 </Select>
-                                {discountApplied?.base > 0 && discountApplied?.base < currentTotal &&
+                                {discountApplied?.base > 0 && discountApplied?.base > currentTotal &&
                                     <Typography variant="caption" color="red" marginTop={1}>
                                         * El monto neto debe ser mayor o igual a la base del descuento: ${discountApplied.base}.
                                     </Typography>

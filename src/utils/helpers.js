@@ -150,6 +150,7 @@ export function a11yProps(index) {
 }
 
 export function getAvailableDiscounts(formData, saleProducts, products, discounts) {
+    if (saleProducts.length === 0) return []
     const date = new Date(formData.date)
     const type = formData.type
     return discounts.filter(discount => {
