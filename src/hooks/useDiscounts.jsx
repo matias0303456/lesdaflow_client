@@ -39,6 +39,7 @@ export function useDiscounts() {
     const [open, setOpen] = useState(null)
     const [loadingDiscounts, setLoadingDiscounts] = useState(true)
     const [discountProducts, setDiscountProducts] = useState([])
+    const [discountSuppliers, setDiscountSuppliers] = useState([])
 
     async function getDiscounts(params) {
         const { status, data } = await get(params)
@@ -58,7 +59,7 @@ export function useDiscounts() {
     async function handleSubmit(e, validate, formData, reset, setDisabled) {
         e.preventDefault()
         if (validate()) {
-            const submitData = { ...formData, product_ids: discountProducts }
+            const submitData = { ...formData, product_ids: discountProducts, supplier_ids: discountSuppliers }
             const { status, data } = open === 'NEW' ? await post(submitData) : await put(submitData)
             if (status === 200) {
                 if (open === 'NEW') {
@@ -198,8 +199,8 @@ export function useDiscounts() {
             numeric: false,
             disablePadding: true,
             label: "Prov.",
-            sorter: (row) => row.supplier_id ? row.supplier.name : 0,
-            accessor: (row) => row.supplier_id ? row.supplier.name : ''
+            sorter: (row) => row.discount_by_suppliers.length > 0 ? 'Sí' : 'No',
+            accessor: (row) => row.discount_by_suppliers.length > 0 ? 'Sí' : 'No'
         },
         {
             id: "products",
@@ -239,6 +240,8 @@ export function useDiscounts() {
         discountFormData,
         discountProducts,
         setDiscountProducts,
-        handleClose
+        handleClose,
+        discountSuppliers,
+        setDiscountSuppliers
     }
 }

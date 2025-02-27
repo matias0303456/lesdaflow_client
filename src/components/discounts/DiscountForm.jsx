@@ -7,6 +7,7 @@ import { es } from "date-fns/locale";
 
 import { DataContext } from "../../providers/DataProvider";
 import { AddProductsToDiscount } from "./AddProductsToDiscount";
+import { AddSuppliersToDiscount } from "./AddSuppliersToDiscount";
 
 export function DiscountForm({
     handleChange,
@@ -22,7 +23,8 @@ export function DiscountForm({
     handleClose,
     discountProducts,
     setDiscountProducts,
-    products
+    discountSuppliers,
+    setDiscountSuppliers
 }) {
 
     const { state } = useContext(DataContext)
@@ -149,7 +151,13 @@ export function DiscountForm({
                 <AddProductsToDiscount
                     discountProducts={discountProducts}
                     setDiscountProducts={setDiscountProducts}
-                    products={products}
+                    products={state.products.data}
+                    open={open}
+                />
+                <AddSuppliersToDiscount
+                    discountSuppliers={discountSuppliers}
+                    setDiscountSuppliers={setDiscountSuppliers}
+                    suppliers={state.suppliers.data}
                     open={open}
                 />
                 <FormControl sx={{

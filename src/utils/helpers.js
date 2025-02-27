@@ -15,6 +15,7 @@ export function getSaleSubtotal(sale) {
 }
 
 export function getSaleTotal(sale) {
+    if (sale.total !== null) return `$${sale.total.toFixed(2)}`
     const subtotal = getSaleSubtotal(sale).replace('$', '')
     return `$${(subtotal - ((subtotal / 100) * sale.discount)).toFixed(2)}`
 }
@@ -128,6 +129,7 @@ export function getBudgetSubtotal(budget_products) {
 }
 
 export function getBudgetTotal(budget, subtotal) {
+    if (budget.total !== null) return budget.total.toFixed(2)
     return (subtotal - ((subtotal / 100) * parseFloat(budget.discount))).toFixed(2)
 }
 
@@ -154,14 +156,15 @@ export function getAvailableDiscounts(formData, saleProducts, products, discount
     const date = new Date(formData.date)
     const type = formData.type
     return discounts.filter(discount => {
-        const { from, to, supplier_id, discount_by_products, sale_type } = discount
+        const { from, to, discount_by_products, discount_by_suppliers, sale_type } = discount
         const discountProducts = discount_by_products.map(dbp => dbp.product_id)
+        const discountSuppliers = discount_by_suppliers.map(dbs => dbs.supplier_id)
         if (
             ((!from && !to) || (from && to && new Date(from) < date && new Date(to) > date)) &&
             (!sale_type || sale_type === type) &&
-            ((!supplier_id && discountProducts.length === 0) || saleProducts.some(sp => {
+            ((discountSuppliers.length === 0 && discountProducts.length === 0) || saleProducts.some(sp => {
                 const product = sp.product ?? products.find(p => p.id === sp.product_id)
-                return product.supplier_id === supplier_id || discountProducts.includes(product.id)
+                return discountSuppliers.includes(product.supplier_id) || discountProducts.includes(product.id)
             }))
         ) return discount
     })

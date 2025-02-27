@@ -33,7 +33,9 @@ export function Discounts() {
         discountFormData,
         discountProducts,
         setDiscountProducts,
-        handleClose
+        handleClose,
+        discountSuppliers,
+        setDiscountSuppliers
     } = useDiscounts()
     const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = discountFormData
 
@@ -47,7 +49,10 @@ export function Discounts() {
     }, []);
 
     useEffect(() => {
-        if (open === 'EDIT' || open === 'VIEW') setDiscountProducts(formData.discount_by_products)
+        if (open === 'EDIT' || open === 'VIEW') {
+            setDiscountProducts(formData.discount_by_products)
+            setDiscountSuppliers(formData.discount_by_suppliers)
+        }
     }, [open, formData.discount_by_products])
 
     return (
@@ -91,7 +96,8 @@ export function Discounts() {
                         handleClose={handleClose}
                         discountProducts={discountProducts}
                         setDiscountProducts={setDiscountProducts}
-                        products={state.products.data}
+                        discountSuppliers={discountSuppliers}
+                        setDiscountSuppliers={setDiscountSuppliers}
                     />
                 </ModalComponent>
                 <ModalComponent open={open === 'DELETE'} onClose={handleClose} reduceWidth={900}>
