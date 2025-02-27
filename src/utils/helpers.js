@@ -129,7 +129,7 @@ export function getBudgetSubtotal(budget_products) {
 }
 
 export function getBudgetTotal(budget, subtotal) {
-    if (budget.total !== null) return budget.total.toFixed(2)
+    if (budget.total !== null) return budget.total?.toFixed(2)
     return (subtotal - ((subtotal / 100) * parseFloat(budget.discount))).toFixed(2)
 }
 

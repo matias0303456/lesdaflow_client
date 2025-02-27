@@ -1,16 +1,17 @@
 /* eslint-disable react/prop-types */
-import { useContext, useEffect } from "react"
-import { Autocomplete, Box, FormControl, InputLabel, TextField, Typography, Input, Button, FormControlLabel, Checkbox } from "@mui/material"
+import { useContext, useEffect, useState } from "react"
+import { Autocomplete, Box, FormControl, InputLabel, TextField, Typography, Input, Button, FormControlLabel, Checkbox, Select, MenuItem } from "@mui/material"
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers"
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns"
 import { es } from "date-fns/locale"
 
 import { DataContext } from "../../providers/DataProvider"
+import { useDiscounts } from "../../hooks/useDiscounts"
 
 import { AddProductsToBudget } from "./AddProductsToBudget"
 import { ModalComponent } from "../common/ModalComponent"
 
-import { getBudgetSubtotal, getBudgetTotal } from "../../utils/helpers"
+import { getAvailableDiscounts, getCurrentTotal } from "../../utils/helpers"
 
 export function BudgetForm({
     budgetProducts,
@@ -34,6 +35,14 @@ export function BudgetForm({
 
     const { state } = useContext(DataContext)
 
+    const { getDiscounts } = useDiscounts()
+
+    const [discountApplied, setDiscountApplied] = useState('')
+
+    useEffect(() => {
+        getDiscounts(`?is_available=true`)
+    }, [])
+
     useEffect(() => {
         if (budgetProducts.length > 0 && (open === 'NEW' || open === 'CONVERT')) {
             setBudgetProducts(budgetProducts.filter(bp => {
@@ -44,6 +53,14 @@ export function BudgetForm({
             }))
         }
     }, [formData.type])
+
+    useEffect(() => {
+        if (open === 'EDIT') return
+        setFormData({
+            ...formData,
+            total: getCurrentTotal(discountApplied, budgetProducts, state.products.data),
+        })
+    }, [discountApplied, budgetProducts, state.products.data, open])
 
     return (
         <ModalComponent
@@ -158,15 +175,36 @@ export function BudgetForm({
                     />
                 </Box>
                 <Box sx={{ display: 'flex', justifyContent: 'end', gap: 2, marginTop: 3 }}>
+                    <FormControl sx={{ width: '30%' }}>
+                        <InputLabel>Descuento</InputLabel>
+                        <Select
+                            labelId="discount-select"
+                            id="discount"
+                            value={discountApplied.id ?? ''}
+                            disabled={formData.type === 'POXIPOL' || open === 'VIEW' || open === 'EDIT'}
+                            label="Descuento"
+                            name="discount"
+                            onChange={(e) => setDiscountApplied(state.discounts.data.find(d => d.id === e.target.value))}
+                            sx={{ width: "100%" }}
+                        >
+                            <MenuItem value="">Ninguno</MenuItem>
+                            {getAvailableDiscounts(formData, budgetProducts, state.products.data, state.discounts.data)
+                                .map(d => (
+                                    <MenuItem key={d.id} value={d.id}>
+                                        {d.name}
+                                    </MenuItem>
+                                ))}
+                        </Select>
+                        {discountApplied?.base > 0 && discountApplied?.base > formData.total &&
+                            <Typography variant="caption" color="red" marginTop={1}>
+                                * El monto neto debe ser mayor o igual a la base del descuento: ${discountApplied.base}.
+                            </Typography>
+                        }
+                    </FormControl>
                     <FormControl>
                         <InputLabel htmlFor="total">Total</InputLabel>
                         <Input
-                            value={getBudgetTotal(formData, getBudgetSubtotal(budgetProducts.map(bp => {
-                                return {
-                                    ...bp,
-                                    product: state.products.data.find(p => p.id === bp.product_id)
-                                }
-                            })))}
+                            value={formData.total}
                             id="total"
                             type="number"
                             name="total"

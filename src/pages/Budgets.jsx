@@ -45,7 +45,7 @@ export function Budgets() {
         missing
     } = useBudgets()
     const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
-        defaultData: { id: '', client_id: '', date: new Date(Date.now()), type: 'CUENTA_CORRIENTE' },
+        defaultData: { id: '', client_id: '', date: new Date(Date.now()), type: 'CUENTA_CORRIENTE', total: '0.00' },
         rules: { client_id: { required: true }, date: { required: true } }
     })
     const {
@@ -74,6 +74,7 @@ export function Budgets() {
             client_id: '',
             type: 'CUENTA_CORRIENTE',
             date: new Date(Date.now()),
+            total: '0.00'
         },
         rules: {
             client_id: {

@@ -155,34 +155,32 @@ export function SaleFormFields({
                             width: { xs: '100%', md: '40%' },
                             gap: 3
                         }}>
-                            {open !== 'EDIT' &&
-                                <FormControl>
-                                    <InputLabel>Descuento</InputLabel>
-                                    <Select
-                                        labelId="discount-select"
-                                        id="discount"
-                                        value={discountApplied.id ?? ''}
-                                        disabled={formData.type === 'POXIPOL' || open === 'VIEW' || (open === 'EDIT' && auth?.user.role !== 'ADMINISTRADOR')}
-                                        label="Descuento"
-                                        name="discount"
-                                        onChange={(e) => setDiscountApplied(state.discounts.data.find(d => d.id === e.target.value))}
-                                        sx={{ width: "100%" }}
-                                    >
-                                        <MenuItem value="">Ninguno</MenuItem>
-                                        {getAvailableDiscounts(formData, saleProducts, state.products.data, state.discounts.data)
-                                            .map(d => (
-                                                <MenuItem key={d.id} value={d.id}>
-                                                    {d.name}
-                                                </MenuItem>
-                                            ))}
-                                    </Select>
-                                    {discountApplied?.base > 0 && discountApplied?.base > formData.total &&
-                                        <Typography variant="caption" color="red" marginTop={1}>
-                                            * El monto neto debe ser mayor o igual a la base del descuento: ${discountApplied.base}.
-                                        </Typography>
-                                    }
-                                </FormControl>
-                            }
+                            <FormControl>
+                                <InputLabel>Descuento</InputLabel>
+                                <Select
+                                    labelId="discount-select"
+                                    id="discount"
+                                    value={discountApplied.id ?? ''}
+                                    disabled={formData.type === 'POXIPOL' || open === 'VIEW' || open === 'EDIT'}
+                                    label="Descuento"
+                                    name="discount"
+                                    onChange={(e) => setDiscountApplied(state.discounts.data.find(d => d.id === e.target.value))}
+                                    sx={{ width: "100%" }}
+                                >
+                                    <MenuItem value="">Ninguno</MenuItem>
+                                    {getAvailableDiscounts(formData, saleProducts, state.products.data, state.discounts.data)
+                                        .map(d => (
+                                            <MenuItem key={d.id} value={d.id}>
+                                                {d.name}
+                                            </MenuItem>
+                                        ))}
+                                </Select>
+                                {discountApplied?.base > 0 && discountApplied?.base > formData.total &&
+                                    <Typography variant="caption" color="red" marginTop={1}>
+                                        * El monto neto debe ser mayor o igual a la base del descuento: ${discountApplied.base}.
+                                    </Typography>
+                                }
+                            </FormControl>
                             <FormControl>
                                 <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
                                     <DatePicker
