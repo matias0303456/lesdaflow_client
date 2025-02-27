@@ -90,7 +90,7 @@ export function DiscountForm({
                     />
                 </Box>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: { xs: 1, sm: 3 } }}>
-                    <FormControl sx={{ width: '25%' }}>
+                    <FormControl sx={{ width: '33%' }}>
                         <TextField
                             type="number"
                             label="Tasa (%) *"
@@ -102,7 +102,7 @@ export function DiscountForm({
                             InputProps={{ inputProps: { min: 0.01, step: 0.01 } }}
                         />
                     </FormControl>
-                    <FormControl sx={{ width: '25%' }}>
+                    <FormControl sx={{ width: '33%' }}>
                         <TextField
                             type="number"
                             label="Base"
@@ -114,7 +114,7 @@ export function DiscountForm({
                             InputProps={{ inputProps: { min: 0, step: 0.01 } }}
                         />
                     </FormControl>
-                    <FormControl sx={{ width: '25%' }}>
+                    <FormControl sx={{ width: '33%' }}>
                         <InputLabel id="sale_type-select">Tipo Vta.</InputLabel>
                         <Select
                             labelId="sale_type-select"
@@ -128,23 +128,6 @@ export function DiscountForm({
                             <MenuItem value="">Ninguno</MenuItem>
                             <MenuItem value="CONTADO">CONTADO</MenuItem>
                             <MenuItem value="CUENTA_CORRIENTE">CTA CTE</MenuItem>
-                        </Select>
-                    </FormControl>
-                    <FormControl sx={{ width: '25%' }}>
-                        <InputLabel id="supplier-select">Proveedor</InputLabel>
-                        <Select
-                            labelId="supplier-select"
-                            id="supplier_id"
-                            value={formData.supplier_id ?? ''}
-                            label="Proveedor"
-                            name="supplier_id"
-                            onChange={handleChange}
-                            disabled={open === 'VIEW'}
-                        >
-                            <MenuItem value="">Ninguno</MenuItem>
-                            {state.suppliers.data.map(s => (
-                                <MenuItem key={s.id} value={s.id}>{s.name}</MenuItem>
-                            ))}
                         </Select>
                     </FormControl>
                 </Box>

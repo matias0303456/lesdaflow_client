@@ -1,4 +1,5 @@
 import { useContext, useState } from "react"
+import { format } from "date-fns"
 
 import { DataContext } from "../providers/DataProvider"
 import { MessageContext } from "../providers/MessageProvider"
@@ -50,12 +51,13 @@ export function useSales() {
         }
     }
 
-    async function handleSubmit(e, formData, validate, reset, setDisabled) {
+    async function handleSubmit(e, formData, validate, reset, setDisabled, discountApplied) {
         e.preventDefault()
         const submitData = {
             ...formData,
             sale_products: saleProducts,
-            idsToDelete: idsToDelete.length === 0 ? undefined : idsToDelete
+            idsToDelete: idsToDelete.length === 0 ? undefined : idsToDelete,
+            observations: discountApplied ? formData.observations += `- Descuento aplicado: ${discountApplied.name} (${format(new Date(Date.now()), 'dd/MM/yyyy')})\n` : formData.observations
         }
         const spMissing = submitData.sale_products.length === 0 || submitData.sale_products.some(sp => !sp.amount || parseInt(sp.amount) <= 0)
         if (validate() && !spMissing) {

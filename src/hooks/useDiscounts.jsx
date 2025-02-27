@@ -20,7 +20,6 @@ export function useDiscounts() {
             id: '',
             value: 0.01,
             base: 0,
-            supplier_id: '',
             name: '',
             from: null,
             to: null,

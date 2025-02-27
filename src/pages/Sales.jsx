@@ -54,7 +54,8 @@ export function Sales() {
             client_id: '',
             type: 'CUENTA_CORRIENTE',
             date: new Date(Date.now()),
-            observations: ''
+            observations: '',
+            total: '0.00'
         },
         rules: {
             client_id: {

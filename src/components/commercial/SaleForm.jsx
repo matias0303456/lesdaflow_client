@@ -61,7 +61,6 @@ export function SaleForm({
     const [valueTab, setValueTab] = useState(0)
     const [confirmed, setConfirmed] = useState(false)
     const [discountApplied, setDiscountApplied] = useState('')
-    const [currentTotal, setCurrentTotal] = useState('0.00')
 
     useEffect(() => {
         getRegisters()
@@ -96,8 +95,12 @@ export function SaleForm({
     }, [formData.type])
 
     useEffect(() => {
-        setCurrentTotal(getCurrentTotal(discountApplied, saleProducts, state.products.data))
-    }, [discountApplied, saleProducts, state.products.data])
+        if (open === 'EDIT') return
+        setFormData({
+            ...formData,
+            total: getCurrentTotal(discountApplied, saleProducts, state.products.data),
+        })
+    }, [discountApplied, saleProducts, state.products.data, open])
 
     const handleChangeTab = (_, newValue) => {
         setValueTab(newValue)
@@ -167,7 +170,6 @@ export function SaleForm({
                     setMissing={setMissing}
                     idsToDelete={idsToDelete}
                     setIdsToDelete={setIdsToDelete}
-                    currentTotal={currentTotal}
                     handleClose={handleClose}
                     disabled={disabled}
                     open={open}

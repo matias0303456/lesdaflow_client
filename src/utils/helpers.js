@@ -179,16 +179,17 @@ export function getCurrentSubtotal(saleProducts, products) {
 }
 
 export function getCurrentTotal(discount, saleProducts, products) {
-    const { supplier_id, discount_by_products, value } = discount
+    const { discount_by_suppliers, discount_by_products, value } = discount
     const subtotal = getCurrentSubtotal(saleProducts, products)
-    if (!supplier_id && discount_by_products?.length === 0) {
+    if (discount_by_suppliers?.length === 0 && discount_by_products?.length === 0) {
         return (subtotal - ((subtotal / 100) * value)).toFixed(2)
     }
     const discountProducts = discount_by_products?.map(dbp => dbp.product_id)
+    const discountSuppliers = discount_by_suppliers?.map(dbs => dbs.supplier_id)
     const returnValue = saleProducts.reduce((total, sp) => {
         const product = sp.product ?? products.find(p => p.id === sp.product_id)
         const salePrice = getProductSalePrice(product)
-        if (product.supplier_id === supplier_id || discountProducts?.includes(product.id)) {
+        if (discountSuppliers?.includes(product.supplier_id) || discountProducts?.includes(product.id)) {
             const salePriceWithDiscount = salePrice - ((salePrice / 100) * value)
             return total + salePriceWithDiscount
         }
