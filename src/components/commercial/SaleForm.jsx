@@ -5,7 +5,6 @@ import { Box, Button, Tab, Tabs, Typography } from "@mui/material"
 import { DataContext } from "../../providers/DataProvider"
 import { usePayments } from "../../hooks/usePayments"
 import { useRegisters } from "../../hooks/useRegisters"
-import { useDiscounts } from "../../hooks/useDiscounts"
 
 import { ModalComponent } from "../common/ModalComponent"
 import { PaymentsABM } from "./PaymentsABM"
@@ -39,7 +38,6 @@ export function SaleForm({
     const { state } = useContext(DataContext)
 
     const { getRegisters } = useRegisters()
-    const { getDiscounts } = useDiscounts()
     const {
         open: openPayment,
         setOpen: setOpenPayment,
@@ -64,7 +62,6 @@ export function SaleForm({
 
     useEffect(() => {
         getRegisters()
-        getDiscounts(`?is_available=true`)
     }, [])
 
     useEffect(() => {

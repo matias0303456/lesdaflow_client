@@ -6,7 +6,6 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns"
 import { es } from "date-fns/locale"
 
 import { DataContext } from "../../providers/DataProvider"
-import { useDiscounts } from "../../hooks/useDiscounts"
 
 import { AddProductsToBudget } from "./AddProductsToBudget"
 import { ModalComponent } from "../common/ModalComponent"
@@ -35,13 +34,7 @@ export function BudgetForm({
 
     const { state } = useContext(DataContext)
 
-    const { getDiscounts } = useDiscounts()
-
     const [discountApplied, setDiscountApplied] = useState('')
-
-    useEffect(() => {
-        getDiscounts(`?is_available=true`)
-    }, [])
 
     useEffect(() => {
         if (budgetProducts.length > 0 && (open === 'NEW' || open === 'CONVERT')) {

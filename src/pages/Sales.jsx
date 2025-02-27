@@ -10,6 +10,7 @@ import { useClients } from '../hooks/useClients'
 import { useForm } from "../hooks/useForm";
 import { useSales } from "../hooks/useSales";
 import { useUsers } from "../hooks/useUsers";
+import { useDiscounts } from "../hooks/useDiscounts";
 
 import { Layout } from "../components/common/Layout";
 import { ModalComponent } from "../components/common/ModalComponent";
@@ -48,6 +49,7 @@ export function Sales() {
     const { loadingProducts, getProducts } = useProducts()
     const { loadingClients, getClients } = useClients()
     const { getUsers } = useUsers()
+    const { getDiscounts } = useDiscounts()
     const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
         defaultData: {
             id: '',
@@ -78,6 +80,7 @@ export function Sales() {
         getClients()
         getProducts()
         getUsers()
+        getDiscounts(`?is_available=true`)
     }, [])
 
     useEffect(() => {

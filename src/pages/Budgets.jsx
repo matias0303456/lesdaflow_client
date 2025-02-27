@@ -10,6 +10,7 @@ import { useBudgets } from "../hooks/useBudgets";
 import { useProducts } from "../hooks/useProducts";
 import { useClients } from "../hooks/useClients";
 import { useSales } from "../hooks/useSales";
+import { useDiscounts } from "../hooks/useDiscounts";
 
 import { Layout } from "../components/common/Layout";
 import { DataGridWithBackendPagination } from "../components/datagrid/DataGridWithBackendPagination";
@@ -30,6 +31,7 @@ export function Budgets() {
 
     const { getProducts } = useProducts()
     const { getClients } = useClients()
+    const { getDiscounts } = useDiscounts()
     const {
         setBudgetProducts,
         loadingBudgets,
@@ -93,6 +95,7 @@ export function Budgets() {
     useEffect(() => {
         getClients()
         getProducts()
+        getDiscounts(`?is_available=true`)
     }, [])
 
     useEffect(() => {
