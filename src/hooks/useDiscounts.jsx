@@ -58,7 +58,11 @@ export function useDiscounts() {
     async function handleSubmit(e, validate, formData, reset, setDisabled) {
         e.preventDefault()
         if (validate()) {
-            const submitData = { ...formData, product_ids: discountProducts, supplier_ids: discountSuppliers }
+            const submitData = {
+                ...formData,
+                product_ids: open === 'EDIT' ? discountProducts.map(dp => dp.product?.id ?? dp) : discountProducts,
+                supplier_ids: open === 'EDIT' ? discountSuppliers.map(ds => ds.supplier?.id ?? ds) : discountSuppliers
+            }
             const { status, data } = open === 'NEW' ? await post(submitData) : await put(submitData)
             if (status === 200) {
                 if (open === 'NEW') {
@@ -77,8 +81,10 @@ export function useDiscounts() {
                     })
                     setMessage('Descuento editado correctamente.')
                 }
-                setSeverity('success')
                 reset(setOpen)
+                setSeverity('success')
+                setDiscountProducts([])
+                setDiscountSuppliers([])
             } else {
                 setMessage(data.message)
                 setSeverity('error')
@@ -135,6 +141,7 @@ export function useDiscounts() {
     function handleClose() {
         discountFormData.reset(setOpen)
         setDiscountProducts([])
+        setDiscountSuppliers([])
     }
 
     const headCells = useMemo(() => [
