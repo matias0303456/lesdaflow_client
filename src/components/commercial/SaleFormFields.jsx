@@ -209,6 +209,12 @@ export function SaleFormFields({
                         <InputLabel htmlFor="subtotal">Subtotal</InputLabel>
                         <Input value={getCurrentSubtotal(saleProducts, state.products.data)} id="subtotal" type="number" name="subtotal" disabled />
                     </FormControl>
+                    {open === 'NEW' &&
+                        <FormControl>
+                            <InputLabel htmlFor="discount">Descuento</InputLabel>
+                            <Input value={`${discountApplied?.value ?? '0'}%`} id="dicount" type="text" name="discount" disabled />
+                        </FormControl>
+                    }
                     <FormControl>
                         <InputLabel htmlFor="total">Total</InputLabel>
                         <Input value={formData.total} id="total" type="number" name="total" disabled />
