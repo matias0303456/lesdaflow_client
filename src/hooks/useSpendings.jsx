@@ -18,10 +18,7 @@ export function useSpendings() {
     const [total, setTotal] = useState(0)
     const [open, setOpen] = useState(null)
     const [loadingSpendings, setLoadingSpendings] = useState(true)
-    const [filter, setFilter] = useState({
-        page: 0,
-        offset: 25
-    })
+    const [filter, setFilter] = useState({ from: '', to: '', page: 0, offset: 25 })
 
     async function getSpendings(params) {
         const { status, data } = await handleQuery({

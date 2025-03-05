@@ -12,6 +12,7 @@ import { Layout } from "../components/common/Layout";
 import { ModalComponent } from "../components/common/ModalComponent";
 import { DataGridWithBackendPagination } from "../components/datagrid/DataGridWithBackendPagination";
 import { LoginForm } from "../components/common/LoginForm";
+import { SpendingsFilter } from "../components/spendings/SpendingsFilter";
 
 export function Spendings() {
 
@@ -55,8 +56,8 @@ export function Spendings() {
     }, [])
 
     useEffect(() => {
-        const { page, offset } = filter
-        getSpendings(`?page=${page}&offset=${offset}`)
+        const { page, offset, from, to } = filter
+        getSpendings(`?from=${from}&to=${to}&page=${page}&offset=${offset}`)
     }, [filter])
 
     const handleClose = () => {
@@ -83,17 +84,14 @@ export function Spendings() {
                                 showEditAction
                                 showDeleteAction
                                 contentHeader={
-                                    <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 1 }}>
-                                        <Button variant="outlined" onClick={() => {
-                                            reset()
-                                            setOpen('NEW')
-                                        }}>
-                                            Agregar
-                                        </Button>
-                                        <Typography variant="h6">
-                                            Total: {total}
-                                        </Typography>
-                                    </Box>
+                                    <SpendingsFilter
+                                        formData={formData}
+                                        reset={reset}
+                                        total={total}
+                                        setOpen={setOpen}
+                                        filter={filter}
+                                        setFilter={setFilter}
+                                    />
                                 }
                             >
                                 <ModalComponent open={open === 'NEW' || open === 'EDIT'} onClose={handleClose} reduceWidth={900}>
