@@ -91,7 +91,7 @@ export function PaymentHeadCells({
                                         <TableCell key={pd} align="center">
                                             {paymentExists ? (
                                                 <Chip
-                                                    label="Pagado"
+                                                    label={paymentExists.pending > 0 ? `Saldo: $${paymentExists.pending}` : 'Pagado'}
                                                     onClick={() => {
                                                         setWorkOn({ loan: row, payment: pd });
                                                         setFormData(paymentExists);
