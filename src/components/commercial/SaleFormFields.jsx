@@ -44,6 +44,10 @@ export function SaleFormFields({
         if (saleProducts.length === 0 || discountApplied?.id) setDiscountApplied('')
     }, [saleProducts])
 
+    useEffect(() => {
+        console.log(discountApplied?.base > 0 && discountApplied?.base < formData.total, discountApplied?.base, formData.total)
+    }, [formData, discountApplied])
+
     return (
         <Box sx={{ p: 1 }}>
             <form onChange={handleChange} onSubmit={(e) => {
