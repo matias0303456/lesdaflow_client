@@ -132,7 +132,7 @@ export function AddProductsToSale({
                                                     disabled={open === 'VIEW' || (open === 'EDIT' && auth?.user.role !== 'ADMINISTRADOR')}
                                                     onChange={e => handleChangeAmount({ product_id: p?.id, amount: e.target.value })}
                                                     inputRef={el => inputRefs.current[sp.product_id] = el}
-                                                    InputProps={{ inputProps: { max: stock, step: 1 } }}
+                                                    InputProps={{ inputProps: { max: open === 'NEW' ? stock : stock + parseInt(sp.amount), step: 1 } }}
                                                 />
                                             </FormControl>
                                         </TableCell>
