@@ -18,20 +18,10 @@ export const nav_items = [
       {
         subtitle: "ABM Clientes",
         path: "/clientes",
-        can_access: ['ADMINISTRADOR', 'VENDEDOR', 'CHOFER']
-      },
-      {
-        subtitle: "Cuentas Corrientes",
-        path: "/cta-cte",
         can_access: ['ADMINISTRADOR', 'VENDEDOR']
       },
-      {
-        subtitle: "Clientes por Vendedor",
-        path: "/clientes-vendedor",
-        can_access: ['ADMINISTRADOR']
-      }
     ],
-    can_access: ['ADMINISTRADOR', 'VENDEDOR', 'CHOFER']
+    can_access: ['ADMINISTRADOR', 'VENDEDOR']
   },
   {
     title: "Proveedores",
@@ -65,36 +55,21 @@ export const nav_items = [
         can_access: ['ADMINISTRADOR', 'VENDEDOR']
       },
       {
-        subtitle: "Preparación de Ventas",
-        path: "/prep-ventas",
-        can_access: ['CHOFER']
-      },
-      {
-        subtitle: "Entrega de Ventas",
-        path: "/entrega-ventas",
-        can_access: ['CHOFER']
-      },
-      {
-        subtitle: "Comisiones",
-        path: "/comisiones",
-        can_access: ['ADMINISTRADOR', 'VENDEDOR']
-      },
-      {
         subtitle: "Descuentos",
         path: "/descuentos",
         can_access: ['ADMINISTRADOR']
       }
     ],
-    can_access: ['ADMINISTRADOR', 'CHOFER', 'VENDEDOR']
+    can_access: ['ADMINISTRADOR', 'VENDEDOR']
   },
   {
-    title: "Productos",
-    name: "products",
+    title: "Artículos",
+    name: "articles",
     submenu: [
       {
-        subtitle: "ABM de Productos",
-        path: "/productos",
-        can_access: ['ADMINISTRADOR', 'VENDEDOR', 'CHOFER']
+        subtitle: "ABM de Artículos",
+        path: "/articulos",
+        can_access: ['ADMINISTRADOR', 'VENDEDOR']
       },
       {
         subtitle: "Lista de Precios",
@@ -102,18 +77,18 @@ export const nav_items = [
         can_access: ['ADMINISTRADOR', 'VENDEDOR']
       },
       {
-        subtitle: "Reporte de Productos",
-        path: "/reporte-productos",
-        can_access: ['ADMINISTRADOR', 'VENDEDOR', 'CHOFER']
+        subtitle: "Reporte de Artículos",
+        path: "/reporte-articulos",
+        can_access: ['ADMINISTRADOR', 'VENDEDOR']
       },
       {
         subtitle: "Actualizar Precios Por Proveedor",
-        path: "/producto-actualiza-precio-proveedor",
+        path: "/articulo-actualiza-precio-proveedor",
         can_access: ['ADMINISTRADOR']
       },
       {
-        subtitle: "Actualizar Precios Por Producto",
-        path: "/producto-actualiza-precio",
+        subtitle: "Actualizar Precios Por Artículo",
+        path: "/articulo-actualiza-precio",
         can_access: ['ADMINISTRADOR']
       },
       {
@@ -127,7 +102,7 @@ export const nav_items = [
         can_access: ['ADMINISTRADOR']
       }
     ],
-    can_access: ['ADMINISTRADOR', 'VENDEDOR', 'CHOFER']
+    can_access: ['ADMINISTRADOR', 'VENDEDOR']
   },
   {
     title: "Presupuestos",
@@ -148,23 +123,6 @@ export const nav_items = [
       {
         subtitle: "Movimientos de cajas",
         path: "/movimientos-caja",
-        can_access: ['ADMINISTRADOR', 'CHOFER', 'VENDEDOR']
-      }
-    ],
-    can_access: ['ADMINISTRADOR', 'CHOFER', 'VENDEDOR']
-  },
-  {
-    title: "Reportes",
-    name: "reports",
-    submenu: [
-      {
-        subtitle: "Clientes bloqueados",
-        path: "/reportes-clientes-bloqueados",
-        can_access: ['ADMINISTRADOR']
-      },
-      {
-        subtitle: "Liquidaciones",
-        path: "/liquidaciones",
         can_access: ['ADMINISTRADOR', 'VENDEDOR']
       }
     ],
