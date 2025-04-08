@@ -15,7 +15,7 @@ export function useBudgets() {
 
     const [loadingBudgets, setLoadingBudgets] = useState(true)
     const [open, setOpen] = useState(null)
-    const [budgetProducts, setBudgetProducts] = useState([])
+    const [budgetArticles, setBudgetArticles] = useState([])
     const [idsToDelete, setIdsToDelete] = useState([])
     const [missing, setMissing] = useState(false)
 
@@ -38,11 +38,11 @@ export function useBudgets() {
         e.preventDefault()
         const submitData = {
             ...formData,
-            budget_products: budgetProducts,
+            budget_articles: budgetArticles,
             idsToDelete: idsToDelete.length === 0 ? undefined : idsToDelete
         }
-        const bpMissing = submitData.budget_products.length === 0 || submitData.budget_products.some(bp => !bp.amount || parseInt(bp.amount) <= 0)
-        if (validate() && !bpMissing) {
+        const baMissing = submitData.budget_articles.length === 0 || submitData.budget_articles.some(ba => !ba.amount || parseInt(ba.amount) <= 0)
+        if (validate() && !baMissing) {
             const { status, data } = open === 'NEW' ? await post(submitData) : await put(submitData)
             if (status === 200) {
                 if (open === 'NEW') {
@@ -64,7 +64,7 @@ export function useBudgets() {
                 }
                 reset(setOpen)
                 setSeverity('success')
-                setBudgetProducts([])
+                setBudgetArticles([])
                 setMissing(false)
                 setIdsToDelete([])
             } else {
@@ -74,7 +74,7 @@ export function useBudgets() {
             }
             setOpenMessage(true)
         } else {
-            if (bpMissing) {
+            if (baMissing) {
                 setDisabled(false)
                 setMissing(true)
             }
@@ -112,8 +112,8 @@ export function useBudgets() {
         setLoadingBudgets,
         open,
         setOpen,
-        budgetProducts,
-        setBudgetProducts,
+        budgetArticles,
+        setBudgetArticles,
         idsToDelete,
         setIdsToDelete,
         missing,

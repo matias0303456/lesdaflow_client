@@ -32,7 +32,7 @@ export function Suppliers() {
             cell_phone: '',
             business_phone: '',
             email: '',
-            products: []
+            articles: []
         },
         rules: {
             name: {
@@ -61,7 +61,7 @@ export function Suppliers() {
     })
 
     useEffect(() => {
-        if (auth?.user.role !== 'ADMINISTRADOR') navigate(auth?.user.role === 'CHOFER' ? '/prep-ventas' : "/productos")
+        if (auth?.user.role !== 'ADMINISTRADOR') navigate("/articulos")
     }, [])
 
     const headCells = [

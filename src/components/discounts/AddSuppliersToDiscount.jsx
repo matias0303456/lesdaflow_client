@@ -22,7 +22,7 @@ export function AddSuppliersToDiscount({ suppliers, discountSuppliers, setDiscou
                 <FormControl sx={{ width: { xs: '100%', sm: '25%' } }}>
                     <Autocomplete
                         disablePortal
-                        id="product-autocomplete"
+                        id="article-autocomplete"
                         options={suppliers.filter(s => !discountSuppliers.map(ds => ds.supplier_id).includes(s.id))
                             .map(s => ({ label: s.name, id: s.id }))}
                         noOptionsText="No hay proveedores disponibles."

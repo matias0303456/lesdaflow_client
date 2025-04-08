@@ -13,18 +13,17 @@ import { Users } from './pages/Users'
 import { Suppliers } from "./pages/Suppliers";
 import { Sales } from "./pages/Sales";
 import { SalesReport } from "./pages/SalesReport";
-import { Comissions } from "./pages/Comissions";
 import { Discounts } from "./pages/Discounts";
-import { Products } from './pages/Products'
-import { ProductHistory } from "./pages/ProductHistory";
-import { ProductsReport } from './pages/ProductsReport'
+import { Articles } from './pages/Articles'
+import { ArticleHistory } from "./pages/ArticleHistory";
+import { ArticlesReport } from './pages/ArticlesReport'
 import { Budgets } from "./pages/Budgets";
 import { Registers } from "./pages/Registers";
 import { Error } from './pages/Error'
 import { SalesSearch } from "./pages/SalesSearch";
-import { ProductsPriceList } from "./pages/ProductsPriceList"
-import { UpdateProductPriceByProduct } from "./pages/UpdateProductPriceByProduct";
-import { UpdateProductPriceBySupplier } from "./pages/UpdateProductPriceBySupplier";
+import { ArticlesPriceList } from "./pages/ArticlesPriceList"
+import { UpdateArticlePriceByArticle } from "./pages/UpdateArticlePriceByArticle";
+import { UpdateArticlePriceBySupplier } from "./pages/UpdateArticlePriceBySupplier";
 import { IncomesByAmount } from "./pages/IncomesByAmount";
 
 function App() {
@@ -56,14 +55,13 @@ function App() {
                 <Route path="/ventas" element={<Sales />} />
                 <Route path="/ventas-busqueda" element={<SalesSearch />} />
                 <Route path="/reporte-ventas" element={<SalesReport />} />
-                <Route path="/comisiones" element={<Comissions />} />
                 <Route path="/descuentos" element={<Discounts />} />
-                <Route path="/productos" element={<Products />} />
-                <Route path="/historial" element={<ProductHistory />} />
-                <Route path="/lista-precios" element={<ProductsPriceList />} />
-                <Route path="/reporte-productos" element={<ProductsReport />} />
-                <Route path="/producto-actualiza-precio-proveedor" element={<UpdateProductPriceBySupplier />} />
-                <Route path="/producto-actualiza-precio" element={<UpdateProductPriceByProduct />} />
+                <Route path="/articulos" element={<Articles />} />
+                <Route path="/historial" element={<ArticleHistory />} />
+                <Route path="/lista-precios" element={<ArticlesPriceList />} />
+                <Route path="/reporte-articulos" element={<ArticlesReport />} />
+                <Route path="/articulo-actualiza-precio-proveedor" element={<UpdateArticlePriceBySupplier />} />
+                <Route path="/articulo-actualiza-precio" element={<UpdateArticlePriceByArticle />} />
                 <Route path="/ingresos-cantidad" element={<IncomesByAmount />} />
                 <Route path="/presupuestos" element={<Budgets />} />
                 <Route path="/movimientos-caja" element={<Registers />} />

@@ -4,14 +4,14 @@ import { MessageContext } from "../providers/MessageProvider"
 import { DataContext } from "../providers/DataProvider"
 import { useApi } from "./useApi"
 
-import { PRODUCT_URL } from "../utils/urls"
+import { ARTICLE_URL } from "../utils/urls"
 
 export function useProducts() {
 
     const { state, dispatch } = useContext(DataContext)
     const { setMessage, setOpenMessage, setSeverity } = useContext(MessageContext)
 
-    const { get, post, put, putMassive, destroy } = useApi(PRODUCT_URL)
+    const { get, post, put, putMassive, destroy } = useApi(ARTICLE_URL)
 
     const [open, setOpen] = useState(null)
     const [loadingProducts, setLoadingProducts] = useState(true)
@@ -19,7 +19,7 @@ export function useProducts() {
     const [earnPrice, setEarnPrice] = useState(0)
     const [productHistory, setProductHistory] = useState([])
 
-    async function getProducts(params) {
+    async function getArticles(params) {
         const { status, data } = await get(params)
         if (status === 200) {
             dispatch({
@@ -45,7 +45,7 @@ export function useProducts() {
         }
     }
 
-    async function getProductHistory(id) {
+    async function getArticleHistory(id) {
         if (id.toString().length > 0) {
             setLoadingProducts(true)
             const { status, data } = await get(`/history/${id}`)
@@ -95,7 +95,7 @@ export function useProducts() {
     async function handleSubmitMassive() {
         const body = {
             products: massiveEdit.map(me => {
-                const product = state.products.find(p => p.id === me.product_id)
+                const product = state.products.find(p => p.id === me.article_id)
                 return { ...me, buy_price: product.buy_price }
             })
         }
@@ -155,11 +155,11 @@ export function useProducts() {
         setMassiveEdit,
         earnPrice,
         setEarnPrice,
-        getProducts,
+        getArticles,
         loadingProducts,
         setLoadingProducts,
         searchProducts,
         productHistory,
-        getProductHistory
+        getArticleHistory
     }
 }

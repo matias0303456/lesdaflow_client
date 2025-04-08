@@ -19,7 +19,7 @@ export function IncomesByAmount() {
 
     const navigate = useNavigate()
 
-    const { getProducts } = useProducts()
+    const { getArticles } = useProducts()
     const { incomesByAmount, setIncomesByAmount, amount, setAmount, handleSubmitIncomesByAmount } = useMovements()
 
     const [value, setValue] = useState('')
@@ -28,14 +28,14 @@ export function IncomesByAmount() {
         if (auth?.user.role !== "ADMINISTRADOR") {
             navigate(auth?.user.role === 'CHOFER' ? '/prep-ventas' : "/productos");
         } else {
-            getProducts()
+            getArticles()
         }
     }, [])
 
     const handleAdd = data => {
-        if (data.product_id.toString().length > 0) {
+        if (data.article_id.toString().length > 0) {
             setIncomesByAmount([
-                ...incomesByAmount.filter(iba => iba.product_id !== data.product_id),
+                ...incomesByAmount.filter(iba => iba.article_id !== data.article_id),
                 data
             ])
             setTimeout(() => {
@@ -45,14 +45,14 @@ export function IncomesByAmount() {
     }
 
     const handleDeleteProduct = (id) => {
-        setIncomesByAmount([...incomesByAmount.filter(iba => iba.product_id !== id)])
+        setIncomesByAmount([...incomesByAmount.filter(iba => iba.article_id !== id)])
     }
 
     const handleChangeObservations = (data) => {
         setIncomesByAmount([
-            ...incomesByAmount.filter(iba => iba.product_id !== data.product_id),
+            ...incomesByAmount.filter(iba => iba.article_id !== data.article_id),
             {
-                ...incomesByAmount.find(iba => iba.product_id === data.product_id),
+                ...incomesByAmount.find(iba => iba.article_id === data.article_id),
                 ...data
             }
         ].sort((a, b) => a.idx - b.idx))
@@ -79,11 +79,11 @@ export function IncomesByAmount() {
                 </FormControl>
                 <Autocomplete
                     disablePortal
-                    id="product-autocomplete"
-                    options={state.products.data.filter(p => !incomesByAmount.map(iba => iba.product_id).includes(p.id))
+                    id="article-autocomplete"
+                    options={state.products.data.filter(p => !incomesByAmount.map(iba => iba.article_id).includes(p.id))
                         .map(p => ({ label: `Código ${p.code} / Detalle ${p.details}`, id: p.id }))}
                     noOptionsText="No hay productos disponibles."
-                    onChange={(e, value) => handleAdd({ idx: incomesByAmount.length, product_id: value?.id, observations: '' })}
+                    onChange={(e, value) => handleAdd({ idx: incomesByAmount.length, article_id: value?.id, observations: '' })}
                     renderInput={(params) => <TextField {...params} label="Agregar producto..." />}
                     isOptionEqualToValue={(option, value) => option.code === value.code || value.length === 0}
                     onInputChange={(e, value) => setValue(value)}
@@ -110,9 +110,9 @@ export function IncomesByAmount() {
                                 <TableCell align="center" colSpan={6}>No hay productos que mostrar.</TableCell>
                             </TableRow> :
                             incomesByAmount.map(iba => {
-                                const p = state.products.data.find(p => p.id === iba.product_id)
+                                const p = state.products.data.find(p => p.id === iba.article_id)
                                 return (
-                                    <TableRow key={iba.product_id}>
+                                    <TableRow key={iba.article_id}>
                                         <TableCell align="center">{p.code}</TableCell>
                                         <TableCell align="center">{p.details}</TableCell>
                                         <TableCell align="center">{getStock(p)}</TableCell>
@@ -126,7 +126,7 @@ export function IncomesByAmount() {
                                                     name="observations"
                                                     value={iba.observations}
                                                     onChange={(e) => handleChangeObservations({
-                                                        product_id: iba.product_id,
+                                                        article_id: iba.article_id,
                                                         observations: e.target.value
                                                     })}
                                                 />

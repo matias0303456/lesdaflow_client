@@ -30,7 +30,7 @@ export function Sales() {
 
     const {
         loadingSales,
-        setSaleProducts,
+        setSaleArticles,
         open,
         setOpen,
         setMissing,
@@ -46,7 +46,7 @@ export function Sales() {
         isBlocked,
         setIsBlocked
     } = useSales()
-    const { loadingProducts, getProducts } = useProducts()
+    const { loadingProducts, getArticles } = useProducts()
     const { loadingClients, getClients } = useClients()
     const { getUsers } = useUsers()
     const { getDiscounts } = useDiscounts()
@@ -78,14 +78,14 @@ export function Sales() {
 
     useEffect(() => {
         getClients()
-        getProducts()
+        getArticles()
         getUsers()
         getDiscounts(`?is_available=true`)
     }, [])
 
     useEffect(() => {
         if (open === 'EDIT' || open === 'VIEW') {
-            setSaleProducts(formData.sale_products)
+            setSaleArticles(formData.sale_articles)
         }
     }, [formData])
 
@@ -232,7 +232,7 @@ export function Sales() {
             >
                 <SaleForm
                     saleProducts={saleProducts}
-                    setSaleProducts={setSaleProducts}
+                    setSaleArticles={setSaleArticles}
                     missing={missing}
                     setMissing={setMissing}
                     reset={reset}

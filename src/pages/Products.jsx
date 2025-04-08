@@ -35,7 +35,7 @@ export function Products() {
         setMassiveEditPercentage,
         handleSubmitMassive,
         handleDelete,
-        getProducts
+        getArticles
     } = useProducts()
     const { loadingSuppliers, getSuppliers } = useSuppliers()
     const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
@@ -169,7 +169,7 @@ export function Products() {
                 setFormData={setFormData}
                 setFormDataMovement={setFormDataMovement}
                 entityKey="products"
-                getter={getProducts}
+                getter={getArticles}
                 loading={loadingSuppliers || loadingProducts || disabled}
                 deadlineColor="products"
                 showDeleteAction={auth?.user.role === 'ADMINISTRADOR'}

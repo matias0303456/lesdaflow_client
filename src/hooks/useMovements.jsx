@@ -29,7 +29,7 @@ export function useMovements() {
                     'Authorization': auth?.token
                 },
                 body: JSON.stringify({
-                    product_id: formData.id,
+                    article_id: formData.id,
                     amount: formData.amount,
                     observations: formData.observations
                 })
@@ -38,38 +38,38 @@ export function useMovements() {
             if (res.status === 200) {
                 if (open === 'NEW_INCOME') {
                     dispatch({
-                        type: 'PRODUCTS',
+                        type: 'ARTICLES',
                         payload: {
-                            ...state.products,
+                            ...state.articles,
                             data: [
                                 {
-                                    ...state.products.data.find(p => p.id === newMovement.product_id),
+                                    ...state.articles.data.find(p => p.id === newMovement.article_id),
                                     incomes: [
                                         newMovement,
-                                        ...state.products.data.find(p => p.id === newMovement.product_id).incomes
+                                        ...state.articles.data.find(p => p.id === newMovement.article_id).incomes
                                             .filter(inc => inc.id !== newMovement.id)
                                     ]
                                 },
-                                ...state.products.data.filter(p => p.id !== newMovement.product_id)
+                                ...state.articles.data.filter(p => p.id !== newMovement.article_id)
                             ]
                         }
                     })
                     setMessage('Ingreso creado correctamente.')
                 } else {
                     dispatch({
-                        type: 'PRODUCTS',
+                        type: 'ARTICLES',
                         payload: {
-                            ...state.products,
+                            ...state.articles,
                             data: [
                                 {
-                                    ...state.products.data.find(p => p.id === newMovement.product_id),
+                                    ...state.articles.data.find(p => p.id === newMovement.article_id),
                                     outcomes: [
                                         newMovement,
-                                        ...state.products.data.find(p => p.id === newMovement.product_id).outcomes
+                                        ...state.articles.data.find(p => p.id === newMovement.article_id).outcomes
                                             .filter(out => out.id !== newMovement.id)
                                     ]
                                 },
-                                ...state.products.data.filter(p => p.id !== newMovement.product_id)
+                                ...state.articles.data.filter(p => p.id !== newMovement.article_id)
                             ]
                         }
                     })
@@ -78,7 +78,7 @@ export function useMovements() {
                 reset(setOpen)
                 setSeverity('success')
             } else {
-                setMessage(data.message)
+                setMessage(newMovement.message)
                 setSeverity('error')
                 setDisabled(false)
             }
@@ -91,24 +91,24 @@ export function useMovements() {
         const { status, data } = await postIncomeByAmount({
             incomes: incomesByAmount.map(iba => ({
                 amount,
-                product_id: iba.product_id,
+                article_id: iba.article_id,
                 observations: iba.observations
             }))
         })
         if (status === 200) {
-            const newIncomeIds = data.map(d => d.product_id)
+            const newIncomeIds = data.map(d => d.article_id)
             dispatch({
-                type: 'PRODUCTS',
+                type: 'ARTICLES',
                 payload: {
-                    ...state.products,
+                    ...state.articles,
                     data: [
-                        ...state.products.data.map(p => {
-                            if (!newIncomeIds.includes(p.id)) return p
+                        ...state.articles.data.map(a => {
+                            if (!newIncomeIds.includes(a.id)) return a
                             return {
-                                ...p,
+                                ...a,
                                 incomes: [
-                                    ...p.incomes,
-                                    ...data.filter(inc => inc.product_id === p.id)
+                                    ...a.incomes,
+                                    ...data.filter(inc => inc.article_id === a.id)
                                 ]
                             }
                         })

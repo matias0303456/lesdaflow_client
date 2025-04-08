@@ -15,7 +15,7 @@ import { a11yProps, getCurrentTotal } from "../../utils/helpers"
 
 export function SaleForm({
     saleProducts,
-    setSaleProducts,
+    setSaleArticles,
     missing,
     setMissing,
     reset,
@@ -82,8 +82,8 @@ export function SaleForm({
 
     useEffect(() => {
         if (saleProducts.length > 0 && (open === 'NEW' || open === 'CONVERT')) {
-            setSaleProducts(saleProducts.filter(sp => {
-                const p = state.products.data.find(i => i.id === sp.product_id)
+            setSaleArticles(saleProducts.filter(sp => {
+                const p = state.products.data.find(i => i.id === sp.article_id)
                 if ((formData.type === 'CONTADO' && p?.cash) ||
                     (formData.type === 'CUENTA_CORRIENTE' && p?.cta_cte) ||
                     (formData.type === 'POXIPOL' && p?.poxipol)) return sp
@@ -105,7 +105,7 @@ export function SaleForm({
 
     const handleClose = () => {
         reset(setOpen)
-        setSaleProducts([])
+        setSaleArticles([])
         setMissing(false)
         setIdsToDelete([])
         setIsBlocked(false)
@@ -160,7 +160,7 @@ export function SaleForm({
                     errors={errors}
                     isBlocked={isBlocked}
                     saleProducts={saleProducts}
-                    setSaleProducts={setSaleProducts}
+                    setSaleArticles={setSaleArticles}
                     discountApplied={discountApplied}
                     setDiscountApplied={setDiscountApplied}
                     missing={missing}

@@ -84,7 +84,7 @@ export function Users() {
   const [showPassword, setShowPassword] = useState(false)
 
   useEffect(() => {
-    if (auth?.user.role !== 'ADMINISTRADOR') navigate(auth?.user.role === 'CHOFER' ? '/prep-ventas' : "/productos")
+    if (auth?.user.role !== 'ADMINISTRADOR') navigate("/articulos")
   }, [])
 
   const headCells = [

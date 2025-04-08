@@ -94,7 +94,7 @@ export function useSuppliers() {
         if (validate()) {
             const body = {
                 supplier: formData.id,
-                products: state.suppliers.data.find(s => s.id === formData.id).products.map(p => ({ id: p.id, buy_price: p.buy_price })),
+                articles: state.suppliers.data.find(s => s.id === formData.id).articles.map(a => ({ id: a.id, buy_price: a.buy_price })),
                 percentage: parseFloat(formData.percentage)
             }
             const { status, data } = await putMassive(body)

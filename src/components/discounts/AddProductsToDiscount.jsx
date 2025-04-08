@@ -22,8 +22,8 @@ export function AddProductsToDiscount({ products, discountProducts, setDiscountP
                 <FormControl sx={{ width: { xs: '100%', sm: '25%' } }}>
                     <Autocomplete
                         disablePortal
-                        id="product-autocomplete"
-                        options={products.filter(p => !discountProducts.map(dp => dp.product_id).includes(p.id))
+                        id="article-autocomplete"
+                        options={products.filter(p => !discountProducts.map(dp => dp.article_id).includes(p.id))
                             .map(p => ({ label: `Código ${p.code} / Detalle ${p.details}`, id: p.id }))}
                         noOptionsText="No hay productos disponibles."
                         onChange={(_, value) => handleAdd(value?.id ?? '')}

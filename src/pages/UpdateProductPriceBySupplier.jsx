@@ -19,7 +19,7 @@ import { useSuppliers } from "../hooks/useSuppliers";
 import { Layout } from "../components/common/Layout";
 import { DataGridWithFrontendPagination } from "../components/datagrid/DataGridWithFrontendPagination";
 
-import { getProductNewBuyPriceByPercentage, getProductNewSalePriceByPercentage, getProductSalePrice } from "../utils/helpers";
+import { getArticleNewBuyPriceByPercentage, getArticleNewSalePriceByPercentage, getArticleSalePrice } from "../utils/helpers";
 
 export function UpdateProductPriceBySupplier() {
 
@@ -78,24 +78,24 @@ export function UpdateProductPriceBySupplier() {
       numeric: false,
       disablePadding: true,
       label: "P. Actual (venta)",
-      sorter: (row) => parseFloat(getProductSalePrice(row).toFixed(2)),
-      accessor: (row) => `$${getProductSalePrice(row).toFixed(2)}`
+      sorter: (row) => parseFloat(getArticleSalePrice(row).toFixed(2)),
+      accessor: (row) => `$${getArticleSalePrice(row).toFixed(2)}`
     },
     {
       id: "new_buy_price",
       numeric: false,
       disablePadding: true,
       label: "P. Nuevo (compra)",
-      sorter: (row) => parseFloat(getProductNewBuyPriceByPercentage(row, formData.percentage).toFixed(2)),
-      accessor: (row) => `$${getProductNewBuyPriceByPercentage(row, formData.percentage).toFixed(2)}`
+      sorter: (row) => parseFloat(getArticleNewBuyPriceByPercentage(row, formData.percentage).toFixed(2)),
+      accessor: (row) => `$${getArticleNewBuyPriceByPercentage(row, formData.percentage).toFixed(2)}`
     },
     {
       id: "new_sale_price",
       numeric: false,
       disablePadding: true,
       label: "P. Nuevo (venta)",
-      sorter: (row) => parseFloat(getProductNewSalePriceByPercentage(row, formData.percentage).toFixed(2)),
-      accessor: (row) => `$${getProductNewSalePriceByPercentage(row, formData.percentage).toFixed(2)}`
+      sorter: (row) => parseFloat(getArticleNewSalePriceByPercentage(row, formData.percentage).toFixed(2)),
+      accessor: (row) => `$${getArticleNewSalePriceByPercentage(row, formData.percentage).toFixed(2)}`
     }
   ]
 

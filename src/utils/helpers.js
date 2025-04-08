@@ -1,16 +1,16 @@
-export function getStock(product) {
-    if (!product) return 0
-    return product.incomes?.reduce((prev, curr) => {
+export function getStock(article) {
+    if (!article) return 0
+    return article.incomes?.reduce((prev, curr) => {
         return prev + curr.amount
-    }, 0) - product.sale_products?.reduce((prev, curr) => {
+    }, 0) - article.sale_articles?.reduce((prev, curr) => {
         return prev + curr.amount
-    }, 0) - product.outcomes?.reduce((prev, curr) => {
+    }, 0) - article.outcomes?.reduce((prev, curr) => {
         return prev + curr.amount
     }, 0)
 }
 
 export function getSaleSubtotal(sale) {
-    const result = sale.sale_products.reduce((prev, curr) => prev + ((curr.buy_price + ((curr.buy_price / 100) * curr.earn)) * curr.amount), 0)
+    const result = sale.sale_articles.reduce((prev, curr) => prev + ((curr.buy_price + ((curr.buy_price / 100) * curr.earn)) * curr.amount), 0)
     return `$${result.toFixed(2)}`
 }
 
@@ -21,7 +21,7 @@ export function getSaleTotal(sale) {
 }
 
 export function getSaleDifference(sale) {
-    if (!sale.sale_products) return 0
+    if (!sale.sale_articles) return 0
     const saleTotal = getSaleTotal(sale).replaceAll('$', '')
     const paymentsTotal = sale.payments.reduce((prev, curr) => prev + curr.amount, 0)
     return `$${(saleTotal - paymentsTotal).toFixed(2)}`
@@ -59,21 +59,21 @@ export function setToDate(date) {
     return newDate
 }
 
-export function getNewPrice(product, percentage) {
-    const price = parseFloat((product.buy_price + ((product.buy_price / 100) * product.earn)).toFixed(2))
+export function getNewPrice(article, percentage) {
+    const price = parseFloat((article.buy_price + ((article.buy_price / 100) * article.earn)).toFixed(2))
     const perc = percentage.toString().length === 0 ? 0 : parseFloat(percentage)
     return (price + ((price / 100) * perc)).toFixed(2)
 }
 
-export function getNewCostAndEarnPrice(product, value, earn) {
+export function getNewCostAndEarnPrice(article, value, earn) {
     if (parseFloat(earn) === 0 && parseFloat(value) === 0) {
-        return (product.buy_price + (product.buy_price / 100) * product.earn).toFixed(2)
+        return (article.buy_price + (article.buy_price / 100) * article.earn).toFixed(2)
     }
     if (parseFloat(value) === 0) {
-        return (product.buy_price + (product.buy_price / 100) * parseFloat(earn)).toFixed(2)
+        return (article.buy_price + (article.buy_price / 100) * parseFloat(earn)).toFixed(2)
     }
     if (parseFloat(earn) === 0) {
-        return (parseFloat(value) + (parseFloat(value) / 100) * product.earn).toFixed(2)
+        return (parseFloat(value) + (parseFloat(value) / 100) * article.earn).toFixed(2)
     }
     return (parseFloat(value) + (parseFloat(value) / 100) * parseFloat(earn)).toFixed(2)
 }
@@ -96,36 +96,36 @@ export function getSaleDifferenceByPayment(sale, idx) {
 }
 
 export function getStockTillDate(row) {
-    return row.product.incomes?.filter(inc => inc.created_at < row.created_at)
+    return row.article.incomes?.filter(inc => inc.created_at < row.created_at)
         .reduce((prev, curr) => {
             return prev + curr.amount
-        }, 0) - row.product.sale_products?.filter(sp => sp.created_at < row.created_at)
+        }, 0) - row.article.sale_articles?.filter(sa => sa.created_at < row.created_at)
             .reduce((prev, curr) => {
                 return prev + curr.amount
-            }, 0) - row.product.outcomes?.filter(out => out.created_at < row.created_at)
+            }, 0) - row.article.outcomes?.filter(out => out.created_at < row.created_at)
                 .reduce((prev, curr) => {
                     return prev + curr.amount
                 }, 0)
 }
 
-export function getProductSalePrice(product) {
-    return parseFloat(parseFloat(product.buy_price) + ((parseFloat(product.buy_price) / 100) * parseFloat(product.earn)))
+export function getArticleSalePrice(article) {
+    return parseFloat(parseFloat(article.buy_price) + ((parseFloat(article.buy_price) / 100) * parseFloat(article.earn)))
 }
 
-export function getProductNewBuyPriceByPercentage(product, percentage) {
+export function getArticleNewBuyPriceByPercentage(article, percentage) {
     const perc = percentage.toString().length === 0 ? 0 : parseFloat(percentage)
-    return product.buy_price + ((product.buy_price / 100) * perc)
+    return article.buy_price + ((article.buy_price / 100) * perc)
 }
 
-export function getProductNewSalePriceByPercentage(product, percentage) {
+export function getArticleNewSalePriceByPercentage(article, percentage) {
     const perc = percentage.toString().length === 0 ? 0 : parseFloat(percentage)
-    const currentPrice = getProductSalePrice(product)
+    const currentPrice = getArticleSalePrice(article)
     return currentPrice + ((currentPrice / 100) * perc)
 }
 
-export function getBudgetSubtotal(budget_products) {
-    const totalBudgetProducts = budget_products.reduce((prev, curr) => prev + (getProductSalePrice(curr.product) * curr.amount), 0)
-    return totalBudgetProducts.toFixed(2)
+export function getBudgetSubtotal(budget_articles) {
+    const totalBudgetArticles = budget_articles.reduce((prev, curr) => prev + (getArticleSalePrice(curr.article) * curr.amount), 0)
+    return totalBudgetArticles.toFixed(2)
 }
 
 export function getBudgetTotal(budget, subtotal) {
@@ -134,7 +134,7 @@ export function getBudgetTotal(budget, subtotal) {
 }
 
 export function saleIsPrepared(sale) {
-    return sale.sale_products.every(sp => sp.is_prepared)
+    return sale.sale_articles.every(sa => sa.is_prepared)
 }
 
 export function getDeliveredDeadline(sale) {
@@ -151,45 +151,45 @@ export function a11yProps(index) {
     }
 }
 
-export function getAvailableDiscounts(formData, saleProducts, products, discounts) {
-    if (saleProducts.length === 0) return []
+export function getAvailableDiscounts(formData, saleArticles, articles, discounts) {
+    if (saleArticles.length === 0) return []
     const date = new Date(formData.date)
     const type = formData.type
     return discounts.filter(discount => {
-        const { from, to, discount_by_products, discount_by_suppliers, sale_type } = discount
-        const discountProducts = discount_by_products.map(dbp => dbp.product_id)
+        const { from, to, discount_by_articles, discount_by_suppliers, sale_type } = discount
+        const discountArticles = discount_by_articles.map(dbp => dbp.article_id)
         const discountSuppliers = discount_by_suppliers.map(dbs => dbs.supplier_id)
         if (
             ((!from && !to) || (from && to && new Date(from) < date && new Date(to) > date)) &&
             (!sale_type || sale_type === type) &&
-            ((discountSuppliers.length === 0 && discountProducts.length === 0) || saleProducts.some(sp => {
-                const product = sp.product ?? products.find(p => p.id === sp.product_id)
-                return discountSuppliers.includes(product.supplier_id) || discountProducts.includes(product.id)
+            ((discountSuppliers.length === 0 && discountArticles.length === 0) || saleArticles.some(sa => {
+                const article = sa.article ?? articles.find(p => p.id === sa.article_id)
+                return discountSuppliers.includes(article.supplier_id) || discountArticles.includes(article.id)
             }))
         ) return discount
     })
 }
 
-export function getCurrentSubtotal(saleProducts, products) {
-    const total = saleProducts.reduce((prev, curr) => {
-        const p = products.find(item => item.id === curr.product_id)
+export function getCurrentSubtotal(saleArticles, articles) {
+    const total = saleArticles.reduce((prev, curr) => {
+        const p = articles.find(item => item.id === curr.article_id)
         return prev + (((curr.buy_price ?? p.buy_price) + (((curr.buy_price ?? p.buy_price) / 100) * (curr.earn ?? p.earn))) * (isNaN(parseInt(curr.amount)) ? 0 : parseInt(curr.amount)))
     }, 0)
     return total.toFixed(2)
 }
 
-export function getCurrentTotal(discount, saleProducts, products) {
-    const { discount_by_suppliers, discount_by_products, value } = discount
-    const subtotal = getCurrentSubtotal(saleProducts, products)
-    if (discount_by_suppliers?.length === 0 && discount_by_products?.length === 0) {
+export function getCurrentTotal(discount, saleArticles, articles) {
+    const { discount_by_suppliers, discount_by_articles, value } = discount
+    const subtotal = getCurrentSubtotal(saleArticles, articles)
+    if (discount_by_suppliers?.length === 0 && discount_by_articles?.length === 0) {
         return (subtotal - ((subtotal / 100) * value)).toFixed(2)
     }
-    const discountProducts = discount_by_products?.map(dbp => dbp.product_id)
+    const discountArticles = discount_by_articles?.map(dbp => dbp.article_id)
     const discountSuppliers = discount_by_suppliers?.map(dbs => dbs.supplier_id)
-    const returnValue = saleProducts.reduce((total, sp) => {
-        const product = sp.product ?? products.find(p => p.id === sp.product_id)
-        const salePrice = getProductSalePrice(product)
-        if (discountSuppliers?.includes(product.supplier_id) || discountProducts?.includes(product.id)) {
+    const returnValue = saleArticles.reduce((total, sa) => {
+        const article = sa.article ?? articles.find(p => p.id === sa.article_id)
+        const salePrice = getArticleSalePrice(article)
+        if (discountSuppliers?.includes(article.supplier_id) || discountArticles?.includes(article.id)) {
             const salePriceWithDiscount = salePrice - ((salePrice / 100) * value)
             return total + salePriceWithDiscount
         }

@@ -6,8 +6,8 @@ const reducer = (state, action) => {
     switch (action.type) {
         case 'CLIENTS':
             return { ...state, clients: action.payload }
-        case 'PRODUCTS':
-            return { ...state, products: action.payload }
+        case 'ARTICLES':
+            return { ...state, articles: action.payload }
         case 'SALES':
             return { ...state, sales: action.payload }
         case 'PAYMENTS':

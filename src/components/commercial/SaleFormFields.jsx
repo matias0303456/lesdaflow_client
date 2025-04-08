@@ -25,7 +25,7 @@ export function SaleFormFields({
     errors,
     isBlocked,
     saleProducts,
-    setSaleProducts,
+    setSaleArticles,
     discountApplied,
     setDiscountApplied,
     missing,
@@ -141,7 +141,7 @@ export function SaleFormFields({
                         <AddProductsToSale
                             products={state.products.data}
                             saleProducts={saleProducts}
-                            setSaleProducts={setSaleProducts}
+                            setSaleArticles={setSaleArticles}
                             missing={missing}
                             setMissing={setMissing}
                             idsToDelete={idsToDelete}

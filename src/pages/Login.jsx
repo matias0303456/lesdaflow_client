@@ -28,7 +28,7 @@ export function Login() {
     })
 
     useEffect(() => {
-        if (auth) return navigate('/productos')
+        if (auth) return navigate('/articulos')
     }, [])
 
     const handleSubmit = async e => {
@@ -38,7 +38,7 @@ export function Login() {
             if (status === 200) {
                 localStorage.setItem('auth_mga', JSON.stringify(data))
                 setAuth(data)
-                navigate(data.user.role === 'CHOFER' ? '/prep-ventas' : '/productos')
+                navigate('/articulos')
             } else {
                 setMessage(data.message)
                 setSeverity('error')

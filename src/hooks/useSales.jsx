@@ -18,7 +18,7 @@ export function useSales() {
 
     const [loadingSales, setLoadingSales] = useState(true)
     const [open, setOpen] = useState(null)
-    const [saleProducts, setSaleProducts] = useState([])
+    const [saleProducts, setSaleArticles] = useState([])
     const [idsToDelete, setIdsToDelete] = useState([])
     const [saleSaved, setSaleSaved] = useState(null)
     const [missing, setMissing] = useState(false)
@@ -55,11 +55,11 @@ export function useSales() {
         e.preventDefault()
         const submitData = {
             ...formData,
-            sale_products: saleProducts,
+            sale_articles: saleProducts,
             idsToDelete: idsToDelete.length === 0 ? undefined : idsToDelete,
             observations: discountApplied ? formData.observations += `- Descuento aplicado: ${discountApplied.name} (${format(new Date(Date.now()), 'dd/MM/yyyy')})\n` : formData.observations
         }
-        const spMissing = submitData.sale_products.length === 0 || submitData.sale_products.some(sp => !sp.amount || parseInt(sp.amount) <= 0)
+        const spMissing = submitData.sale_articles.length === 0 || submitData.sale_articles.some(sp => !sp.amount || parseInt(sp.amount) <= 0)
         if (validate() && !spMissing) {
             const { status, data } = open === 'NEW' || open === 'CONVERT' ? await post(submitData) : await put(submitData)
             if (status === 200) {
@@ -87,7 +87,7 @@ export function useSales() {
                 }
                 reset(setOpen)
                 setSeverity('success')
-                setSaleProducts([])
+                setSaleArticles([])
                 setMissing(false)
                 setIdsToDelete([])
                 setIsBlocked(false)
@@ -142,9 +142,9 @@ export function useSales() {
                     data: [
                         {
                             ...state.sales.data.find(s => s.id === data.sale_id),
-                            sale_products: [
+                            sale_articles: [
                                 data,
-                                ...state.sales.data.find(s => s.id === data.sale_id).sale_products
+                                ...state.sales.data.find(s => s.id === data.sale_id).sale_articles
                                     .filter(sp => sp.id !== data.id)
                             ]
                         },
@@ -152,7 +152,7 @@ export function useSales() {
                     ]
                 }
             })
-            setSaleProducts([data, ...saleProducts.filter(sp => sp.id !== data.id)].sort((a, b) => {
+            setSaleArticles([data, ...saleProducts.filter(sp => sp.id !== data.id)].sort((a, b) => {
                 if (a.product.code > b.product.code) return 1
                 if (a.product.code < b.product.code) return -1
                 return 0
@@ -179,13 +179,13 @@ export function useSales() {
                     data: [
                         {
                             ...state.sales.data.find(s => s.id === result[0].value.data.sale_id),
-                            sale_products: result.map(r => r.value.data)
+                            sale_articles: result.map(r => r.value.data)
                         },
                         ...state.sales.data.filter(s => s.id !== result[0].value.data.sale_id)
                     ]
                 }
             })
-            setSaleProducts(result.map(r => r.value.data).sort((a, b) => {
+            setSaleArticles(result.map(r => r.value.data).sort((a, b) => {
                 if (a.product.code > b.product.code) return 1
                 if (a.product.code < b.product.code) return -1
                 return 0
@@ -228,7 +228,7 @@ export function useSales() {
         open,
         setOpen,
         saleProducts,
-        setSaleProducts,
+        setSaleArticles,
         idsToDelete,
         setIdsToDelete,
         saleSaved,

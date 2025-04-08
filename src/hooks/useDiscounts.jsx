@@ -60,7 +60,7 @@ export function useDiscounts() {
         if (validate()) {
             const submitData = {
                 ...formData,
-                product_ids: open === 'EDIT' ? discountProducts.map(dp => dp.product?.id ?? dp) : discountProducts,
+                article_ids: open === 'EDIT' ? discountProducts.map(dp => dp.product?.id ?? dp) : discountProducts,
                 supplier_ids: open === 'EDIT' ? discountSuppliers.map(ds => ds.supplier?.id ?? ds) : discountSuppliers
             }
             const { status, data } = open === 'NEW' ? await post(submitData) : await put(submitData)

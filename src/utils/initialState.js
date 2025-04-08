@@ -7,7 +7,7 @@ export const initialState = {
         filter_fields: { first_name: '', last_name: '', work_place: '', loaded: false },
         filters: ''
     },
-    'products': {
+    'articles': {
         count: 0,
         data: [],
         page: 0,

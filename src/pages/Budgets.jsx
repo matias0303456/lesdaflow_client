@@ -29,11 +29,11 @@ export function Budgets() {
 
     const navigate = useNavigate()
 
-    const { getProducts } = useProducts()
+    const { getArticles } = useProducts()
     const { getClients } = useClients()
     const { getDiscounts } = useDiscounts()
     const {
-        setBudgetProducts,
+        setBudgetArticles,
         loadingBudgets,
         open,
         setOpen,
@@ -42,7 +42,7 @@ export function Budgets() {
         handleSubmit,
         setMissing,
         setIdsToDelete,
-        budgetProducts,
+        budgetArticles,
         idsToDelete,
         missing
     } = useBudgets()
@@ -52,7 +52,7 @@ export function Budgets() {
     })
     const {
         saleProducts,
-        setSaleProducts,
+        setSaleArticles,
         missing: missingNewSale,
         setMissing: setMissingNewSale,
         open: openNewSale,
@@ -94,13 +94,13 @@ export function Budgets() {
 
     useEffect(() => {
         getClients()
-        getProducts()
+        getArticles()
         getDiscounts(`?is_available=true`)
     }, [])
 
     useEffect(() => {
         if (open === 'EDIT' || open === 'VIEW') {
-            setBudgetProducts(formData.budget_products)
+            setBudgetArticles(formData.budget_products)
         }
         if (openNewSale === 'CONVERT') {
             setNewSale({
@@ -109,7 +109,7 @@ export function Budgets() {
                 type: formData.type,
                 date: new Date(Date.now())
             })
-            setSaleProducts(formData.budget_products)
+            setSaleArticles(formData.budget_products)
         }
     }, [formData])
 
@@ -223,8 +223,8 @@ export function Budgets() {
                 }
             >
                 <BudgetForm
-                    budgetProducts={budgetProducts}
-                    setBudgetProducts={setBudgetProducts}
+                    budgetArticles={budgetArticles}
+                    setBudgetArticles={setBudgetArticles}
                     missing={missing}
                     setMissing={setMissing}
                     reset={reset}
@@ -243,7 +243,7 @@ export function Budgets() {
                 />
                 <SaleForm
                     saleProducts={saleProducts}
-                    setSaleProducts={setSaleProducts}
+                    setSaleArticles={setSaleArticles}
                     missing={missingNewSale}
                     setMissing={setMissingNewSale}
                     reset={resetNewSale}

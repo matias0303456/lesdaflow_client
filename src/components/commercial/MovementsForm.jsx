@@ -1,4 +1,5 @@
-import { Box, Button, FormControl, Input, InputLabel, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from "@mui/material";
+/* eslint-disable react/prop-types */
+import { Box, Button, FormControl, Input, InputLabel, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
 
 import { ModalComponent } from "../common/ModalComponent";
 import { getStock } from "../../utils/helpers";
@@ -18,8 +19,8 @@ export function MovementsForm({
     return (
         <ModalComponent open={open} onClose={() => reset(setOpen)} reduceWidth={600}>
             <Typography variant="h6" sx={{ marginBottom: 2 }}>
-                {open === 'NEW_INCOME' && `Nuevo ingreso del producto: ${formData.code} - ${formData.details}`}
-                {open === 'NEW_OUTCOME' && `Nuevo egreso del producto: ${formData.code} - ${formData.details}`}
+                {open === 'NEW_INCOME' && `Nuevo ingreso del artículo: ${formData.code} - ${formData.details}`}
+                {open === 'NEW_OUTCOME' && `Nuevo egreso del artículo: ${formData.code} - ${formData.details}`}
             </Typography>
             <form onChange={handleChange} onSubmit={e => handleSubmit(e, validate, formData, setDisabled, reset)}>
                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>

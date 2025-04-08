@@ -20,7 +20,7 @@ export function Discounts() {
 
     const navigate = useNavigate()
 
-    const { getProducts, loadingProducts } = useProducts()
+    const { getArticles, loadingProducts } = useProducts()
     const { getSuppliers, loadingSuppliers } = useSuppliers()
     const {
         loadingDiscounts,
@@ -44,7 +44,7 @@ export function Discounts() {
             navigate(auth?.user.role === 'CHOFER' ? '/prep-ventas' : "/productos");
         } else {
             getSuppliers()
-            getProducts()
+            getArticles()
         }
     }, []);
 

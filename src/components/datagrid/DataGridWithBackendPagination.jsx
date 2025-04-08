@@ -298,7 +298,7 @@ export function DataGridWithBackendPagination({
                                       //     deadlineIsPast(s)
                                       //   )) ||
                                       (deadlineColor ===
-                                        "products" &&
+                                        "articles" &&
                                         row.min_stock >
                                         getStock(row))
                                       ? "red"

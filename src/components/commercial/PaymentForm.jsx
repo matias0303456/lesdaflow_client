@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { useContext, useEffect, useState } from "react"
 import { Box, Button, FormControl, Input, InputLabel, MenuItem, Select, Typography } from "@mui/material"
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers"
@@ -28,7 +29,7 @@ export function PaymentForm({
     const [newDifference, setNewDifference] = useState('$0.00')
 
     useEffect(() => {
-        if (sale.sale_products) {
+        if (sale.sale_articles) {
             const current = state.sales.data.find(s => s.id === sale.id)
             const result = getSaleDifference(current).replace('$', '') - parseFloat(formData.amount)
             if (isNaN(result)) {

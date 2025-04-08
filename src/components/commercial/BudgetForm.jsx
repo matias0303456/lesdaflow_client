@@ -13,8 +13,8 @@ import { ModalComponent } from "../common/ModalComponent"
 import { getAvailableDiscounts, getCurrentTotal } from "../../utils/helpers"
 
 export function BudgetForm({
-    budgetProducts,
-    setBudgetProducts,
+    budgetArticles,
+    setBudgetArticles,
     missing,
     setMissing,
     reset,
@@ -37,9 +37,9 @@ export function BudgetForm({
     const [discountApplied, setDiscountApplied] = useState('')
 
     useEffect(() => {
-        if (budgetProducts.length > 0 && (open === 'NEW' || open === 'CONVERT')) {
-            setBudgetProducts(budgetProducts.filter(bp => {
-                const p = state.products.data.find(i => i.id === bp.product_id)
+        if (budgetArticles.length > 0 && (open === 'NEW' || open === 'CONVERT')) {
+            setBudgetArticles(budgetArticles.filter(bp => {
+                const p = state.products.data.find(i => i.id === bp.article_id)
                 if ((formData.type === 'CONTADO' && p?.cash) ||
                     (formData.type === 'CUENTA_CORRIENTE' && p?.cta_cte) ||
                     (formData.type === 'POXIPOL' && p?.poxipol)) return bp
@@ -51,16 +51,16 @@ export function BudgetForm({
         if (open === 'EDIT') return
         setFormData({
             ...formData,
-            total: getCurrentTotal(discountApplied, budgetProducts, state.products.data),
+            total: getCurrentTotal(discountApplied, budgetArticles, state.products.data),
         })
-    }, [discountApplied, budgetProducts, state.products.data, open])
+    }, [discountApplied, budgetArticles, state.products.data, open])
 
     return (
         <ModalComponent
             reduceWidth={500}
             open={open === 'NEW' || open === 'EDIT' || open === 'VIEW'}
             onClose={() => {
-                setBudgetProducts([])
+                setBudgetArticles([])
                 setMissing(false)
                 reset(setOpen)
                 setIdsToDelete([])
@@ -116,7 +116,7 @@ export function BudgetForm({
                             control={<Checkbox disabled={open === 'VIEW'} />}
                             label="Cuenta Corriente"
                             checked={formData.type === 'CUENTA_CORRIENTE'}
-                            disabled={budgetProducts.length > 0 && formData.type !== 'CUENTA_CORRIENTE' && formData.type !== 'CONTADO'}
+                            disabled={budgetArticles.length > 0 && formData.type !== 'CUENTA_CORRIENTE' && formData.type !== 'CONTADO'}
                             onChange={e => {
                                 if (e.target.checked) {
                                     setFormData({
@@ -130,7 +130,7 @@ export function BudgetForm({
                             control={<Checkbox disabled={open === 'VIEW'} />}
                             label="Contado"
                             checked={formData.type === 'CONTADO'}
-                            disabled={budgetProducts.length > 0 && formData.type !== 'CUENTA_CORRIENTE' && formData.type !== 'CONTADO'}
+                            disabled={budgetArticles.length > 0 && formData.type !== 'CUENTA_CORRIENTE' && formData.type !== 'CONTADO'}
                             onChange={e => {
                                 if (e.target.checked) {
                                     setFormData({
@@ -144,7 +144,7 @@ export function BudgetForm({
                             control={<Checkbox disabled={open === 'VIEW'} />}
                             label="Poxipol"
                             checked={formData.type === 'POXIPOL'}
-                            disabled={budgetProducts.length > 0}
+                            disabled={budgetArticles.length > 0}
                             onChange={e => {
                                 if (e.target.checked) {
                                     setFormData({
@@ -157,8 +157,8 @@ export function BudgetForm({
                     </Box>
                     <AddProductsToBudget
                         products={state.products.data}
-                        budgetProducts={budgetProducts}
-                        setBudgetProducts={setBudgetProducts}
+                        budgetArticles={budgetArticles}
+                        setBudgetArticles={setBudgetArticles}
                         missing={missing}
                         setMissing={setMissing}
                         idsToDelete={idsToDelete}
@@ -181,7 +181,7 @@ export function BudgetForm({
                             sx={{ width: "100%" }}
                         >
                             <MenuItem value="">Ninguno</MenuItem>
-                            {getAvailableDiscounts(formData, budgetProducts, state.products.data, state.discounts.data)
+                            {getAvailableDiscounts(formData, budgetArticles, state.products.data, state.discounts.data)
                                 .map(d => (
                                     <MenuItem key={d.id} value={d.id}>
                                         {d.name}
@@ -215,7 +215,7 @@ export function BudgetForm({
                     width: '50%'
                 }}>
                     <Button type="button" variant="outlined" onClick={() => {
-                        setBudgetProducts([])
+                        setBudgetArticles([])
                         setMissing(false)
                         reset(setOpen)
                         setIdsToDelete([])

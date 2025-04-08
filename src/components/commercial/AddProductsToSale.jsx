@@ -5,12 +5,12 @@ import CancelSharpIcon from '@mui/icons-material/CancelSharp';
 
 import { AuthContext } from "../../providers/AuthProvider";
 
-import { getProductSalePrice, getStock } from "../../utils/helpers";
+import { getArticleSalePrice, getStock } from "../../utils/helpers";
 
 export function AddProductsToSale({
     products,
     saleProducts,
-    setSaleProducts,
+    setSaleArticles,
     missing,
     setMissing,
     idsToDelete,
@@ -24,16 +24,16 @@ export function AddProductsToSale({
     const autocompleteRef = useRef(null);
 
     const handleAdd = data => {
-        if (data.product_id.toString().length > 0) {
+        if (data.article_id.toString().length > 0) {
             setMissing(false);
-            setSaleProducts([
-                ...saleProducts.filter(sp => sp.product_id !== data.product_id),
+            setSaleArticles([
+                ...saleProducts.filter(sp => sp.article_id !== data.article_id),
                 data
             ]);
 
             setTimeout(() => {
-                if (inputRefs.current[data.product_id]) {
-                    inputRefs.current[data.product_id].focus();
+                if (inputRefs.current[data.article_id]) {
+                    inputRefs.current[data.article_id].focus();
                 }
             }, 100);
         }
@@ -41,10 +41,10 @@ export function AddProductsToSale({
 
     const handleChangeAmount = data => {
         const amount = data.amount.toString().length > 0 ? data.amount : 0;
-        setSaleProducts([
-            ...saleProducts.filter(sp => sp.product_id !== data.product_id),
+        setSaleArticles([
+            ...saleProducts.filter(sp => sp.article_id !== data.article_id),
             {
-                ...saleProducts.find(sp => sp.product_id === data.product_id),
+                ...saleProducts.find(sp => sp.article_id === data.article_id),
                 ...data,
                 amount
             }
@@ -59,7 +59,7 @@ export function AddProductsToSale({
 
     const handleDeleteProduct = (spId, pId) => {
         setMissing(false);
-        setSaleProducts(saleProducts.filter(sp => sp.product_id !== pId));
+        setSaleArticles(saleProducts.filter(sp => sp.article_id !== pId));
         if (open === 'EDIT' || open === 'CONVERT') {
             setIdsToDelete([...idsToDelete, spId]);
         }
@@ -72,9 +72,9 @@ export function AddProductsToSale({
                     <FormControl>
                         <Autocomplete
                             disablePortal
-                            id="product-autocomplete"
+                            id="article-autocomplete"
                             options={products.filter(p => {
-                                return !saleProducts.map(sp => sp.product_id).includes(p?.id) && getStock(p) > 0 &&
+                                return !saleProducts.map(sp => sp.article_id).includes(p?.id) && getStock(p) > 0 &&
                                     (
                                         (formData.type === 'CONTADO' && p?.cash) ||
                                         (formData.type === 'CUENTA_CORRIENTE' && p?.cta_cte) ||
@@ -83,7 +83,7 @@ export function AddProductsToSale({
                             })
                                 .map(p => ({ label: `${p?.code} - ${p?.details}`, id: p?.id }))}
                             noOptionsText="No hay productos disponibles."
-                            onChange={(_, value) => handleAdd({ idx: saleProducts.length, product_id: value?.id ?? '' })}
+                            onChange={(_, value) => handleAdd({ idx: saleProducts.length, article_id: value?.id ?? '' })}
                             renderInput={(params) => <TextField {...params} label="Producto *" inputRef={autocompleteRef} />}
                             isOptionEqualToValue={(option, value) => option?.code === value?.code || value.length === 0}
                             onInputChange={(e, value) => setValue(value)}
@@ -117,11 +117,11 @@ export function AddProductsToSale({
                                 <TableCell align="center" colSpan={7}>No hay productos agregados a esta venta.</TableCell>
                             </TableRow> :
                             saleProducts.map(sp => {
-                                const p = products.find(p => p?.id === sp.product_id);
+                                const p = products.find(p => p?.id === sp.article_id);
                                 const currentAmount = isNaN(parseInt(sp.amount)) ? 0 : parseInt(sp.amount);
                                 const stock = getStock(p);
                                 return (
-                                    <TableRow key={sp.product_id}>
+                                    <TableRow key={sp.article_id}>
                                         <TableCell align="center">{p?.code}</TableCell>
                                         <TableCell align="center">{p?.details}</TableCell>
                                         <TableCell align="center">
@@ -130,15 +130,15 @@ export function AddProductsToSale({
                                                     type="number"
                                                     value={sp.amount}
                                                     disabled={open === 'VIEW' || (open === 'EDIT' && auth?.user.role !== 'ADMINISTRADOR')}
-                                                    onChange={e => handleChangeAmount({ product_id: p?.id, amount: e.target.value })}
-                                                    inputRef={el => inputRefs.current[sp.product_id] = el}
+                                                    onChange={e => handleChangeAmount({ article_id: p?.id, amount: e.target.value })}
+                                                    inputRef={el => inputRefs.current[sp.article_id] = el}
                                                     InputProps={{ inputProps: { max: open === 'NEW' ? stock : stock + parseInt(sp.amount), step: 1 } }}
                                                 />
                                             </FormControl>
                                         </TableCell>
-                                        <TableCell>${getProductSalePrice(sp.earn && sp.buy_price ? sp : p).toFixed(2)}</TableCell>
+                                        <TableCell>${getArticleSalePrice(sp.earn && sp.buy_price ? sp : p).toFixed(2)}</TableCell>
                                         {open !== 'VIEW' && <TableCell>{stock}</TableCell>}
-                                        <TableCell>${(currentAmount * getProductSalePrice(sp.earn && sp.buy_price ? sp : p)).toFixed(2)}</TableCell>
+                                        <TableCell>${(currentAmount * getArticleSalePrice(sp.earn && sp.buy_price ? sp : p)).toFixed(2)}</TableCell>
                                         {(open === 'NEW' || open === 'CONVERT' || (open === 'EDIT' && auth?.user.role === 'ADMINISTRADOR')) &&
                                             <TableCell align="center">
                                                 <Button type="button" onClick={() => handleDeleteProduct(sp.id, p?.id)}>

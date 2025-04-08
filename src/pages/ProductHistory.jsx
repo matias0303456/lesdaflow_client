@@ -16,7 +16,7 @@ export function ProductHistory() {
 
     const navigate = useNavigate()
 
-    const { getProducts, loadingProducts, productHistory, getProductHistory } = useProducts()
+    const { getArticles, loadingProducts, productHistory, getArticleHistory } = useProducts()
 
     const [value, setValue] = useState('')
 
@@ -24,7 +24,7 @@ export function ProductHistory() {
         if (auth?.user.role !== "ADMINISTRADOR") {
             navigate(auth?.user.role === 'CHOFER' ? '/prep-ventas' : "/productos");
         } else {
-            getProducts()
+            getArticles()
         }
     }, []);
 
@@ -85,10 +85,10 @@ export function ProductHistory() {
                 <FormControl sx={{ width: '30%' }}>
                     <Autocomplete
                         disablePortal
-                        id="product-autocomplete"
+                        id="article-autocomplete"
                         options={state.products.data.map(p => ({ label: `${p?.code} - ${p?.details}`, id: p?.id }))}
                         noOptionsText="No hay productos disponibles."
-                        onChange={(_, value) => getProductHistory(value?.id ?? '')}
+                        onChange={(_, value) => getArticleHistory(value?.id ?? '')}
                         renderInput={(params) => <TextField {...params} label="Producto *" />}
                         isOptionEqualToValue={(option, value) => option?.code === value?.code || value.length === 0}
                         onInputChange={(e, value) => setValue(value)}

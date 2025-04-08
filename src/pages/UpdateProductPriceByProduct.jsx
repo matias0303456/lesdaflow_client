@@ -22,7 +22,7 @@ import { useProducts } from "../hooks/useProducts";
 import { Layout } from "../components/common/Layout";
 import { DataGridWithFrontendPagination } from "../components/datagrid/DataGridWithFrontendPagination";
 
-import { getProductNewSalePriceByPercentage, getProductSalePrice } from "../utils/helpers";
+import { getArticleNewSalePriceByPercentage, getArticleSalePrice } from "../utils/helpers";
 
 export function UpdateProductPriceByProduct() {
 
@@ -33,8 +33,8 @@ export function UpdateProductPriceByProduct() {
 
   const { loadingProducts, massiveEdit, setMassiveEdit, handleSubmitMassive } = useProducts()
   const { reset, formData, validate, errors, handleChange } = useForm({
-    defaultData: { product_id: '', percentage: 0.00 },
-    rules: { product_id: { required: true }, percentage: { required: true } }
+    defaultData: { article_id: '', percentage: 0.00 },
+    rules: { article_id: { required: true }, percentage: { required: true } }
   })
 
   useEffect(() => {
@@ -68,14 +68,14 @@ export function UpdateProductPriceByProduct() {
       numeric: false,
       disablePadding: true,
       label: "Precio Actual (venta)",
-      accessor: (row) => `$${getProductSalePrice(row).toFixed(2)}`
+      accessor: (row) => `$${getArticleSalePrice(row).toFixed(2)}`
     },
     {
       id: "new_price",
       numeric: false,
       disablePadding: true,
       label: "Precio Nuevo (venta)",
-      accessor: (row) => `$${getProductNewSalePriceByPercentage(row, massiveEdit.find(me => me.product_id === row.id).percentage).toFixed(2)}`
+      accessor: (row) => `$${getArticleNewSalePriceByPercentage(row, massiveEdit.find(me => me.article_id === row.id).percentage).toFixed(2)}`
     },
     {
       id: "actions",
@@ -85,7 +85,7 @@ export function UpdateProductPriceByProduct() {
       accessor: (row) => (
         <Tooltip
           title="Borrar"
-          onClick={() => setMassiveEdit([...massiveEdit.filter(me => me.product_id !== row.id)])}
+          onClick={() => setMassiveEdit([...massiveEdit.filter(me => me.article_id !== row.id)])}
         >
           <IconButton className="rounded-full bg-black/20 opacity-50 hover:bg-[#288bcd] hover:text-white">
             <CloseIcon className="w-4 h-4" />
@@ -132,22 +132,22 @@ export function UpdateProductPriceByProduct() {
               </InputLabel>
               <Select
                 labelId="product-select"
-                id="product_id"
-                value={formData.product_id}
-                name="product_id"
+                id="article_id"
+                value={formData.article_id}
+                name="article_id"
                 onChange={handleChange}
                 sx={{ width: "100%" }}
                 label="Producto"
-                disabled={state.products.data.filter(p => !massiveEdit.map(me => me.product_id).includes(p.id)).length === 0}
+                disabled={state.products.data.filter(p => !massiveEdit.map(me => me.article_id).includes(p.id)).length === 0}
               >
-                {state.products.data.filter(p => !massiveEdit.map(me => me.product_id).includes(p.id)).map((p) => (
+                {state.products.data.filter(p => !massiveEdit.map(me => me.article_id).includes(p.id)).map((p) => (
                   <MenuItem key={p.id} value={p.id}>
                     {p.details}
                   </MenuItem>
                 ))
                 }
               </Select>
-              {errors.product_id?.type === 'required' &&
+              {errors.article_id?.type === 'required' &&
                 <Typography variant="caption" color="red" marginTop={1}>
                   * El producto es requerido.
                 </Typography>
@@ -171,7 +171,7 @@ export function UpdateProductPriceByProduct() {
                   className="w-full"
                   type="number"
                   value={formData.percentage}
-                  disabled={state.products.data.filter(p => !massiveEdit.map(me => me.product_id).includes(p.id)).length === 0}
+                  disabled={state.products.data.filter(p => !massiveEdit.map(me => me.article_id).includes(p.id)).length === 0}
                   onChange={(e) => handleChange({ target: { name: 'percentage', value: e.target.value } })}
                 />
                 {errors.percentage?.type === 'required' &&
@@ -184,7 +184,7 @@ export function UpdateProductPriceByProduct() {
                 variant="contained"
                 size="small"
                 onClick={handleAddProduct}
-                disabled={state.products.data.filter(p => !massiveEdit.map(me => me.product_id).includes(p.id)).length === 0}
+                disabled={state.products.data.filter(p => !massiveEdit.map(me => me.article_id).includes(p.id)).length === 0}
               >
                 Agregar
               </Button>
@@ -195,7 +195,7 @@ export function UpdateProductPriceByProduct() {
       <DataGridWithFrontendPagination
         loading={loadingProducts}
         headCells={headCells}
-        rows={state.products.data.filter(p => massiveEdit.map(me => me.product_id).includes(p.id))}
+        rows={state.products.data.filter(p => massiveEdit.map(me => me.article_id).includes(p.id))}
       />
       <Box className="w-[50%] flex items-center justify-start gap-2 mt-4">
         <Button variant="outlined" size="medium" onClick={() => navigate('/productos')}>
