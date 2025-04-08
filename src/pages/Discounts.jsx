@@ -6,7 +6,7 @@ import { AuthContext } from "../providers/AuthProvider";
 import { DataContext } from "../providers/DataProvider";
 import { useDiscounts } from "../hooks/useDiscounts";
 import { useSuppliers } from "../hooks/useSuppliers";
-import { useProducts } from "../hooks/useProducts";
+import { useArticles } from "../hooks/useArticles";
 
 import { Layout } from "../components/common/Layout";
 import { ModalComponent } from "../components/common/ModalComponent";
@@ -20,7 +20,7 @@ export function Discounts() {
 
     const navigate = useNavigate()
 
-    const { getArticles, loadingProducts } = useProducts()
+    const { getArticles, loadingProducts } = useArticles()
     const { getSuppliers, loadingSuppliers } = useSuppliers()
     const {
         loadingDiscounts,
@@ -41,7 +41,7 @@ export function Discounts() {
 
     useEffect(() => {
         if (auth?.user.role !== "ADMINISTRADOR") {
-            navigate(auth?.user.role === 'CHOFER' ? '/prep-ventas' : "/productos");
+            navigate(auth?.user.role === 'CHOFER' ? '/prep-ventas' : "/articulos");
         } else {
             getSuppliers()
             getArticles()

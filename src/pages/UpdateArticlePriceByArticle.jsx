@@ -17,28 +17,28 @@ import CloseIcon from "@mui/icons-material/Close";
 import { AuthContext } from "../providers/AuthProvider";
 import { DataContext } from "../providers/DataProvider";
 import { useForm } from "../hooks/useForm";
-import { useProducts } from "../hooks/useProducts";
+import { useArticles } from "../hooks/useArticles";
 
 import { Layout } from "../components/common/Layout";
 import { DataGridWithFrontendPagination } from "../components/datagrid/DataGridWithFrontendPagination";
 
 import { getArticleNewSalePriceByPercentage, getArticleSalePrice } from "../utils/helpers";
 
-export function UpdateProductPriceByProduct() {
+export function UpdateArticlePriceByArticle() {
 
   const { auth } = useContext(AuthContext);
   const { state } = useContext(DataContext)
 
   const navigate = useNavigate()
 
-  const { loadingProducts, massiveEdit, setMassiveEdit, handleSubmitMassive } = useProducts()
+  const { loadingProducts, massiveEdit, setMassiveEdit, handleSubmitMassive } = useArticles()
   const { reset, formData, validate, errors, handleChange } = useForm({
     defaultData: { article_id: '', percentage: 0.00 },
     rules: { article_id: { required: true }, percentage: { required: true } }
   })
 
   useEffect(() => {
-    if (auth?.user.role !== "ADMINISTRADOR") navigate(auth?.user.role === 'CHOFER' ? '/prep-ventas' : "/productos");
+    if (auth?.user.role !== "ADMINISTRADOR") navigate(auth?.user.role === 'CHOFER' ? '/prep-ventas' : "/articulos");
   }, []);
 
   const handleAddProduct = () => {
@@ -138,9 +138,9 @@ export function UpdateProductPriceByProduct() {
                 onChange={handleChange}
                 sx={{ width: "100%" }}
                 label="Producto"
-                disabled={state.products.data.filter(p => !massiveEdit.map(me => me.article_id).includes(p.id)).length === 0}
+                disabled={state.articles.data.filter(p => !massiveEdit.map(me => me.article_id).includes(p.id)).length === 0}
               >
-                {state.products.data.filter(p => !massiveEdit.map(me => me.article_id).includes(p.id)).map((p) => (
+                {state.articles.data.filter(p => !massiveEdit.map(me => me.article_id).includes(p.id)).map((p) => (
                   <MenuItem key={p.id} value={p.id}>
                     {p.details}
                   </MenuItem>
@@ -171,7 +171,7 @@ export function UpdateProductPriceByProduct() {
                   className="w-full"
                   type="number"
                   value={formData.percentage}
-                  disabled={state.products.data.filter(p => !massiveEdit.map(me => me.article_id).includes(p.id)).length === 0}
+                  disabled={state.articles.data.filter(p => !massiveEdit.map(me => me.article_id).includes(p.id)).length === 0}
                   onChange={(e) => handleChange({ target: { name: 'percentage', value: e.target.value } })}
                 />
                 {errors.percentage?.type === 'required' &&
@@ -184,7 +184,7 @@ export function UpdateProductPriceByProduct() {
                 variant="contained"
                 size="small"
                 onClick={handleAddProduct}
-                disabled={state.products.data.filter(p => !massiveEdit.map(me => me.article_id).includes(p.id)).length === 0}
+                disabled={state.articles.data.filter(p => !massiveEdit.map(me => me.article_id).includes(p.id)).length === 0}
               >
                 Agregar
               </Button>
@@ -195,10 +195,10 @@ export function UpdateProductPriceByProduct() {
       <DataGridWithFrontendPagination
         loading={loadingProducts}
         headCells={headCells}
-        rows={state.products.data.filter(p => massiveEdit.map(me => me.article_id).includes(p.id))}
+        rows={state.articles.data.filter(p => massiveEdit.map(me => me.article_id).includes(p.id))}
       />
       <Box className="w-[50%] flex items-center justify-start gap-2 mt-4">
-        <Button variant="outlined" size="medium" onClick={() => navigate('/productos')}>
+        <Button variant="outlined" size="medium" onClick={() => navigate('/articulos')}>
           Volver
         </Button>
         <Button variant="outlined" size="medium" onClick={() => setMassiveEdit([])}>

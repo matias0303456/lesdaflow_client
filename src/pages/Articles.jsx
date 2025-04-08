@@ -3,7 +3,7 @@ import { Box, Button, Checkbox, FormControl, FormControlLabel, Input, InputLabel
 
 import { AuthContext } from "../providers/AuthProvider";
 import { DataContext } from "../providers/DataProvider";
-import { useProducts } from '../hooks/useProducts'
+import { useArticles } from '../hooks/useArticles'
 import { useSuppliers } from "../hooks/useSuppliers";
 import { useForm } from "../hooks/useForm";
 import { useMovements } from "../hooks/useMovements";
@@ -17,7 +17,7 @@ import { MovementsForm } from "../components/commercial/MovementsForm";
 import { getNewPrice, getStock } from "../utils/helpers";
 import { REPORT_URL } from "../utils/urls";
 
-export function Products() {
+export function Articles() {
 
     const { auth } = useContext(AuthContext)
     const { state } = useContext(DataContext)
@@ -36,7 +36,7 @@ export function Products() {
         handleSubmitMassive,
         handleDelete,
         getArticles
-    } = useProducts()
+    } = useArticles()
     const { loadingSuppliers, getSuppliers } = useSuppliers()
     const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
         defaultData: {
@@ -163,7 +163,7 @@ export function Products() {
         <Layout title="Productos">
             <DataGridWithBackendPagination
                 headCells={headCells.filter(hc => auth?.user.role === 'ADMINISTRADOR' || hc.can_access?.includes(auth?.user.role))}
-                rows={state.products.data}
+                rows={state.articles.data}
                 setOpen={setOpen}
                 setOpenNewMovement={setOpenMovement}
                 setFormData={setFormData}
@@ -199,13 +199,13 @@ export function Products() {
                                 variant="outlined"
                                 color='success'
                                 onClick={() => {
-                                    const { code, details, supplier_id } = state.products.filter_fields
+                                    const { code, details, supplier_id } = state.articles.filter_fields
                                     window.open(`${REPORT_URL}/products-excel?token=${auth?.token}&for_client=true&code=${code}&details=${details}&supplier_id=${supplier_id}`, '_blank')
                                 }}>
                                 Excel
                             </Button>
                             <Button variant="outlined" color='error' onClick={() => {
-                                const { code, details, supplier_id } = state.products.filter_fields
+                                const { code, details, supplier_id } = state.articles.filter_fields
                                 window.open(`${REPORT_URL}/products-pdf?token=${auth?.token}&for_client=true&code=${code}&details=${details}&supplier_id=${supplier_id}`, '_blank')
                             }}>
                                 PDF

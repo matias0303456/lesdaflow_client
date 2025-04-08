@@ -6,7 +6,7 @@ import { useApi } from "./useApi"
 
 import { ARTICLE_URL } from "../utils/urls"
 
-export function useProducts() {
+export function useArticles() {
 
     const { state, dispatch } = useContext(DataContext)
     const { setMessage, setOpenMessage, setSeverity } = useContext(MessageContext)
@@ -24,7 +24,7 @@ export function useProducts() {
         if (status === 200) {
             dispatch({
                 type: 'PRODUCTS',
-                payload: { ...state.products, data: data[0], count: data[1] }
+                payload: { ...state.articles, data: data[0], count: data[1] }
             })
             setLoadingProducts(false)
         } else {
@@ -66,16 +66,16 @@ export function useProducts() {
             const { status, data } = open === 'NEW' ? await post(formData) : await put(formData)
             if (status === 200) {
                 if (open === 'NEW') {
-                    dispatch({ type: 'PRODUCTS', payload: { ...state.products, data: [data, ...state.products.data] } })
+                    dispatch({ type: 'PRODUCTS', payload: { ...state.articles, data: [data, ...state.articles.data] } })
                     setMessage('Producto creado correctamente.')
                 } else {
                     dispatch({
                         type: 'PRODUCTS',
                         payload: {
-                            ...state.products,
+                            ...state.articles,
                             data: [
                                 data,
-                                ...state.products.data.filter(p => p.id !== formData.id)
+                                ...state.articles.data.filter(p => p.id !== formData.id)
                             ]
                         }
                     })
@@ -95,7 +95,7 @@ export function useProducts() {
     async function handleSubmitMassive() {
         const body = {
             products: massiveEdit.map(me => {
-                const product = state.products.find(p => p.id === me.article_id)
+                const product = state.articles.find(p => p.id === me.article_id)
                 return { ...me, buy_price: product.buy_price }
             })
         }
@@ -104,10 +104,10 @@ export function useProducts() {
             dispatch({
                 type: 'PRODUCTS',
                 payload: {
-                    ...state.products,
+                    ...state.articles,
                     data: [
                         data,
-                        ...state.products.data.filter(p => !data.map(d => d.id).includes(p.id))
+                        ...state.articles.data.filter(p => !data.map(d => d.id).includes(p.id))
                     ]
                 }
             })
@@ -127,8 +127,8 @@ export function useProducts() {
             dispatch({
                 type: 'PRODUCTS',
                 payload: {
-                    ...state.products,
-                    data: [...state.products.data.filter(p => p.id !== data.id)]
+                    ...state.articles,
+                    data: [...state.articles.data.filter(p => p.id !== data.id)]
                 }
             })
             setMessage('Producto eliminado correctamente.')

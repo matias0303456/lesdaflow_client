@@ -139,7 +139,7 @@ export function SaleFormFields({
                         gap: 2
                     }}>
                         <AddProductsToSale
-                            products={state.products.data}
+                            products={state.articles.data}
                             saleProducts={saleProducts}
                             setSaleArticles={setSaleArticles}
                             missing={missing}
@@ -168,7 +168,7 @@ export function SaleFormFields({
                                     sx={{ width: "100%" }}
                                 >
                                     <MenuItem value="">Ninguno</MenuItem>
-                                    {getAvailableDiscounts(formData, saleProducts, state.products.data, state.discounts.data)
+                                    {getAvailableDiscounts(formData, saleProducts, state.articles.data, state.discounts.data)
                                         .map(d => (
                                             <MenuItem key={d.id} value={d.id}>
                                                 {d.name}
@@ -207,7 +207,7 @@ export function SaleFormFields({
                 <Box sx={{ display: 'flex', justifyContent: 'end', marginTop: 3 }}>
                     <FormControl>
                         <InputLabel htmlFor="subtotal">Subtotal</InputLabel>
-                        <Input value={getCurrentSubtotal(saleProducts, state.products.data)} id="subtotal" type="number" name="subtotal" disabled />
+                        <Input value={getCurrentSubtotal(saleProducts, state.articles.data)} id="subtotal" type="number" name="subtotal" disabled />
                     </FormControl>
                     {open === 'NEW' &&
                         <FormControl>

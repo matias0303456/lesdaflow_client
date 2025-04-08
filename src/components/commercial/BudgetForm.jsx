@@ -39,7 +39,7 @@ export function BudgetForm({
     useEffect(() => {
         if (budgetArticles.length > 0 && (open === 'NEW' || open === 'CONVERT')) {
             setBudgetArticles(budgetArticles.filter(bp => {
-                const p = state.products.data.find(i => i.id === bp.article_id)
+                const p = state.articles.data.find(i => i.id === bp.article_id)
                 if ((formData.type === 'CONTADO' && p?.cash) ||
                     (formData.type === 'CUENTA_CORRIENTE' && p?.cta_cte) ||
                     (formData.type === 'POXIPOL' && p?.poxipol)) return bp
@@ -51,9 +51,9 @@ export function BudgetForm({
         if (open === 'EDIT') return
         setFormData({
             ...formData,
-            total: getCurrentTotal(discountApplied, budgetArticles, state.products.data),
+            total: getCurrentTotal(discountApplied, budgetArticles, state.articles.data),
         })
-    }, [discountApplied, budgetArticles, state.products.data, open])
+    }, [discountApplied, budgetArticles, state.articles.data, open])
 
     return (
         <ModalComponent
@@ -156,7 +156,7 @@ export function BudgetForm({
                         />
                     </Box>
                     <AddProductsToBudget
-                        products={state.products.data}
+                        products={state.articles.data}
                         budgetArticles={budgetArticles}
                         setBudgetArticles={setBudgetArticles}
                         missing={missing}
@@ -181,7 +181,7 @@ export function BudgetForm({
                             sx={{ width: "100%" }}
                         >
                             <MenuItem value="">Ninguno</MenuItem>
-                            {getAvailableDiscounts(formData, budgetArticles, state.products.data, state.discounts.data)
+                            {getAvailableDiscounts(formData, budgetArticles, state.articles.data, state.discounts.data)
                                 .map(d => (
                                     <MenuItem key={d.id} value={d.id}>
                                         {d.name}

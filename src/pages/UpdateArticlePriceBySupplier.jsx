@@ -21,7 +21,7 @@ import { DataGridWithFrontendPagination } from "../components/datagrid/DataGridW
 
 import { getArticleNewBuyPriceByPercentage, getArticleNewSalePriceByPercentage, getArticleSalePrice } from "../utils/helpers";
 
-export function UpdateProductPriceBySupplier() {
+export function UpdateArticlePriceBySupplier() {
 
   const { auth } = useContext(AuthContext)
   const { state } = useContext(DataContext)
@@ -38,12 +38,12 @@ export function UpdateProductPriceBySupplier() {
     reset,
     errors,
   } = useForm({
-    defaultData: { id: '', percentage: 0.00, products: [] },
+    defaultData: { id: '', percentage: 0.00, articles: [] },
     rules: { id: { required: true }, percentage: { required: true } },
   });
 
   useEffect(() => {
-    if (auth?.user.role !== "ADMINISTRADOR") navigate(auth?.user.role === 'CHOFER' ? '/prep-ventas' : "/productos");
+    if (auth?.user.role !== "ADMINISTRADOR") navigate("/articulos");
   }, []);
 
   useEffect(() => {
@@ -62,7 +62,7 @@ export function UpdateProductPriceBySupplier() {
       id: "details",
       numeric: false,
       disablePadding: true,
-      label: "Producto",
+      label: "Artículo",
       accessor: "details",
     },
     {
@@ -206,14 +206,14 @@ export function UpdateProductPriceBySupplier() {
         >
           Confirmar
         </Button>
-        <Button variant="outlined" size="medium" onClick={() => navigate('/productos')}>
+        <Button variant="outlined" size="medium" onClick={() => navigate('/articulos')}>
           Volver
         </Button>
       </Box>
       <DataGridWithFrontendPagination
         loading={loadingSuppliers}
         headCells={headCells}
-        rows={state.suppliers.data.find(s => s.id === parseInt(formData.id))?.products || []}
+        rows={state.suppliers.data.find(s => s.id === parseInt(formData.id))?.articles || []}
         contentHeader={''}
       />
     </Layout>

@@ -5,7 +5,7 @@ import { format } from "date-fns";
 
 import { AuthContext } from "../providers/AuthProvider";
 import { DataContext } from "../providers/DataProvider";
-import { useProducts } from "../hooks/useProducts";
+import { useArticles } from "../hooks/useArticles";
 import { useClients } from '../hooks/useClients'
 import { useForm } from "../hooks/useForm";
 import { useSales } from "../hooks/useSales";
@@ -35,7 +35,7 @@ export function Sales() {
         setOpen,
         setMissing,
         setIdsToDelete,
-        saleProducts,
+        saleArticles,
         missing,
         idsToDelete,
         saleSaved,
@@ -46,7 +46,7 @@ export function Sales() {
         isBlocked,
         setIsBlocked
     } = useSales()
-    const { loadingProducts, getArticles } = useProducts()
+    const { loadingArticles, getArticles } = useArticles()
     const { loadingClients, getClients } = useClients()
     const { getUsers } = useUsers()
     const { getDiscounts } = useDiscounts()
@@ -186,7 +186,7 @@ export function Sales() {
     return (
         <Layout title="Ventas">
             <DataGridWithBackendPagination
-                loading={loadingClients || loadingSales || loadingProducts || disabled}
+                loading={loadingClients || loadingSales || loadingArticles || disabled}
                 headCells={headCells}
                 rows={state.sales.data}
                 entityKey="sales"
@@ -231,7 +231,7 @@ export function Sales() {
                 }
             >
                 <SaleForm
-                    saleProducts={saleProducts}
+                    saleArticles={saleArticles}
                     setSaleArticles={setSaleArticles}
                     missing={missing}
                     setMissing={setMissing}

@@ -4,7 +4,7 @@ import { Box, Button, Input, FormControl, InputLabel, Typography } from "@mui/ma
 
 import { AuthContext } from "../providers/AuthProvider";
 import { DataContext } from "../providers/DataProvider";
-import { useProducts } from "../hooks/useProducts";
+import { useArticles } from "../hooks/useArticles";
 import { useForm } from "../hooks/useForm";
 
 import { Layout } from "../components/common/Layout";
@@ -12,14 +12,14 @@ import { DataGridWithFrontendPagination } from "../components/datagrid/DataGridW
 
 import { getStock } from "../utils/helpers";
 
-export function ProductsPriceList() {
+export function ArticlesPriceList() {
 
   const { auth } = useContext(AuthContext);
   const { state } = useContext(DataContext)
 
   const navigate = useNavigate()
 
-  const { loadingProducts } = useProducts()
+  const { loadingArticles } = useArticles()
   const { formData, handleChange } = useForm({ defaultData: { code: '', details: '' } })
 
   useEffect(() => {
@@ -38,7 +38,7 @@ export function ProductsPriceList() {
       id: 'details',
       numeric: false,
       disablePadding: true,
-      label: 'Producto',
+      label: 'Artículo',
       accessor: 'details'
     },
     {
@@ -75,7 +75,7 @@ export function ProductsPriceList() {
             fontWeight: "bold",
           }}
         >
-          Productos
+          Artículos
         </Typography>
         <form onChange={handleChange}>
           <Box
@@ -100,7 +100,7 @@ export function ProductsPriceList() {
               marginTop: "2rem"
             }}>
               <InputLabel id="demo-simple-select-standard-label">
-                Producto
+                Artículo
               </InputLabel>
               <Input
                 sx={{ width: "100%" }} name="details" />
@@ -125,12 +125,12 @@ export function ProductsPriceList() {
           Precios
         </Typography>
         <DataGridWithFrontendPagination
-          loading={loadingProducts}
+          loading={loadingArticles}
           headCells={headCells}
-          rows={state.products.data.filter(p => (formData.code.length === 0 || p.code.includes(formData.code)) &&
-            (formData.details.length === 0 || p.details.includes(formData.details)))}
+          rows={state.articles.data.filter(a => (formData.code.length === 0 || a.code.includes(formData.code)) &&
+            (formData.details.length === 0 || a.details.includes(formData.details)))}
         />
-        <Button variant="outlined" size="medium" color="info" onClick={() => navigate('/productos')}>
+        <Button variant="outlined" size="medium" color="info" onClick={() => navigate('/articulos')}>
           Salir
         </Button>
       </Box>

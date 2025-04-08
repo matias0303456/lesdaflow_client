@@ -5,7 +5,7 @@ import CancelSharpIcon from '@mui/icons-material/CancelSharp';
 
 import { getArticleSalePrice, getStock } from "../../utils/helpers";
 
-export function AddProductsToBudget({
+export function AddArticlesToBudget({
     products,
     budgetArticles,
     setBudgetArticles,

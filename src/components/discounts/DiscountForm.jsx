@@ -134,7 +134,7 @@ export function DiscountForm({
                 <AddProductsToDiscount
                     discountProducts={discountProducts}
                     setDiscountProducts={setDiscountProducts}
-                    products={state.products.data}
+                    products={state.articles.data}
                     open={open}
                 />
                 <AddSuppliersToDiscount

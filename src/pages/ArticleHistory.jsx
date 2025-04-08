@@ -4,25 +4,25 @@ import { Box, FormControl, Autocomplete, TextField } from "@mui/material";
 
 import { AuthContext } from "../providers/AuthProvider";
 import { DataContext } from "../providers/DataProvider";
-import { useProducts } from "../hooks/useProducts";
+import { useArticles } from "../hooks/useArticles";
 
 import { Layout } from "../components/common/Layout";
 import { DataGridWithFrontendPagination } from "../components/datagrid/DataGridWithFrontendPagination";
 
-export function ProductHistory() {
+export function ArticleHistory() {
 
     const { auth } = useContext(AuthContext)
     const { state } = useContext(DataContext)
 
     const navigate = useNavigate()
 
-    const { getArticles, loadingProducts, productHistory, getArticleHistory } = useProducts()
+    const { getArticles, loadingProducts, productHistory, getArticleHistory } = useArticles()
 
     const [value, setValue] = useState('')
 
     useEffect(() => {
         if (auth?.user.role !== "ADMINISTRADOR") {
-            navigate(auth?.user.role === 'CHOFER' ? '/prep-ventas' : "/productos");
+            navigate(auth?.user.role === 'CHOFER' ? '/prep-ventas' : "/articulos");
         } else {
             getArticles()
         }
@@ -86,7 +86,7 @@ export function ProductHistory() {
                     <Autocomplete
                         disablePortal
                         id="article-autocomplete"
-                        options={state.products.data.map(p => ({ label: `${p?.code} - ${p?.details}`, id: p?.id }))}
+                        options={state.articles.data.map(p => ({ label: `${p?.code} - ${p?.details}`, id: p?.id }))}
                         noOptionsText="No hay productos disponibles."
                         onChange={(_, value) => getArticleHistory(value?.id ?? '')}
                         renderInput={(params) => <TextField {...params} label="Producto *" />}

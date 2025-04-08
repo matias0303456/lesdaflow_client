@@ -19,7 +19,7 @@ import { Layout } from "../components/common/Layout";
 
 import { REPORT_URL } from "../utils/urls";
 
-export function ProductsReport() {
+export function ArticlesReport() {
 
   const { auth } = useContext(AuthContext);
   const { state } = useContext(DataContext)
@@ -38,12 +38,12 @@ export function ProductsReport() {
     e.preventDefault()
     if (validate()) {
       const { supplier_id, stock } = formData
-      window.open(`${REPORT_URL}/products-pdf?token=${auth?.token}${supplier_id.toString().length > 0 ? `&supplier_id=${supplier_id}` : ''}${stock.length > 0 ? `&stock=${stock}` : ''}`, '_blank')
+      window.open(`${REPORT_URL}/articles-pdf?token=${auth?.token}${supplier_id.toString().length > 0 ? `&supplier_id=${supplier_id}` : ''}${stock.length > 0 ? `&stock=${stock}` : ''}`, '_blank')
     }
   }
 
   return (
-    <Layout title="Reporte Productos">
+    <Layout title="Reporte Artículos">
       {loadingSuppliers ? <Box sx={{ width: "100%" }}><LinearProgress /></Box> :
         <>
           <Box sx={{ width: { xs: '100%', sm: '50%' }, backgroundColor: '#fff' }} className="rounded-md">

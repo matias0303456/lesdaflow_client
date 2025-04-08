@@ -7,7 +7,7 @@ import { AuthContext } from "../providers/AuthProvider";
 import { DataContext } from "../providers/DataProvider";
 import { useForm } from "../hooks/useForm";
 import { useBudgets } from "../hooks/useBudgets";
-import { useProducts } from "../hooks/useProducts";
+import { useArticles } from "../hooks/useArticles";
 import { useClients } from "../hooks/useClients";
 import { useSales } from "../hooks/useSales";
 import { useDiscounts } from "../hooks/useDiscounts";
@@ -29,7 +29,7 @@ export function Budgets() {
 
     const navigate = useNavigate()
 
-    const { getArticles } = useProducts()
+    const { getArticles } = useArticles()
     const { getClients } = useClients()
     const { getDiscounts } = useDiscounts()
     const {
@@ -51,7 +51,7 @@ export function Budgets() {
         rules: { client_id: { required: true }, date: { required: true } }
     })
     const {
-        saleProducts,
+        saleArticles,
         setSaleArticles,
         missing: missingNewSale,
         setMissing: setMissingNewSale,
@@ -100,7 +100,7 @@ export function Budgets() {
 
     useEffect(() => {
         if (open === 'EDIT' || open === 'VIEW') {
-            setBudgetArticles(formData.budget_products)
+            setBudgetArticles(formData.budget_articles)
         }
         if (openNewSale === 'CONVERT') {
             setNewSale({
@@ -109,7 +109,7 @@ export function Budgets() {
                 type: formData.type,
                 date: new Date(Date.now())
             })
-            setSaleArticles(formData.budget_products)
+            setSaleArticles(formData.budget_articles)
         }
     }, [formData])
 
@@ -169,8 +169,8 @@ export function Budgets() {
             numeric: false,
             disablePadding: true,
             label: 'Total',
-            sorter: (row) => parseFloat(getBudgetTotal(row, getBudgetSubtotal(row.budget_products))),
-            accessor: (row) => `$${getBudgetTotal(row, getBudgetSubtotal(row.budget_products))}`
+            sorter: (row) => parseFloat(getBudgetTotal(row, getBudgetSubtotal(row.budget_articles))),
+            accessor: (row) => `$${getBudgetTotal(row, getBudgetSubtotal(row.budget_articles))}`
         },
         {
             id: 'type',
@@ -242,7 +242,7 @@ export function Budgets() {
                     errors={errors}
                 />
                 <SaleForm
-                    saleProducts={saleProducts}
+                    saleArticles={saleArticles}
                     setSaleArticles={setSaleArticles}
                     missing={missingNewSale}
                     setMissing={setMissingNewSale}

@@ -83,7 +83,7 @@ export function SaleForm({
     useEffect(() => {
         if (saleProducts.length > 0 && (open === 'NEW' || open === 'CONVERT')) {
             setSaleArticles(saleProducts.filter(sp => {
-                const p = state.products.data.find(i => i.id === sp.article_id)
+                const p = state.articles.data.find(i => i.id === sp.article_id)
                 if ((formData.type === 'CONTADO' && p?.cash) ||
                     (formData.type === 'CUENTA_CORRIENTE' && p?.cta_cte) ||
                     (formData.type === 'POXIPOL' && p?.poxipol)) return sp
@@ -95,9 +95,9 @@ export function SaleForm({
         if (open === 'EDIT') return
         setFormData({
             ...formData,
-            total: getCurrentTotal(discountApplied, saleProducts, state.products.data),
+            total: getCurrentTotal(discountApplied, saleProducts, state.articles.data),
         })
-    }, [discountApplied, saleProducts, state.products.data, open])
+    }, [discountApplied, saleProducts, state.articles.data, open])
 
     const handleChangeTab = (_, newValue) => {
         setValueTab(newValue)

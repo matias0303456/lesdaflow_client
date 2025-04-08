@@ -3,7 +3,7 @@ import { Box, Button, FormControl, Input, InputLabel, MenuItem, Select } from "@
 
 import { DataContext } from "../../providers/DataProvider";
 
-export function ProductFilter() {
+export function ArticleFilter() {
 
     const { state, dispatch } = useContext(DataContext)
 
@@ -11,9 +11,9 @@ export function ProductFilter() {
         dispatch({
             type: 'PRODUCTS',
             payload: {
-                ...state.products,
+                ...state.articles,
                 filter_fields: {
-                    ...state.products.filter_fields,
+                    ...state.articles.filter_fields,
                     loaded: true,
                     [e.target.name]: e.target.value
                 }
@@ -25,7 +25,7 @@ export function ProductFilter() {
         dispatch({
             type: 'PRODUCTS',
             payload: {
-                ...state.products,
+                ...state.articles,
                 filter_fields: { code: '', details: '', supplier_id: '', loaded: false },
                 filters: ''
             }
@@ -33,12 +33,12 @@ export function ProductFilter() {
     }
 
     useEffect(() => {
-        const { code, details, supplier_id, loaded } = state.products.filter_fields
+        const { code, details, supplier_id, loaded } = state.articles.filter_fields
         if (code.length > 0 || details.length > 0 || supplier_id.toString().length > 0) {
             dispatch({
                 type: 'PRODUCTS',
                 payload: {
-                    ...state.products,
+                    ...state.articles,
                     filters: `&code=${code}&details=${details}&supplier_id=${supplier_id}`
                 }
             })
@@ -46,12 +46,12 @@ export function ProductFilter() {
             dispatch({
                 type: 'PRODUCTS',
                 payload: {
-                    ...state.products,
+                    ...state.articles,
                     filters: ''
                 }
             })
         }
-    }, [state.products.filter_fields])
+    }, [state.articles.filter_fields])
 
     return (
         <Box sx={{
@@ -67,7 +67,7 @@ export function ProductFilter() {
                     id="code"
                     type="text"
                     name="code"
-                    value={state.products.filter_fields.code}
+                    value={state.articles.filter_fields.code}
                     onChange={handleChange}
                 />
             </FormControl>
@@ -77,7 +77,7 @@ export function ProductFilter() {
                     id="details"
                     type="text"
                     name="details"
-                    value={state.products.filter_fields.details}
+                    value={state.articles.filter_fields.details}
                     onChange={handleChange}
                 />
             </FormControl>
@@ -86,7 +86,7 @@ export function ProductFilter() {
                 <Select
                     labelId="supplier-select"
                     id="supplier_id"
-                    value={state.products.filter_fields.supplier_id}
+                    value={state.articles.filter_fields.supplier_id}
                     label="Proveedor"
                     name="supplier_id"
                     onChange={handleChange}

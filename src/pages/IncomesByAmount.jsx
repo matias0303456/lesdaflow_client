@@ -6,7 +6,7 @@ import CancelSharpIcon from '@mui/icons-material/CancelSharp';
 import { AuthContext } from "../providers/AuthProvider";
 import { DataContext } from "../providers/DataProvider";
 import { useMovements } from "../hooks/useMovements";
-import { useProducts } from "../hooks/useProducts";
+import { useArticles } from "../hooks/useArticles";
 
 import { Layout } from "../components/common/Layout";
 
@@ -19,14 +19,14 @@ export function IncomesByAmount() {
 
     const navigate = useNavigate()
 
-    const { getArticles } = useProducts()
+    const { getArticles } = useArticles()
     const { incomesByAmount, setIncomesByAmount, amount, setAmount, handleSubmitIncomesByAmount } = useMovements()
 
     const [value, setValue] = useState('')
 
     useEffect(() => {
         if (auth?.user.role !== "ADMINISTRADOR") {
-            navigate(auth?.user.role === 'CHOFER' ? '/prep-ventas' : "/productos");
+            navigate(auth?.user.role === 'CHOFER' ? '/prep-ventas' : "/articulos");
         } else {
             getArticles()
         }
@@ -80,7 +80,7 @@ export function IncomesByAmount() {
                 <Autocomplete
                     disablePortal
                     id="article-autocomplete"
-                    options={state.products.data.filter(p => !incomesByAmount.map(iba => iba.article_id).includes(p.id))
+                    options={state.articles.data.filter(p => !incomesByAmount.map(iba => iba.article_id).includes(p.id))
                         .map(p => ({ label: `Código ${p.code} / Detalle ${p.details}`, id: p.id }))}
                     noOptionsText="No hay productos disponibles."
                     onChange={(e, value) => handleAdd({ idx: incomesByAmount.length, article_id: value?.id, observations: '' })}
@@ -110,7 +110,7 @@ export function IncomesByAmount() {
                                 <TableCell align="center" colSpan={6}>No hay productos que mostrar.</TableCell>
                             </TableRow> :
                             incomesByAmount.map(iba => {
-                                const p = state.products.data.find(p => p.id === iba.article_id)
+                                const p = state.articles.data.find(p => p.id === iba.article_id)
                                 return (
                                     <TableRow key={iba.article_id}>
                                         <TableCell align="center">{p.code}</TableCell>

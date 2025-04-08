@@ -7,7 +7,7 @@ import { AuthContext } from "../../providers/AuthProvider";
 
 import { getArticleSalePrice, getStock } from "../../utils/helpers";
 
-export function AddProductsToSale({
+export function AddArticlesToSale({
     products,
     saleProducts,
     setSaleArticles,
