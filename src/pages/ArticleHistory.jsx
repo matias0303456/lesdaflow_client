@@ -16,7 +16,7 @@ export function ArticleHistory() {
 
     const navigate = useNavigate()
 
-    const { getArticles, loadingProducts, productHistory, getArticleHistory } = useArticles()
+    const { getArticles, loadingArticles, articleHistory, getArticleHistory } = useArticles()
 
     const [value, setValue] = useState('')
 
@@ -80,16 +80,16 @@ export function ArticleHistory() {
     ]
 
     return (
-        <Layout title="Historial producto">
+        <Layout title="Historial artículo">
             <Box sx={{ backgroundColor: '#FFF' }}>
                 <FormControl sx={{ width: '30%' }}>
                     <Autocomplete
                         disablePortal
                         id="article-autocomplete"
                         options={state.articles.data.map(p => ({ label: `${p?.code} - ${p?.details}`, id: p?.id }))}
-                        noOptionsText="No hay productos disponibles."
+                        noOptionsText="No hay artículos disponibles."
                         onChange={(_, value) => getArticleHistory(value?.id ?? '')}
-                        renderInput={(params) => <TextField {...params} label="Producto *" />}
+                        renderInput={(params) => <TextField {...params} label="Artículo *" />}
                         isOptionEqualToValue={(option, value) => option?.code === value?.code || value.length === 0}
                         onInputChange={(e, value) => setValue(value)}
                         value={value}
@@ -97,9 +97,9 @@ export function ArticleHistory() {
                     />
                 </FormControl>
                 <DataGridWithFrontendPagination
-                    loading={loadingProducts}
+                    loading={loadingArticles}
                     headCells={headCells}
-                    rows={productHistory}
+                    rows={articleHistory}
                     contentHeader={''}
                 />
             </Box>

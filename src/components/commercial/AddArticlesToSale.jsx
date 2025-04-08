@@ -8,15 +8,14 @@ import { AuthContext } from "../../providers/AuthProvider";
 import { getArticleSalePrice, getStock } from "../../utils/helpers";
 
 export function AddArticlesToSale({
-    products,
-    saleProducts,
+    articles,
+    saleArticles,
     setSaleArticles,
     missing,
     setMissing,
     idsToDelete,
     setIdsToDelete,
-    open,
-    formData
+    open
 }) {
     const { auth } = useContext(AuthContext);
     const [value, setValue] = useState('');
@@ -27,7 +26,7 @@ export function AddArticlesToSale({
         if (data.article_id.toString().length > 0) {
             setMissing(false);
             setSaleArticles([
-                ...saleProducts.filter(sp => sp.article_id !== data.article_id),
+                ...saleArticles.filter(sa => sa.article_id !== data.article_id),
                 data
             ]);
 
@@ -42,9 +41,9 @@ export function AddArticlesToSale({
     const handleChangeAmount = data => {
         const amount = data.amount.toString().length > 0 ? data.amount : 0;
         setSaleArticles([
-            ...saleProducts.filter(sp => sp.article_id !== data.article_id),
+            ...saleArticles.filter(sa => sa.article_id !== data.article_id),
             {
-                ...saleProducts.find(sp => sp.article_id === data.article_id),
+                ...saleArticles.find(sa => sa.article_id === data.article_id),
                 ...data,
                 amount
             }
@@ -57,11 +56,11 @@ export function AddArticlesToSale({
         }, 1000);
     };
 
-    const handleDeleteProduct = (spId, pId) => {
+    const handleDeleteArticle = (saId, pId) => {
         setMissing(false);
-        setSaleArticles(saleProducts.filter(sp => sp.article_id !== pId));
+        setSaleArticles(saleArticles.filter(sa => sa.article_id !== pId));
         if (open === 'EDIT' || open === 'CONVERT') {
-            setIdsToDelete([...idsToDelete, spId]);
+            setIdsToDelete([...idsToDelete, saId]);
         }
     };
 
@@ -73,18 +72,11 @@ export function AddArticlesToSale({
                         <Autocomplete
                             disablePortal
                             id="article-autocomplete"
-                            options={products.filter(p => {
-                                return !saleProducts.map(sp => sp.article_id).includes(p?.id) && getStock(p) > 0 &&
-                                    (
-                                        (formData.type === 'CONTADO' && p?.cash) ||
-                                        (formData.type === 'CUENTA_CORRIENTE' && p?.cta_cte) ||
-                                        (formData.type === 'POXIPOL' && p?.poxipol)
-                                    );
-                            })
-                                .map(p => ({ label: `${p?.code} - ${p?.details}`, id: p?.id }))}
-                            noOptionsText="No hay productos disponibles."
-                            onChange={(_, value) => handleAdd({ idx: saleProducts.length, article_id: value?.id ?? '' })}
-                            renderInput={(params) => <TextField {...params} label="Producto *" inputRef={autocompleteRef} />}
+                            options={articles.filter(a => !saleArticles.map(sa => sa.article_id).includes(a?.id) && getStock(a) > 0)
+                                .map(a => ({ label: `${a?.code} - ${a?.details}`, id: a?.id }))}
+                            noOptionsText="No hay artículos disponibles."
+                            onChange={(_, value) => handleAdd({ idx: saleArticles.length, article_id: value?.id ?? '' })}
+                            renderInput={(params) => <TextField {...params} label="Artículo *" inputRef={autocompleteRef} />}
                             isOptionEqualToValue={(option, value) => option?.code === value?.code || value.length === 0}
                             onInputChange={(e, value) => setValue(value)}
                             value={value}
@@ -93,7 +85,7 @@ export function AddArticlesToSale({
                     </FormControl>
                     {missing &&
                         <Typography variant="caption" color="red" marginTop={1}>
-                            * Los productos y las cantidades son requeridos y las cantidades deben ser mayores a 0.
+                            * Los artículos y las cantidades son requeridos y las cantidades deben ser mayores a 0.
                         </Typography>
                     }
                 </>
@@ -112,36 +104,36 @@ export function AddArticlesToSale({
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {saleProducts.length === 0 ?
+                        {saleArticles.length === 0 ?
                             <TableRow>
-                                <TableCell align="center" colSpan={7}>No hay productos agregados a esta venta.</TableCell>
+                                <TableCell align="center" colSpan={7}>No hay artículos agregados a esta venta.</TableCell>
                             </TableRow> :
-                            saleProducts.map(sp => {
-                                const p = products.find(p => p?.id === sp.article_id);
-                                const currentAmount = isNaN(parseInt(sp.amount)) ? 0 : parseInt(sp.amount);
-                                const stock = getStock(p);
+                            saleArticles.map(sa => {
+                                const a = articles.find(a => a?.id === sa.article_id);
+                                const currentAmount = isNaN(parseInt(sa.amount)) ? 0 : parseInt(sa.amount);
+                                const stock = getStock(a);
                                 return (
-                                    <TableRow key={sp.article_id}>
-                                        <TableCell align="center">{p?.code}</TableCell>
-                                        <TableCell align="center">{p?.details}</TableCell>
+                                    <TableRow key={sa.article_id}>
+                                        <TableCell align="center">{a?.code}</TableCell>
+                                        <TableCell align="center">{a?.details}</TableCell>
                                         <TableCell align="center">
                                             <FormControl>
                                                 <TextField
                                                     type="number"
-                                                    value={sp.amount}
+                                                    value={sa.amount}
                                                     disabled={open === 'VIEW' || (open === 'EDIT' && auth?.user.role !== 'ADMINISTRADOR')}
-                                                    onChange={e => handleChangeAmount({ article_id: p?.id, amount: e.target.value })}
-                                                    inputRef={el => inputRefs.current[sp.article_id] = el}
-                                                    InputProps={{ inputProps: { max: open === 'NEW' ? stock : stock + parseInt(sp.amount), step: 1 } }}
+                                                    onChange={e => handleChangeAmount({ article_id: a?.id, amount: e.target.value })}
+                                                    inputRef={el => inputRefs.current[sa.article_id] = el}
+                                                    InputProps={{ inputProps: { max: open === 'NEW' ? stock : stock + parseInt(sa.amount), step: 1 } }}
                                                 />
                                             </FormControl>
                                         </TableCell>
-                                        <TableCell>${getArticleSalePrice(sp.earn && sp.buy_price ? sp : p).toFixed(2)}</TableCell>
+                                        <TableCell>${getArticleSalePrice(sa.earn && sa.buy_price ? sa : a).toFixed(2)}</TableCell>
                                         {open !== 'VIEW' && <TableCell>{stock}</TableCell>}
-                                        <TableCell>${(currentAmount * getArticleSalePrice(sp.earn && sp.buy_price ? sp : p)).toFixed(2)}</TableCell>
+                                        <TableCell>${(currentAmount * getArticleSalePrice(sa.earn && sa.buy_price ? sa : a)).toFixed(2)}</TableCell>
                                         {(open === 'NEW' || open === 'CONVERT' || (open === 'EDIT' && auth?.user.role === 'ADMINISTRADOR')) &&
                                             <TableCell align="center">
-                                                <Button type="button" onClick={() => handleDeleteProduct(sp.id, p?.id)}>
+                                                <Button type="button" onClick={() => handleDeleteArticle(sa.id, a?.id)}>
                                                     <CancelSharpIcon />
                                                 </Button>
                                             </TableCell>

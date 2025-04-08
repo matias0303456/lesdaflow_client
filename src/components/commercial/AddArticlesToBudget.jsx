@@ -6,15 +6,14 @@ import CancelSharpIcon from '@mui/icons-material/CancelSharp';
 import { getArticleSalePrice, getStock } from "../../utils/helpers";
 
 export function AddArticlesToBudget({
-    products,
+    articles,
     budgetArticles,
     setBudgetArticles,
     idsToDelete,
     setIdsToDelete,
     open,
     missing,
-    setMissing,
-    formData
+    setMissing
 }) {
 
     const [value, setValue] = useState('')
@@ -48,7 +47,7 @@ export function AddArticlesToBudget({
         ].sort((a, b) => open === 'NEW' ? a.idx - b.idx : a.id - b.id))
     }
 
-    const handleDeleteProduct = (bpId, pId) => {
+    const handleDeleteArticle = (bpId, pId) => {
         setMissing(false)
         setBudgetArticles([
             ...budgetArticles.filter(bp => bp.article_id !== pId),
@@ -66,17 +65,12 @@ export function AddArticlesToBudget({
                         <Autocomplete
                             disablePortal
                             id="article-autocomplete"
-                            options={products.filter(p =>
-                                !budgetArticles.map(bp => bp.article_id).includes(p.id) &&
-                                (
-                                    (formData.type === 'CONTADO' && p?.cash) ||
-                                    (formData.type === 'CUENTA_CORRIENTE' && p?.cta_cte) ||
-                                    (formData.type === 'POXIPOL' && p?.poxipol)
-                                ))
-                                .map(p => ({ label: `Código ${p.code} / Detalle ${p.details}`, id: p.id }))}
-                            noOptionsText="No hay productos disponibles."
+                            options={articles.filter(a =>
+                                !budgetArticles.map(ba => ba.article_id).includes(a.id))
+                                .map(a => ({ label: `Código ${a.code} / Detalle ${a.details}`, id: a.id }))}
+                            noOptionsText="No hay artículos disponibles."
                             onChange={(e, value) => handleAdd({ idx: budgetArticles.length, article_id: value?.id ?? '' })}
-                            renderInput={(params) => <TextField {...params} label="Producto *" />}
+                            renderInput={(params) => <TextField {...params} label="Artículo *" />}
                             isOptionEqualToValue={(option, value) => option.code === value.code || value.length === 0}
                             onInputChange={(e, value) => setValue(value)}
                             value={value}
@@ -85,7 +79,7 @@ export function AddArticlesToBudget({
                     </FormControl>
                     {missing &&
                         <Typography variant="caption" color="red" marginTop={1}>
-                            * Los productos y las cantidades son requeridos y las cantidades deben ser mayores a 0.
+                            * Los artículos y las cantidades son requeridos y las cantidades deben ser mayores a 0.
                         </Typography>
                     }
                 </>
@@ -109,39 +103,39 @@ export function AddArticlesToBudget({
                                 <TableCell></TableCell>
                                 <TableCell></TableCell>
                                 <TableCell></TableCell>
-                                <TableCell align="center">No hay productos agregados a esta venta.</TableCell>
+                                <TableCell align="center">No hay artículos agregados a esta venta.</TableCell>
                                 <TableCell></TableCell>
                                 <TableCell></TableCell>
                                 <TableCell></TableCell>
                             </TableRow> :
-                            budgetArticles.map(bp => {
-                                const p = products.find(p => p.id === bp.article_id)
-                                const currentAmount = isNaN(parseInt(bp.amount)) ? 0 : parseInt(bp.amount)
+                            budgetArticles.map(ba => {
+                                const a = articles.find(a => a.id === ba.article_id)
+                                const currentAmount = isNaN(parseInt(ba.amount)) ? 0 : parseInt(ba.amount)
                                 return (
                                     <TableRow
-                                        key={bp.article_id}
+                                        key={ba.article_id}
                                         sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                                     >
-                                        <TableCell align="center">{p.code}</TableCell>
-                                        <TableCell align="center">{p.details}</TableCell>
+                                        <TableCell align="center">{a.code}</TableCell>
+                                        <TableCell align="center">{a.details}</TableCell>
                                         <TableCell align="center">
                                             <Input
                                                 type="number"
-                                                value={bp.amount}
+                                                value={ba.amount}
                                                 disabled={open === 'VIEW'}
                                                 onChange={e => handleChangeAmount({
-                                                    article_id: p.id,
+                                                    article_id: a.id,
                                                     amount: e.target.value
                                                 })}
-                                                inputRef={el => inputRefs.current[bp.article_id] = el}
+                                                inputRef={el => inputRefs.current[ba.article_id] = el}
                                             />
                                         </TableCell>
-                                        <TableCell>${getArticleSalePrice(p).toFixed(2)}</TableCell>
-                                        <TableCell>{getStock(p)}</TableCell>
-                                        <TableCell>${(currentAmount * getArticleSalePrice(p)).toFixed(2)}</TableCell>
+                                        <TableCell>${getArticleSalePrice(a).toFixed(2)}</TableCell>
+                                        <TableCell>{getStock(a)}</TableCell>
+                                        <TableCell>${(currentAmount * getArticleSalePrice(a)).toFixed(2)}</TableCell>
                                         {(open === 'NEW' || open === 'EDIT') &&
                                             <TableCell align="center">
-                                                <Button type="button" onClick={() => handleDeleteProduct(bp.id, p.id)}>
+                                                <Button type="button" onClick={() => handleDeleteArticle(ba.id, a.id)}>
                                                     <CancelSharpIcon />
                                                 </Button>
                                             </TableCell>

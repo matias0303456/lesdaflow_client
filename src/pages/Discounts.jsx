@@ -20,7 +20,7 @@ export function Discounts() {
 
     const navigate = useNavigate()
 
-    const { getArticles, loadingProducts } = useArticles()
+    const { getArticles, loadingArticles } = useArticles()
     const { getSuppliers, loadingSuppliers } = useSuppliers()
     const {
         loadingDiscounts,
@@ -31,11 +31,7 @@ export function Discounts() {
         getDiscounts,
         headCells,
         discountFormData,
-        discountProducts,
-        setDiscountProducts,
-        handleClose,
-        discountSuppliers,
-        setDiscountSuppliers
+        handleClose
     } = useDiscounts()
     const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = discountFormData
 
@@ -48,18 +44,11 @@ export function Discounts() {
         }
     }, []);
 
-    useEffect(() => {
-        if (open === 'EDIT' || open === 'VIEW') {
-            setDiscountProducts(formData.discount_by_products)
-            setDiscountSuppliers(formData.discount_by_suppliers)
-        }
-    }, [open, formData.discount_by_products])
-
     return (
         <Layout title="Descuentos">
             <DataGridWithBackendPagination
                 headCells={headCells}
-                loading={loadingDiscounts || loadingSuppliers || loadingProducts || disabled}
+                loading={loadingDiscounts || loadingSuppliers || loadingArticles || disabled}
                 rows={state.discounts.data}
                 entityKey="discounts"
                 getter={getDiscounts}
@@ -94,10 +83,6 @@ export function Discounts() {
                         errors={errors}
                         open={open}
                         handleClose={handleClose}
-                        discountProducts={discountProducts}
-                        setDiscountProducts={setDiscountProducts}
-                        discountSuppliers={discountSuppliers}
-                        setDiscountSuppliers={setDiscountSuppliers}
                     />
                 </ModalComponent>
                 <ModalComponent open={open === 'DELETE'} onClose={handleClose} reduceWidth={900}>

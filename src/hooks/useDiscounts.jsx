@@ -37,7 +37,7 @@ export function useDiscounts() {
 
     const [open, setOpen] = useState(null)
     const [loadingDiscounts, setLoadingDiscounts] = useState(true)
-    const [discountProducts, setDiscountProducts] = useState([])
+    const [discountArticles, setDiscountArticles] = useState([])
     const [discountSuppliers, setDiscountSuppliers] = useState([])
 
     async function getDiscounts(params) {
@@ -60,8 +60,6 @@ export function useDiscounts() {
         if (validate()) {
             const submitData = {
                 ...formData,
-                article_ids: open === 'EDIT' ? discountProducts.map(dp => dp.product?.id ?? dp) : discountProducts,
-                supplier_ids: open === 'EDIT' ? discountSuppliers.map(ds => ds.supplier?.id ?? ds) : discountSuppliers
             }
             const { status, data } = open === 'NEW' ? await post(submitData) : await put(submitData)
             if (status === 200) {
@@ -83,7 +81,7 @@ export function useDiscounts() {
                 }
                 reset(setOpen)
                 setSeverity('success')
-                setDiscountProducts([])
+                setDiscountArticles([])
                 setDiscountSuppliers([])
             } else {
                 setMessage(data.message)
@@ -140,7 +138,7 @@ export function useDiscounts() {
 
     function handleClose() {
         discountFormData.reset(setOpen)
-        setDiscountProducts([])
+        setDiscountArticles([])
         setDiscountSuppliers([])
     }
 
@@ -209,14 +207,6 @@ export function useDiscounts() {
             accessor: (row) => row.discount_by_suppliers.length > 0 ? 'Sí' : 'No'
         },
         {
-            id: "products",
-            numeric: false,
-            disablePadding: true,
-            label: "Prod.",
-            sorter: (row) => row.discount_by_products.length > 0 ? 'Sí' : 'No',
-            accessor: (row) => row.discount_by_products.length > 0 ? 'Sí' : 'No'
-        },
-        {
             id: 'is_available',
             numeric: false,
             disablePadding: true,
@@ -244,8 +234,8 @@ export function useDiscounts() {
         getDiscounts,
         headCells,
         discountFormData,
-        discountProducts,
-        setDiscountProducts,
+        discountArticles,
+        setDiscountArticles,
         handleClose,
         discountSuppliers,
         setDiscountSuppliers

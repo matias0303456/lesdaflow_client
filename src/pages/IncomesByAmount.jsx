@@ -44,7 +44,7 @@ export function IncomesByAmount() {
         }
     }
 
-    const handleDeleteProduct = (id) => {
+    const handleDeleteArticle = (id) => {
         setIncomesByAmount([...incomesByAmount.filter(iba => iba.article_id !== id)])
     }
 
@@ -82,9 +82,9 @@ export function IncomesByAmount() {
                     id="article-autocomplete"
                     options={state.articles.data.filter(p => !incomesByAmount.map(iba => iba.article_id).includes(p.id))
                         .map(p => ({ label: `Código ${p.code} / Detalle ${p.details}`, id: p.id }))}
-                    noOptionsText="No hay productos disponibles."
+                    noOptionsText="No hay artículos disponibles."
                     onChange={(e, value) => handleAdd({ idx: incomesByAmount.length, article_id: value?.id, observations: '' })}
-                    renderInput={(params) => <TextField {...params} label="Agregar producto..." />}
+                    renderInput={(params) => <TextField {...params} label="Agregar artículo..." />}
                     isOptionEqualToValue={(option, value) => option.code === value.code || value.length === 0}
                     onInputChange={(e, value) => setValue(value)}
                     value={value}
@@ -107,7 +107,7 @@ export function IncomesByAmount() {
                     <TableBody>
                         {incomesByAmount.length === 0 ?
                             <TableRow>
-                                <TableCell align="center" colSpan={6}>No hay productos que mostrar.</TableCell>
+                                <TableCell align="center" colSpan={6}>No hay artículos que mostrar.</TableCell>
                             </TableRow> :
                             incomesByAmount.map(iba => {
                                 const p = state.articles.data.find(p => p.id === iba.article_id)
@@ -138,7 +138,7 @@ export function IncomesByAmount() {
                                             </FormControl>
                                         </TableCell>
                                         <TableCell align="center">
-                                            <Button type="button" onClick={() => handleDeleteProduct(p?.id)}>
+                                            <Button type="button" onClick={() => handleDeleteArticle(p?.id)}>
                                                 <CancelSharpIcon />
                                             </Button>
                                         </TableCell>

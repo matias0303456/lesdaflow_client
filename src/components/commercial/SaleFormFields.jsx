@@ -8,7 +8,7 @@ import { es } from "date-fns/locale"
 import { DataContext } from "../../providers/DataProvider"
 import { AuthContext } from "../../providers/AuthProvider"
 
-import { AddProductsToSale } from "./AddProductsToSale"
+import { AddArticlesToSale } from "./AddArticlesToSale"
 
 import { getAvailableDiscounts, getCurrentSubtotal } from "../../utils/helpers"
 
@@ -24,7 +24,7 @@ export function SaleFormFields({
     setConfirmed,
     errors,
     isBlocked,
-    saleProducts,
+    saleArticles,
     setSaleArticles,
     discountApplied,
     setDiscountApplied,
@@ -41,8 +41,8 @@ export function SaleFormFields({
     const { state } = useContext(DataContext)
 
     useEffect(() => {
-        if (saleProducts.length === 0 || discountApplied?.id) setDiscountApplied('')
-    }, [saleProducts])
+        if (saleArticles.length === 0 || discountApplied?.id) setDiscountApplied('')
+    }, [saleArticles])
 
     return (
         <Box sx={{ p: 1 }}>
@@ -91,7 +91,7 @@ export function SaleFormFields({
                                 control={<Checkbox disabled={open === 'VIEW' || (open === 'EDIT' && auth?.user.role !== 'ADMINISTRADOR')} />}
                                 label="Cuenta Corriente"
                                 checked={formData.type === 'CUENTA_CORRIENTE'}
-                                disabled={saleProducts.length > 0 && auth?.user.role !== 'ADMINISTRADOR' && formData.type !== 'CUENTA_CORRIENTE' && formData.type !== 'CONTADO'}
+                                disabled={saleArticles.length > 0 && auth?.user.role !== 'ADMINISTRADOR' && formData.type !== 'CUENTA_CORRIENTE' && formData.type !== 'CONTADO'}
                                 onChange={e => {
                                     if (e.target.checked) {
                                         setFormData({
@@ -106,7 +106,7 @@ export function SaleFormFields({
                                 control={<Checkbox disabled={open === 'VIEW' || (open === 'EDIT' && auth?.user.role !== 'ADMINISTRADOR')} />}
                                 label="Contado"
                                 checked={formData.type === 'CONTADO'}
-                                disabled={saleProducts.length > 0 && auth?.user.role !== 'ADMINISTRADOR' && formData.type !== 'CUENTA_CORRIENTE' && formData.type !== 'CONTADO'}
+                                disabled={saleArticles.length > 0 && auth?.user.role !== 'ADMINISTRADOR' && formData.type !== 'CUENTA_CORRIENTE' && formData.type !== 'CONTADO'}
                                 onChange={e => {
                                     if (e.target.checked) {
                                         setFormData({
@@ -120,7 +120,7 @@ export function SaleFormFields({
                                 control={<Checkbox disabled={open === 'VIEW' || (open === 'EDIT' && auth?.user.role !== 'ADMINISTRADOR')} />}
                                 label="Poxipol"
                                 checked={formData.type === 'POXIPOL'}
-                                disabled={saleProducts.length > 0 && auth?.user.role !== 'ADMINISTRADOR'}
+                                disabled={saleArticles.length > 0 && auth?.user.role !== 'ADMINISTRADOR'}
                                 onChange={e => {
                                     if (e.target.checked) {
                                         setFormData({
@@ -138,16 +138,15 @@ export function SaleFormFields({
                         flexDirection: { xs: 'column', md: 'row' },
                         gap: 2
                     }}>
-                        <AddProductsToSale
-                            products={state.articles.data}
-                            saleProducts={saleProducts}
+                        <AddArticlesToSale
+                            articles={state.articles.data}
+                            saleArticles={saleArticles}
                             setSaleArticles={setSaleArticles}
                             missing={missing}
                             setMissing={setMissing}
                             idsToDelete={idsToDelete}
                             setIdsToDelete={setIdsToDelete}
                             open={open}
-                            formData={formData}
                         />
                         <Box sx={{
                             display: 'flex',
@@ -168,7 +167,7 @@ export function SaleFormFields({
                                     sx={{ width: "100%" }}
                                 >
                                     <MenuItem value="">Ninguno</MenuItem>
-                                    {getAvailableDiscounts(formData, saleProducts, state.articles.data, state.discounts.data)
+                                    {getAvailableDiscounts(formData, saleArticles, state.articles.data, state.discounts.data)
                                         .map(d => (
                                             <MenuItem key={d.id} value={d.id}>
                                                 {d.name}
@@ -207,7 +206,7 @@ export function SaleFormFields({
                 <Box sx={{ display: 'flex', justifyContent: 'end', marginTop: 3 }}>
                     <FormControl>
                         <InputLabel htmlFor="subtotal">Subtotal</InputLabel>
-                        <Input value={getCurrentSubtotal(saleProducts, state.articles.data)} id="subtotal" type="number" name="subtotal" disabled />
+                        <Input value={getCurrentSubtotal(saleArticles, state.articles.data)} id="subtotal" type="number" name="subtotal" disabled />
                     </FormControl>
                     {open === 'NEW' &&
                         <FormControl>

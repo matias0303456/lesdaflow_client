@@ -9,7 +9,7 @@ export function ArticleFilter() {
 
     const handleChange = e => {
         dispatch({
-            type: 'PRODUCTS',
+            type: 'ARTICLES',
             payload: {
                 ...state.articles,
                 filter_fields: {
@@ -23,7 +23,7 @@ export function ArticleFilter() {
 
     const handleReset = () => {
         dispatch({
-            type: 'PRODUCTS',
+            type: 'ARTICLES',
             payload: {
                 ...state.articles,
                 filter_fields: { code: '', details: '', supplier_id: '', loaded: false },
@@ -36,7 +36,7 @@ export function ArticleFilter() {
         const { code, details, supplier_id, loaded } = state.articles.filter_fields
         if (code.length > 0 || details.length > 0 || supplier_id.toString().length > 0) {
             dispatch({
-                type: 'PRODUCTS',
+                type: 'ARTICLES',
                 payload: {
                     ...state.articles,
                     filters: `&code=${code}&details=${details}&supplier_id=${supplier_id}`
@@ -44,7 +44,7 @@ export function ArticleFilter() {
             })
         } else if (loaded) {
             dispatch({
-                type: 'PRODUCTS',
+                type: 'ARTICLES',
                 payload: {
                     ...state.articles,
                     filters: ''
@@ -72,7 +72,7 @@ export function ArticleFilter() {
                 />
             </FormControl>
             <FormControl>
-                <InputLabel htmlFor="details">Producto</InputLabel>
+                <InputLabel htmlFor="details">Artículo</InputLabel>
                 <Input
                     id="details"
                     type="text"

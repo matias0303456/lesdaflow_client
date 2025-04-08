@@ -1,13 +1,8 @@
 /* eslint-disable react/prop-types */
-import { useContext } from "react";
 import { Box, Button, Checkbox, FormControl, FormControlLabel, Input, InputLabel, MenuItem, Select, TextField, Typography } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { es } from "date-fns/locale";
-
-import { DataContext } from "../../providers/DataProvider";
-import { AddProductsToDiscount } from "./AddProductsToDiscount";
-import { AddSuppliersToDiscount } from "./AddSuppliersToDiscount";
 
 export function DiscountForm({
     handleChange,
@@ -20,14 +15,8 @@ export function DiscountForm({
     setDisabled,
     errors,
     open,
-    handleClose,
-    discountProducts,
-    setDiscountProducts,
-    discountSuppliers,
-    setDiscountSuppliers
+    handleClose
 }) {
-
-    const { state } = useContext(DataContext)
 
     return (
         <form onChange={handleChange} onSubmit={(e) => handleSubmit(e, validate, formData, reset, setDisabled)}>
@@ -131,18 +120,6 @@ export function DiscountForm({
                         </Select>
                     </FormControl>
                 </Box>
-                <AddProductsToDiscount
-                    discountProducts={discountProducts}
-                    setDiscountProducts={setDiscountProducts}
-                    products={state.articles.data}
-                    open={open}
-                />
-                <AddSuppliersToDiscount
-                    discountSuppliers={discountSuppliers}
-                    setDiscountSuppliers={setDiscountSuppliers}
-                    suppliers={state.suppliers.data}
-                    open={open}
-                />
                 <FormControl sx={{
                     display: 'flex',
                     flexDirection: 'row',

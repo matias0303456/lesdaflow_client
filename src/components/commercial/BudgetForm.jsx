@@ -7,7 +7,7 @@ import { es } from "date-fns/locale"
 
 import { DataContext } from "../../providers/DataProvider"
 
-import { AddProductsToBudget } from "./AddProductsToBudget"
+import { AddArticlesToBudget } from "./AddArticlesToBudget"
 import { ModalComponent } from "../common/ModalComponent"
 
 import { getAvailableDiscounts, getCurrentTotal } from "../../utils/helpers"
@@ -155,8 +155,8 @@ export function BudgetForm({
                             }}
                         />
                     </Box>
-                    <AddProductsToBudget
-                        products={state.articles.data}
+                    <AddArticlesToBudget
+                        ARTICLES={state.articles.data}
                         budgetArticles={budgetArticles}
                         setBudgetArticles={setBudgetArticles}
                         missing={missing}
@@ -164,7 +164,6 @@ export function BudgetForm({
                         idsToDelete={idsToDelete}
                         setIdsToDelete={setIdsToDelete}
                         open={open}
-                        formData={formData}
                     />
                 </Box>
                 <Box sx={{ display: 'flex', justifyContent: 'end', gap: 2, marginTop: 3 }}>

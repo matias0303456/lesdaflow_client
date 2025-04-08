@@ -18,7 +18,7 @@ export function useSales() {
 
     const [loadingSales, setLoadingSales] = useState(true)
     const [open, setOpen] = useState(null)
-    const [saleProducts, setSaleArticles] = useState([])
+    const [saleArticles, setSaleArticles] = useState([])
     const [idsToDelete, setIdsToDelete] = useState([])
     const [saleSaved, setSaleSaved] = useState(null)
     const [missing, setMissing] = useState(false)
@@ -55,7 +55,7 @@ export function useSales() {
         e.preventDefault()
         const submitData = {
             ...formData,
-            sale_articles: saleProducts,
+            sale_articles: saleArticles,
             idsToDelete: idsToDelete.length === 0 ? undefined : idsToDelete,
             observations: discountApplied ? formData.observations += `- Descuento aplicado: ${discountApplied.name} (${format(new Date(Date.now()), 'dd/MM/yyyy')})\n` : formData.observations
         }
@@ -131,74 +131,6 @@ export function useSales() {
         setOpen(null)
     }
 
-    async function prepareSaleProduct(id, is_prepared) {
-        const req = { id, is_prepared }
-        const { status, data } = await put(req, '/update-sale-product')
-        if (status === 200) {
-            dispatch({
-                type: 'SALES',
-                payload: {
-                    ...state.sales,
-                    data: [
-                        {
-                            ...state.sales.data.find(s => s.id === data.sale_id),
-                            sale_articles: [
-                                data,
-                                ...state.sales.data.find(s => s.id === data.sale_id).sale_articles
-                                    .filter(sp => sp.id !== data.id)
-                            ]
-                        },
-                        ...state.sales.data.filter(s => s.id !== data.sale_id)
-                    ]
-                }
-            })
-            setSaleArticles([data, ...saleProducts.filter(sp => sp.id !== data.id)].sort((a, b) => {
-                if (a.product.code > b.product.code) return 1
-                if (a.product.code < b.product.code) return -1
-                return 0
-            }))
-            setMessage('Producto preparado correctamente.')
-            setSeverity('success')
-        } else {
-            setMessage('Ocurrió un error. Actualice la página.')
-            setSeverity('error')
-        }
-        setOpenMessage(true)
-    }
-
-    async function prepareAllSaleProducts(is_prepared) {
-        const result = await Promise.allSettled(saleProducts.map(sp => {
-            const req = { id: sp.id, is_prepared }
-            return put(req, '/update-sale-product')
-        }))
-        if (result.every(r => r.status === 'fulfilled' && r.value.status === 200)) {
-            dispatch({
-                type: 'SALES',
-                payload: {
-                    ...state.sales,
-                    data: [
-                        {
-                            ...state.sales.data.find(s => s.id === result[0].value.data.sale_id),
-                            sale_articles: result.map(r => r.value.data)
-                        },
-                        ...state.sales.data.filter(s => s.id !== result[0].value.data.sale_id)
-                    ]
-                }
-            })
-            setSaleArticles(result.map(r => r.value.data).sort((a, b) => {
-                if (a.product.code > b.product.code) return 1
-                if (a.product.code < b.product.code) return -1
-                return 0
-            }))
-            setMessage('Productos preparados correctamente.')
-            setSeverity('success')
-        } else {
-            setMessage('Ocurrió un error. Actualice la página.')
-            setSeverity('error')
-        }
-        setOpenMessage(true)
-    }
-
     async function deliverSale(formData, reset) {
         const { status, data } = await put({ ...formData, is_delivered: true })
         if (status === 200) {
@@ -227,7 +159,7 @@ export function useSales() {
         setLoadingSales,
         open,
         setOpen,
-        saleProducts,
+        saleArticles,
         setSaleArticles,
         idsToDelete,
         setIdsToDelete,
@@ -240,10 +172,8 @@ export function useSales() {
         getSales,
         isBlocked,
         setIsBlocked,
-        prepareSaleProduct,
         deliverSale,
         getSalesByClient,
-        salesByClient,
-        prepareAllSaleProducts
+        salesByClient
     }
 }

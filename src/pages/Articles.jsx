@@ -11,7 +11,7 @@ import { useMovements } from "../hooks/useMovements";
 import { Layout } from "../components/common/Layout";
 import { ModalComponent } from "../components/common/ModalComponent";
 import { DataGridWithBackendPagination } from "../components/datagrid/DataGridWithBackendPagination";
-import { ProductFilter } from "../components/filters/ProductFilter";
+import { ArticleFilter } from "../components/filters/ArticleFilter";
 import { MovementsForm } from "../components/commercial/MovementsForm";
 
 import { getNewPrice, getStock } from "../utils/helpers";
@@ -23,7 +23,7 @@ export function Articles() {
     const { state } = useContext(DataContext)
 
     const {
-        loadingProducts,
+        loadingArticles,
         setEarnPrice,
         open,
         setOpen,
@@ -104,7 +104,7 @@ export function Articles() {
             id: 'details',
             numeric: false,
             disablePadding: true,
-            label: 'Producto',
+            label: 'Artículo',
             accessor: 'details',
             can_access: ['CHOFER', 'VENDEDOR']
         },
@@ -160,7 +160,7 @@ export function Articles() {
     ]
 
     return (
-        <Layout title="Productos">
+        <Layout title="Artículos">
             <DataGridWithBackendPagination
                 headCells={headCells.filter(hc => auth?.user.role === 'ADMINISTRADOR' || hc.can_access?.includes(auth?.user.role))}
                 rows={state.articles.data}
@@ -168,10 +168,10 @@ export function Articles() {
                 setOpenNewMovement={setOpenMovement}
                 setFormData={setFormData}
                 setFormDataMovement={setFormDataMovement}
-                entityKey="products"
+                entityKey="articles"
                 getter={getArticles}
-                loading={loadingSuppliers || loadingProducts || disabled}
-                deadlineColor="products"
+                loading={loadingSuppliers || loadingArticles || disabled}
+                deadlineColor="articles"
                 showDeleteAction={auth?.user.role === 'ADMINISTRADOR'}
                 showEditAction={auth?.user.role === 'ADMINISTRADOR'}
                 showInput={auth?.user.role === 'ADMINISTRADOR' && "Ingresar stock"}
@@ -200,32 +200,32 @@ export function Articles() {
                                 color='success'
                                 onClick={() => {
                                     const { code, details, supplier_id } = state.articles.filter_fields
-                                    window.open(`${REPORT_URL}/products-excel?token=${auth?.token}&for_client=true&code=${code}&details=${details}&supplier_id=${supplier_id}`, '_blank')
+                                    window.open(`${REPORT_URL}/articles-excel?token=${auth?.token}&for_client=true&code=${code}&details=${details}&supplier_id=${supplier_id}`, '_blank')
                                 }}>
                                 Excel
                             </Button>
                             <Button variant="outlined" color='error' onClick={() => {
                                 const { code, details, supplier_id } = state.articles.filter_fields
-                                window.open(`${REPORT_URL}/products-pdf?token=${auth?.token}&for_client=true&code=${code}&details=${details}&supplier_id=${supplier_id}`, '_blank')
+                                window.open(`${REPORT_URL}/articles-pdf?token=${auth?.token}&for_client=true&code=${code}&details=${details}&supplier_id=${supplier_id}`, '_blank')
                             }}>
                                 PDF
                             </Button>
                             {auth?.user.role !== 'CHOFER' &&
                                 <Button variant="contained" onClick={() => {
-                                    window.open(`${REPORT_URL}/products-pdf?token=${auth?.token}&stock=SIN_STOCK`, '_blank')
+                                    window.open(`${REPORT_URL}/articles-pdf?token=${auth?.token}&stock=SIN_STOCK`, '_blank')
                                 }}>
                                     Stock nulo PDF
                                 </Button>
                             }
                             {auth?.user.role === 'ADMINISTRADOR' &&
                                 <Button variant="contained" onClick={() => {
-                                    window.open(`${REPORT_URL}/products-excel?token=${auth?.token}&stock=SIN_STOCK`, '_blank')
+                                    window.open(`${REPORT_URL}/articles-excel?token=${auth?.token}&stock=SIN_STOCK`, '_blank')
                                 }}>
                                     Stock nulo Excel
                                 </Button>
                             }
                         </Box>
-                        <ProductFilter />
+                        <ArticleFilter />
                     </Box>
                 }
             >
@@ -235,9 +235,9 @@ export function Articles() {
                     reduceWidth={500}
                 >
                     <Typography variant="h6" sx={{ marginBottom: 0.5 }}>
-                        {open === 'NEW' && 'Nuevo producto'}
-                        {open === 'EDIT' && 'Editar producto'}
-                        {open === 'VIEW' && `Producto #${formData.id}`}
+                        {open === 'NEW' && 'Nuevo artículo'}
+                        {open === 'EDIT' && 'Editar artículo'}
+                        {open === 'VIEW' && `Artículo #${formData.id}`}
                     </Typography>
                     <form onChange={handleChange} onSubmit={(e) => handleSubmit(e, validate, formData, reset, setDisabled)}>
                         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
@@ -257,7 +257,7 @@ export function Articles() {
                                     }
                                 </FormControl>
                                 <FormControl sx={{ width: '50%' }}>
-                                    <InputLabel htmlFor="details">Nombre producto *</InputLabel>
+                                    <InputLabel htmlFor="details">Nombre Artículo *</InputLabel>
                                     <Input id="details" type="text" name="details" value={formData.details} disabled={open === 'VIEW'} />
                                     {errors.details?.type === 'required' &&
                                         <Typography variant="caption" color="red" marginTop={1}>
@@ -415,7 +415,7 @@ export function Articles() {
                         <Table sx={{ minWidth: 650 }} aria-label="simple table">
                             <TableHead>
                                 <TableRow>
-                                    <TableCell align="center">Producto</TableCell>
+                                    <TableCell align="center">Artículo</TableCell>
                                     <TableCell align="center">Código</TableCell>
                                     <TableCell align="center">Proveedor</TableCell>
                                     <TableCell align="center">Precio actual</TableCell>
@@ -486,7 +486,7 @@ export function Articles() {
                 </ModalComponent>
                 <ModalComponent open={open === 'DELETE'} onClose={() => reset(setOpen)} reduceWidth={900}>
                     <Typography variant="h6" marginBottom={1} textAlign="center">
-                        Confirmar eliminación de producto
+                        Confirmar eliminación de artículo
                     </Typography>
                     <Typography variant="body1" marginBottom={2} textAlign="center">
                         Los datos no podrán recuperarse

@@ -14,19 +14,19 @@ export function useArticles() {
     const { get, post, put, putMassive, destroy } = useApi(ARTICLE_URL)
 
     const [open, setOpen] = useState(null)
-    const [loadingProducts, setLoadingProducts] = useState(true)
+    const [loadingArticles, setloadingArticles] = useState(true)
     const [massiveEdit, setMassiveEdit] = useState([])
     const [earnPrice, setEarnPrice] = useState(0)
-    const [productHistory, setProductHistory] = useState([])
+    const [articleHistory, setArticleHistory] = useState([])
 
     async function getArticles(params) {
         const { status, data } = await get(params)
         if (status === 200) {
             dispatch({
-                type: 'PRODUCTS',
+                type: 'ARTICLES',
                 payload: { ...state.articles, data: data[0], count: data[1] }
             })
-            setLoadingProducts(false)
+            setloadingArticles(false)
         } else {
             setMessage(data.message)
             setSeverity('error')
@@ -34,7 +34,7 @@ export function useArticles() {
         }
     }
 
-    async function searchProducts(params) {
+    async function searchArticles(params) {
         const { status, data } = await get('/search' + params)
         if (status === 200) {
             return { status, data }
@@ -47,16 +47,16 @@ export function useArticles() {
 
     async function getArticleHistory(id) {
         if (id.toString().length > 0) {
-            setLoadingProducts(true)
+            setloadingArticles(true)
             const { status, data } = await get(`/history/${id}`)
             if (status === 200) {
-                setProductHistory(data)
+                setArticleHistory(data)
             } else {
                 setMessage(data.message)
                 setSeverity('error')
                 setOpenMessage(true)
             }
-            setLoadingProducts(false)
+            setloadingArticles(false)
         }
     }
 
@@ -66,11 +66,11 @@ export function useArticles() {
             const { status, data } = open === 'NEW' ? await post(formData) : await put(formData)
             if (status === 200) {
                 if (open === 'NEW') {
-                    dispatch({ type: 'PRODUCTS', payload: { ...state.articles, data: [data, ...state.articles.data] } })
-                    setMessage('Producto creado correctamente.')
+                    dispatch({ type: 'ARTICLES', payload: { ...state.articles, data: [data, ...state.articles.data] } })
+                    setMessage('Artículo creado correctamente.')
                 } else {
                     dispatch({
-                        type: 'PRODUCTS',
+                        type: 'ARTICLES',
                         payload: {
                             ...state.articles,
                             data: [
@@ -79,7 +79,7 @@ export function useArticles() {
                             ]
                         }
                     })
-                    setMessage('Producto editado correctamente.')
+                    setMessage('Artículo editado correctamente.')
                 }
                 setSeverity('success')
                 reset(setOpen)
@@ -94,15 +94,15 @@ export function useArticles() {
 
     async function handleSubmitMassive() {
         const body = {
-            products: massiveEdit.map(me => {
-                const product = state.articles.find(p => p.id === me.article_id)
-                return { ...me, buy_price: product.buy_price }
+            articles: massiveEdit.map(me => {
+                const article = state.articles.find(p => p.id === me.article_id)
+                return { ...me, buy_price: article.buy_price }
             })
         }
         const { status, data } = await putMassive(body)
         if (status === 200) {
             dispatch({
-                type: 'PRODUCTS',
+                type: 'ARTICLES',
                 payload: {
                     ...state.articles,
                     data: [
@@ -125,17 +125,17 @@ export function useArticles() {
         const { status, data } = await destroy(formData)
         if (status === 200) {
             dispatch({
-                type: 'PRODUCTS',
+                type: 'ARTICLES',
                 payload: {
                     ...state.articles,
                     data: [...state.articles.data.filter(p => p.id !== data.id)]
                 }
             })
-            setMessage('Producto eliminado correctamente.')
+            setMessage('Artículo eliminado correctamente.')
             setSeverity('success')
         } else {
             if (status === 300) {
-                setMessage('El producto tiene datos asociados.')
+                setMessage('El artículo tiene datos asociados.')
             } else {
                 setMessage('Ocurrió un error. Actualice la página.')
             }
@@ -156,10 +156,10 @@ export function useArticles() {
         earnPrice,
         setEarnPrice,
         getArticles,
-        loadingProducts,
-        setLoadingProducts,
-        searchProducts,
-        productHistory,
+        loadingArticles,
+        setloadingArticles,
+        searchArticles,
+        articleHistory,
         getArticleHistory
     }
 }

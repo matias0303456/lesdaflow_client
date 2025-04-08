@@ -31,7 +31,7 @@ export function UpdateArticlePriceByArticle() {
 
   const navigate = useNavigate()
 
-  const { loadingProducts, massiveEdit, setMassiveEdit, handleSubmitMassive } = useArticles()
+  const { loadingArticles, massiveEdit, setMassiveEdit, handleSubmitMassive } = useArticles()
   const { reset, formData, validate, errors, handleChange } = useForm({
     defaultData: { article_id: '', percentage: 0.00 },
     rules: { article_id: { required: true }, percentage: { required: true } }
@@ -41,7 +41,7 @@ export function UpdateArticlePriceByArticle() {
     if (auth?.user.role !== "ADMINISTRADOR") navigate(auth?.user.role === 'CHOFER' ? '/prep-ventas' : "/articulos");
   }, []);
 
-  const handleAddProduct = () => {
+  const handleAddArticle = () => {
     if (validate()) {
       setMassiveEdit([formData, ...massiveEdit])
       reset()
@@ -60,7 +60,7 @@ export function UpdateArticlePriceByArticle() {
       id: "details",
       numeric: false,
       disablePadding: true,
-      label: "Producto",
+      label: "Artículo",
       accessor: "details",
     },
     {
@@ -96,7 +96,7 @@ export function UpdateArticlePriceByArticle() {
   ]
 
   return (
-    <Layout title="Actualizar Precios Productos">
+    <Layout title="Actualizar Precios Artículos">
       <Box sx={{ width: { xs: '100%', sm: '50%' } }} className="mb-3 bg-white rounded-md">
         <Typography
           variant="h6"
@@ -128,16 +128,16 @@ export function UpdateArticlePriceByArticle() {
               sx={{ minWidth: "100%", color: "#59656b", display: "flex", alignItems: "start", justifyContent: "center" }}
             >
               <InputLabel className="text-gray-400">
-                Producto *
+                Artículo *
               </InputLabel>
               <Select
-                labelId="product-select"
+                labelId="article-select"
                 id="article_id"
                 value={formData.article_id}
                 name="article_id"
                 onChange={handleChange}
                 sx={{ width: "100%" }}
-                label="Producto"
+                label="Artículo"
                 disabled={state.articles.data.filter(p => !massiveEdit.map(me => me.article_id).includes(p.id)).length === 0}
               >
                 {state.articles.data.filter(p => !massiveEdit.map(me => me.article_id).includes(p.id)).map((p) => (
@@ -149,7 +149,7 @@ export function UpdateArticlePriceByArticle() {
               </Select>
               {errors.article_id?.type === 'required' &&
                 <Typography variant="caption" color="red" marginTop={1}>
-                  * El producto es requerido.
+                  * El artículo es requerido.
                 </Typography>
               }
             </FormControl>
@@ -183,7 +183,7 @@ export function UpdateArticlePriceByArticle() {
               <Button
                 variant="contained"
                 size="small"
-                onClick={handleAddProduct}
+                onClick={handleAddArticle}
                 disabled={state.articles.data.filter(p => !massiveEdit.map(me => me.article_id).includes(p.id)).length === 0}
               >
                 Agregar
@@ -193,7 +193,7 @@ export function UpdateArticlePriceByArticle() {
         </form>
       </Box>
       <DataGridWithFrontendPagination
-        loading={loadingProducts}
+        loading={loadingArticles}
         headCells={headCells}
         rows={state.articles.data.filter(p => massiveEdit.map(me => me.article_id).includes(p.id))}
       />

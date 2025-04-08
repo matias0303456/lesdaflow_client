@@ -14,7 +14,7 @@ import { SaleFormFields } from "./SaleFormFields"
 import { a11yProps, getCurrentTotal } from "../../utils/helpers"
 
 export function SaleForm({
-    saleProducts,
+    saleArticles,
     setSaleArticles,
     missing,
     setMissing,
@@ -81,8 +81,8 @@ export function SaleForm({
     }, [valueTab, open])
 
     useEffect(() => {
-        if (saleProducts.length > 0 && (open === 'NEW' || open === 'CONVERT')) {
-            setSaleArticles(saleProducts.filter(sp => {
+        if (saleArticles.length > 0 && (open === 'NEW' || open === 'CONVERT')) {
+            setSaleArticles(saleArticles.filter(sp => {
                 const p = state.articles.data.find(i => i.id === sp.article_id)
                 if ((formData.type === 'CONTADO' && p?.cash) ||
                     (formData.type === 'CUENTA_CORRIENTE' && p?.cta_cte) ||
@@ -95,9 +95,9 @@ export function SaleForm({
         if (open === 'EDIT') return
         setFormData({
             ...formData,
-            total: getCurrentTotal(discountApplied, saleProducts, state.articles.data),
+            total: getCurrentTotal(discountApplied, saleArticles, state.articles.data),
         })
-    }, [discountApplied, saleProducts, state.articles.data, open])
+    }, [discountApplied, saleArticles, state.articles.data, open])
 
     const handleChangeTab = (_, newValue) => {
         setValueTab(newValue)
@@ -159,7 +159,7 @@ export function SaleForm({
                     setConfirmed={setConfirmed}
                     errors={errors}
                     isBlocked={isBlocked}
-                    saleProducts={saleProducts}
+                    saleArticles={saleArticles}
                     setSaleArticles={setSaleArticles}
                     discountApplied={discountApplied}
                     setDiscountApplied={setDiscountApplied}
