@@ -380,7 +380,6 @@ export function Users() {
                   >
                     <MenuItem value="ADMINISTRADOR">ADMINISTRADOR</MenuItem>
                     <MenuItem value="VENDEDOR">VENDEDOR</MenuItem>
-                    <MenuItem value="CHOFER">CHOFER</MenuItem>
                   </Select>
                 </FormControl>
               </Box>

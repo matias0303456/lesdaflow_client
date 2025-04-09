@@ -36,7 +36,7 @@ function App() {
         <MessageProvider>
           <AuthProvider>
             <CssBaseline />
-            <BrowserRouter basename="chicho">
+            <BrowserRouter basename="sistema-chicho">
               <Routes>
                 <Route path="/" element={<Login />} />
                 <Route path="/login" element={<Login />} />

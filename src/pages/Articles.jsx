@@ -98,7 +98,7 @@ export function Articles() {
             disablePadding: true,
             label: 'Código',
             accessor: 'code',
-            can_access: ['CHOFER', 'VENDEDOR']
+            can_access: ['VENDEDOR']
         },
         {
             id: 'details',
@@ -106,7 +106,7 @@ export function Articles() {
             disablePadding: true,
             label: 'Artículo',
             accessor: 'details',
-            can_access: ['CHOFER', 'VENDEDOR']
+            can_access: ['VENDEDOR']
         },
         {
             id: 'buy_price',
@@ -130,7 +130,7 @@ export function Articles() {
             label: 'P. venta',
             sorter: (row) => parseFloat((row.buy_price + ((row.buy_price / 100) * row.earn)).toFixed(2)),
             accessor: (row) => `$${(row.buy_price + ((row.buy_price / 100) * row.earn)).toFixed(2)}`,
-            can_access: ['CHOFER', 'VENDEDOR']
+            can_access: ['VENDEDOR']
         },
         {
             id: 'supplier',
@@ -139,7 +139,7 @@ export function Articles() {
             label: 'Proveedor',
             sorter: (row) => row.supplier.name.toLowerCase(),
             accessor: (row) => row.supplier.name,
-            can_access: ['CHOFER', 'VENDEDOR']
+            can_access: ['VENDEDOR']
         },
         {
             id: 'stock',
@@ -210,20 +210,6 @@ export function Articles() {
                             }}>
                                 PDF
                             </Button>
-                            {auth?.user.role !== 'CHOFER' &&
-                                <Button variant="contained" onClick={() => {
-                                    window.open(`${REPORT_URL}/articles-pdf?token=${auth?.token}&stock=SIN_STOCK`, '_blank')
-                                }}>
-                                    Stock nulo PDF
-                                </Button>
-                            }
-                            {auth?.user.role === 'ADMINISTRADOR' &&
-                                <Button variant="contained" onClick={() => {
-                                    window.open(`${REPORT_URL}/articles-excel?token=${auth?.token}&stock=SIN_STOCK`, '_blank')
-                                }}>
-                                    Stock nulo Excel
-                                </Button>
-                            }
                         </Box>
                         <ArticleFilter />
                     </Box>

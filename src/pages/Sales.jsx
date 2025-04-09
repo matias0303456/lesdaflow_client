@@ -214,7 +214,7 @@ export function Sales() {
                         </Box>
                         <SaleFilter
                             showWorkPlace
-                            showSeller={auth?.user.role === 'ADMINISTRADOR' || auth?.user.role === 'CHOFER'}
+                            showSeller={auth?.user.role === 'ADMINISTRADOR'}
                             showType
                             width={{
                                 main: { xs: '100%', md: '80%' },
