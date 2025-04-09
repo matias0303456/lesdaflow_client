@@ -6,13 +6,10 @@ import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
-import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown"
-import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight"
 import { Avatar } from "@mui/material";
 
 import { AuthContext } from '../../providers/AuthProvider';
 
-import { Dropdown } from "./Dropdown"
 import { UserDropdown } from "./UserDropdown"
 
 import { nav_items } from "../../utils/navigation-items"
@@ -25,9 +22,7 @@ export function Layout({ children, title }) {
   const navigate = useNavigate()
 
   const [mobileOpen, setMobileOpen] = useState(false)
-  const [submenu, setSubmenu] = useState(null)
   const [showUserDropdown, setShowUserDropdown] = useState(false)
-  const [itemToShow, setItemToShow] = useState("")
 
   if (!auth) return navigate('/login')
 
@@ -46,24 +41,10 @@ export function Layout({ children, title }) {
           cursor: 'pointer',
           color: '#fff',
           paddingY: { xs: 1, md: 0 },
-          ':hover': { backgroundColor: '#3276B1' }
-        }}
-          onMouseEnter={() => {
-            setSubmenu(true)
-            setItemToShow(item.title)
-          }}
-          onMouseLeave={() => {
-            setSubmenu(false)
-            setItemToShow("")
-          }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 0.4, paddingX: 1, fontSize: 15, position: 'relative' }}>
-            <Box>{item.title}</Box>
-            {mobileOpen ? (
-              <KeyboardArrowRightIcon className='text-xs' />
-            ) : (
-              <KeyboardArrowDownIcon className='text-xs' />
-            )}
-            {submenu && itemToShow === item.title && <Dropdown item={item.submenu} />}
+          ':hover': { backgroundColor: '#343796' }
+        }}          >
+          <Box sx={{ paddingX: 2, fontSize: 15 }} onClick={() => navigate(item.path)}>
+            {item.title}
           </Box>
         </Box>
       ))}
@@ -73,7 +54,7 @@ export function Layout({ children, title }) {
   return (
     <>
       <Box sx={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#078BCD', paddingX: 1 }}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#050622', paddingX: 1 }}>
           <IconButton color="inherit" aria-label="open drawer" edge="start" onClick={handleDrawerToggle} sx={{ mr: 2, display: { md: 'none' }, color: '#fff' }}>
             <MenuIcon />
           </IconButton>
@@ -105,7 +86,7 @@ export function Layout({ children, title }) {
             }
           }}
         >
-          <Box sx={{ display: { xs: 'flex', md: 'none' }, backgroundColor: '#078BCD', height: '100%' }}>
+          <Box sx={{ display: { xs: 'flex', md: 'none' }, backgroundColor: '#050622', height: '100%' }}>
             {menuOptions}
           </Box>
         </Drawer>

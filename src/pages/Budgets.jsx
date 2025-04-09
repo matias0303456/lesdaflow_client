@@ -160,7 +160,7 @@ export function Budgets() {
             sorter: (row) => row.client.address,
             accessor: (row) => (
                 <Link target="_blank" to={`https://www.google.com/maps?q=${row.client.address}`}>
-                    <span style={{ color: '#078BCD' }}>{row.client.address}</span>
+                    <span style={{ color: '#050622' }}>{row.client.address}</span>
                 </Link>
             )
         },

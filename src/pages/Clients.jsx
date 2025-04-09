@@ -126,7 +126,7 @@ export function Clients() {
             sorter: (row) => row.address,
             accessor: (row) => (
                 <Link target="_blank" to={`https://www.google.com/maps?q=${row.address}`}>
-                    <span style={{ color: '#078BCD' }}>{row.address}</span>
+                    <span style={{ color: '#050622' }}>{row.address}</span>
                 </Link>
             )
         },

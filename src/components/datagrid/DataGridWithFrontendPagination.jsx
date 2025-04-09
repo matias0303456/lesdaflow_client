@@ -187,7 +187,7 @@ export function DataGridWithFrontendPagination({
                                                                 }}
                                                             >
                                                                 <IconButton
-                                                                    className="rounded-full bg-black/20 opacity-50 hover:bg-[#078BCD]"
+                                                                    className="rounded-full bg-black/20 opacity-50 hover:bg-[#050622]"
                                                                     aria-label="setting"
                                                                 >
                                                                     <SettingsIcon className="w-4 h-4 hover:text-white" />

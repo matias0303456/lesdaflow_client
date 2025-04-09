@@ -234,7 +234,7 @@ export function DataGridWithBackendPagination({
                                         if (setOpen) setOpen("SETTINGS")
                                       }}
                                     >
-                                      <IconButton className="rounded-full bg-black/20 opacity-50 hover:bg-[#078BCD]">
+                                      <IconButton className="rounded-full bg-black/20 opacity-50 hover:bg-[#050622]">
                                         <SettingsIcon className="w-4 h-4 hover:text-white" />
                                       </IconButton>
                                     </Tooltip>
@@ -249,7 +249,7 @@ export function DataGridWithBackendPagination({
                                     if (setOpenNewSale) setOpenNewSale("CONVERT")
                                   }}
                                 >
-                                  <IconButton className="rounded-full bg-black/20 opacity-50 hover:bg-[#078BCD]">
+                                  <IconButton className="rounded-full bg-black/20 opacity-50 hover:bg-[#050622]">
                                     <StorefrontSharpIcon className="w-4 h-4 hover:text-white" />
                                   </IconButton>
                                 </Tooltip>
@@ -262,7 +262,7 @@ export function DataGridWithBackendPagination({
                                     if (setOpenNewMovement) setOpenNewMovement("NEW_INCOME")
                                   }}
                                 >
-                                  <IconButton className="rounded-full bg-black/20 opacity-50 hover:bg-[#078BCD]">
+                                  <IconButton className="rounded-full bg-black/20 opacity-50 hover:bg-[#050622]">
                                     <InputSharpIcon className="w-4 h-4 hover:text-white" />
                                   </IconButton>
                                 </Tooltip>
@@ -275,7 +275,7 @@ export function DataGridWithBackendPagination({
                                     if (setOpenNewMovement) setOpenNewMovement("NEW_OUTCOME")
                                   }}
                                 >
-                                  <IconButton className="rounded-full bg-black/20 opacity-50 hover:bg-[#078BCD]">
+                                  <IconButton className="rounded-full bg-black/20 opacity-50 hover:bg-[#050622]">
                                     <OutputSharpIcon className="w-4 h-4 hover:text-white" />
                                   </IconButton>
                                 </Tooltip>
