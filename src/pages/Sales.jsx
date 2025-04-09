@@ -131,14 +131,6 @@ export function Sales() {
             accessor: (row) => `${row.client.first_name} ${row.client.last_name}`
         },
         {
-            id: 'work_place',
-            numeric: false,
-            disablePadding: true,
-            label: 'Comercio',
-            sorter: (row) => row.client.work_place ?? '',
-            accessor: (row) => row.client.work_place
-        },
-        {
             id: 'address',
             numeric: false,
             disablePadding: true,
@@ -213,7 +205,6 @@ export function Sales() {
                             </Button>
                         </Box>
                         <SaleFilter
-                            showWorkPlace
                             showSeller={auth?.user.role === 'ADMINISTRADOR'}
                             showType
                             width={{
@@ -222,7 +213,6 @@ export function Sales() {
                                 id: { xs: '100%', md: '15%' },
                                 date: { xs: '100%', md: '15%' },
                                 btn: { xs: '100%', md: '10%' },
-                                work_place: { xs: '100%', md: '15%' },
                                 seller: { xs: '100%', md: '15%' },
                                 type: { xs: '100%', md: '15%' }
                             }}

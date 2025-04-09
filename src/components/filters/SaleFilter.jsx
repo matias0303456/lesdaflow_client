@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { useContext, useEffect } from "react";
 import { Box, Button, Checkbox, FormControl, FormControlLabel, Input, InputLabel, MenuItem, Select } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
@@ -7,7 +8,6 @@ import { es } from "date-fns/locale";
 import { DataContext } from "../../providers/DataProvider";
 
 export function SaleFilter({
-    showWorkPlace,
     showSeller,
     showDate,
     showType,
@@ -39,22 +39,22 @@ export function SaleFilter({
             type: 'SALES',
             payload: {
                 ...state.sales,
-                filter_fields: { client: '', work_place: '', id: '', user: '', date: '', type: '', loaded: false },
+                filter_fields: { client: '', id: '', user: '', date: '', type: '', loaded: false },
                 filters: ''
             }
         })
     }
 
     useEffect(() => {
-        const { client, work_place, id, user, date, type, loaded } = state.sales.filter_fields
+        const { client, id, user, date, type, loaded } = state.sales.filter_fields
         const dateIsNotString = typeof date !== 'string'
-        if (client.length > 0 || work_place.length > 0 || id.length > 0 ||
+        if (client.length > 0 || id.length > 0 ||
             user.length > 0 || dateIsNotString || type.length > 0) {
             dispatch({
                 type: 'SALES',
                 payload: {
                     ...state.sales,
-                    filters: `&client=${client}&work_place=${work_place}&id=${id}&user=${user}&date=${dateIsNotString ? new Date(date).toISOString() : ''}&type=${type}`
+                    filters: `&client=${client}&id=${id}&user=${user}&date=${dateIsNotString ? new Date(date).toISOString() : ''}&type=${type}`
                 }
             })
         } else if (loaded) {
@@ -90,18 +90,6 @@ export function SaleFilter({
                     onChange={handleChange}
                 />
             </FormControl>
-            {showWorkPlace &&
-                <FormControl sx={{ width: width.work_place }}>
-                    <InputLabel htmlFor="work_place">N. Comercio</InputLabel>
-                    <Input
-                        id="work_place"
-                        type="text"
-                        name="work_place"
-                        value={state.sales.filter_fields.work_place}
-                        onChange={handleChange}
-                    />
-                </FormControl>
-            }
             <FormControl sx={{ width: width.id }}>
                 <InputLabel htmlFor="id">N° venta</InputLabel>
                 <Input

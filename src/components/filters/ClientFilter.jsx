@@ -26,20 +26,20 @@ export function ClientFilter() {
             type: 'CLIENTS',
             payload: {
                 ...state.clients,
-                filter_fields: { first_name: '', last_name: '', work_place: '', loaded: false },
+                filter_fields: { first_name: '', last_name: '', loaded: false },
                 filters: ''
             }
         })
     }
 
     useEffect(() => {
-        const { first_name, last_name, work_place, loaded } = state.clients.filter_fields
-        if (first_name.length > 0 || last_name.length > 0 || work_place.length > 0) {
+        const { first_name, last_name, loaded } = state.clients.filter_fields
+        if (first_name.length > 0 || last_name.length > 0) {
             dispatch({
                 type: 'CLIENTS',
                 payload: {
                     ...state.clients,
-                    filters: `&first_name=${first_name}&last_name=${last_name}&work_place=${work_place}`
+                    filters: `&first_name=${first_name}&last_name=${last_name}`
                 }
             })
         } else if (loaded) {
@@ -72,16 +72,6 @@ export function ClientFilter() {
                     type="text"
                     name="last_name"
                     value={state.clients.filter_fields.last_name}
-                    onChange={handleChange}
-                />
-            </FormControl>
-            <FormControl>
-                <InputLabel htmlFor="name">Comercio</InputLabel>
-                <Input
-                    id="work_place"
-                    type="text"
-                    name="work_place"
-                    value={state.clients.filter_fields.work_place}
                     onChange={handleChange}
                 />
             </FormControl>

@@ -4,7 +4,7 @@ export const initialState = {
         data: [],
         page: 0,
         offset: 25,
-        filter_fields: { first_name: '', last_name: '', work_place: '', loaded: false },
+        filter_fields: { first_name: '', last_name: '', loaded: false },
         filters: ''
     },
     'articles': {
@@ -20,7 +20,7 @@ export const initialState = {
         data: [],
         page: 0,
         offset: 25,
-        filter_fields: { client: '', work_place: '', id: '', user: '', date: '', type: '', loaded: false },
+        filter_fields: { client: '', id: '', user: '', date: '', type: '', loaded: false },
         filters: ''
     },
     'payments': {
