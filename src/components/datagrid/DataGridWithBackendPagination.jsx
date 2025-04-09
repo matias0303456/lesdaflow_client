@@ -21,7 +21,6 @@ import StorefrontSharpIcon from '@mui/icons-material/StorefrontSharp';
 import InputSharpIcon from '@mui/icons-material/InputSharp';
 import OutputSharpIcon from '@mui/icons-material/OutputSharp';
 
-import { AuthContext } from '../../providers/AuthProvider'
 import { DataContext } from '../../providers/DataProvider'
 
 import { EnhancedTableHead } from './EnhancedTableHead'
@@ -59,9 +58,7 @@ export function DataGridWithBackendPagination({
   pendingFilter = false
 }) {
 
-  const { auth } = useContext(AuthContext)
   const { state, dispatch } = useContext(DataContext)
-
 
   const [order, setOrder] = useState(defaultOrder)
   const [orderBy, setOrderBy] = useState(defaultOrderBy)
@@ -186,9 +183,7 @@ export function DataGridWithBackendPagination({
                               }
                               {showEditAction &&
                                 <>
-                                  {((entityKey !== 'clients' ||
-                                    row.user_id === auth?.user.id) &&
-                                    (entityKey !== 'sales' || row.settlement_id === null)) &&
+                                  {(entityKey !== 'sales' || row.settlement_id === null) &&
                                     <Tooltip
                                       title="Editar"
                                       onClick={() => {
@@ -205,9 +200,7 @@ export function DataGridWithBackendPagination({
                               }
                               {showDeleteAction &&
                                 <>
-                                  {((entityKey !== 'clients' ||
-                                    row.user_id === auth?.user.id) &&
-                                    (entityKey !== 'sales' || row.settlement_id === null)) &&
+                                  {(entityKey !== 'sales' || row.settlement_id === null) &&
                                     <Tooltip
                                       title="Borrar"
                                       onClick={() => {
