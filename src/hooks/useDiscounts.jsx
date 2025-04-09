@@ -14,7 +14,7 @@ export function useDiscounts() {
     const { state, dispatch } = useContext(DataContext)
     const { setMessage, setOpenMessage, setSeverity } = useContext(MessageContext)
 
-    const { get, post, put, destroy } = useApi(DISCOUNT_URL)
+    const { post, put, destroy } = useApi(DISCOUNT_URL)
     const discountFormData = useForm({
         defaultData: {
             id: '',
@@ -39,21 +39,6 @@ export function useDiscounts() {
     const [loadingDiscounts, setLoadingDiscounts] = useState(true)
     const [discountArticles, setDiscountArticles] = useState([])
     const [discountSuppliers, setDiscountSuppliers] = useState([])
-
-    async function getDiscounts(params) {
-        const { status, data } = await get(params)
-        if (status === 200) {
-            dispatch({
-                type: 'DISCOUNTS',
-                payload: { ...state.discounts, data: data[0], count: data[1] }
-            })
-            setLoadingDiscounts(false)
-        } else {
-            setMessage(data.message)
-            setSeverity('error')
-            setOpenMessage(true)
-        }
-    }
 
     async function handleSubmit(e, validate, formData, reset, setDisabled) {
         e.preventDefault()
@@ -231,7 +216,6 @@ export function useDiscounts() {
         handleDelete,
         open,
         setOpen,
-        getDiscounts,
         headCells,
         discountFormData,
         discountArticles,

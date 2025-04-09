@@ -234,7 +234,7 @@ export function useArticles() {
             label: 'Stock mínimo',
             accessor: 'min_stock'
         }
-    ], [state.articles])
+    ], [state.articles.data])
 
     return {
         open,

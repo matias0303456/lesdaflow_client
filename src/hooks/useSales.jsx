@@ -1,12 +1,14 @@
-import { useContext, useState } from "react"
+import { useContext, useMemo, useState } from "react"
 import { format } from "date-fns"
 
 import { DataContext } from "../providers/DataProvider"
 import { MessageContext } from "../providers/MessageProvider"
 import { useApi } from "./useApi"
 import { useBudgets } from "./useBudgets"
+import { useForm } from "./useForm"
 
 import { SALE_URL } from "../utils/urls"
+import { getSaleTotal } from "../utils/helpers"
 
 export function useSales() {
 
@@ -23,7 +25,28 @@ export function useSales() {
     const [saleSaved, setSaleSaved] = useState(null)
     const [missing, setMissing] = useState(false)
     const [isBlocked, setIsBlocked] = useState(false)
-    const [salesByClient, setSalesByClient] = useState([])
+
+    const saleFormData = useForm({
+        defaultData: {
+            id: '',
+            client_id: '',
+            type: 'CUENTA_CORRIENTE',
+            date: new Date(Date.now()),
+            observations: '',
+            total: '0.00'
+        },
+        rules: {
+            client_id: {
+                required: true
+            },
+            date: {
+                required: true
+            },
+            observations: {
+                maxLength: 255
+            }
+        }
+    })
 
     async function getSales(params) {
         const { status, data } = await get(params)
@@ -33,17 +56,6 @@ export function useSales() {
                 payload: { ...state.sales, data: data[0], count: data[1] }
             })
             setLoadingSales(false)
-        } else {
-            setMessage(data.message)
-            setSeverity('error')
-            setOpenMessage(true)
-        }
-    }
-
-    async function getSalesByClient(id) {
-        const { status, data } = await get(`/by-client?client_id=${id}`)
-        if (status === 200) {
-            setSalesByClient(data)
         } else {
             setMessage(data.message)
             setSeverity('error')
@@ -131,28 +143,53 @@ export function useSales() {
         setOpen(null)
     }
 
-    async function deliverSale(formData, reset) {
-        const { status, data } = await put({ ...formData, is_delivered: true })
-        if (status === 200) {
-            dispatch({
-                type: 'SALES',
-                payload: {
-                    ...state.sales,
-                    data: [
-                        data,
-                        ...state.sales.data.filter(s => s.id !== data.id)
-                    ]
-                }
-            })
-            setMessage('Entrega registrada correctamente.')
-            setSeverity('success')
-            reset(setOpen)
-        } else {
-            setMessage(data.message)
-            setSeverity('error')
+    const headCells = useMemo(() => [
+        {
+            id: 'id',
+            numeric: true,
+            disablePadding: false,
+            label: 'Cód.',
+            accessor: 'id'
+        },
+        {
+            id: 'date',
+            numeric: false,
+            disablePadding: true,
+            label: 'Fecha',
+            accessor: (row) => format(new Date(row.date), 'dd/MM/yy HH:mm')
+        },
+        {
+            id: 'seller',
+            numeric: false,
+            disablePadding: true,
+            label: 'Vdor.',
+            sorter: (row) => row.created_by,
+            accessor: (row) => row.created_by
+        },
+        {
+            id: 'client_name',
+            numeric: false,
+            disablePadding: true,
+            label: 'Cliente',
+            sorter: (row) => `${row.client.first_name} ${row.client.last_name}`,
+            accessor: (row) => `${row.client.first_name} ${row.client.last_name}`
+        },
+        {
+            id: 'type',
+            numeric: false,
+            disablePadding: true,
+            label: 'T. Vta.',
+            accessor: (row) => row.type.replaceAll('CUENTA_CORRIENTE', 'CTA CTE')
+        },
+        {
+            id: 'total',
+            numeric: false,
+            disablePadding: true,
+            label: 'Total',
+            sorter: (row) => getSaleTotal(row).replace('$', ''),
+            accessor: (row) => getSaleTotal(row)
         }
-        setOpenMessage(true)
-    }
+    ], [state.sales.data])
 
     return {
         loadingSales,
@@ -172,8 +209,7 @@ export function useSales() {
         getSales,
         isBlocked,
         setIsBlocked,
-        deliverSale,
-        getSalesByClient,
-        salesByClient
+        headCells,
+        saleFormData
     }
 }
