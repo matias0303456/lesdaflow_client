@@ -1,5 +1,5 @@
 import { useContext, useEffect } from "react";
-import { Box, Button, Checkbox, FormControl, FormControlLabel, Input, InputLabel, MenuItem, Paper, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
+import { Box, Button, FormControl, Input, InputLabel, MenuItem, Paper, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
 
 import { AuthContext } from "../providers/AuthProvider";
 import { DataContext } from "../providers/DataProvider";
@@ -229,56 +229,18 @@ export function Articles() {
                                         </Typography>
                                     }
                                 </FormControl>
-                                <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                                    <FormControlLabel
-                                        control={<Checkbox />}
-                                        label="Efectivo"
-                                        checked={formData.cash}
-                                        disabled={open === 'VIEW'}
-                                        onChange={e => handleChange({
-                                            target: {
-                                                name: 'cash',
-                                                value: e.target.checked
-                                            }
-                                        })}
-                                    />
-                                    <FormControlLabel
-                                        control={<Checkbox />}
-                                        label="Cta. Cte."
-                                        checked={formData.cta_cte}
-                                        disabled={open === 'VIEW'}
-                                        onChange={e => handleChange({
-                                            target: {
-                                                name: 'cta_cte',
-                                                value: e.target.checked
-                                            }
-                                        })}
-                                    />
-                                    <FormControlLabel
-                                        control={<Checkbox />}
-                                        label="Poxipol"
-                                        checked={formData.poxipol}
-                                        disabled={open === 'VIEW'}
-                                        onChange={e => handleChange({
-                                            target: {
-                                                name: 'poxipol',
-                                                value: e.target.checked
-                                            }
-                                        })}
-                                    />
-                                </Box>
+                                {open === 'NEW' &&
+                                    <FormControl sx={{ width: '50%' }}>
+                                        <InputLabel htmlFor="amount">Stock *</InputLabel>
+                                        <Input id="amount" type="number" name="amount" value={formData.amount} disabled={open === 'VIEW'} />
+                                        {errors.amount?.type === 'required' &&
+                                            <Typography variant="caption" color="red" marginTop={1}>
+                                                * El stock es requerido.
+                                            </Typography>
+                                        }
+                                    </FormControl>
+                                }
                             </Box>
-                            {open === 'NEW' &&
-                                <FormControl sx={{ width: '50%' }}>
-                                    <InputLabel htmlFor="amount">Stock *</InputLabel>
-                                    <Input id="amount" type="number" name="amount" value={formData.amount} disabled={open === 'VIEW'} />
-                                    {errors.amount?.type === 'required' &&
-                                        <Typography variant="caption" color="red" marginTop={1}>
-                                            * El stock es requerido.
-                                        </Typography>
-                                    }
-                                </FormControl>
-                            }
                             <FormControl sx={{
                                 display: 'flex',
                                 flexDirection: 'row',

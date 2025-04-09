@@ -41,8 +41,7 @@ export function BudgetForm({
             setBudgetArticles(budgetArticles.filter(bp => {
                 const p = state.articles.data.find(i => i.id === bp.article_id)
                 if ((formData.type === 'CONTADO' && p?.cash) ||
-                    (formData.type === 'CUENTA_CORRIENTE' && p?.cta_cte) ||
-                    (formData.type === 'POXIPOL' && p?.poxipol)) return bp
+                    (formData.type === 'CUENTA_CORRIENTE' && p?.cta_cte)) return bp
             }))
         }
     }, [formData.type])
@@ -140,20 +139,6 @@ export function BudgetForm({
                                 }
                             }}
                         />
-                        <FormControlLabel
-                            control={<Checkbox disabled={open === 'VIEW'} />}
-                            label="Poxipol"
-                            checked={formData.type === 'POXIPOL'}
-                            disabled={budgetArticles.length > 0}
-                            onChange={e => {
-                                if (e.target.checked) {
-                                    setFormData({
-                                        ...formData,
-                                        type: 'POXIPOL'
-                                    })
-                                }
-                            }}
-                        />
                     </Box>
                     <AddArticlesToBudget
                         ARTICLES={state.articles.data}
@@ -173,7 +158,7 @@ export function BudgetForm({
                             labelId="discount-select"
                             id="discount"
                             value={discountApplied.id ?? ''}
-                            disabled={formData.type === 'POXIPOL' || open === 'VIEW' || open === 'EDIT'}
+                            disabled={open === 'VIEW' || open === 'EDIT'}
                             label="Descuento"
                             name="discount"
                             onChange={(e) => setDiscountApplied(state.discounts.data.find(d => d.id === e.target.value))}

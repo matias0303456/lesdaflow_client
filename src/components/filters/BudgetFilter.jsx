@@ -118,7 +118,6 @@ export function BudgetFilter() {
                     <MenuItem value="">Seleccione</MenuItem>
                     <MenuItem value="CUENTA_CORRIENTE">CTA CTE</MenuItem>
                     <MenuItem value="CONTADO">CONTADO</MenuItem>
-                    <MenuItem value="POXIPOL">POXIPOL</MenuItem>
                 </Select>
             </FormControl>
             <Button type="button" variant="outlined" onClick={handleReset} sx={{ width: { xs: '100%', md: '15%' } }}>

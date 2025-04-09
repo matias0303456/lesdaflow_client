@@ -116,20 +116,6 @@ export function SaleFormFields({
                                     }
                                 }}
                             />
-                            <FormControlLabel
-                                control={<Checkbox disabled={open === 'VIEW' || (open === 'EDIT' && auth?.user.role !== 'ADMINISTRADOR')} />}
-                                label="Poxipol"
-                                checked={formData.type === 'POXIPOL'}
-                                disabled={saleArticles.length > 0 && auth?.user.role !== 'ADMINISTRADOR'}
-                                onChange={e => {
-                                    if (e.target.checked) {
-                                        setFormData({
-                                            ...formData,
-                                            type: 'POXIPOL'
-                                        })
-                                    }
-                                }}
-                            />
                         </Box>
                     </Box>
                     <Box sx={{
@@ -160,7 +146,7 @@ export function SaleFormFields({
                                     labelId="discount-select"
                                     id="discount"
                                     value={discountApplied.id ?? ''}
-                                    disabled={formData.type === 'POXIPOL' || open === 'VIEW' || open === 'EDIT'}
+                                    disabled={open === 'VIEW' || open === 'EDIT'}
                                     label="Descuento"
                                     name="discount"
                                     onChange={(e) => setDiscountApplied(state.discounts.data.find(d => d.id === e.target.value))}

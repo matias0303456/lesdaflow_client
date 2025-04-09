@@ -85,8 +85,7 @@ export function SaleForm({
             setSaleArticles(saleArticles.filter(sp => {
                 const p = state.articles.data.find(i => i.id === sp.article_id)
                 if ((formData.type === 'CONTADO' && p?.cash) ||
-                    (formData.type === 'CUENTA_CORRIENTE' && p?.cta_cte) ||
-                    (formData.type === 'POXIPOL' && p?.poxipol)) return sp
+                    (formData.type === 'CUENTA_CORRIENTE' && p?.cta_cte)) return sp
             }))
         }
     }, [formData.type])

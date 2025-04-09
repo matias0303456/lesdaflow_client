@@ -147,7 +147,6 @@ export function SaleFilter({
                     >
                         <MenuItem value="">Seleccione</MenuItem>
                         <MenuItem value="CONTADO">CONTADO</MenuItem>
-                        <MenuItem value="POXIPOL">POXIPOL</MenuItem>
                     </Select>
                 </FormControl>
             }
