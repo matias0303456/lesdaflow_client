@@ -14,7 +14,7 @@ import { DataGridWithBackendPagination } from "../components/datagrid/DataGridWi
 import { ArticleFilter } from "../components/filters/ArticleFilter";
 import { MovementsForm } from "../components/commercial/MovementsForm";
 
-import { getNewPrice, getStock } from "../utils/helpers";
+import { getNewPrice } from "../utils/helpers";
 import { REPORT_URL } from "../utils/urls";
 
 export function Articles() {
@@ -35,33 +35,12 @@ export function Articles() {
         setMassiveEditPercentage,
         handleSubmitMassive,
         handleDelete,
-        getArticles
+        getArticles,
+        articleFormData,
+        headCells
     } = useArticles()
     const { loadingSuppliers, getSuppliers } = useSuppliers()
-    const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
-        defaultData: {
-            id: '',
-            code: '',
-            details: '',
-            buy_price: '',
-            min_stock: '',
-            earn: '',
-            supplier_id: '',
-            cash: true,
-            cta_cte: true,
-            poxipol: false,
-            amount: ''
-        },
-        rules: {
-            code: { required: true, maxLength: 55 },
-            details: { required: true, maxLength: 191 },
-            buy_price: { required: true },
-            min_stock: { required: true },
-            earn: { required: true },
-            supplier_id: { required: true },
-            amount: { required: open === 'NEW' }
-        }
-    })
+    const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = articleFormData
     const {
         open: openMovement,
         setOpen: setOpenMovement,
@@ -90,74 +69,6 @@ export function Articles() {
         const earn = formData.earn.toString().length === 0 ? 0 : parseInt(formData.earn)
         setEarnPrice(`$${(buy_price + ((buy_price / 100) * earn)).toFixed(2)}`)
     }, [formData])
-
-    const headCells = [
-        {
-            id: 'code',
-            numeric: false,
-            disablePadding: true,
-            label: 'Código',
-            accessor: 'code',
-            can_access: ['VENDEDOR']
-        },
-        {
-            id: 'details',
-            numeric: false,
-            disablePadding: true,
-            label: 'Artículo',
-            accessor: 'details',
-            can_access: ['VENDEDOR']
-        },
-        {
-            id: 'buy_price',
-            numeric: false,
-            disablePadding: true,
-            label: 'P. compra',
-            sorter: (row) => parseFloat(row.buy_price).toFixed(2),
-            accessor: (row) => parseFloat(row.buy_price).toFixed(2)
-        },
-        {
-            id: 'earn',
-            numeric: false,
-            disablePadding: true,
-            label: '% Gan.',
-            accessor: 'earn'
-        },
-        {
-            id: 'sale_price',
-            numeric: false,
-            disablePadding: true,
-            label: 'P. venta',
-            sorter: (row) => parseFloat((row.buy_price + ((row.buy_price / 100) * row.earn)).toFixed(2)),
-            accessor: (row) => `$${(row.buy_price + ((row.buy_price / 100) * row.earn)).toFixed(2)}`,
-            can_access: ['VENDEDOR']
-        },
-        {
-            id: 'supplier',
-            numeric: false,
-            disablePadding: true,
-            label: 'Proveedor',
-            sorter: (row) => row.supplier.name.toLowerCase(),
-            accessor: (row) => row.supplier.name,
-            can_access: ['VENDEDOR']
-        },
-        {
-            id: 'stock',
-            numeric: false,
-            disablePadding: true,
-            label: 'Stock',
-            sorter: (row) => getStock(row),
-            accessor: (row) => getStock(row),
-            can_access: ['VENDEDOR']
-        },
-        {
-            id: 'min_stock',
-            numeric: false,
-            disablePadding: true,
-            label: 'Stock mínimo',
-            accessor: 'min_stock'
-        }
-    ]
 
     return (
         <Layout title="Artículos">

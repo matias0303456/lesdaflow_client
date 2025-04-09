@@ -1,10 +1,12 @@
-import { useContext, useState } from "react"
+import { useContext, useMemo, useState } from "react"
 
 import { MessageContext } from "../providers/MessageProvider"
 import { DataContext } from "../providers/DataProvider"
 import { useApi } from "./useApi"
+import { useForm } from "./useForm"
 
 import { ARTICLE_URL } from "../utils/urls"
+import { getStock } from "../utils/helpers"
 
 export function useArticles() {
 
@@ -12,8 +14,29 @@ export function useArticles() {
     const { setMessage, setOpenMessage, setSeverity } = useContext(MessageContext)
 
     const { get, post, put, putMassive, destroy } = useApi(ARTICLE_URL)
-
     const [open, setOpen] = useState(null)
+    const articleFormData = useForm({
+        defaultData: {
+            id: '',
+            code: '',
+            details: '',
+            buy_price: '',
+            min_stock: '',
+            earn: '',
+            supplier_id: '',
+            amount: ''
+        },
+        rules: {
+            code: { required: true, maxLength: 55 },
+            details: { required: true, maxLength: 191 },
+            buy_price: { required: true },
+            min_stock: { required: true },
+            earn: { required: true },
+            supplier_id: { required: true },
+            amount: { required: open === 'NEW' }
+        }
+    })
+
     const [loadingArticles, setloadingArticles] = useState(true)
     const [massiveEdit, setMassiveEdit] = useState([])
     const [earnPrice, setEarnPrice] = useState(0)
@@ -145,6 +168,74 @@ export function useArticles() {
         setOpen(null)
     }
 
+    const headCells = useMemo(() => [
+        {
+            id: 'code',
+            numeric: false,
+            disablePadding: true,
+            label: 'Código',
+            accessor: 'code',
+            can_access: ['VENDEDOR']
+        },
+        {
+            id: 'details',
+            numeric: false,
+            disablePadding: true,
+            label: 'Artículo',
+            accessor: 'details',
+            can_access: ['VENDEDOR']
+        },
+        {
+            id: 'buy_price',
+            numeric: false,
+            disablePadding: true,
+            label: 'P. compra',
+            sorter: (row) => parseFloat(row.buy_price).toFixed(2),
+            accessor: (row) => parseFloat(row.buy_price).toFixed(2)
+        },
+        {
+            id: 'earn',
+            numeric: false,
+            disablePadding: true,
+            label: '% Gan.',
+            accessor: 'earn'
+        },
+        {
+            id: 'sale_price',
+            numeric: false,
+            disablePadding: true,
+            label: 'P. venta',
+            sorter: (row) => parseFloat((row.buy_price + ((row.buy_price / 100) * row.earn)).toFixed(2)),
+            accessor: (row) => `$${(row.buy_price + ((row.buy_price / 100) * row.earn)).toFixed(2)}`,
+            can_access: ['VENDEDOR']
+        },
+        {
+            id: 'supplier',
+            numeric: false,
+            disablePadding: true,
+            label: 'Proveedor',
+            sorter: (row) => row.supplier.name.toLowerCase(),
+            accessor: (row) => row.supplier.name,
+            can_access: ['VENDEDOR']
+        },
+        {
+            id: 'stock',
+            numeric: false,
+            disablePadding: true,
+            label: 'Stock',
+            sorter: (row) => getStock(row),
+            accessor: (row) => getStock(row),
+            can_access: ['VENDEDOR']
+        },
+        {
+            id: 'min_stock',
+            numeric: false,
+            disablePadding: true,
+            label: 'Stock mínimo',
+            accessor: 'min_stock'
+        }
+    ], [state.articles])
+
     return {
         open,
         setOpen,
@@ -160,6 +251,8 @@ export function useArticles() {
         setloadingArticles,
         searchArticles,
         articleHistory,
-        getArticleHistory
+        getArticleHistory,
+        articleFormData,
+        headCells
     }
 }

@@ -104,7 +104,7 @@ export function useClients() {
                 </Link>
             )
         }
-    ], [])
+    ], [state.clients])
 
     async function getClients(params) {
         const { status, data } = await get(params)
