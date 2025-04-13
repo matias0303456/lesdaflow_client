@@ -187,11 +187,12 @@ export function getCurrentTotal(discount, saleProducts, products) {
     const discountProducts = discount_by_products?.map(dbp => dbp.product_id)
     const discountSuppliers = discount_by_suppliers?.map(dbs => dbs.supplier_id)
     const returnValue = saleProducts.reduce((total, sp) => {
+        const amount = (isNaN(parseInt(sp.amount)) ? 0 : parseInt(sp.amount))
         const product = sp.product ?? products.find(p => p.id === sp.product_id)
         const salePrice = getProductSalePrice(product)
         if (discountSuppliers?.includes(product.supplier_id) || discountProducts?.includes(product.id)) {
             const salePriceWithDiscount = salePrice - ((salePrice / 100) * value)
-            return total + salePriceWithDiscount
+            return total + (salePriceWithDiscount * amount)
         }
         return parseFloat(total + subtotal)
     }, 0)

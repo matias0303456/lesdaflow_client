@@ -160,11 +160,11 @@ export function SaleFormFields({
                                 <Select
                                     labelId="discount-select"
                                     id="discount"
-                                    value={discountApplied.id ?? ''}
+                                    value={discountApplied?.id ?? ''}
                                     disabled={formData.type === 'POXIPOL' || open === 'VIEW' || open === 'EDIT'}
                                     label="Descuento"
                                     name="discount"
-                                    onChange={(e) => setDiscountApplied(state.discounts.data.find(d => d.id === e.target.value))}
+                                    onChange={(e) => setDiscountApplied(state.discounts.data.find(d => d.id === e.target.value) ?? '')}
                                     sx={{ width: "100%" }}
                                 >
                                     <MenuItem value="">Ninguno</MenuItem>
