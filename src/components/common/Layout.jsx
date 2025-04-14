@@ -42,8 +42,10 @@ export function Layout({ children, title }) {
           color: '#fff',
           paddingY: { xs: 1, md: 0 },
           ':hover': { backgroundColor: '#343796' }
-        }}          >
-          <Box sx={{ paddingX: 2, fontSize: 15 }} onClick={() => navigate(item.path)}>
+        }}
+          onClick={() => navigate(item.path)}
+        >
+          <Box sx={{ paddingX: 2, fontSize: 15 }}>
             {item.title}
           </Box>
         </Box>

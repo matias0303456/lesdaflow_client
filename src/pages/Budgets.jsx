@@ -204,7 +204,7 @@ export function Budgets() {
                             }}>
                                 Agregar
                             </Button>
-                            <Button variant="outlined" color='success' onClick={() => {
+                            {/* <Button variant="outlined" color='success' onClick={() => {
                                 window.open(`${REPORT_URL}/budgets-excel?token=${auth?.token}`, '_blank')
                             }}>
                                 Excel
@@ -213,7 +213,7 @@ export function Budgets() {
                                 window.open(`${REPORT_URL}/presupuesto-pdf?token=${auth?.token}`, '_blank')
                             }}>
                                 PDF
-                            </Button>
+                            </Button> */}
                         </Box>
                         <BudgetFilter />
                     </Box>

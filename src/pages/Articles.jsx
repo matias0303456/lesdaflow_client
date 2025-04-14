@@ -15,7 +15,7 @@ import { ArticleFilter } from "../components/filters/ArticleFilter";
 import { MovementsForm } from "../components/commercial/MovementsForm";
 
 import { getNewPrice } from "../utils/helpers";
-import { REPORT_URL } from "../utils/urls";
+// import { REPORT_URL } from "../utils/urls";
 
 export function Articles() {
 
@@ -106,7 +106,7 @@ export function Articles() {
                                     Agregar
                                 </Button>
                             }
-                            <Button
+                            {/* <Button
                                 variant="outlined"
                                 color='success'
                                 onClick={() => {
@@ -120,7 +120,7 @@ export function Articles() {
                                 window.open(`${REPORT_URL}/articles-pdf?token=${auth?.token}&for_client=true&code=${code}&details=${details}&supplier_id=${supplier_id}`, '_blank')
                             }}>
                                 PDF
-                            </Button>
+                            </Button> */}
                         </Box>
                         <ArticleFilter />
                     </Box>

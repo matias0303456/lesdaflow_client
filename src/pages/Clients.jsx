@@ -4,7 +4,7 @@ import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { es } from "date-fns/locale";
 
-import { AuthContext } from "../providers/AuthProvider";
+// import { AuthContext } from "../providers/AuthProvider";
 import { DataContext } from "../providers/DataProvider";
 import { useClients } from "../hooks/useClients";
 
@@ -13,11 +13,11 @@ import { ModalComponent } from "../components/common/ModalComponent";
 import { DataGridWithBackendPagination } from "../components/datagrid/DataGridWithBackendPagination";
 import { ClientFilter } from "../components/filters/ClientFilter";
 
-import { REPORT_URL } from "../utils/urls";
+// import { REPORT_URL } from "../utils/urls";
 
 export function Clients() {
 
-    const { auth } = useContext(AuthContext)
+    // const { auth } = useContext(AuthContext)
     const { state } = useContext(DataContext)
 
     const { loadingClients, handleSubmit, handleDelete, open, setOpen, getClients, clientFormData, headCells } = useClients()
@@ -45,11 +45,11 @@ export function Clients() {
                             }}>
                                 Agregar
                             </Button>
-                            <Button variant="outlined" color='error' onClick={() => {
+                            {/* <Button variant="outlined" color='error' onClick={() => {
                                 window.open(`${REPORT_URL}/client-details/${auth?.token}`, '_blank')
                             }}>
                                 PDF
-                            </Button>
+                            </Button> */}
                         </Box>
                         <ClientFilter />
                     </Box>

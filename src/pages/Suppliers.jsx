@@ -12,7 +12,7 @@ import { ModalComponent } from "../components/common/ModalComponent";
 import { SupplierFilter } from "../components/filters/SupplierFilter";
 import { DataGridWithBackendPagination } from "../components/datagrid/DataGridWithBackendPagination";
 
-import { REPORT_URL } from "../utils/urls";
+// import { REPORT_URL } from "../utils/urls";
 
 export function Suppliers() {
 
@@ -149,11 +149,11 @@ export function Suppliers() {
                             }}>
                                 Agregar
                             </Button>
-                            <Button variant="outlined" color='success' onClick={() => {
+                            {/* <Button variant="outlined" color='success' onClick={() => {
                                 window.open(`${REPORT_URL}/suppliers?token=${auth?.token}`, '_blank')
                             }}>
                                 Excel
-                            </Button>
+                            </Button> */}
                         </Box>
                         <SupplierFilter />
                     </Box>

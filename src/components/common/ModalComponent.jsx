@@ -1,4 +1,5 @@
-import { useState } from 'react';
+/* eslint-disable react/prop-types */
+// import { useState } from 'react';
 import Backdrop from '@mui/material/Backdrop';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
@@ -15,20 +16,21 @@ const style = {
     borderRadius: 1
 };
 
-export function ModalComponent({ children, open, onClose, dynamicContent = false, reduceWidth = 300, p = 3 }) {
+// export function ModalComponent({ children, open, onClose, dynamicContent = false, reduceWidth = 300, p = 3 }) {
+export function ModalComponent({ children, open, onClose, p = 3 }) {
 
-    const [screenWidth, setScreenWidth] = useState(window.innerWidth < 700 ? window.innerWidth : window.innerWidth - reduceWidth)
-    const [screenHeight] = useState(dynamicContent ?
-        { height: window.innerHeight - 100, overflowY: 'scroll' } :
-        { height: 'auto', maxHeight: window.innerHeight - 50, overflowY: 'scroll' })
+    // const [screenWidth, setScreenWidth] = useState(window.innerWidth < 700 ? window.innerWidth : window.innerWidth - reduceWidth)
+    // const [screenHeight] = useState(dynamicContent ?
+    //     { height: window.innerHeight - 100, overflowY: 'scroll' } :
+    //     { height: 'auto', maxHeight: window.innerHeight - 50, overflowY: 'scroll' })
 
-    window.onresize = () => {
-        if (window.innerWidth < 700) {
-            setScreenWidth(window.innerWidth)
-        } else {
-            setScreenWidth(window.innerWidth - 300)
-        }
-    }
+    // window.onresize = () => {
+    //     if (window.innerWidth < 700) {
+    //         setScreenWidth(window.innerWidth)
+    //     } else {
+    //         setScreenWidth(window.innerWidth - 300)
+    //     }
+    // }
 
     return (
         <Modal
@@ -45,7 +47,8 @@ export function ModalComponent({ children, open, onClose, dynamicContent = false
             }}
         >
             <Fade in={open}>
-                <Box sx={{ ...style, ...screenHeight, width: screenWidth, p }}>
+                {/* <Box sx={{ ...style, ...screenHeight, width: screenWidth, p }}> */}
+                <Box sx={{ ...style, height: '100%', width: '100%', p }}>
                     {children}
                 </Box>
             </Fade>

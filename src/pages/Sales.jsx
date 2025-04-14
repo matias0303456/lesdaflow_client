@@ -92,11 +92,11 @@ export function Sales() {
                             }}>
                                 Agregar
                             </Button>
-                            <Button variant="outlined" color='success' onClick={() => {
+                            {/* <Button variant="outlined" color='success' onClick={() => {
                                 window.open(`${REPORT_URL}/sales-excel?token=${auth?.token}`, '_blank')
                             }}>
                                 Excel
-                            </Button>
+                            </Button> */}
                         </Box>
                         <SaleFilter
                             showSeller={auth?.user.role === 'ADMINISTRADOR'}
