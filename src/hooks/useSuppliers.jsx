@@ -75,7 +75,12 @@ export function useSuppliers() {
     async function handleSubmit(e, validate, formData, reset, setDisabled) {
         e.preventDefault()
         if (validate()) {
-            const { status, data } = open === 'NEW' ? await post(formData) : await put(formData)
+            const submitData = {
+                ...formData,
+                discounts: supplierDiscounts,
+                surcharges: supplierSurcharges
+            }
+            const { status, data } = open === 'NEW' ? await post(submitData) : await put(submitData)
             if (status === 200) {
                 if (open === 'NEW') {
                     dispatch({ type: 'SUPPLIERS', payload: { ...state.suppliers, data: [data, ...state.suppliers.data] } })

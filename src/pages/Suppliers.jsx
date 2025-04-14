@@ -86,7 +86,7 @@ export function Suppliers() {
                         {open === 'EDIT' && 'Editar proveedor'}
                         {open === 'VIEW' && `Proveedor #${formData.id}`}
                     </Typography>
-                    <form onChange={handleChange} onSubmit={(e) => handleSubmit(e, validate, formData, reset, setDisabled)}>
+                    <form onChange={handleChange}>
                         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
                             <Box sx={{ display: 'flex', gap: 5 }}>
                                 <FormControl sx={{ width: '50%' }}>
@@ -162,31 +162,9 @@ export function Suppliers() {
                                     </Typography>
                                 }
                             </FormControl>
-                            <FormControl sx={{
-                                display: 'flex',
-                                flexDirection: 'row',
-                                gap: 1,
-                                justifyContent: 'center',
-                                margin: '0 auto',
-                                marginTop: 1,
-                                width: '50%'
-                            }}>
-                                <Button type="button" variant="outlined" onClick={() => reset(setOpen)} sx={{
-                                    width: '50%'
-                                }}>
-                                    {open === 'VIEW' ? 'Cerrar' : 'Cancelar'}
-                                </Button>
-                                {(open === 'NEW' || open === 'EDIT') &&
-                                    <Button type="submit" variant="contained" disabled={disabled} sx={{
-                                        width: '50%'
-                                    }}>
-                                        Confirmar
-                                    </Button>
-                                }
-                            </FormControl>
                         </Box>
                     </form>
-                    <Box sx={{ display: 'flex', gap: 2, mt: 2 }}>
+                    <Box sx={{ display: 'flex', gap: 2, my: 2 }}>
                         <DiscountsAndSurcharges
                             title="Descuentos"
                             entity="descuentos"
@@ -202,6 +180,32 @@ export function Suppliers() {
                             open={open}
                         />
                     </Box>
+                    <FormControl sx={{
+                        display: 'flex',
+                        flexDirection: 'row',
+                        gap: 1,
+                        justifyContent: 'center',
+                        margin: '0 auto',
+                        marginTop: 1,
+                        width: '50%'
+                    }}>
+                        <Button type="button" variant="outlined" onClick={() => reset(setOpen)} sx={{
+                            width: '50%'
+                        }}>
+                            {open === 'VIEW' ? 'Cerrar' : 'Cancelar'}
+                        </Button>
+                        {(open === 'NEW' || open === 'EDIT') &&
+                            <Button
+                                type="button"
+                                variant="contained"
+                                disabled={disabled}
+                                sx={{ width: '50%' }}
+                                onClick={(e) => handleSubmit(e, validate, formData, reset, setDisabled)}
+                            >
+                                Confirmar
+                            </Button>
+                        }
+                    </FormControl>
                 </ModalComponent>
                 <ModalComponent open={open === 'DELETE'} onClose={() => reset(setOpen)} reduceWidth={900}>
                     <Typography variant="h6" marginBottom={1} textAlign="center">
