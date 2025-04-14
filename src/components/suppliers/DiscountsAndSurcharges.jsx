@@ -32,7 +32,7 @@ export function DiscountsAndSurcharges({
     };
 
     return (
-        <Box sx={{ p: 1 }}>
+        <Box sx={{ p: 1, width: '100%' }}>
             <Typography variant="h6">
                 {title}
             </Typography>

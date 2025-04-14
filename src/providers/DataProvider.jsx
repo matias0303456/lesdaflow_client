@@ -20,8 +20,6 @@ const reducer = (state, action) => {
             return { ...state, suppliers: action.payload }
         case 'BUDGETS':
             return { ...state, budgets: action.payload }
-        case 'DISCOUNTS':
-            return { ...state, discounts: action.payload }
         case 'RESET':
             return initialState;
         default:
