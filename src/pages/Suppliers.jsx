@@ -1,16 +1,16 @@
 import { useContext, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Box, Button, FormControl, Input, InputLabel, Typography } from "@mui/material";
 
 import { AuthContext } from "../providers/AuthProvider";
 import { DataContext } from "../providers/DataProvider";
-import { useForm } from "../hooks/useForm";
 import { useSuppliers } from "../hooks/useSuppliers";
 
 import { Layout } from "../components/common/Layout";
 import { ModalComponent } from "../components/common/ModalComponent";
 import { SupplierFilter } from "../components/filters/SupplierFilter";
 import { DataGridWithBackendPagination } from "../components/datagrid/DataGridWithBackendPagination";
+import { DiscountsAndSurcharges } from "../components/suppliers/DiscountsAndSurcharges";
 
 // import { REPORT_URL } from "../utils/urls";
 
@@ -21,111 +21,32 @@ export function Suppliers() {
 
     const navigate = useNavigate()
 
-    const { loadingSuppliers, handleSubmit, handleDelete, setOpen, open, getSuppliers } = useSuppliers()
-    const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
-        defaultData: {
-            id: '',
-            name: '',
-            business_name: '',
-            cuil: '',
-            address: '',
-            cell_phone: '',
-            business_phone: '',
-            email: '',
-            articles: []
-        },
-        rules: {
-            name: {
-                required: true,
-                maxLength: 255
-            },
-            business_name: {
-                maxLength: 255
-            },
-            cuil: {
-                maxLength: 255
-            },
-            address: {
-                maxLength: 255
-            },
-            cell_phone: {
-                maxLength: 255
-            },
-            business_phone: {
-                maxLength: 255
-            },
-            email: {
-                maxLength: 255
-            }
-        }
-    })
+    const {
+        loadingSuppliers,
+        handleSubmit,
+        handleDelete,
+        setOpen,
+        open,
+        getSuppliers,
+        supplierFormData,
+        headCells,
+        supplierDiscounts,
+        setSupplierDiscounts,
+        supplierSurcharges,
+        setSupplierSurcharges
+    } = useSuppliers()
+    const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = supplierFormData
 
     useEffect(() => {
         if (auth?.user.role !== 'ADMINISTRADOR') navigate("/articulos")
     }, [])
 
-    const headCells = [
-        {
-            id: 'id',
-            numeric: true,
-            disablePadding: false,
-            label: 'Código',
-            accessor: 'id'
-        },
-        {
-            id: 'name',
-            numeric: false,
-            disablePadding: true,
-            label: 'Proveedor',
-            accessor: 'name'
-        },
-        {
-            id: 'business_name',
-            numeric: false,
-            disablePadding: true,
-            label: 'Razón Social',
-            accessor: 'business_name'
-        },
-        {
-            id: 'cuil',
-            numeric: false,
-            disablePadding: true,
-            label: 'CUIL',
-            accessor: 'cuil'
-        },
-        {
-            id: 'address',
-            numeric: false,
-            disablePadding: true,
-            label: 'Dirección',
-            accessor: (row) => (
-                <Link target="_blank" to={`https://www.google.com/maps?q=${row.address}`}>
-                    <span style={{ color: '#050622' }}>{row.address}</span>
-                </Link>
-            )
-        },
-        {
-            id: 'cell_phone',
-            numeric: false,
-            disablePadding: true,
-            label: 'Teléfono',
-            accessor: 'cell_phone'
-        },
-        {
-            id: 'business_phone',
-            numeric: false,
-            disablePadding: true,
-            label: 'Teléfono',
-            accessor: 'business_phone'
-        },
-        {
-            id: 'email',
-            numeric: false,
-            disablePadding: true,
-            label: 'Email',
-            accessor: 'email'
+    useEffect(() => {
+        if (open === 'EDIT' || open === 'VIEW') {
+            setSupplierDiscounts(formData.discounts)
+            setSupplierSurcharges(formData.surcharges)
         }
-    ]
+    }, [open])
 
     return (
         <Layout title="Proveedores">
@@ -265,6 +186,22 @@ export function Suppliers() {
                             </FormControl>
                         </Box>
                     </form>
+                    <Box sx={{ display: 'flex', gap: 2, mt: 2 }}>
+                        <DiscountsAndSurcharges
+                            title="Descuentos"
+                            entity="descuentos"
+                            supplierEntities={supplierDiscounts}
+                            setSupplierEntities={setSupplierDiscounts}
+                            open={open}
+                        />
+                        <DiscountsAndSurcharges
+                            title="Recargos"
+                            entity="recargos"
+                            supplierEntities={supplierSurcharges}
+                            setSupplierEntities={setSupplierSurcharges}
+                            open={open}
+                        />
+                    </Box>
                 </ModalComponent>
                 <ModalComponent open={open === 'DELETE'} onClose={() => reset(setOpen)} reduceWidth={900}>
                     <Typography variant="h6" marginBottom={1} textAlign="center">

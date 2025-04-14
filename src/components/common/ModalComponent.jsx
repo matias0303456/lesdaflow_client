@@ -13,7 +13,8 @@ const style = {
     bgcolor: 'background.paper',
     boxShadow: 24,
     p: 3,
-    borderRadius: 1
+    borderRadius: 1,
+    overflowY: 'scroll'
 };
 
 // export function ModalComponent({ children, open, onClose, dynamicContent = false, reduceWidth = 300, p = 3 }) {
