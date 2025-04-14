@@ -156,12 +156,12 @@ export function SaleFormFields({
                             gap: 3
                         }}>
                             <FormControl>
-                                <InputLabel>Descuento</InputLabel>
+                                <InputLabel>Descuento {open !== 'EDIT' && open === 'VIEW' ? '' : `(actual: ${formData.discount_name})`}</InputLabel>
                                 <Select
                                     labelId="discount-select"
                                     id="discount"
                                     value={discountApplied?.id ?? ''}
-                                    disabled={formData.type === 'POXIPOL' || open === 'VIEW' || open === 'EDIT'}
+                                    disabled={formData.type === 'POXIPOL' || open === 'VIEW'}
                                     label="Descuento"
                                     name="discount"
                                     onChange={(e) => setDiscountApplied(state.discounts.data.find(d => d.id === e.target.value) ?? '')}

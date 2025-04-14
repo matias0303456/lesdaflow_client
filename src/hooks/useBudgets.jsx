@@ -34,12 +34,13 @@ export function useBudgets() {
         }
     }
 
-    async function handleSubmit(e, formData, validate, reset, setDisabled) {
+    async function handleSubmit(e, formData, validate, reset, setDisabled, discountApplied) {
         e.preventDefault()
         const submitData = {
             ...formData,
             budget_products: budgetProducts,
-            idsToDelete: idsToDelete.length === 0 ? undefined : idsToDelete
+            idsToDelete: idsToDelete.length === 0 ? undefined : idsToDelete,
+            discount_name: discountApplied ? discountApplied.name : formData.discount_name
         }
         const bpMissing = submitData.budget_products.length === 0 || submitData.budget_products.some(bp => !bp.amount || parseInt(bp.amount) <= 0)
         if (validate() && !bpMissing) {

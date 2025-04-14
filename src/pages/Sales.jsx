@@ -89,10 +89,6 @@ export function Sales() {
         }
     }, [formData])
 
-    // useEffect(() => {
-    //    console.log(formData.total)
-    // }, [formData.total])
-
     useEffect(() => {
         const currentClient = state.clients.data.find(c => c.id === parseInt(formData.client_id))
         const currentClientSales = state.sales.data.filter(s => s.client_id === currentClient?.id)

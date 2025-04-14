@@ -71,7 +71,7 @@ export function BudgetForm({
                 {open === 'EDIT' && 'Editar presupuesto'}
                 {open === 'VIEW' && `Presupuesto #${formData.id}`}
             </Typography>
-            <form onChange={handleChange} onSubmit={(e) => handleSubmit(e, formData, validate, reset, setDisabled)}>
+            <form onChange={handleChange} onSubmit={(e) => handleSubmit(e, formData, validate, reset, setDisabled, discountApplied)}>
                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                     <FormControl>
                         <Autocomplete
@@ -169,7 +169,7 @@ export function BudgetForm({
                 </Box>
                 <Box sx={{ display: 'flex', justifyContent: 'end', gap: 2, marginTop: 3 }}>
                     <FormControl sx={{ width: '30%' }}>
-                        <InputLabel>Descuento</InputLabel>
+                        <InputLabel>Descuento {open !== 'EDIT' && open === 'VIEW' ? '' : `(actual: ${formData.discount_name})`}</InputLabel>
                         <Select
                             labelId="discount-select"
                             id="discount"
