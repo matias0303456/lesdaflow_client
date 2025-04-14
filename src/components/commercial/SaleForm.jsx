@@ -92,7 +92,7 @@ export function SaleForm({
     }, [formData.type])
 
     useEffect(() => {
-        if (open === 'EDIT' && typeof discountApplied === 'string') return
+        if (open === 'EDIT' && typeof discountApplied === 'string' && discountApplied !== 'none') return
         setFormData({
             ...formData,
             total: getCurrentTotal(discountApplied, saleProducts, state.products.data),

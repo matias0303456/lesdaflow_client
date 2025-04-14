@@ -98,7 +98,7 @@ export function SaleFormFields({
                                             ...formData,
                                             type: 'CUENTA_CORRIENTE'
                                         })
-                                        setDiscountApplied('')
+                                        setDiscountApplied(open === 'NEW' ? '' : 'none')
                                     }
                                 }}
                             />
@@ -113,9 +113,10 @@ export function SaleFormFields({
                                             ...formData,
                                             type: 'CONTADO'
                                         })
+                                        setDiscountApplied(open === 'NEW' ? '' : 'none')
                                     }
                                 }}
-                            />
+                                />
                             <FormControlLabel
                                 control={<Checkbox disabled={open === 'VIEW' || (open === 'EDIT' && auth?.user.role !== 'ADMINISTRADOR')} />}
                                 label="Poxipol"
@@ -127,6 +128,7 @@ export function SaleFormFields({
                                             ...formData,
                                             type: 'POXIPOL'
                                         })
+                                        setDiscountApplied(open === 'NEW' ? '' : 'none')
                                     }
                                 }}
                             />
@@ -156,7 +158,7 @@ export function SaleFormFields({
                             gap: 3
                         }}>
                             <FormControl>
-                                <InputLabel>Descuento {open !== 'EDIT' && open === 'VIEW' ? '' : `(actual: ${formData.discount_name})`}</InputLabel>
+                                <InputLabel>Descuento {open !== 'EDIT' && open !== 'VIEW' ? '' : `(actual: ${formData.discount_name})`}</InputLabel>
                                 <Select
                                     labelId="discount-select"
                                     id="discount"
@@ -164,10 +166,10 @@ export function SaleFormFields({
                                     disabled={formData.type === 'POXIPOL' || open === 'VIEW'}
                                     label="Descuento"
                                     name="discount"
-                                    onChange={(e) => setDiscountApplied(state.discounts.data.find(d => d.id === e.target.value) ?? '')}
+                                    onChange={(e) => setDiscountApplied(state.discounts.data.find(d => d.id === e.target.value) ?? 'none')}
                                     sx={{ width: "100%" }}
                                 >
-                                    <MenuItem value="">Ninguno</MenuItem>
+                                    <MenuItem value="none">Ninguno</MenuItem>
                                     {getAvailableDiscounts(formData, saleProducts, state.products.data, state.discounts.data)
                                         .map(d => (
                                             <MenuItem key={d.id} value={d.id}>

@@ -179,8 +179,9 @@ export function getCurrentSubtotal(saleProducts, products) {
 }
 
 export function getCurrentTotal(discount, saleProducts, products) {
-    const { discount_by_suppliers, discount_by_products, value } = discount
     const subtotal = getCurrentSubtotal(saleProducts, products)
+    if (discount === 'none') return subtotal
+    const { discount_by_suppliers, discount_by_products, value } = discount
     if (discount_by_suppliers?.length === 0 && discount_by_products?.length === 0) {
         return (subtotal - ((subtotal / 100) * value)).toFixed(2)
     }
