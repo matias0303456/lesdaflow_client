@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { useContext, useEffect } from "react"
+import { useContext } from "react"
 import { Autocomplete, Box, Button, Checkbox, FormControl, FormControlLabel, Input, InputLabel, TextField, Typography } from "@mui/material"
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers"
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns"
@@ -9,9 +9,9 @@ import { DataContext } from "../../providers/DataProvider"
 import { AuthContext } from "../../providers/AuthProvider"
 
 import { AddArticlesToSale } from "./AddArticlesToSale"
-
-import { getCurrentSubtotal, getDiscountsValues, getSurchargesValues } from "../../utils/helpers"
 import { DataDisplay } from "./DataDisplay"
+
+import { getCurrentSubtotal } from "../../utils/helpers"
 
 export function SaleFormFields({
     handleChange,
@@ -32,15 +32,12 @@ export function SaleFormFields({
     setIdsToDelete,
     handleClose,
     disabled,
-    open
+    open,
+    discAndSurch
 }) {
 
     const { auth } = useContext(AuthContext)
     const { state } = useContext(DataContext)
-
-    useEffect(() => {
-        console.log(saleArticles)
-    }, [saleArticles])
 
     return (
         <Box sx={{ p: 1 }}>
@@ -152,16 +149,7 @@ export function SaleFormFields({
                                     </Typography>
                                 }
                             </FormControl>
-                            <DataDisplay
-                                title="Descuentos"
-                                data={getDiscountsValues(saleArticles, state.articles.data)}
-                                entity="discounts"
-                            />
-                            <DataDisplay
-                                title="Recargos"
-                                data={getSurchargesValues(saleArticles, state.articles.data)}
-                                entity="surcharges"
-                            />
+                            <DataDisplay data={discAndSurch} />
                         </Box>
                     </Box>
                 </Box>

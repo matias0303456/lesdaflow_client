@@ -155,29 +155,19 @@ export function getCurrentSubtotal(saleArticles, articles) {
     return total.toFixed(2)
 }
 
-export function getCurrentTotal(saleArticles, articles) {
+export function getCurrentTotal(saleArticles, articles, discAndSurch) {
     const subtotal = getCurrentSubtotal(saleArticles, articles)
-    return subtotal
+    const discounts = discAndSurch.reduce((prev, curr) => {
+        return prev + curr.discounts.reduce((p, c) => p + c.value, 0)
+    }, 0)
+    const surcharges = discAndSurch.reduce((prev, curr) => {
+        return prev + curr.surcharges.reduce((p, c) => p + c.value, 0)
+    }, 0)
+    const total = subtotal - ((subtotal / 100) * discounts) + ((subtotal / 100) * surcharges)
+    return total.toFixed(2)
 }
 
-export function getDiscountsValues(saleArticles, articles) {
-    let supplierIds = []
-    let returnValue = []
-    saleArticles.forEach(sa => {
-        console.log(sa)
-        const a = articles.find(item => item.id === (sa.article?.id ?? sa.article_id))
-        if (!supplierIds.includes(a.supplier_id)) {
-            supplierIds.push(a.supplier_id)
-            returnValue.push({
-                supplier_name: a.supplier?.name,
-                discounts: a?.supplier.discounts.map(d => ({ name: d.name, value: d.value }))
-            })
-        }
-    })
-    return returnValue
-}
-
-export function getSurchargesValues(saleArticles, articles) {
+export function getDiscountsAndSurchargesValues(saleArticles, articles) {
     let supplierIds = []
     let returnValue = []
     saleArticles.forEach(sa => {
@@ -186,6 +176,7 @@ export function getSurchargesValues(saleArticles, articles) {
             supplierIds.push(a.supplier_id)
             returnValue.push({
                 supplier_name: a.supplier?.name,
+                discounts: a?.supplier.discounts.map(d => ({ name: d.name, value: d.value })),
                 surcharges: a?.supplier.surcharges.map(d => ({ name: d.name, value: d.value }))
             })
         }

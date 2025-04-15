@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { useContext, useEffect, useState } from "react"
+import { useContext, useEffect, useMemo, useState } from "react"
 import { Box, Button, Tab, Tabs, Typography } from "@mui/material"
 
 import { DataContext } from "../../providers/DataProvider"
@@ -11,7 +11,7 @@ import { PaymentsABM } from "./PaymentsABM"
 import { PaymentForm } from "./PaymentForm"
 import { SaleFormFields } from "./SaleFormFields"
 
-import { a11yProps, getCurrentTotal } from "../../utils/helpers"
+import { a11yProps, getCurrentTotal, getDiscountsAndSurchargesValues } from "../../utils/helpers"
 
 export function SaleForm({
     saleArticles,
@@ -87,13 +87,18 @@ export function SaleForm({
         }
     }, [formData.type])
 
+    const discAndSurch = useMemo(() => {
+        return getDiscountsAndSurchargesValues(saleArticles, state.articles.data)
+    }, [saleArticles])
+
     useEffect(() => {
         if (open === 'EDIT') return
         setFormData({
             ...formData,
-            total: getCurrentTotal(saleArticles, state.articles.data),
+            total: getCurrentTotal(saleArticles, state.articles.data, discAndSurch),
         })
-    }, [saleArticles, state.articles.data, open])
+    }, [saleArticles, open])
+
 
     const handleChangeTab = (_, newValue) => {
         setValueTab(newValue)
@@ -161,6 +166,7 @@ export function SaleForm({
                     handleClose={handleClose}
                     disabled={disabled}
                     open={open}
+                    discAndSurch={discAndSurch}
                 />
             }
             {
