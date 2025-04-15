@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import { useContext, useEffect } from "react"
-import { Autocomplete, Box, Button, Checkbox, FormControl, FormControlLabel, Input, InputLabel, MenuItem, Select, TextField, Typography } from "@mui/material"
+import { Autocomplete, Box, Button, Checkbox, FormControl, FormControlLabel, Input, InputLabel, TextField, Typography } from "@mui/material"
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers"
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns"
 import { es } from "date-fns/locale"
@@ -10,7 +10,8 @@ import { AuthContext } from "../../providers/AuthProvider"
 
 import { AddArticlesToSale } from "./AddArticlesToSale"
 
-import { getAvailableDiscounts, getCurrentSubtotal } from "../../utils/helpers"
+import { getCurrentSubtotal, getDiscountsValues, getSurchargesValues } from "../../utils/helpers"
+import { DataDisplay } from "./DataDisplay"
 
 export function SaleFormFields({
     handleChange,
@@ -23,11 +24,8 @@ export function SaleFormFields({
     setDisabled,
     setConfirmed,
     errors,
-    isBlocked,
     saleArticles,
     setSaleArticles,
-    discountApplied,
-    setDiscountApplied,
     missing,
     setMissing,
     idsToDelete,
@@ -41,7 +39,7 @@ export function SaleFormFields({
     const { state } = useContext(DataContext)
 
     useEffect(() => {
-        if (saleArticles.length === 0 || discountApplied?.id) setDiscountApplied('')
+        console.log(saleArticles)
     }, [saleArticles])
 
     return (
@@ -49,7 +47,7 @@ export function SaleFormFields({
             <form onChange={handleChange} onSubmit={(e) => {
                 e.preventDefault();
                 if (confirmed) {
-                    handleSubmit(e, formData, validate, reset, setDisabled, discountApplied)
+                    handleSubmit(e, formData, validate, reset, setDisabled)
                     setConfirmed(false)
                 } else {
                     setConfirmed(true)
@@ -80,11 +78,6 @@ export function SaleFormFields({
                                     * El cliente es requerido.
                                 </Typography>
                             }
-                            {isBlocked &&
-                                <Typography variant="caption" color="red" marginTop={1}>
-                                    * Este cliente está bloqueado.
-                                </Typography>
-                            }
                         </FormControl>
                         <Box sx={{ width: { xs: '100%', md: '40%' }, display: 'flex', justifyContent: 'space-around' }}>
                             <FormControlLabel
@@ -98,7 +91,6 @@ export function SaleFormFields({
                                             ...formData,
                                             type: 'CUENTA_CORRIENTE'
                                         })
-                                        setDiscountApplied('')
                                     }
                                 }}
                             />
@@ -138,34 +130,8 @@ export function SaleFormFields({
                             display: 'flex',
                             flexDirection: 'column',
                             width: { xs: '100%', md: '40%' },
-                            gap: 3
+                            gap: 1
                         }}>
-                            <FormControl>
-                                <InputLabel>Descuento</InputLabel>
-                                <Select
-                                    labelId="discount-select"
-                                    id="discount"
-                                    value={discountApplied.id ?? ''}
-                                    disabled={open === 'VIEW' || open === 'EDIT'}
-                                    label="Descuento"
-                                    name="discount"
-                                    onChange={(e) => setDiscountApplied(state.discounts.data.find(d => d.id === e.target.value))}
-                                    sx={{ width: "100%" }}
-                                >
-                                    <MenuItem value="">Ninguno</MenuItem>
-                                    {getAvailableDiscounts(formData, saleArticles, state.articles.data, state.discounts.data)
-                                        .map(d => (
-                                            <MenuItem key={d.id} value={d.id}>
-                                                {d.name}
-                                            </MenuItem>
-                                        ))}
-                                </Select>
-                                {discountApplied?.base > 0 && discountApplied?.base > formData.total &&
-                                    <Typography variant="caption" color="red" marginTop={1}>
-                                        * El monto neto debe ser mayor o igual a la base del descuento: ${discountApplied.base}.
-                                    </Typography>
-                                }
-                            </FormControl>
                             <FormControl>
                                 <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
                                     <DatePicker
@@ -186,6 +152,16 @@ export function SaleFormFields({
                                     </Typography>
                                 }
                             </FormControl>
+                            <DataDisplay
+                                title="Descuentos"
+                                data={getDiscountsValues(saleArticles, state.articles.data)}
+                                entity="discounts"
+                            />
+                            <DataDisplay
+                                title="Recargos"
+                                data={getSurchargesValues(saleArticles, state.articles.data)}
+                                entity="surcharges"
+                            />
                         </Box>
                     </Box>
                 </Box>
@@ -194,15 +170,9 @@ export function SaleFormFields({
                         <InputLabel htmlFor="subtotal">Subtotal</InputLabel>
                         <Input value={getCurrentSubtotal(saleArticles, state.articles.data)} id="subtotal" type="number" name="subtotal" disabled />
                     </FormControl>
-                    {open === 'NEW' &&
-                        <FormControl>
-                            <InputLabel htmlFor="discount">Descuento</InputLabel>
-                            <Input value={`${discountApplied?.value ?? '0'}%`} id="dicount" type="text" name="discount" disabled />
-                        </FormControl>
-                    }
                     <FormControl>
                         <InputLabel htmlFor="total">Total</InputLabel>
-                        <Input value={formData.total} id="total" type="number" name="total" disabled />
+                        <Input value={formData.total} id="total" type="number" name="total" />
                     </FormControl>
                 </Box>
                 {confirmed &&
@@ -226,11 +196,7 @@ export function SaleFormFields({
                         <Button
                             type="submit"
                             variant="contained"
-                            disabled={
-                                disabled ||
-                                discountApplied?.base > parseFloat(formData.total) ||
-                                (isBlocked && (open === 'NEW' || open === 'CONVERT'))
-                            }
+                            disabled={disabled}
                             sx={{ width: '50%' }}
                         >
                             {confirmed ? 'Guardar' : 'Confirmar'}

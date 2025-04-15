@@ -31,8 +31,6 @@ export function SaleForm({
     setDisabled,
     handleChange,
     errors,
-    isBlocked,
-    setIsBlocked
 }) {
 
     const { state } = useContext(DataContext)
@@ -58,7 +56,6 @@ export function SaleForm({
 
     const [valueTab, setValueTab] = useState(0)
     const [confirmed, setConfirmed] = useState(false)
-    const [discountApplied, setDiscountApplied] = useState('')
 
     useEffect(() => {
         getRegisters()
@@ -94,9 +91,9 @@ export function SaleForm({
         if (open === 'EDIT') return
         setFormData({
             ...formData,
-            total: getCurrentTotal(discountApplied, saleArticles, state.articles.data),
+            total: getCurrentTotal(saleArticles, state.articles.data),
         })
-    }, [discountApplied, saleArticles, state.articles.data, open])
+    }, [saleArticles, state.articles.data, open])
 
     const handleChangeTab = (_, newValue) => {
         setValueTab(newValue)
@@ -107,10 +104,8 @@ export function SaleForm({
         setSaleArticles([])
         setMissing(false)
         setIdsToDelete([])
-        setIsBlocked(false)
         setValueTab(0)
         setConfirmed(false)
-        setDiscountApplied('')
     }
 
     return (
@@ -157,11 +152,8 @@ export function SaleForm({
                     setDisabled={setDisabled}
                     setConfirmed={setConfirmed}
                     errors={errors}
-                    isBlocked={isBlocked}
                     saleArticles={saleArticles}
                     setSaleArticles={setSaleArticles}
-                    discountApplied={discountApplied}
-                    setDiscountApplied={setDiscountApplied}
                     missing={missing}
                     setMissing={setMissing}
                     idsToDelete={idsToDelete}

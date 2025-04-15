@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
-import { useContext, useEffect, useState } from "react"
-import { Autocomplete, Box, FormControl, InputLabel, TextField, Typography, Input, Button, FormControlLabel, Checkbox, Select, MenuItem } from "@mui/material"
+import { useContext, useEffect } from "react"
+import { Autocomplete, Box, FormControl, InputLabel, TextField, Typography, Input, Button, FormControlLabel, Checkbox } from "@mui/material"
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers"
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns"
 import { es } from "date-fns/locale"
@@ -10,7 +10,7 @@ import { DataContext } from "../../providers/DataProvider"
 import { AddArticlesToBudget } from "./AddArticlesToBudget"
 import { ModalComponent } from "../common/ModalComponent"
 
-import { getAvailableDiscounts, getCurrentTotal } from "../../utils/helpers"
+import { getCurrentTotal } from "../../utils/helpers"
 
 export function BudgetForm({
     budgetArticles,
@@ -34,8 +34,6 @@ export function BudgetForm({
 
     const { state } = useContext(DataContext)
 
-    const [discountApplied, setDiscountApplied] = useState('')
-
     useEffect(() => {
         if (budgetArticles.length > 0 && (open === 'NEW' || open === 'CONVERT')) {
             setBudgetArticles(budgetArticles.filter(bp => {
@@ -50,9 +48,9 @@ export function BudgetForm({
         if (open === 'EDIT') return
         setFormData({
             ...formData,
-            total: getCurrentTotal(discountApplied, budgetArticles, state.articles.data),
+            total: getCurrentTotal(budgetArticles, state.articles.data),
         })
-    }, [discountApplied, budgetArticles, state.articles.data, open])
+    }, [budgetArticles, state.articles.data, open])
 
     return (
         <ModalComponent
@@ -152,32 +150,6 @@ export function BudgetForm({
                     />
                 </Box>
                 <Box sx={{ display: 'flex', justifyContent: 'end', gap: 2, marginTop: 3 }}>
-                    <FormControl sx={{ width: '30%' }}>
-                        <InputLabel>Descuento</InputLabel>
-                        <Select
-                            labelId="discount-select"
-                            id="discount"
-                            value={discountApplied.id ?? ''}
-                            disabled={open === 'VIEW' || open === 'EDIT'}
-                            label="Descuento"
-                            name="discount"
-                            onChange={(e) => setDiscountApplied(state.discounts.data.find(d => d.id === e.target.value))}
-                            sx={{ width: "100%" }}
-                        >
-                            <MenuItem value="">Ninguno</MenuItem>
-                            {getAvailableDiscounts(formData, budgetArticles, state.articles.data, state.discounts.data)
-                                .map(d => (
-                                    <MenuItem key={d.id} value={d.id}>
-                                        {d.name}
-                                    </MenuItem>
-                                ))}
-                        </Select>
-                        {discountApplied?.base > 0 && discountApplied?.base > formData.total &&
-                            <Typography variant="caption" color="red" marginTop={1}>
-                                * El monto neto debe ser mayor o igual a la base del descuento: ${discountApplied.base}.
-                            </Typography>
-                        }
-                    </FormControl>
                     <FormControl>
                         <InputLabel htmlFor="total">Total</InputLabel>
                         <Input

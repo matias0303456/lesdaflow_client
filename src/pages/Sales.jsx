@@ -15,7 +15,6 @@ import { DataGridWithBackendPagination } from "../components/datagrid/DataGridWi
 import { SaleForm } from "../components/commercial/SaleForm";
 
 import { REPORT_URL } from "../utils/urls";
-import { getDeliveredDeadline, getSaleDifference } from "../utils/helpers";
 
 export function Sales() {
 
@@ -37,8 +36,6 @@ export function Sales() {
         handleSubmit,
         handleDelete,
         getSales,
-        isBlocked,
-        setIsBlocked,
         headCells,
         saleFormData
     } = useSales()
@@ -58,16 +55,6 @@ export function Sales() {
             setSaleArticles(formData.sale_articles)
         }
     }, [formData])
-
-    useEffect(() => {
-        const currentClient = state.clients.data.find(c => c.id === parseInt(formData.client_id))
-        const currentClientSales = state.sales.data.filter(s => s.client_id === currentClient?.id)
-        const someSaleIsPast = currentClientSales.some(s =>
-            getDeliveredDeadline(s) < new Date(Date.now()) &&
-            parseFloat(getSaleDifference(s).replace('$', '')) > 0
-        )
-        setIsBlocked(currentClient?.is_blocked || someSaleIsPast)
-    }, [formData.client_id])
 
     return (
         <Layout title="Ventas">
@@ -132,8 +119,6 @@ export function Sales() {
                     setDisabled={setDisabled}
                     handleChange={handleChange}
                     errors={errors}
-                    isBlocked={isBlocked}
-                    setIsBlocked={setIsBlocked}
                 />
                 <ModalComponent
                     reduceWidth={800}

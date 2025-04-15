@@ -133,10 +133,6 @@ export function getBudgetTotal(budget, subtotal) {
     return (subtotal - ((subtotal / 100) * parseFloat(budget.discount))).toFixed(2)
 }
 
-export function saleIsPrepared(sale) {
-    return sale.sale_articles.every(sa => sa.is_prepared)
-}
-
 export function getDeliveredDeadline(sale) {
     if (!sale.delivered_at) return new Date(Date.now())
     const delivered = new Date(sale.delivered_at)
@@ -151,49 +147,48 @@ export function a11yProps(index) {
     }
 }
 
-export function getAvailableDiscounts(formData, saleArticles, articles, discounts) {
-    if (saleArticles.length === 0) return []
-    const date = new Date(formData.date)
-    const type = formData.type
-    return discounts.filter(discount => {
-        const { from, to, discount_by_articles, discount_by_suppliers, sale_type } = discount
-        const discountArticles = discount_by_articles.map(dbp => dbp.article_id)
-        const discountSuppliers = discount_by_suppliers.map(dbs => dbs.supplier_id)
-        if (
-            ((!from && !to) || (from && to && new Date(from) < date && new Date(to) > date)) &&
-            (!sale_type || sale_type === type) &&
-            ((discountSuppliers.length === 0 && discountArticles.length === 0) || saleArticles.some(sa => {
-                const article = sa.article ?? articles.find(p => p.id === sa.article_id)
-                return discountSuppliers.includes(article.supplier_id) || discountArticles.includes(article.id)
-            }))
-        ) return discount
-    })
-}
-
 export function getCurrentSubtotal(saleArticles, articles) {
     const total = saleArticles.reduce((prev, curr) => {
-        const p = articles.find(item => item.id === curr.article_id)
-        return prev + (((curr.buy_price ?? p.buy_price) + (((curr.buy_price ?? p.buy_price) / 100) * (curr.earn ?? p.earn))) * (isNaN(parseInt(curr.amount)) ? 0 : parseInt(curr.amount)))
+        const a = articles.find(item => item.id === curr.article_id)
+        return prev + (((curr.buy_price ?? a.buy_price) + (((curr.buy_price ?? a.buy_price) / 100) * (curr.earn ?? a.earn))) * (isNaN(parseInt(curr.amount)) ? 0 : parseInt(curr.amount)))
     }, 0)
     return total.toFixed(2)
 }
 
-export function getCurrentTotal(discount, saleArticles, articles) {
-    const { discount_by_suppliers, discount_by_articles, value } = discount
+export function getCurrentTotal(saleArticles, articles) {
     const subtotal = getCurrentSubtotal(saleArticles, articles)
-    if (discount_by_suppliers?.length === 0 && discount_by_articles?.length === 0) {
-        return (subtotal - ((subtotal / 100) * value)).toFixed(2)
-    }
-    const discountArticles = discount_by_articles?.map(dbp => dbp.article_id)
-    const discountSuppliers = discount_by_suppliers?.map(dbs => dbs.supplier_id)
-    const returnValue = saleArticles.reduce((total, sa) => {
-        const article = sa.article ?? articles.find(p => p.id === sa.article_id)
-        const salePrice = getArticleSalePrice(article)
-        if (discountSuppliers?.includes(article.supplier_id) || discountArticles?.includes(article.id)) {
-            const salePriceWithDiscount = salePrice - ((salePrice / 100) * value)
-            return total + salePriceWithDiscount
+    return subtotal
+}
+
+export function getDiscountsValues(saleArticles, articles) {
+    let supplierIds = []
+    let returnValue = []
+    saleArticles.forEach(sa => {
+        console.log(sa)
+        const a = articles.find(item => item.id === (sa.article?.id ?? sa.article_id))
+        if (!supplierIds.includes(a.supplier_id)) {
+            supplierIds.push(a.supplier_id)
+            returnValue.push({
+                supplier_name: a.supplier?.name,
+                discounts: a?.supplier.discounts.map(d => ({ name: d.name, value: d.value }))
+            })
         }
-        return parseFloat(total + subtotal)
-    }, 0)
-    return returnValue.toFixed(2)
+    })
+    return returnValue
+}
+
+export function getSurchargesValues(saleArticles, articles) {
+    let supplierIds = []
+    let returnValue = []
+    saleArticles.forEach(sa => {
+        const a = articles.find(item => item.id === (sa.article?.id ?? sa.article_id))
+        if (!supplierIds.includes(a.supplier_id)) {
+            supplierIds.push(a.supplier_id)
+            returnValue.push({
+                supplier_name: a.supplier?.name,
+                surcharges: a?.supplier.surcharges.map(d => ({ name: d.name, value: d.value }))
+            })
+        }
+    })
+    return returnValue
 }

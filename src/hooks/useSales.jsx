@@ -24,7 +24,6 @@ export function useSales() {
     const [idsToDelete, setIdsToDelete] = useState([])
     const [saleSaved, setSaleSaved] = useState(null)
     const [missing, setMissing] = useState(false)
-    const [isBlocked, setIsBlocked] = useState(false)
 
     const saleFormData = useForm({
         defaultData: {
@@ -63,13 +62,12 @@ export function useSales() {
         }
     }
 
-    async function handleSubmit(e, formData, validate, reset, setDisabled, discountApplied) {
+    async function handleSubmit(e, formData, validate, reset, setDisabled) {
         e.preventDefault()
         const submitData = {
             ...formData,
             sale_articles: saleArticles,
             idsToDelete: idsToDelete.length === 0 ? undefined : idsToDelete,
-            observations: discountApplied ? formData.observations += `- Descuento aplicado: ${discountApplied.name} (${format(new Date(Date.now()), 'dd/MM/yyyy')})\n` : formData.observations
         }
         const spMissing = submitData.sale_articles.length === 0 || submitData.sale_articles.some(sp => !sp.amount || parseInt(sp.amount) <= 0)
         if (validate() && !spMissing) {
@@ -102,7 +100,6 @@ export function useSales() {
                 setSaleArticles([])
                 setMissing(false)
                 setIdsToDelete([])
-                setIsBlocked(false)
             } else {
                 setMessage(data.message)
                 setSeverity('error')
@@ -207,8 +204,6 @@ export function useSales() {
         handleSubmit,
         handleDelete,
         getSales,
-        isBlocked,
-        setIsBlocked,
         headCells,
         saleFormData
     }

@@ -78,7 +78,7 @@ export function AddArticlesToSale({
                             onChange={(_, value) => handleAdd({ idx: saleArticles.length, article_id: value?.id ?? '' })}
                             renderInput={(params) => <TextField {...params} label="Artículo *" inputRef={autocompleteRef} />}
                             isOptionEqualToValue={(option, value) => option?.code === value?.code || value.length === 0}
-                            onInputChange={(e, value) => setValue(value)}
+                            onInputChange={(_, value) => setValue(value)}
                             value={value}
                             onBlur={() => setValue('')}
                         />
