@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { useContext, useEffect } from "react"
+import { useContext, useEffect, useMemo } from "react"
 import { Autocomplete, Box, FormControl, InputLabel, TextField, Typography, Input, Button, FormControlLabel, Checkbox } from "@mui/material"
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers"
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns"
@@ -9,8 +9,9 @@ import { DataContext } from "../../providers/DataProvider"
 
 import { AddArticlesToBudget } from "./AddArticlesToBudget"
 import { ModalComponent } from "../common/ModalComponent"
+import { DataDisplay } from "./DataDisplay"
 
-import { getCurrentTotal } from "../../utils/helpers"
+import { getCurrentTotal, getDiscountsAndSurchargesValues } from "../../utils/helpers"
 
 export function BudgetForm({
     budgetArticles,
@@ -44,13 +45,17 @@ export function BudgetForm({
         }
     }, [formData.type])
 
+    const discAndSurch = useMemo(() => {
+        return getDiscountsAndSurchargesValues(budgetArticles, state.articles.data)
+    }, [budgetArticles])
+
     useEffect(() => {
         if (open === 'EDIT') return
         setFormData({
             ...formData,
-            total: getCurrentTotal(budgetArticles, state.articles.data),
+            total: getCurrentTotal(budgetArticles, state.articles.data, discAndSurch),
         })
-    }, [budgetArticles, state.articles.data, open])
+    }, [budgetArticles, open])
 
     return (
         <ModalComponent
@@ -139,7 +144,7 @@ export function BudgetForm({
                         />
                     </Box>
                     <AddArticlesToBudget
-                        ARTICLES={state.articles.data}
+                        articles={state.articles.data}
                         budgetArticles={budgetArticles}
                         setBudgetArticles={setBudgetArticles}
                         missing={missing}
@@ -149,6 +154,7 @@ export function BudgetForm({
                         open={open}
                     />
                 </Box>
+                <DataDisplay data={discAndSurch} />
                 <Box sx={{ display: 'flex', justifyContent: 'end', gap: 2, marginTop: 3 }}>
                     <FormControl>
                         <InputLabel htmlFor="total">Total</InputLabel>
