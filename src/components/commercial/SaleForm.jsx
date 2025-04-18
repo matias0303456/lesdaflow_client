@@ -32,7 +32,9 @@ export function SaleForm({
     handleChange,
     errors,
     isBlocked,
-    setIsBlocked
+    setIsBlocked,
+    discountApplied,
+    setDiscountApplied
 }) {
 
     const { state } = useContext(DataContext)
@@ -58,7 +60,6 @@ export function SaleForm({
 
     const [valueTab, setValueTab] = useState(0)
     const [confirmed, setConfirmed] = useState(false)
-    const [discountApplied, setDiscountApplied] = useState('')
 
     useEffect(() => {
         getRegisters()
@@ -92,7 +93,7 @@ export function SaleForm({
     }, [formData.type])
 
     useEffect(() => {
-        if (open === 'EDIT' && typeof discountApplied === 'string' && discountApplied !== 'none') return
+        // if (open === 'EDIT' && typeof discountApplied === 'string' && discountApplied !== 'none') return
         setFormData({
             ...formData,
             total: getCurrentTotal(discountApplied, saleProducts, state.products.data),

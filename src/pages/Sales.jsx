@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Box, Button, Typography } from "@mui/material";
 import { format } from "date-fns";
@@ -71,6 +71,7 @@ export function Sales() {
             }
         }
     })
+    const [discountApplied, setDiscountApplied] = useState('')
 
     useEffect(() => {
         if (auth?.user.role !== 'ADMINISTRADOR' && auth?.user.role !== 'VENDEDOR') navigate('/prep-ventas')
@@ -84,8 +85,9 @@ export function Sales() {
     }, [])
 
     useEffect(() => {
-        if (open === 'EDIT' || open === 'VIEW') {
+        if ((open === 'EDIT' || open === 'VIEW') && saleProducts.length === 0) {
             setSaleProducts(formData.sale_products)
+            setDiscountApplied(state.discounts.data.find(d => d.name === formData.discount_name) ?? 'none')
         }
     }, [formData])
 
@@ -250,6 +252,8 @@ export function Sales() {
                     errors={errors}
                     isBlocked={isBlocked}
                     setIsBlocked={setIsBlocked}
+                    discountApplied={discountApplied}
+                    setDiscountApplied={setDiscountApplied}
                 />
                 <ModalComponent
                     reduceWidth={800}
