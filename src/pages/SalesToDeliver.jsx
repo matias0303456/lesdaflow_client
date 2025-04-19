@@ -40,7 +40,9 @@ export function SalesToDeliver() {
         handleSubmit,
         isBlocked,
         setIsBlocked,
-        deliverSale
+        deliverSale,
+        discountApplied,
+        setDiscountApplied
     } = useSales()
     const { getProducts } = useProducts()
     const { getClients } = useClients()
@@ -200,6 +202,8 @@ export function SalesToDeliver() {
                 errors={errors}
                 isBlocked={isBlocked}
                 setIsBlocked={setIsBlocked}
+                discountApplied={discountApplied}
+                setDiscountApplied={setDiscountApplied}
             />
             <ModalComponent open={open === 'SETTINGS'} onClose={() => setOpen(null)} reduceWidth={900}>
                 <Typography variant="h6" marginBottom={1} textAlign="center">

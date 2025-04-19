@@ -23,6 +23,7 @@ export function useSales() {
     const [missing, setMissing] = useState(false)
     const [isBlocked, setIsBlocked] = useState(false)
     const [salesByClient, setSalesByClient] = useState([])
+    const [discountApplied, setDiscountApplied] = useState('')
 
     async function getSales(params) {
         const { status, data } = await get(params)
@@ -243,6 +244,8 @@ export function useSales() {
         deliverSale,
         getSalesByClient,
         salesByClient,
-        prepareAllSaleProducts
+        prepareAllSaleProducts,
+        discountApplied,
+        setDiscountApplied
     }
 }

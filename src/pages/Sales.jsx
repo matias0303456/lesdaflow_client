@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Box, Button, Typography } from "@mui/material";
 import { format } from "date-fns";
@@ -44,7 +44,9 @@ export function Sales() {
         handleDelete,
         getSales,
         isBlocked,
-        setIsBlocked
+        setIsBlocked,
+        discountApplied,
+        setDiscountApplied
     } = useSales()
     const { loadingProducts, getProducts } = useProducts()
     const { loadingClients, getClients } = useClients()
@@ -71,7 +73,6 @@ export function Sales() {
             }
         }
     })
-    const [discountApplied, setDiscountApplied] = useState('')
 
     useEffect(() => {
         if (auth?.user.role !== 'ADMINISTRADOR' && auth?.user.role !== 'VENDEDOR') navigate('/prep-ventas')

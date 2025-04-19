@@ -59,7 +59,9 @@ export function Budgets() {
         setOpen: setOpenNewSale,
         idsToDelete: idsToDeleteNewSale,
         setIdsToDelete: setIdsToDeleteNewSale,
-        handleSubmit: handleSubmitNewSale
+        handleSubmit: handleSubmitNewSale,
+        discountApplied,
+        setDiscountApplied
     } = useSales()
     const {
         formData: newSale,
@@ -259,6 +261,8 @@ export function Budgets() {
                     setDisabled={setDisabledNewSale}
                     handleChange={handleChangeNewSale}
                     errors={errorsNewSale}
+                    discountApplied={discountApplied}
+                    setDiscountApplied={setDiscountApplied}
                 />
                 <ModalComponent open={open === 'DELETE'} onClose={() => reset(setOpen)} reduceWidth={900}>
                     <Typography variant="h6" marginBottom={1} textAlign="center">
