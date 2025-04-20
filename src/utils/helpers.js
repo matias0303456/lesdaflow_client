@@ -15,7 +15,7 @@ export function getSaleSubtotal(sale) {
 }
 
 export function getSaleTotal(sale) {
-    if (sale.total !== null) return `$${sale.total.toFixed(2)}`
+    if (sale.total !== null) return `$${typeof sale.total === 'string' ? sale.total : sale.total.toFixed(2)}`
     const subtotal = getSaleSubtotal(sale).replace('$', '')
     return `$${(subtotal - ((subtotal / 100) * sale.discount)).toFixed(2)}`
 }
