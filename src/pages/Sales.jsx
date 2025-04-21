@@ -66,9 +66,8 @@ export function Sales() {
                 getter={getSales}
                 setOpen={setOpen}
                 setFormData={setFormData}
-                showEditAction={auth?.user.role === 'ADMINISTRADOR' || auth?.user.role === 'VENDEDOR'}
+                showEditAction
                 showDeleteAction={auth?.user.role === 'ADMINISTRADOR'}
-                showPDFAction={`${REPORT_URL}/venta-pdf?token=${auth?.token}&id=`}
                 showViewAction
                 contentHeader={
                     <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between' }}>

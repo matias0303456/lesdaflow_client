@@ -168,7 +168,7 @@ export function useBudgets() {
             label: 'Tipo',
             accessor: (row) => row.type.replaceAll('CUENTA_CORRIENTE', 'CTA CTE')
         }
-    ], [])
+    ], [state.budgets.data])
 
     return {
         loadingBudgets,

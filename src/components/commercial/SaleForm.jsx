@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import { useContext, useEffect, useMemo, useState } from "react"
-import { Box, Button, Tab, Tabs, Typography } from "@mui/material"
+import { Box, Tab, Tabs } from "@mui/material"
 
 import { DataContext } from "../../providers/DataProvider"
 import { usePayments } from "../../hooks/usePayments"
@@ -10,8 +10,11 @@ import { ModalComponent } from "../common/ModalComponent"
 import { PaymentsABM } from "./PaymentsABM"
 import { PaymentForm } from "./PaymentForm"
 import { SaleFormFields } from "./SaleFormFields"
+import { SaleObservations } from "./SaleObservations"
+import { VouchersABM } from "./VouchersABM"
 
 import { a11yProps, getCurrentTotal, getDiscountsAndSurchargesValues } from "../../utils/helpers"
+import { VoucherForm } from "./VoucherForm"
 
 export function SaleForm({
     saleArticles,
@@ -134,7 +137,7 @@ export function SaleForm({
                         {...a11yProps(1)}
                     />
                     <Tab
-                        disabled={open === 'NEW' || open === 'CONVERT' || open === 'VIEW' || openPayment === 'DELETE'}
+                        disabled={open !== 'EDIT'}
                         label={openPayment === 'EDIT' ? `Editar pago #${formDataPayment.id}` : "Nuevo pago"}
                         {...a11yProps(2)}
                     />
@@ -142,6 +145,16 @@ export function SaleForm({
                         disabled={open === 'NEW' || open === 'CONVERT'}
                         label="Observaciones"
                         {...a11yProps(3)}
+                    />
+                    <Tab
+                        disabled={open === 'NEW' || open === 'CONVERT'}
+                        label="Comprobantes"
+                        {...a11yProps(4)}
+                    />
+                    <Tab
+                        disabled={open !== 'EDIT'}
+                        label="Nuevo comprobante"
+                        {...a11yProps(5)}
                     />
                 </Tabs>
             </Box>
@@ -169,11 +182,9 @@ export function SaleForm({
                     discAndSurch={discAndSurch}
                 />
             }
-            {
-                valueTab === 1 &&
+            {valueTab === 1 &&
                 <Box sx={{ p: 0 }}>
                     <PaymentsABM
-                        sale={formData}
                         rows={state.sales.data.find(s => s.id === formData.id)?.payments ?? []}
                         handleCloseSale={handleClose}
                         open={open}
@@ -186,8 +197,7 @@ export function SaleForm({
                     />
                 </Box>
             }
-            {
-                valueTab === 2 &&
+            {valueTab === 2 &&
                 <Box sx={{ p: 1 }}>
                     <PaymentForm
                         sale={formData}
@@ -204,54 +214,36 @@ export function SaleForm({
                     />
                 </Box>
             }
-            {
-                valueTab === 3 &&
+            {valueTab === 3 &&
+                <SaleObservations
+                    formData={formData}
+                    handleChange={handleChange}
+                    errors={errors}
+                    handleClose={handleClose}
+                    disabled={disabled}
+                    handleSubmit={handleSubmit}
+                    validate={validate}
+                    reset={reset}
+                    setDisabled={setDisabled}
+                    open={open}
+                />
+            }
+            {valueTab === 4 &&
+                <Box sx={{ p: 0 }}>
+                    <VouchersABM
+                        rows={state.sales.data.find(s => s.id === formData.id)?.payments ?? []}
+                        handleCloseSale={handleClose}
+                    />
+                </Box>
+            }
+            {valueTab === 5 &&
                 <Box sx={{ p: 1 }}>
-                    <textarea
-                        style={{
-                            width: '100%',
-                            height: 300,
-                            border: '1px solid #C4C4C4',
-                            padding: 10,
-                            borderRadius: 5,
-                            resize: 'none'
-                        }}
-                        disabled={open === 'VIEW'}
-                        id="observations"
-                        name="observations"
-                        placeholder="Observaciones..."
-                        value={formData.observations}
-                        onChange={handleChange}
-                    ></textarea>
-                    {errors.observations?.type === 'maxLength' &&
-                        <Typography variant="caption" color="red" marginTop={1}>
-                            * Las observaciones son demasiado largas.
-                        </Typography>
-                    }
-                    <Box sx={{
-                        display: 'flex',
-                        flexDirection: 'row',
-                        gap: 1,
-                        justifyContent: 'center',
-                        margin: '0 auto',
-                        marginTop: 3,
-                        width: '50%'
-                    }}>
-                        <Button type="button" variant="outlined" onClick={handleClose} sx={{ width: '50%' }}>
-                            {open === 'VIEW' ? 'Cerrar' : 'Cancelar'}
-                        </Button>
-                        {(open === 'NEW' || open === 'CONVERT' || open === 'EDIT') &&
-                            <Button
-                                type="button"
-                                variant="contained"
-                                disabled={disabled}
-                                sx={{ width: '50%' }}
-                                onClick={e => handleSubmit(e, formData, validate, reset, setDisabled)}
-                            >
-                                Guardar
-                            </Button>
-                        }
-                    </Box>
+                    <VoucherForm
+                        handleCloseSale={handleClose}
+                        reset={resetPayment}
+                        setOpen={setOpenPayment}
+                        disabled={disabledPayment}
+                    />
                 </Box>
             }
         </ModalComponent >

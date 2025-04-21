@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { useContext } from "react";
 import { Box, Button, Typography } from "@mui/material";
 import { format } from "date-fns";
@@ -9,7 +10,6 @@ import { DataGridWithFrontendPagination } from "../datagrid/DataGridWithFrontend
 import { setLocalDate } from "../../utils/helpers";
 
 export function PaymentsABM({
-    sale,
     rows,
     handleCloseSale,
     open,
@@ -70,8 +70,8 @@ export function PaymentsABM({
             <DataGridWithFrontendPagination
                 headCells={headCells}
                 rows={rows}
-                showDeleteAction={auth?.user.role === 'ADMINISTRADOR' && sale.settlement_id === null && open === 'EDIT'}
-                showEditAction={auth?.user.role === 'ADMINISTRADOR' && sale.settlement_id === null && open === 'EDIT'}
+                showDeleteAction={auth?.user.role === 'ADMINISTRADOR' && open === 'EDIT'}
+                showEditAction={auth?.user.role === 'ADMINISTRADOR' && open === 'EDIT'}
                 setOpen={setOpenPayment}
                 setData={setFormData}
                 contentHeader={

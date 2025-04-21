@@ -160,8 +160,8 @@ export function DataGridWithBackendPagination({
                               }
                               {showPDFAction &&
                                 <Tooltip
-                                  title="Imprimir PDF"
-                                  onClick={() => window.open(showPDFAction + row.id, '_blank')}
+                                  title="Factura PDF"
+                                  onClick={showPDFAction}
                                 >
                                   <IconButton className="rounded-full bg-black/20 opacity-50 hover:bg-[#288bcd] hover:text-white">
                                     <PictureAsPdfSharpIcon className="w-4 h-4" />
@@ -182,56 +182,43 @@ export function DataGridWithBackendPagination({
                                 </Tooltip>
                               }
                               {showEditAction &&
-                                <>
-                                  {(entityKey !== 'sales' || row.settlement_id === null) &&
-                                    <Tooltip
-                                      title="Editar"
-                                      onClick={() => {
-                                        if (setFormData) setFormData(rows.find((r) => r.id === row.id))
-                                        if (setOpen) setOpen("EDIT")
-                                      }}
-                                    >
-                                      <IconButton className="rounded-full bg-black/20 opacity-50 hover:bg-[#288bcd] hover:text-white">
-                                        <EditIcon className="w-4 h-4" />
-                                      </IconButton>
-                                    </Tooltip>
-                                  }
-                                </>
+                                <Tooltip
+                                  title="Editar"
+                                  onClick={() => {
+                                    if (setFormData) setFormData(rows.find((r) => r.id === row.id))
+                                    if (setOpen) setOpen("EDIT")
+                                  }}
+                                >
+                                  <IconButton className="rounded-full bg-black/20 opacity-50 hover:bg-[#288bcd] hover:text-white">
+                                    <EditIcon className="w-4 h-4" />
+                                  </IconButton>
+                                </Tooltip>
                               }
                               {showDeleteAction &&
-                                <>
-                                  {(entityKey !== 'sales' || row.settlement_id === null) &&
-                                    <Tooltip
-                                      title="Borrar"
-                                      onClick={() => {
-                                        if (setFormData) setFormData(rows.find((r) => r.id === row.id))
-                                        if (setOpen) setOpen("DELETE")
-                                      }}
-                                    >
-                                      <IconButton className="rounded-full bg-black/20 opacity-50 hover:bg-[#288bcd] hover:text-white">
-                                        <CloseIcon className="w-4 h-4" />
-                                      </IconButton>
-                                    </Tooltip>
-                                  }
-                                </>
+                                <Tooltip
+                                  title="Borrar"
+                                  onClick={() => {
+                                    if (setFormData) setFormData(rows.find((r) => r.id === row.id))
+                                    if (setOpen) setOpen("DELETE")
+                                  }}
+                                >
+                                  <IconButton className="rounded-full bg-black/20 opacity-50 hover:bg-[#288bcd] hover:text-white">
+                                    <CloseIcon className="w-4 h-4" />
+                                  </IconButton>
+                                </Tooltip>
                               }
                               {showSettingsAction &&
-                                <>
-                                  {(entityKey !== 'sales' ||
-                                    (showSettingsAction === 'Registrar entrega' && !row.is_delivered)) &&
-                                    <Tooltip
-                                      title={showSettingsAction}
-                                      onClick={() => {
-                                        if (setFormData) setFormData(rows.find((r) => r.id === row.id))
-                                        if (setOpen) setOpen("SETTINGS")
-                                      }}
-                                    >
-                                      <IconButton className="rounded-full bg-black/20 opacity-50 hover:bg-[#050622]">
-                                        <SettingsIcon className="w-4 h-4 hover:text-white" />
-                                      </IconButton>
-                                    </Tooltip>
-                                  }
-                                </>
+                                <Tooltip
+                                  title={showSettingsAction}
+                                  onClick={() => {
+                                    if (setFormData) setFormData(rows.find((r) => r.id === row.id))
+                                    if (setOpen) setOpen("SETTINGS")
+                                  }}
+                                >
+                                  <IconButton className="rounded-full bg-black/20 opacity-50 hover:bg-[#050622]">
+                                    <SettingsIcon className="w-4 h-4 hover:text-white" />
+                                  </IconButton>
+                                </Tooltip>
                               }
                               {showConvertToSale &&
                                 <Tooltip
