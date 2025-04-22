@@ -7,6 +7,7 @@ import { useForm } from "./useForm"
 
 import { ARTICLE_URL } from "../utils/urls"
 import { getStock } from "../utils/helpers"
+import { STATUS_CODES } from "../utils/constants"
 
 export function useArticles() {
 
@@ -14,6 +15,7 @@ export function useArticles() {
     const { setMessage, setOpenMessage, setSeverity } = useContext(MessageContext)
 
     const { get, post, put, destroy } = useApi(ARTICLE_URL)
+    const { post: postActPrices } = useApi(ARTICLE_URL + '/act-prices')
     const [open, setOpen] = useState(null)
     const articleFormData = useForm({
         defaultData: {
@@ -107,19 +109,39 @@ export function useArticles() {
         setOpen(null)
     }
 
-    function handleActPrices(e) {
+    async function handleActPrices(e) {
         const file = e.target.files[0];
         if (file) {
             const isValidFile = file.name.endsWith('.xlsx') || file.name.endsWith('.xls');
             if (!isValidFile) {
                 setMessage('Por favor, sube un archivo Excel (.xlsx o .xls)')
                 setSeverity('error')
-                setOpenMessage(true)
             } else {
-                // Aquí puedes procesar el archivo Excel
-                console.log('Archivo seleccionado:', file);
-                // Puedes usar librerías como 'xlsx' para leer el contenido
+                const formData = new FormData()
+                formData.append('excelFile', file)
+                const { status, data } = await postActPrices(formData)
+                if (status === STATUS_CODES.OK) {
+                    dispatch({
+                        type: 'ARTICLES',
+                        payload: {
+                            ...state.articles,
+                            data: data[0],
+                            count: data[1],
+                            page: 0,
+                            offset: 25,
+                            filter_fields: { sale_id: '', from: '', to: '', p_type: '', created_by: '', loaded: false },
+                            filters: ''
+                        }
+                    })
+                    setMessage('Precios actualizados correctamente.')
+                    setSeverity('success')
+                    actPricesRef.current.value = null
+                } else {
+                    setMessage('Ocurrió un error al actualizar los precios.')
+                    setSeverity('error')
+                }
             }
+            setOpenMessage(true)
         }
     }
 
