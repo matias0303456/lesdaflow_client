@@ -8,7 +8,6 @@ import { es } from "date-fns/locale";
 import { DataContext } from "../../providers/DataProvider";
 
 export function SaleFilter({
-    showSeller,
     showDate,
     showType,
     width,
@@ -100,24 +99,6 @@ export function SaleFilter({
                     onChange={handleChange}
                 />
             </FormControl>
-            {showSeller &&
-                <FormControl sx={{ width: width.seller }}>
-                    <InputLabel id="user-select">Vendedor</InputLabel>
-                    <Select
-                        labelId="user-select"
-                        id="user"
-                        value={state.sales.filter_fields.user}
-                        label="Vendedor"
-                        name="user"
-                        onChange={handleChange}
-                    >
-                        <MenuItem value="">Seleccione</MenuItem>
-                        {state.users.data.map(u => (
-                            <MenuItem key={u.id} value={u.username}>{u.name}</MenuItem>
-                        ))}
-                    </Select>
-                </FormControl>
-            }
             {showDate &&
                 <FormControl sx={{ width: width.date }}>
                     <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>

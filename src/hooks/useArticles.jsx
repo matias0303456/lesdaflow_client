@@ -1,4 +1,4 @@
-import { useContext, useMemo, useState } from "react"
+import { useContext, useMemo, useRef, useState } from "react"
 
 import { MessageContext } from "../providers/MessageProvider"
 import { DataContext } from "../providers/DataProvider"
@@ -13,34 +13,28 @@ export function useArticles() {
     const { state, dispatch } = useContext(DataContext)
     const { setMessage, setOpenMessage, setSeverity } = useContext(MessageContext)
 
-    const { get, post, put, putMassive, destroy } = useApi(ARTICLE_URL)
+    const { get, post, put, destroy } = useApi(ARTICLE_URL)
     const [open, setOpen] = useState(null)
     const articleFormData = useForm({
         defaultData: {
             id: '',
             code: '',
             details: '',
-            buy_price: '',
-            min_stock: '',
-            earn: '',
+            price: '',
             supplier_id: '',
-            amount: ''
+            amount: 0
         },
         rules: {
             code: { required: true, maxLength: 55 },
             details: { required: true, maxLength: 191 },
-            buy_price: { required: true },
-            min_stock: { required: true },
-            earn: { required: true },
-            supplier_id: { required: true },
-            amount: { required: open === 'NEW' }
+            price: { required: true },
+            supplier_id: { required: true }
         }
     })
 
     const [loadingArticles, setloadingArticles] = useState(true)
-    const [massiveEdit, setMassiveEdit] = useState([])
-    const [earnPrice, setEarnPrice] = useState(0)
-    const [articleHistory, setArticleHistory] = useState([])
+
+    const actPricesRef = useRef(null);
 
     async function getArticles(params) {
         const { status, data } = await get(params)
@@ -54,32 +48,6 @@ export function useArticles() {
             setMessage(data.message)
             setSeverity('error')
             setOpenMessage(true)
-        }
-    }
-
-    async function searchArticles(params) {
-        const { status, data } = await get('/search' + params)
-        if (status === 200) {
-            return { status, data }
-        } else {
-            setMessage(data.message)
-            setSeverity('error')
-            setOpenMessage(true)
-        }
-    }
-
-    async function getArticleHistory(id) {
-        if (id.toString().length > 0) {
-            setloadingArticles(true)
-            const { status, data } = await get(`/history/${id}`)
-            if (status === 200) {
-                setArticleHistory(data)
-            } else {
-                setMessage(data.message)
-                setSeverity('error')
-                setOpenMessage(true)
-            }
-            setloadingArticles(false)
         }
     }
 
@@ -115,35 +83,6 @@ export function useArticles() {
         }
     }
 
-    async function handleSubmitMassive() {
-        const body = {
-            articles: massiveEdit.map(me => {
-                const article = state.articles.find(p => p.id === me.article_id)
-                return { ...me, buy_price: article.buy_price }
-            })
-        }
-        const { status, data } = await putMassive(body)
-        if (status === 200) {
-            dispatch({
-                type: 'ARTICLES',
-                payload: {
-                    ...state.articles,
-                    data: [
-                        data,
-                        ...state.articles.data.filter(p => !data.map(d => d.id).includes(p.id))
-                    ]
-                }
-            })
-            setMessage('Precios actualizados correctamente.')
-            setSeverity('success')
-            setMassiveEdit([])
-        } else {
-            setMessage(data.message)
-            setSeverity('error')
-        }
-        setOpenMessage(true)
-    }
-
     async function handleDelete(formData) {
         const { status, data } = await destroy(formData)
         if (status === 200) {
@@ -168,46 +107,52 @@ export function useArticles() {
         setOpen(null)
     }
 
+    function handleActPrices(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const isValidFile = file.name.endsWith('.xlsx') || file.name.endsWith('.xls');
+            if (!isValidFile) {
+                setMessage('Por favor, sube un archivo Excel (.xlsx o .xls)')
+                setSeverity('error')
+                setOpenMessage(true)
+            } else {
+                // Aquí puedes procesar el archivo Excel
+                console.log('Archivo seleccionado:', file);
+                // Puedes usar librerías como 'xlsx' para leer el contenido
+            }
+        }
+    }
+
     const headCells = useMemo(() => [
         {
             id: 'code',
             numeric: false,
             disablePadding: true,
             label: 'Código',
-            accessor: 'code',
-            can_access: ['VENDEDOR']
+            accessor: 'code'
         },
         {
             id: 'details',
             numeric: false,
             disablePadding: true,
             label: 'Artículo',
-            accessor: 'details',
-            can_access: ['VENDEDOR']
+            accessor: 'details'
         },
         {
-            id: 'buy_price',
+            id: 'older_price',
             numeric: false,
             disablePadding: true,
-            label: 'P. compra',
-            sorter: (row) => parseFloat(row.buy_price).toFixed(2),
-            accessor: (row) => parseFloat(row.buy_price).toFixed(2)
+            label: 'Precio anterior',
+            sorter: (row) => parseFloat(row.older_price).toFixed(2),
+            accessor: (row) => parseFloat(row.older_price).toFixed(2)
         },
         {
-            id: 'earn',
+            id: 'price',
             numeric: false,
             disablePadding: true,
-            label: '% Gan.',
-            accessor: 'earn'
-        },
-        {
-            id: 'sale_price',
-            numeric: false,
-            disablePadding: true,
-            label: 'P. venta',
-            sorter: (row) => parseFloat((row.buy_price + ((row.buy_price / 100) * row.earn)).toFixed(2)),
-            accessor: (row) => `$${(row.buy_price + ((row.buy_price / 100) * row.earn)).toFixed(2)}`,
-            can_access: ['VENDEDOR']
+            label: 'Precio actual',
+            sorter: (row) => parseFloat(row.price).toFixed(2),
+            accessor: (row) => parseFloat(row.price).toFixed(2)
         },
         {
             id: 'supplier',
@@ -215,8 +160,7 @@ export function useArticles() {
             disablePadding: true,
             label: 'Proveedor',
             sorter: (row) => row.supplier.name.toLowerCase(),
-            accessor: (row) => row.supplier.name,
-            can_access: ['VENDEDOR']
+            accessor: (row) => row.supplier.name
         },
         {
             id: 'stock',
@@ -224,15 +168,7 @@ export function useArticles() {
             disablePadding: true,
             label: 'Stock',
             sorter: (row) => getStock(row),
-            accessor: (row) => getStock(row),
-            can_access: ['VENDEDOR']
-        },
-        {
-            id: 'min_stock',
-            numeric: false,
-            disablePadding: true,
-            label: 'Stock mínimo',
-            accessor: 'min_stock'
+            accessor: (row) => getStock(row)
         }
     ], [state.articles.data])
 
@@ -241,18 +177,12 @@ export function useArticles() {
         setOpen,
         handleDelete,
         handleSubmit,
-        handleSubmitMassive,
-        massiveEdit,
-        setMassiveEdit,
-        earnPrice,
-        setEarnPrice,
         getArticles,
         loadingArticles,
         setloadingArticles,
-        searchArticles,
-        articleHistory,
-        getArticleHistory,
         articleFormData,
-        headCells
+        headCells,
+        actPricesRef,
+        handleActPrices
     }
 }

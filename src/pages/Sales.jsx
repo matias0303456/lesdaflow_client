@@ -85,7 +85,6 @@ export function Sales() {
                             </Button> */}
                         </Box>
                         <SaleFilter
-                            showSeller={auth?.user.role === 'ADMINISTRADOR'}
                             showType
                             width={{
                                 main: { xs: '100%', md: '80%' },

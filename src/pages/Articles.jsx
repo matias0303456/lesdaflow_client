@@ -1,5 +1,6 @@
 import { useContext, useEffect } from "react";
-import { Box, Button, FormControl, Input, InputLabel, MenuItem, Paper, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
+import { Box, Button, FormControl, Input, InputLabel, MenuItem, Select, Typography } from "@mui/material";
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 
 import { AuthContext } from "../providers/AuthProvider";
 import { DataContext } from "../providers/DataProvider";
@@ -14,9 +15,6 @@ import { DataGridWithBackendPagination } from "../components/datagrid/DataGridWi
 import { ArticleFilter } from "../components/filters/ArticleFilter";
 import { MovementsForm } from "../components/commercial/MovementsForm";
 
-import { getNewPrice } from "../utils/helpers";
-// import { REPORT_URL } from "../utils/urls";
-
 export function Articles() {
 
     const { auth } = useContext(AuthContext)
@@ -24,20 +22,15 @@ export function Articles() {
 
     const {
         loadingArticles,
-        setEarnPrice,
         open,
         setOpen,
         handleSubmit,
-        massiveEdit,
-        earnPrice,
-        massiveEditPercentage,
-        setMassiveEdit,
-        setMassiveEditPercentage,
-        handleSubmitMassive,
         handleDelete,
         getArticles,
         articleFormData,
-        headCells
+        headCells,
+        actPricesRef,
+        handleActPrices
     } = useArticles()
     const { loadingSuppliers, getSuppliers } = useSuppliers()
     const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = articleFormData
@@ -64,16 +57,10 @@ export function Articles() {
         getSuppliers()
     }, [])
 
-    useEffect(() => {
-        const buy_price = formData.buy_price.toString().length === 0 ? 0 : parseInt(formData.buy_price)
-        const earn = formData.earn.toString().length === 0 ? 0 : parseInt(formData.earn)
-        setEarnPrice(`$${(buy_price + ((buy_price / 100) * earn)).toFixed(2)}`)
-    }, [formData])
-
     return (
         <Layout title="Artículos">
             <DataGridWithBackendPagination
-                headCells={headCells.filter(hc => auth?.user.role === 'ADMINISTRADOR' || hc.can_access?.includes(auth?.user.role))}
+                headCells={headCells}
                 rows={state.articles.data}
                 setOpen={setOpen}
                 setOpenNewMovement={setOpenMovement}
@@ -97,30 +84,32 @@ export function Articles() {
                             width: { xs: '100%', sm: 'auto' }
                         }}>
                             {auth?.user.role === 'ADMINISTRADOR' &&
-                                <Button
-                                    variant="outlined"
-                                    onClick={() => {
-                                        reset()
-                                        setOpen('NEW')
-                                    }}>
-                                    Agregar
-                                </Button>
+                                <>
+                                    <Button
+                                        variant="outlined"
+                                        onClick={() => {
+                                            reset()
+                                            setOpen('NEW')
+                                        }}>
+                                        Agregar
+                                    </Button>
+                                    <input
+                                        type="file"
+                                        ref={actPricesRef}
+                                        onChange={handleActPrices}
+                                        accept=".xlsx, .xls"
+                                        style={{ display: 'none' }}
+                                    />
+                                    <Button
+                                        variant="outlined"
+                                        color='success'
+                                        startIcon={<CloudUploadIcon />}
+                                        onClick={() => actPricesRef.current.click()}
+                                    >
+                                        Act. precios
+                                    </Button>
+                                </>
                             }
-                            {/* <Button
-                                variant="outlined"
-                                color='success'
-                                onClick={() => {
-                                    const { code, details, supplier_id } = state.articles.filter_fields
-                                    window.open(`${REPORT_URL}/articles-excel?token=${auth?.token}&for_client=true&code=${code}&details=${details}&supplier_id=${supplier_id}`, '_blank')
-                                }}>
-                                Excel
-                            </Button>
-                            <Button variant="outlined" color='error' onClick={() => {
-                                const { code, details, supplier_id } = state.articles.filter_fields
-                                window.open(`${REPORT_URL}/articles-pdf?token=${auth?.token}&for_client=true&code=${code}&details=${details}&supplier_id=${supplier_id}`, '_blank')
-                            }}>
-                                PDF
-                            </Button> */}
                         </Box>
                         <ArticleFilter />
                     </Box>
@@ -170,44 +159,14 @@ export function Articles() {
                             </Box>
                             <Box sx={{ display: 'flex', gap: 3 }}>
                                 <FormControl sx={{ width: '50%' }}>
-                                    <InputLabel htmlFor="buy_price">Precio de compra *</InputLabel>
-                                    <Input id="buy_price" type="number" name="buy_price" value={formData.buy_price} disabled={open === 'VIEW'} />
-                                    {errors.buy_price?.type === 'required' &&
+                                    <InputLabel htmlFor="price">Precio *</InputLabel>
+                                    <Input id="price" type="number" name="price" value={formData.price} disabled={open === 'VIEW'} />
+                                    {errors.price?.type === 'required' &&
                                         <Typography variant="caption" color="red" marginTop={1}>
-                                            * El precio de compra es requerido.
+                                            * El precio es requerido.
                                         </Typography>
                                     }
                                 </FormControl>
-                                <FormControl sx={{ width: '50%' }}>
-                                    <InputLabel htmlFor="earn">% Ganancia *</InputLabel>
-                                    <Input id="earn" type="number" name="earn" value={formData.earn} disabled={open === 'VIEW'} />
-                                    {errors.earn?.type === 'required' &&
-                                        <Typography variant="caption" color="red" marginTop={1}>
-                                            * La ganancia es requerida.
-                                        </Typography>
-                                    }
-                                </FormControl>
-                            </Box>
-                            <Box sx={{ display: 'flex', gap: 3 }}>
-                                <FormControl sx={{ width: '50%' }}>
-                                    <InputLabel htmlFor="size">Precio de venta</InputLabel>
-                                    <Input
-                                        type="text"
-                                        value={earnPrice}
-                                        disabled
-                                    />
-                                </FormControl>
-                                <FormControl sx={{ width: '50%' }}>
-                                    <InputLabel htmlFor="min_stock">Stock mínimo *</InputLabel>
-                                    <Input id="min_stock" type="number" name="min_stock" value={formData.min_stock} disabled={open === 'VIEW'} />
-                                    {errors.min_stock?.type === 'required' &&
-                                        <Typography variant="caption" color="red" marginTop={1}>
-                                            * El stock mínimo es requerido.
-                                        </Typography>
-                                    }
-                                </FormControl>
-                            </Box>
-                            <Box sx={{ display: 'flex', gap: 3 }}>
                                 <FormControl sx={{ width: '50%' }}>
                                     <InputLabel id="supplier-select">Proveedor *</InputLabel>
                                     <Select
@@ -229,18 +188,13 @@ export function Articles() {
                                         </Typography>
                                     }
                                 </FormControl>
-                                {open === 'NEW' &&
-                                    <FormControl sx={{ width: '50%' }}>
-                                        <InputLabel htmlFor="amount">Stock *</InputLabel>
-                                        <Input id="amount" type="number" name="amount" value={formData.amount} disabled={open === 'VIEW'} />
-                                        {errors.amount?.type === 'required' &&
-                                            <Typography variant="caption" color="red" marginTop={1}>
-                                                * El stock es requerido.
-                                            </Typography>
-                                        }
-                                    </FormControl>
-                                }
                             </Box>
+                            {open === 'NEW' &&
+                                <FormControl sx={{ width: '50%' }}>
+                                    <InputLabel htmlFor="amount">Stock</InputLabel>
+                                    <Input id="amount" type="number" name="amount" value={formData.amount} disabled={open === 'VIEW'} />
+                                </FormControl>
+                            }
                             <FormControl sx={{
                                 display: 'flex',
                                 flexDirection: 'row',
@@ -265,83 +219,6 @@ export function Articles() {
                             </FormControl>
                         </Box>
                     </form>
-                </ModalComponent>
-                <ModalComponent open={open === 'MASSIVE-EDIT'} dynamicContent>
-                    <Typography variant="h6" sx={{ marginBottom: 2 }}>
-                        Actualización de precio/s por porcentaje
-                    </Typography>
-                    <TableContainer component={Paper} sx={{ marginBottom: 2 }}>
-                        <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell align="center">Artículo</TableCell>
-                                    <TableCell align="center">Código</TableCell>
-                                    <TableCell align="center">Proveedor</TableCell>
-                                    <TableCell align="center">Precio actual</TableCell>
-                                    <TableCell align="center">Precio nuevo</TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {massiveEdit.map(me => (
-                                    <TableRow
-                                        key={me.id}
-                                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                                    >
-                                        <TableCell align="center">{me.details}</TableCell>
-                                        <TableCell align="center">{me.code}</TableCell>
-                                        <TableCell align="center">{me.supplier.name}</TableCell>
-                                        <TableCell align="center">${me.buy_price.toFixed(2)}</TableCell>
-                                        <TableCell align="center">${getNewPrice(me, massiveEditPercentage)}</TableCell>
-                                    </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
-                    <Box sx={{
-                        display: 'flex',
-                        flexDirection: 'row',
-                        gap: 1,
-                        justifyContent: 'center',
-                        marginTop: 5,
-                        marginBottom: 5
-                    }}>
-                        <Typography variant="h6">
-                            Porcentaje
-                        </Typography>
-                        <Input
-                            type="number"
-                            value={massiveEditPercentage}
-                            onChange={e => setMassiveEditPercentage(e.target.value)}
-                        />
-                        <Typography variant="h6">
-                            %
-                        </Typography>
-                    </Box>
-                    <Box sx={{
-                        display: 'flex',
-                        flexDirection: 'row',
-                        gap: 1,
-                        justifyContent: 'center',
-                        width: '60%',
-                        margin: '0 auto'
-                    }}>
-                        <Button type="button" variant="outlined"
-                            sx={{ width: '50%' }}
-                            onClick={() => {
-                                reset(setOpen)
-                                setMassiveEdit([])
-                                setMassiveEditPercentage(0)
-                            }}
-                        >
-                            Cancelar
-                        </Button>
-                        <Button type="submit" variant="contained"
-                            sx={{ width: '50%' }}
-                            onClick={() => handleSubmitMassive(reset, setDisabled)}
-                        >
-                            Guardar
-                        </Button>
-                    </Box>
                 </ModalComponent>
                 <ModalComponent open={open === 'DELETE'} onClose={() => reset(setOpen)} reduceWidth={900}>
                     <Typography variant="h6" marginBottom={1} textAlign="center">

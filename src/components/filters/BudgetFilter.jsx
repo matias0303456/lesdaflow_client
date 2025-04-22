@@ -85,7 +85,7 @@ export function BudgetFilter() {
                     />
                 </LocalizationProvider>
             </FormControl>
-            <FormControl sx={{ width: { xs: '100%', md: '15%' } }}>
+            <FormControl sx={{ width: { xs: '100%', md: '20%' } }}>
                 <InputLabel htmlFor="client">Cliente</InputLabel>
                 <Input
                     id="client"
@@ -96,16 +96,6 @@ export function BudgetFilter() {
                 />
             </FormControl>
             <FormControl sx={{ width: { xs: '100%', md: '15%' } }}>
-                <InputLabel htmlFor="user">Vendedor</InputLabel>
-                <Input
-                    id="user"
-                    type="text"
-                    name="user"
-                    value={state.budgets.filter_fields.user}
-                    onChange={handleChange}
-                />
-            </FormControl>
-            <FormControl sx={{ width: { xs: '100%', md: '10%' } }}>
                 <InputLabel id="type-select">Tipo</InputLabel>
                 <Select
                     labelId="type-select"
