@@ -23,7 +23,8 @@ export function useVouchers() {
             sales_point: '',
             cae: '',
             document_type: '',
-            document_number: ''
+            document_number: '',
+            total: 0.00
         },
         rules: {
             voucher_type: { required: true },

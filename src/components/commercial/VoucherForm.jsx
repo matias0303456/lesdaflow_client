@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import { useEffect } from "react"
-import { Box, Button, FormControl, Input, InputLabel, MenuItem, Select, Typography } from "@mui/material"
+import { Box, Button, FormControl, Input, InputLabel, MenuItem, Select, TextField, Typography } from "@mui/material"
 
 import { useVouchers } from "../../hooks/useVouchers"
 
@@ -12,20 +12,22 @@ export function VoucherForm({
 }) {
 
     const { getArcaData, arcaData, voucherFormData, createVoucher } = useVouchers()
-    const { formData, reset, disabled, setDisabled, validate, errors, handleChange } = voucherFormData
+    const { formData, setFormData, reset, disabled, setDisabled, validate, errors, handleChange } = voucherFormData
 
     useEffect(() => {
         getArcaData()
     }, [])
 
+    useEffect(() => {
+        setFormData({
+            ...formData,
+            total: sale.total,
+            sale_id: sale.id
+        })
+    }, [sale])
+
     return (
-        <form onSubmit={e => {
-            createVoucher(e, validate, {
-                ...formData,
-                total: sale.total,
-                sale_id: sale.id
-            }, reset, setDisabled)
-        }}>
+        <form onSubmit={e => createVoucher(e, validate, formData, reset, setDisabled)}>
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
                 <FormControl>
                     <InputLabel id="voucher_type-select">Tipo Cbte.</InputLabel>
@@ -109,8 +111,15 @@ export function VoucherForm({
                     }
                 </FormControl>
                 <FormControl sx={{ mt: 2 }}>
-                    <InputLabel id="amount">Total</InputLabel>
-                    <Input value={sale.total} disabled />
+                    <TextField
+                        label="Total"
+                        id="total"
+                        type="number"
+                        onChange={handleChange}
+                        name="total"
+                        value={formData.total}
+                        InputProps={{ inputProps: { step: 0.01 } }}
+                    />
                 </FormControl>
             </Box>
             <Box sx={{ display: 'flex', justifyContent: 'end' }}>
