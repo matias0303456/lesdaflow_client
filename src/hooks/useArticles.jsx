@@ -1,5 +1,6 @@
 import { useContext, useMemo, useRef, useState } from "react"
 
+import { AuthContext } from "../providers/AuthProvider"
 import { MessageContext } from "../providers/MessageProvider"
 import { DataContext } from "../providers/DataProvider"
 import { useApi } from "./useApi"
@@ -11,11 +12,11 @@ import { STATUS_CODES } from "../utils/constants"
 
 export function useArticles() {
 
+    const { auth } = useContext(AuthContext)
     const { state, dispatch } = useContext(DataContext)
     const { setMessage, setOpenMessage, setSeverity } = useContext(MessageContext)
 
     const { get, post, put, destroy } = useApi(ARTICLE_URL)
-    const { post: postActPrices } = useApi(ARTICLE_URL + '/act-prices')
     const [open, setOpen] = useState(null)
     const articleFormData = useForm({
         defaultData: {
@@ -118,8 +119,14 @@ export function useArticles() {
                 setSeverity('error')
             } else {
                 const formData = new FormData()
-                formData.append('excelFile', file)
-                const { status, data } = await postActPrices(formData)
+                formData.append('excelFile', file, file.name)
+                const res = await fetch(ARTICLE_URL + '/act-prices', {
+                    method: 'POST',
+                    headers: { 'Authorization': auth?.token },
+                    body: formData
+                })
+                const data = await res.json()
+                const status = res.status
                 if (status === STATUS_CODES.OK) {
                     dispatch({
                         type: 'ARTICLES',
