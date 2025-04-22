@@ -13,10 +13,24 @@ export function useVouchers() {
     const { state, dispatch } = useContext(DataContext)
     const { setMessage, setOpenMessage, setSeverity } = useContext(MessageContext)
 
-    const { get } = useApi(VOUCHER_URL)
+    const { get, post } = useApi(VOUCHER_URL)
     const voucherFormData = useForm({
-        defaultData: { id: '', sale_id: '', type: '', number: '', sale_point: '', cae: '' },
-        rules: { type: { required: true }, number: { required: true }, sale_point: { required: true } }
+        defaultData: {
+            id: '',
+            sale_id: '',
+            voucher_type: '',
+            number: '',
+            sales_point: '',
+            cae: '',
+            document_type: '',
+            document_number: ''
+        },
+        rules: {
+            voucher_type: { required: true },
+            sales_point: { required: true },
+            document_type: { required: true },
+            document_number: { required: true }
+        }
     })
 
     const [arcaData, setArcaData] = useState({
@@ -47,10 +61,43 @@ export function useVouchers() {
     //     }
     // }
 
+    async function createVoucher(e, validate, voucher, reset, setDisabled) {
+        e.preventDefault()
+        if (validate()) {
+            const { status, data } = await post(voucher)
+            if (status === STATUS_CODES.OK) {
+                const currentSale = state.sales.data.find(s => s.id === voucher.sale_id)
+                dispatch({
+                    type: 'SALES',
+                    payload: {
+                        ...state.sales,
+                        data: [
+                            {
+                                ...currentSale,
+                                vouchers: [...currentSale.vouchers, data]
+                            },
+                            ...state.sales.data.filter(s => s.id !== currentSale.id)
+                        ]
+                    }
+                })
+                setMessage('Comprobante creado correctamente.')
+                setSeverity('success')
+                reset()
+            } else {
+                console.log(data)
+                setMessage('Ocurrió un error al crear el comprobante.')
+                setSeverity('error')
+            }
+            setDisabled(false)
+            setOpenMessage(true)
+        }
+    }
+
     return {
         // getVoucherInfo
         getArcaData,
         arcaData,
-        voucherFormData
+        voucherFormData,
+        createVoucher
     }
 }

@@ -241,9 +241,8 @@ export function SaleForm({
                     <VoucherForm
                         sale={formData}
                         handleCloseSale={handleClose}
-                        reset={resetPayment}
-                        setOpen={setOpenPayment}
-                        disabled={disabledPayment}
+                        resetSale={reset}
+                        setOpenSale={setOpen}
                     />
                 </Box>
             }

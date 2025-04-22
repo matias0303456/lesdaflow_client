@@ -1,58 +1,75 @@
 /* eslint-disable react/prop-types */
 import { useEffect } from "react"
-import { Box, Button, FormControl, Input, InputLabel, MenuItem, Select } from "@mui/material"
+import { Box, Button, FormControl, Input, InputLabel, MenuItem, Select, Typography } from "@mui/material"
 
 import { useVouchers } from "../../hooks/useVouchers"
 
 export function VoucherForm({
     sale,
     handleCloseSale,
-    reset,
-    setOpen,
-    disabled
+    resetSale,
+    setOpenSale
 }) {
 
-    const { getArcaData, arcaData, voucherFormData } = useVouchers()
-    const { formData } = voucherFormData
+    const { getArcaData, arcaData, voucherFormData, createVoucher } = useVouchers()
+    const { formData, reset, disabled, setDisabled, validate, errors, handleChange } = voucherFormData
 
     useEffect(() => {
         getArcaData()
     }, [])
 
     return (
-        <form>
+        <form onSubmit={e => {
+            createVoucher(e, validate, {
+                ...formData,
+                total: sale.total,
+                sale_id: sale.id
+            }, reset, setDisabled)
+        }}>
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
                 <FormControl>
-                    <InputLabel id="type-select">Tipo Cbte.</InputLabel>
+                    <InputLabel id="voucher_type-select">Tipo Cbte.</InputLabel>
                     <Select
-                        labelId="type-select"
-                        id="type"
-                        value={formData.type}
-                        label="Proveedor"
-                        name="type"
+                        labelId="voucher_type-select"
+                        id="voucher_type"
+                        value={formData.voucher_type}
+                        label="Tipo Cbte."
+                        name="voucher_type"
                         sx={{ width: '100%' }}
+                        onChange={handleChange}
                     >
                         <MenuItem value="">Seleccione</MenuItem>
                         {arcaData.voucher_types.map((item) => (
                             <MenuItem key={item.Id} value={item.Id}>{item.Desc}</MenuItem>
                         ))}
                     </Select>
+                    {errors.type?.voucher_type === 'required' &&
+                        <Typography variant="caption" color="red" marginTop={1}>
+                            * El tipo de comprobante es requerido.
+                        </Typography>
+                    }
                 </FormControl>
                 <FormControl>
                     <InputLabel id="sales_point-select">Punto Vta.</InputLabel>
                     <Select
                         labelId="sales_point-select"
                         id="sales_point"
-                        value={formData.sale_point}
+                        value={formData.sales_point}
                         label="Punto Vta."
                         name="sales_point"
                         sx={{ width: '100%' }}
+                        onChange={handleChange}
                     >
                         <MenuItem value="">Seleccione</MenuItem>
                         {arcaData.sales_points.map((item) => (
                             <MenuItem key={item.Nro} value={item.Nro}>{item.Nro}</MenuItem>
                         ))}
                     </Select>
+                    {errors.type?.sales_point === 'required' &&
+                        <Typography variant="caption" color="red" marginTop={1}>
+                            * El punto de venta es requerido.
+                        </Typography>
+                    }
                 </FormControl>
                 <FormControl>
                     <InputLabel id="document_type-select">Tipo Doc.</InputLabel>
@@ -63,12 +80,33 @@ export function VoucherForm({
                         label="Tipo Doc."
                         name="document_type"
                         sx={{ width: '100%' }}
+                        onChange={handleChange}
                     >
                         <MenuItem value="">Seleccione</MenuItem>
                         {arcaData.document_types.map((item) => (
                             <MenuItem key={item.Id} value={item.Id}>{item.Desc}</MenuItem>
                         ))}
                     </Select>
+                    {errors.type?.document_type === 'required' &&
+                        <Typography variant="caption" color="red" marginTop={1}>
+                            * El tipo de documento es requerido.
+                        </Typography>
+                    }
+                </FormControl>
+                <FormControl sx={{ mt: 2 }}>
+                    <InputLabel htmlFor="document_number">Nro. documento</InputLabel>
+                    <Input
+                        id="document_number"
+                        type="text"
+                        name="document_number"
+                        value={formData.document_number}
+                        onChange={handleChange}
+                    />
+                    {errors.type?.document_number === 'required' &&
+                        <Typography variant="caption" color="red" marginTop={1}>
+                            * El número de documento es requerido.
+                        </Typography>
+                    }
                 </FormControl>
                 <FormControl sx={{ mt: 2 }}>
                     <InputLabel id="amount">Total</InputLabel>
@@ -87,11 +125,20 @@ export function VoucherForm({
                 }}>
                     <Button type="button" variant="outlined" sx={{ width: '33%' }} onClick={() => {
                         handleCloseSale()
-                        reset(setOpen)
+                        resetSale(setOpenSale)
+                        reset()
                     }}>
                         Cerrar
                     </Button>
-                    <Button type="button" variant="outlined" sx={{ width: '33%' }} onClick={() => reset(setOpen)}>
+                    <Button
+                        type="button"
+                        variant="outlined"
+                        sx={{ width: '33%' }}
+                        onClick={() => {
+                            resetSale(setOpenSale)
+                            reset()
+                        }}
+                    >
                         Cancelar
                     </Button>
                     <Button
@@ -104,6 +151,6 @@ export function VoucherForm({
                     </Button>
                 </FormControl>
             </Box>
-        </form >
+        </form>
     )
 }
