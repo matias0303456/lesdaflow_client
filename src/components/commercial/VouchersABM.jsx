@@ -4,27 +4,48 @@ import { Box, Button } from "@mui/material";
 
 import { DataGridWithFrontendPagination } from "../datagrid/DataGridWithFrontendPagination";
 
-export function VouchersABM({
-    rows,
-    handleCloseSale
-}) {
+export function VouchersABM({ rows, handleCloseSale }) {
 
     const headCells = useMemo(() => [
         {
             id: "id",
             numeric: true,
             disablePadding: false,
-            label: "N°",
+            label: "#",
             accessor: 'id'
+        },
+        {
+            id: "number",
+            numeric: false,
+            disablePadding: false,
+            label: "N°",
+            sorter: 'number',
+            accessor: 'number'
         },
         {
             id: "cae",
             numeric: false,
             disablePadding: false,
             label: "CAE",
-            sorter: (row) => row.cae,
-            accessor: (row) => row.cae
-        }
+            sorter: 'cae',
+            accessor: 'cae'
+        },
+        {
+            id: "type",
+            numeric: false,
+            disablePadding: false,
+            label: "Tipo",
+            sorter: 'type',
+            accessor: 'type'
+        },
+        {
+            id: "sale_point",
+            numeric: false,
+            disablePadding: false,
+            label: "P. de venta",
+            sorter: 'sale_point',
+            accessor: 'sale_point'
+        },
     ], [])
 
     return (
@@ -34,9 +55,7 @@ export function VouchersABM({
                 rows={rows}
             />
             <Box sx={{ textAlign: 'center' }}>
-                <Button type="button" variant="outlined" onClick={() => {
-                    handleCloseSale()
-                }} sx={{ width: '25%' }}>
+                <Button type="button" variant="outlined" onClick={() => handleCloseSale()} sx={{ width: '25%' }}>
                     Cerrar
                 </Button>
             </Box>

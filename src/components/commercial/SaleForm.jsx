@@ -239,6 +239,7 @@ export function SaleForm({
             {valueTab === 5 &&
                 <Box sx={{ p: 1 }}>
                     <VoucherForm
+                        sale={formData}
                         handleCloseSale={handleClose}
                         reset={resetPayment}
                         setOpen={setOpenPayment}

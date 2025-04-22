@@ -67,7 +67,7 @@ export function PaymentForm({
                             labelId="type-select"
                             id="type"
                             value={formData.type}
-                            label="Proveedor"
+                            label="Tipo"
                             name="type"
                             sx={{ width: '100%' }}
                             onChange={handleChange}
