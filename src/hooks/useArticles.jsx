@@ -18,6 +18,7 @@ export function useArticles() {
 
     const { get, post, put, destroy } = useApi(ARTICLE_URL)
     const [open, setOpen] = useState(null)
+    const [uploadedFile, setUploadedFile] = useState(null)
     const articleFormData = useForm({
         defaultData: {
             id: '',
@@ -110,16 +111,15 @@ export function useArticles() {
         setOpen(null)
     }
 
-    async function handleActPrices(e) {
-        const file = e.target.files[0];
-        if (file) {
-            const isValidFile = file.name.endsWith('.xlsx') || file.name.endsWith('.xls');
+    async function handleActPrices() {
+        if (uploadedFile !== null) {
+            const isValidFile = uploadedFile.name.endsWith('.xlsx') || uploadedFile.name.endsWith('.xls');
             if (!isValidFile) {
                 setMessage('Por favor, sube un archivo Excel (.xlsx o .xls)')
                 setSeverity('error')
             } else {
                 const formData = new FormData()
-                formData.append('excelFile', file, file.name)
+                formData.append('excelFile', uploadedFile, uploadedFile.name)
                 const res = await fetch(ARTICLE_URL + '/act-prices', {
                     method: 'POST',
                     headers: { 'Authorization': auth?.token },
@@ -142,6 +142,7 @@ export function useArticles() {
                     })
                     setMessage('Precios actualizados correctamente.')
                     setSeverity('success')
+                    setUploadedFile(null)
                     actPricesRef.current.value = null
                 } else {
                     setMessage('Ocurrió un error al actualizar los precios.')
@@ -212,6 +213,8 @@ export function useArticles() {
         articleFormData,
         headCells,
         actPricesRef,
-        handleActPrices
+        handleActPrices,
+        uploadedFile,
+        setUploadedFile
     }
 }

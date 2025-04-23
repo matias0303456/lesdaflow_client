@@ -30,7 +30,9 @@ export function Articles() {
         articleFormData,
         headCells,
         actPricesRef,
-        handleActPrices
+        handleActPrices,
+        uploadedFile,
+        setUploadedFile
     } = useArticles()
     const { loadingSuppliers, getSuppliers } = useSuppliers()
     const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = articleFormData
@@ -96,7 +98,7 @@ export function Articles() {
                                     <input
                                         type="file"
                                         ref={actPricesRef}
-                                        onChange={handleActPrices}
+                                        onChange={(e) => setUploadedFile(e.target.files[0])}
                                         accept=".xlsx, .xls"
                                         style={{ display: 'none' }}
                                     />
@@ -104,10 +106,29 @@ export function Articles() {
                                         variant="outlined"
                                         color='success'
                                         startIcon={<CloudUploadIcon />}
-                                        onClick={() => actPricesRef.current.click()}
+                                        onClick={() => {
+                                            if (uploadedFile !== null) {
+                                                handleActPrices()
+                                            } else {
+                                                actPricesRef.current.click()
+                                            }
+                                        }}
                                     >
-                                        Act. precios
+                                        {uploadedFile !== null ? 'Subir' : 'Act. precios'}
                                     </Button>
+                                    {uploadedFile !== null &&
+                                        <Button
+                                            variant="outlined"
+                                            color='error'
+                                            size="small"
+                                            onClick={() => {
+                                                actPricesRef.current.value = null
+                                                setUploadedFile(null)
+                                            }}
+                                        >
+                                            Cancelar
+                                        </Button>
+                                    }
                                 </>
                             }
                         </Box>
