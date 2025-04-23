@@ -12,6 +12,9 @@ import SearchSharpIcon from '@mui/icons-material/SearchSharp'
 import EditIcon from '@mui/icons-material/Edit'
 import DeleteSharpIcon from '@mui/icons-material/DeleteSharp';
 import { IconButton, Tooltip } from '@mui/material';
+import StorefrontSharpIcon from '@mui/icons-material/StorefrontSharp';
+import InputSharpIcon from '@mui/icons-material/InputSharp';
+import OutputSharpIcon from '@mui/icons-material/OutputSharp';
 
 import { EnhancedTableHead } from './EnhancedTableHead';
 
@@ -32,7 +35,13 @@ export function DataGridWithBackendPagination({
   filter,
   setFilter,
   count,
-  minWidth = 750
+  minWidth = 750,
+  showInput = false,
+  showOutput = false,
+  showConvertToSale = false,
+  setOpenNewMovement,
+  setFormDataMovement,
+  setOpenNewSale
 }) {
 
   const [order, setOrder] = useState(defaultOrder);
@@ -125,6 +134,45 @@ export function DataGridWithBackendPagination({
                             >
                               <IconButton>
                                 <DeleteSharpIcon />
+                              </IconButton>
+                            </Tooltip>
+                          }
+                          {showConvertToSale &&
+                            <Tooltip
+                              title={showConvertToSale}
+                              onClick={() => {
+                                if (setFormData) setFormData(rows.find((r) => r.id === row.id))
+                                if (setOpenNewSale) setOpenNewSale("CONVERT")
+                              }}
+                            >
+                              <IconButton>
+                                <StorefrontSharpIcon />
+                              </IconButton>
+                            </Tooltip>
+                          }
+                          {showInput &&
+                            <Tooltip
+                              title={showInput}
+                              onClick={() => {
+                                if (setFormDataMovement) setFormDataMovement(rows.find((r) => r.id === row.id))
+                                if (setOpenNewMovement) setOpenNewMovement("NEW_INCOME")
+                              }}
+                            >
+                              <IconButton>
+                                <InputSharpIcon />
+                              </IconButton>
+                            </Tooltip>
+                          }
+                          {showOutput &&
+                            <Tooltip
+                              title={showOutput}
+                              onClick={() => {
+                                if (setFormDataMovement) setFormDataMovement(rows.find((r) => r.id === row.id))
+                                if (setOpenNewMovement) setOpenNewMovement("NEW_OUTCOME")
+                              }}
+                            >
+                              <IconButton>
+                                <OutputSharpIcon />
                               </IconButton>
                             </Tooltip>
                           }

@@ -80,10 +80,12 @@ export function Articles() {
                     setFormData={setFormData}
                     showDeleteAction={auth?.user.role === 'ADMINISTRADOR'}
                     showEditAction={auth?.user.role === 'ADMINISTRADOR'}
-                    // showInput={auth?.user.role === 'ADMINISTRADOR' && "Ingresar stock"}
-                    // showOutput={auth?.user.role === 'ADMINISTRADOR' && "Egresar stock"}
+                    showInput={auth?.user.role === 'ADMINISTRADOR' && "Ingresar stock"}
+                    showOutput={auth?.user.role === 'ADMINISTRADOR' && "Egresar stock"}
+                    setFormDataMovement={setFormDataMovement}
                     filter={filter}
                     setFilter={setFilter}
+                    setOpenNewMovement={setOpenMovement}
                     count={count}
                     showViewAction
                     contentHeader={

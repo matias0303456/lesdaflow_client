@@ -131,6 +131,7 @@ export function Budgets() {
                     setOpen={setOpen}
                     setFormData={setFormData}
                     showPDFAction={`${REPORT_URL}/presupuesto-pdf?token=${auth?.token}&id=`}
+                    showConvertToSale="Convertir a venta"
                     filter={filter}
                     setFilter={setFilter}
                     count={count}
