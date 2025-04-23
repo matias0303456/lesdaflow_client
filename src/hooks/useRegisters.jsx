@@ -1,4 +1,5 @@
-import { useContext, useState } from "react"
+import { useContext, useMemo, useState } from "react"
+import { format } from "date-fns"
 
 import { MessageContext } from "../providers/MessageProvider"
 import { AuthContext } from "../providers/AuthProvider"
@@ -6,6 +7,7 @@ import { DataContext } from "../providers/DataProvider"
 import { useApi } from "./useApi"
 
 import { REGISTER_URL } from "../utils/urls"
+import { setLocalDate } from "../utils/helpers"
 
 export function useRegisters() {
 
@@ -15,6 +17,12 @@ export function useRegisters() {
 
     const { get, post, put, destroy } = useApi(REGISTER_URL)
 
+    const [filter, setFilter] = useState({
+        page: 0,
+        offset: 25,
+        user: ''
+    })
+    const [count, setCount] = useState(0)
     const [loadingRegisters, setLoadingRegisters] = useState(true)
     const [open, setOpen] = useState(null)
     const [currentAmount, setCurrentAmount] = useState('')
@@ -22,21 +30,19 @@ export function useRegisters() {
     async function getRegisters(params) {
         const { status, data } = await get(params)
         if (status === 200) {
-            dispatch({
-                type: 'REGISTERS',
-                payload: { ...state.registers, data: data[0], count: data[1] }
-            })
-            setLoadingRegisters(false)
+            dispatch({ type: 'REGISTERS', payload: data[0] })
+            setCount(data[1])
         } else {
             setMessage(data.message)
             setSeverity('error')
             setOpenMessage(true)
         }
+        setLoadingRegisters(false)
     }
 
-    const someRegisterIsOpen = state.registers.data.some(r => r.is_open && r.user.id === auth.user.id) && open === 'NEW'
+    const someRegisterIsOpen = state.registers.some(r => r.is_open && r.user.id === auth.user.id) && open === 'NEW'
 
-    const registerIsClosed = (formData) => !state.registers.data.find(r => r.id === formData.id)?.is_open && open === 'SETTINGS'
+    const registerIsClosed = (formData) => !state.registers.find(r => r.id === formData.id)?.is_open && open === 'SETTINGS'
 
     async function getCurrentRegister(formData) {
         if (registerIsClosed(formData)) return
@@ -69,18 +75,16 @@ export function useRegisters() {
         const { status, data } = open === 'NEW' ? await post(formData) : open === 'EDIT' ? await put(formData) : await put(formData, '/close')
         if (status === 200) {
             if (open === 'NEW') {
-                dispatch({ type: 'REGISTERS', payload: { ...state.registers, data: [data, ...state.registers.data] } })
+                dispatch({ type: 'REGISTERS', payload: [data, ...state.registers] })
+                setCount(count + 1)
                 setMessage('Caja abierta correctamente.')
             } else {
                 dispatch({
                     type: 'REGISTERS',
-                    payload: {
-                        ...state.registers,
-                        data: [
-                            data,
-                            ...state.registers.data.filter(r => r.id !== formData.id)
-                        ]
-                    }
+                    payload: [
+                        data,
+                        ...state.registers.filter(r => r.id !== formData.id)
+                    ]
                 })
                 if (open === 'EDIT') {
                     setMessage('Caja editada correctamente.')
@@ -104,11 +108,9 @@ export function useRegisters() {
         if (status === 200) {
             dispatch({
                 type: 'REGISTERS',
-                payload: {
-                    ...state.registers,
-                    data: [...state.registers.data.filter(r => r.id !== data.id)]
-                }
+                payload: [...state.registers.filter(r => r.id !== data.id)]
             })
+            setCount(count - 1)
             setMessage('Caja eliminada correctamente.')
             setSeverity('success')
         } else {
@@ -120,6 +122,73 @@ export function useRegisters() {
         setOpen(null)
     }
 
+    const headCells = useMemo(() => [
+        {
+            id: 'id',
+            numeric: true,
+            disablePadding: false,
+            label: '#',
+            sorter: (row) => parseInt(row.id),
+            accessor: (row) => parseInt(row.id)
+        },
+        {
+            id: "user",
+            numeric: false,
+            disablePadding: true,
+            label: "Caja",
+            sorter: (row) => row.user.username,
+            accessor: (row) => row.user.username,
+        },
+        {
+            id: "open_date",
+            numeric: false,
+            disablePadding: true,
+            label: "Apertura Fecha",
+            sorter: (row) => format(setLocalDate(row.created_at), 'dd/MM/yy'),
+            accessor: (row) => format(setLocalDate(row.created_at), 'dd/MM/yy')
+        },
+        {
+            id: "open_hour",
+            numeric: false,
+            disablePadding: true,
+            label: "Apertura Hora",
+            sorter: (row) => format(new Date(row.created_at), 'HH:mm:ss').toString().replace(':', ''),
+            accessor: (row) => format(setLocalDate(row.created_at), 'HH:mm:ss')
+        },
+        {
+            id: "open_amount",
+            numeric: false,
+            disablePadding: true,
+            label: "Apertura Saldo",
+            sorter: () => 0.00,
+            accessor: () => '$0.00'
+        },
+        {
+            id: "end_date",
+            numeric: false,
+            disablePadding: true,
+            label: "Cierre Fecha",
+            sorter: (row) => row.created_at === row.updated_at ? '-' : format(setLocalDate(row.updated_at), 'dd/MM/yy'),
+            accessor: (row) => row.created_at === row.updated_at ? '-' : format(setLocalDate(row.updated_at), 'dd/MM/yy')
+        },
+        {
+            id: "end_hour",
+            numeric: false,
+            disablePadding: true,
+            label: "Cierre hora",
+            sorter: (row) => row.created_at === row.updated_at ? '-' : format(new Date(row.updated_at), 'HH:mm:ss').toString().replace(':', ''),
+            accessor: (row) => row.created_at === row.updated_at ? '-' : format(setLocalDate(row.updated_at), 'HH:mm:ss')
+        },
+        {
+            id: "end_amount",
+            numeric: false,
+            disablePadding: true,
+            label: "Cierre Saldo",
+            sorter: (row) => parseFloat(row.end_amount.replace('$', '')),
+            accessor: (row) => row.end_amount
+        }
+    ], [state.registers])
+
     return {
         loadingRegisters,
         setLoadingRegisters,
@@ -129,6 +198,10 @@ export function useRegisters() {
         setOpen,
         getRegisters,
         currentAmount,
-        getCurrentRegister
+        getCurrentRegister,
+        filter,
+        setFilter,
+        count,
+        headCells
     }
 }

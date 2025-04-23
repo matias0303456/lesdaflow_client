@@ -1,46 +1,12 @@
-import { useContext, useEffect } from "react";
+/* eslint-disable react/prop-types */
+import { useContext } from "react";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 
 import { DataContext } from "../../providers/DataProvider";
 
-export function RegisterFilter() {
+export function RegisterFilter({ filter, setFilter }) {
 
-    const { state, dispatch } = useContext(DataContext)
-
-    const handleChange = e => {
-        dispatch({
-            type: 'REGISTERS',
-            payload: {
-                ...state.registers,
-                filter_fields: {
-                    ...state.registers.filter_fields,
-                    loaded: true,
-                    [e.target.name]: e.target.value
-                }
-            }
-        })
-    }
-
-    useEffect(() => {
-        const { user, loaded } = state.registers.filter_fields
-        if (user.length > 0) {
-            dispatch({
-                type: 'REGISTERS',
-                payload: {
-                    ...state.registers,
-                    filters: `&user=${user}`
-                }
-            })
-        } else if (loaded) {
-            dispatch({
-                type: 'REGISTERS',
-                payload: {
-                    ...state.registers,
-                    filters: ''
-                }
-            })
-        }
-    }, [state.registers.filter_fields])
+    const { state } = useContext(DataContext)
 
     return (
         <FormControl sx={{ width: '20%' }}>
@@ -48,16 +14,16 @@ export function RegisterFilter() {
             <Select
                 labelId="user-select"
                 id="user"
-                value={state.registers.filter_fields.user}
+                value={filter.user}
                 label="Usuario"
                 name="user"
-                onChange={handleChange}
+                onChange={e => setFilter({ ...filter, user: e.target.value })}
                 sx={{ width: "100%" }}
             >
                 {[
                     <MenuItem value="" key="select">Seleccione</MenuItem>,
-                    ...(state.users.data.length > 0 ?
-                        state.users.data.map((u) => (
+                    ...(state.users.length > 0 ?
+                        state.users.map((u) => (
                             <MenuItem key={u.id} value={u.username}>
                                 {`${u.name}`.toUpperCase()}
                             </MenuItem>

@@ -25,14 +25,7 @@ export const initialState = {
         filters: ''
     },
     'users': [],
-    'registers': {
-        count: 0,
-        data: [],
-        page: 0,
-        offset: 25,
-        filter_fields: { user: '', loaded: false },
-        filters: ''
-    },
+    'registers': [],
     'suppliers': [],
     'budgets': {
         count: 0,
