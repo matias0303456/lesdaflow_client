@@ -1,6 +1,6 @@
 import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Box, Button, FormControl, Input, InputLabel, Typography } from "@mui/material";
+import { Box, Button, FormControl, Input, InputLabel, LinearProgress, Typography } from "@mui/material";
 
 import { AuthContext } from "../providers/AuthProvider";
 import { DataContext } from "../providers/DataProvider";
@@ -33,7 +33,10 @@ export function Suppliers() {
         supplierDiscounts,
         setSupplierDiscounts,
         supplierSurcharges,
-        setSupplierSurcharges
+        setSupplierSurcharges,
+        filter,
+        setFilter,
+        count
     } = useSuppliers()
     const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = supplierFormData
 
@@ -48,188 +51,198 @@ export function Suppliers() {
         }
     }, [open])
 
+    useEffect(() => {
+        const { page, offset, name } = filter
+        getSuppliers(`?page=${page}&offset=${offset}&name=${name}`)
+    }, [filter])
+
     return (
         <Layout title="Proveedores">
-            <DataGridWithBackendPagination
-                loading={loadingSuppliers || disabled}
-                headCells={headCells}
-                rows={state.suppliers.data}
-                entityKey="suppliers"
-                getter={getSuppliers}
-                setOpen={setOpen}
-                setFormData={setFormData}
-                showEditAction
-                showDeleteAction
-                showViewAction
-                contentHeader={
-                    <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between' }}>
-                        <Box sx={{ display: 'flex', gap: 1 }}>
-                            <Button variant="outlined" onClick={() => {
-                                reset()
-                                setOpen('NEW')
-                            }}>
-                                Agregar
-                            </Button>
-                            {/* <Button variant="outlined" color='success' onClick={() => {
+            {(loadingSuppliers || disabled) ?
+                <Box sx={{ width: '100%' }}>
+                    <LinearProgress />
+                </Box> :
+                <DataGridWithBackendPagination
+                    headCells={headCells}
+                    rows={state.suppliers}
+                    filter={filter}
+                    setFilter={setFilter}
+                    count={count}
+                    setOpen={setOpen}
+                    setFormData={setFormData}
+                    showEditAction
+                    showDeleteAction
+                    showViewAction
+                    contentHeader={
+                        <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between' }}>
+                            <Box sx={{ display: 'flex', gap: 1 }}>
+                                <Button variant="outlined" onClick={() => {
+                                    reset()
+                                    setOpen('NEW')
+                                }}>
+                                    Agregar
+                                </Button>
+                                {/* <Button variant="outlined" color='success' onClick={() => {
                                 window.open(`${REPORT_URL}/suppliers?token=${auth?.token}`, '_blank')
                             }}>
                                 Excel
                             </Button> */}
+                            </Box>
+                            <SupplierFilter filter={filter} setFilter={setFilter} />
                         </Box>
-                        <SupplierFilter />
-                    </Box>
-                }
-            >
-                <ModalComponent open={open === 'NEW' || open === 'EDIT' || open === 'VIEW'} onClose={() => reset(setOpen)}>
-                    <Typography variant="h6" sx={{ marginBottom: 2 }}>
-                        {open === 'NEW' && 'Nuevo proveedor'}
-                        {open === 'EDIT' && 'Editar proveedor'}
-                        {open === 'VIEW' && `Proveedor #${formData.id}`}
-                    </Typography>
-                    <form onChange={handleChange}>
-                        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-                            <Box sx={{ display: 'flex', gap: 5 }}>
+                    }
+                >
+                    <ModalComponent open={open === 'NEW' || open === 'EDIT' || open === 'VIEW'} onClose={() => reset(setOpen)}>
+                        <Typography variant="h6" sx={{ marginBottom: 2 }}>
+                            {open === 'NEW' && 'Nuevo proveedor'}
+                            {open === 'EDIT' && 'Editar proveedor'}
+                            {open === 'VIEW' && `Proveedor #${formData.id}`}
+                        </Typography>
+                        <form onChange={handleChange}>
+                            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+                                <Box sx={{ display: 'flex', gap: 5 }}>
+                                    <FormControl sx={{ width: '50%' }}>
+                                        <InputLabel htmlFor="name">Nombre Completo *</InputLabel>
+                                        <Input id="name" type="text" name="name" value={formData.name} disabled={open === 'VIEW'} />
+                                        {errors.name?.type === 'required' &&
+                                            <Typography variant="caption" color="red" marginTop={1}>
+                                                * El nombre es requerido.
+                                            </Typography>
+                                        }
+                                        {errors.name?.type === 'maxLength' &&
+                                            <Typography variant="caption" color="red" marginTop={1}>
+                                                * El nombre es demasiado largo.
+                                            </Typography>
+                                        }
+                                    </FormControl>
+                                    <FormControl sx={{ width: '50%' }}>
+                                        <InputLabel htmlFor="business_name">Razón Social</InputLabel>
+                                        <Input id="business_name" type="text" name="business_name" value={formData.business_name} disabled={open === 'VIEW'} />
+                                        {errors.business_name?.type === 'maxLength' &&
+                                            <Typography variant="caption" color="red" marginTop={1}>
+                                                * La razón social es demasiado larga.
+                                            </Typography>
+                                        }
+                                    </FormControl>
+                                </Box>
+                                <Box sx={{ display: 'flex', gap: 5 }}>
+                                    <FormControl sx={{ width: '50%' }}>
+                                        <InputLabel htmlFor="cuil">CUIL</InputLabel>
+                                        <Input id="cuil" type="text" name="cuil" value={formData.cuil} disabled={open === 'VIEW'} />
+                                        {errors.cuil?.type === 'maxLength' &&
+                                            <Typography variant="caption" color="red" marginTop={1}>
+                                                * El CUIL es demasiado largo.
+                                            </Typography>
+                                        }
+                                    </FormControl>
+                                    <FormControl sx={{ width: '50%' }}>
+                                        <InputLabel htmlFor="email">Email</InputLabel>
+                                        <Input id="email" type="email" name="email" value={formData.email} disabled={open === 'VIEW'} />
+                                        {errors.email?.type === 'maxLength' &&
+                                            <Typography variant="caption" color="red" marginTop={1}>
+                                                * El email es demasiado largo.
+                                            </Typography>
+                                        }
+                                    </FormControl>
+                                </Box>
+                                <Box sx={{ display: 'flex', gap: 5 }}>
+                                    <FormControl sx={{ width: '50%' }}>
+                                        <InputLabel htmlFor="cell_phone">Celular</InputLabel>
+                                        <Input id="cell_phone" type="text" name="cell_phone" value={formData.cell_phone} disabled={open === 'VIEW'} />
+                                        {errors.cell_phone?.type === 'maxLength' &&
+                                            <Typography variant="caption" color="red" marginTop={1}>
+                                                * El celular es demasiado largo.
+                                            </Typography>
+                                        }
+                                    </FormControl>
+                                    <FormControl sx={{ width: '50%' }}>
+                                        <InputLabel htmlFor="business_phone">Teléfono Particular</InputLabel>
+                                        <Input id="business_phone" type="text" name="business_phone" value={formData.business_phone} disabled={open === 'VIEW'} />
+                                        {errors.business_phone?.type === 'maxLength' &&
+                                            <Typography variant="caption" color="red" marginTop={1}>
+                                                * El teléfono es demasiado largo.
+                                            </Typography>
+                                        }
+                                    </FormControl>
+                                </Box>
                                 <FormControl sx={{ width: '50%' }}>
-                                    <InputLabel htmlFor="name">Nombre Completo *</InputLabel>
-                                    <Input id="name" type="text" name="name" value={formData.name} disabled={open === 'VIEW'} />
-                                    {errors.name?.type === 'required' &&
+                                    <InputLabel htmlFor="address">Dirección</InputLabel>
+                                    <Input id="address" type="text" name="address" value={formData.address} disabled={open === 'VIEW'} />
+                                    {errors.address?.type === 'maxLength' &&
                                         <Typography variant="caption" color="red" marginTop={1}>
-                                            * El nombre es requerido.
-                                        </Typography>
-                                    }
-                                    {errors.name?.type === 'maxLength' &&
-                                        <Typography variant="caption" color="red" marginTop={1}>
-                                            * El nombre es demasiado largo.
-                                        </Typography>
-                                    }
-                                </FormControl>
-                                <FormControl sx={{ width: '50%' }}>
-                                    <InputLabel htmlFor="business_name">Razón Social</InputLabel>
-                                    <Input id="business_name" type="text" name="business_name" value={formData.business_name} disabled={open === 'VIEW'} />
-                                    {errors.business_name?.type === 'maxLength' &&
-                                        <Typography variant="caption" color="red" marginTop={1}>
-                                            * La razón social es demasiado larga.
+                                            * La dirección es demasiado larga.
                                         </Typography>
                                     }
                                 </FormControl>
                             </Box>
-                            <Box sx={{ display: 'flex', gap: 5 }}>
-                                <FormControl sx={{ width: '50%' }}>
-                                    <InputLabel htmlFor="cuil">CUIL</InputLabel>
-                                    <Input id="cuil" type="text" name="cuil" value={formData.cuil} disabled={open === 'VIEW'} />
-                                    {errors.cuil?.type === 'maxLength' &&
-                                        <Typography variant="caption" color="red" marginTop={1}>
-                                            * El CUIL es demasiado largo.
-                                        </Typography>
-                                    }
-                                </FormControl>
-                                <FormControl sx={{ width: '50%' }}>
-                                    <InputLabel htmlFor="email">Email</InputLabel>
-                                    <Input id="email" type="email" name="email" value={formData.email} disabled={open === 'VIEW'} />
-                                    {errors.email?.type === 'maxLength' &&
-                                        <Typography variant="caption" color="red" marginTop={1}>
-                                            * El email es demasiado largo.
-                                        </Typography>
-                                    }
-                                </FormControl>
-                            </Box>
-                            <Box sx={{ display: 'flex', gap: 5 }}>
-                                <FormControl sx={{ width: '50%' }}>
-                                    <InputLabel htmlFor="cell_phone">Celular</InputLabel>
-                                    <Input id="cell_phone" type="text" name="cell_phone" value={formData.cell_phone} disabled={open === 'VIEW'} />
-                                    {errors.cell_phone?.type === 'maxLength' &&
-                                        <Typography variant="caption" color="red" marginTop={1}>
-                                            * El celular es demasiado largo.
-                                        </Typography>
-                                    }
-                                </FormControl>
-                                <FormControl sx={{ width: '50%' }}>
-                                    <InputLabel htmlFor="business_phone">Teléfono Particular</InputLabel>
-                                    <Input id="business_phone" type="text" name="business_phone" value={formData.business_phone} disabled={open === 'VIEW'} />
-                                    {errors.business_phone?.type === 'maxLength' &&
-                                        <Typography variant="caption" color="red" marginTop={1}>
-                                            * El teléfono es demasiado largo.
-                                        </Typography>
-                                    }
-                                </FormControl>
-                            </Box>
-                            <FormControl sx={{ width: '50%' }}>
-                                <InputLabel htmlFor="address">Dirección</InputLabel>
-                                <Input id="address" type="text" name="address" value={formData.address} disabled={open === 'VIEW'} />
-                                {errors.address?.type === 'maxLength' &&
-                                    <Typography variant="caption" color="red" marginTop={1}>
-                                        * La dirección es demasiado larga.
-                                    </Typography>
-                                }
-                            </FormControl>
+                        </form>
+                        <Box sx={{ display: 'flex', gap: 2, my: 2 }}>
+                            <DiscountsAndSurcharges
+                                title="Descuentos"
+                                entity="descuentos"
+                                supplierEntities={supplierDiscounts}
+                                setSupplierEntities={setSupplierDiscounts}
+                                open={open}
+                            />
+                            <DiscountsAndSurcharges
+                                title="Recargos"
+                                entity="recargos"
+                                supplierEntities={supplierSurcharges}
+                                setSupplierEntities={setSupplierSurcharges}
+                                open={open}
+                            />
                         </Box>
-                    </form>
-                    <Box sx={{ display: 'flex', gap: 2, my: 2 }}>
-                        <DiscountsAndSurcharges
-                            title="Descuentos"
-                            entity="descuentos"
-                            supplierEntities={supplierDiscounts}
-                            setSupplierEntities={setSupplierDiscounts}
-                            open={open}
-                        />
-                        <DiscountsAndSurcharges
-                            title="Recargos"
-                            entity="recargos"
-                            supplierEntities={supplierSurcharges}
-                            setSupplierEntities={setSupplierSurcharges}
-                            open={open}
-                        />
-                    </Box>
-                    <FormControl sx={{
-                        display: 'flex',
-                        flexDirection: 'row',
-                        gap: 1,
-                        justifyContent: 'center',
-                        margin: '0 auto',
-                        marginTop: 1,
-                        width: '50%'
-                    }}>
-                        <Button type="button" variant="outlined" onClick={() => reset(setOpen)} sx={{
+                        <FormControl sx={{
+                            display: 'flex',
+                            flexDirection: 'row',
+                            gap: 1,
+                            justifyContent: 'center',
+                            margin: '0 auto',
+                            marginTop: 1,
                             width: '50%'
                         }}>
-                            {open === 'VIEW' ? 'Cerrar' : 'Cancelar'}
-                        </Button>
-                        {(open === 'NEW' || open === 'EDIT') &&
+                            <Button type="button" variant="outlined" onClick={() => reset(setOpen)} sx={{
+                                width: '50%'
+                            }}>
+                                {open === 'VIEW' ? 'Cerrar' : 'Cancelar'}
+                            </Button>
+                            {(open === 'NEW' || open === 'EDIT') &&
+                                <Button
+                                    type="button"
+                                    variant="contained"
+                                    disabled={disabled}
+                                    sx={{ width: '50%' }}
+                                    onClick={(e) => handleSubmit(e, validate, formData, reset, setDisabled)}
+                                >
+                                    Confirmar
+                                </Button>
+                            }
+                        </FormControl>
+                    </ModalComponent>
+                    <ModalComponent open={open === 'DELETE'} onClose={() => reset(setOpen)} reduceWidth={900}>
+                        <Typography variant="h6" marginBottom={1} textAlign="center">
+                            Confirmar eliminación de proveedor
+                        </Typography>
+                        <Typography variant="body1" marginBottom={2} textAlign="center">
+                            Los datos no podrán recuperarse
+                        </Typography>
+                        <Box sx={{ display: 'flex', gap: 1, justifyContent: 'center' }}>
+                            <Button type="button" variant="outlined" onClick={() => reset(setOpen)} sx={{ width: '35%' }}>
+                                Cancelar
+                            </Button>
                             <Button
                                 type="button"
                                 variant="contained"
                                 disabled={disabled}
-                                sx={{ width: '50%' }}
-                                onClick={(e) => handleSubmit(e, validate, formData, reset, setDisabled)}
+                                sx={{ width: '35%' }}
+                                onClick={() => handleDelete(formData)}
                             >
                                 Confirmar
                             </Button>
-                        }
-                    </FormControl>
-                </ModalComponent>
-                <ModalComponent open={open === 'DELETE'} onClose={() => reset(setOpen)} reduceWidth={900}>
-                    <Typography variant="h6" marginBottom={1} textAlign="center">
-                        Confirmar eliminación de proveedor
-                    </Typography>
-                    <Typography variant="body1" marginBottom={2} textAlign="center">
-                        Los datos no podrán recuperarse
-                    </Typography>
-                    <Box sx={{ display: 'flex', gap: 1, justifyContent: 'center' }}>
-                        <Button type="button" variant="outlined" onClick={() => reset(setOpen)} sx={{ width: '35%' }}>
-                            Cancelar
-                        </Button>
-                        <Button
-                            type="button"
-                            variant="contained"
-                            disabled={disabled}
-                            sx={{ width: '35%' }}
-                            onClick={() => handleDelete(formData)}
-                        >
-                            Confirmar
-                        </Button>
-                    </Box>
-                </ModalComponent>
-            </DataGridWithBackendPagination>
+                        </Box>
+                    </ModalComponent>
+                </DataGridWithBackendPagination>
+            }
         </Layout>
     )
 }

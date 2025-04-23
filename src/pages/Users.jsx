@@ -56,7 +56,7 @@ export function Users() {
         </Box> :
         <DataGridWithBackendPagination
           headCells={headCells}
-          rows={state.users.data}
+          rows={state.users}
           setFormData={setFormData}
           setOpen={setOpen}
           filter={filter}

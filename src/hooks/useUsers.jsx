@@ -112,7 +112,7 @@ export function useUsers() {
                         type: 'USERS',
                         payload: [
                             data,
-                            ...state.users.data.filter(u => u.id !== formData.id)
+                            ...state.users.filter(u => u.id !== formData.id)
                         ]
                     })
                     setMessage('Usuario editado correctamente.')
@@ -134,7 +134,7 @@ export function useUsers() {
         if (status === 200) {
             dispatch({
                 type: 'USERS',
-                payload: [...state.users.data.filter(u => u.id !== data.id)]
+                payload: [...state.users.filter(u => u.id !== data.id)]
             })
             setCount(count - 1)
             setMessage('Usuario eliminado correctamente.')
@@ -159,7 +159,7 @@ export function useUsers() {
                 type: 'USERS',
                 payload: [
                     data,
-                    ...state.users.data.filter(u => u.id !== formData.id)
+                    ...state.users.filter(u => u.id !== formData.id)
                 ]
             })
             setMessage('Usuario editado correctamente.')
@@ -243,7 +243,7 @@ export function useUsers() {
                 </Box>
             )
         }
-    ], [state.users.data])
+    ], [state.users])
 
     return {
         loadingUsers,

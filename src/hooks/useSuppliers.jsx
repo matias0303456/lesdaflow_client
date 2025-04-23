@@ -13,7 +13,7 @@ export function useSuppliers() {
     const { state, dispatch } = useContext(DataContext)
     const { setMessage, setOpenMessage, setSeverity } = useContext(MessageContext)
 
-    const { get, post, put, destroy, putMassive } = useApi(SUPPLIER_URL)
+    const { get, post, put, destroy } = useApi(SUPPLIER_URL)
     const supplierFormData = useForm({
         defaultData: {
             id: '',
@@ -66,10 +66,7 @@ export function useSuppliers() {
     async function getSuppliers(params) {
         const { status, data } = await get(params)
         if (status === 200) {
-            dispatch({
-                type: 'SUPPLIERS',
-                payload: { ...state.suppliers, data: data[0] }
-            })
+            dispatch({ type: 'SUPPLIERS', payload: data[0] })
             setCount(data[1])
         } else {
             setMessage(data.message)
@@ -90,18 +87,16 @@ export function useSuppliers() {
             const { status, data } = open === 'NEW' ? await post(submitData) : await put(submitData)
             if (status === 200) {
                 if (open === 'NEW') {
-                    dispatch({ type: 'SUPPLIERS', payload: { ...state.suppliers, data: [data, ...state.suppliers.data] } })
+                    dispatch({ type: 'SUPPLIERS', payload: [data, ...state.suppliers] })
+                    setCount(count + 1)
                     setMessage('Proveedor creado correctamente.')
                 } else {
                     dispatch({
                         type: 'SUPPLIERS',
-                        payload: {
-                            ...state.suppliers,
-                            data: [
-                                data,
-                                ...state.suppliers.data.filter(s => s.id !== formData.id)
-                            ]
-                        }
+                        payload: [
+                            data,
+                            ...state.suppliers.filter(s => s.id !== formData.id)
+                        ]
                     })
                     setMessage('Proveedor editado correctamente.')
                 }
@@ -122,11 +117,9 @@ export function useSuppliers() {
         if (status === 200) {
             dispatch({
                 type: 'SUPPLIERS',
-                payload: {
-                    ...state.suppliers,
-                    data: [...state.suppliers.data.filter(s => s.id !== data.id)]
-                }
+                payload: [...state.suppliers.filter(s => s.id !== data.id)]
             })
+            setCount(count - 1)
             setMessage('Proveedor eliminado correctamente.')
             setSeverity('success')
         } else {
@@ -140,38 +133,6 @@ export function useSuppliers() {
         setOpenMessage(true)
         setLoadingSuppliers(false)
         setOpen(null)
-    }
-
-    async function handleSubmitMassive(e, validate, formData, reset, setDisabled) {
-        e.preventDefault()
-        if (validate()) {
-            const body = {
-                supplier: formData.id,
-                articles: state.suppliers.data.find(s => s.id === formData.id).articles.map(a => ({ id: a.id, buy_price: a.buy_price })),
-                percentage: parseFloat(formData.percentage)
-            }
-            const { status, data } = await putMassive(body)
-            if (status === 200) {
-                dispatch({
-                    type: 'SUPPLIERS',
-                    payload: {
-                        ...state.suppliers,
-                        data: [
-                            data,
-                            ...state.suppliers.data.filter(s => s.id !== data.id)
-                        ]
-                    }
-                })
-                setMessage('Precios actualizados correctamente.')
-                setSeverity('success')
-                reset(setOpen)
-            } else {
-                setMessage(data.message)
-                setSeverity('error')
-                setDisabled(false)
-            }
-            setOpenMessage(true)
-        }
     }
 
     const headCells = useMemo(() => [
@@ -235,7 +196,7 @@ export function useSuppliers() {
             label: 'Email',
             accessor: 'email'
         }
-    ], [state.suppliers.data])
+    ], [state.suppliers])
 
     return {
         loadingSuppliers,
@@ -244,13 +205,15 @@ export function useSuppliers() {
         handleDelete,
         open,
         setOpen,
-        handleSubmitMassive,
         getSuppliers,
         supplierFormData,
         headCells,
         supplierDiscounts,
         setSupplierDiscounts,
         supplierSurcharges,
-        setSupplierSurcharges
+        setSupplierSurcharges,
+        filter,
+        setFilter,
+        count
     }
 }
