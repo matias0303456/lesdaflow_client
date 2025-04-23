@@ -58,6 +58,13 @@ export function useClients() {
 
     const [open, setOpen] = useState(null)
     const [loadingClients, setLoadingClients] = useState(true)
+    const [count, setCount] = useState(0)
+    const [filter, setFilter] = useState({
+        page: 0,
+        offset: 25,
+        first_name: '',
+        last_name: ''
+    })
 
     const headCells = useMemo(() => [
         {
@@ -104,21 +111,19 @@ export function useClients() {
                 </Link>
             )
         }
-    ], [state.clients.data])
+    ], [state.clients])
 
     async function getClients(params) {
         const { status, data } = await get(params)
         if (status === 200) {
-            dispatch({
-                type: 'CLIENTS',
-                payload: { ...state.clients, data: data[0], count: data[1] }
-            })
-            setLoadingClients(false)
+            dispatch({ type: 'CLIENTS', payload: data[0] })
+            setCount(data[0])
         } else {
             setMessage(data.message)
             setSeverity('error')
             setOpenMessage(true)
         }
+        setLoadingClients(false)
     }
 
     async function handleSubmit(e, validate, formData, reset, setDisabled) {
@@ -127,18 +132,16 @@ export function useClients() {
             const { status, data } = open === 'NEW' ? await post(formData) : await put(formData)
             if (status === 200) {
                 if (open === 'NEW') {
-                    dispatch({ type: 'CLIENTS', payload: { ...state.clients, data: [data, ...state.clients.data] } })
+                    dispatch({ type: 'CLIENTS', payload: [data, ...state.clients] })
+                    setCount(count + 1)
                     setMessage('Cliente creado correctamente.')
                 } else {
                     dispatch({
                         type: 'CLIENTS',
-                        payload: {
-                            ...state.clients,
-                            data: [
-                                data,
-                                ...state.clients.data.filter(c => c.id !== formData.id)
-                            ]
-                        }
+                        payload: [
+                            data,
+                            ...state.clients.filter(c => c.id !== formData.id)
+                        ]
                     })
                     setMessage('Cliente editado correctamente.')
                 }
@@ -159,11 +162,9 @@ export function useClients() {
         if (status === 200) {
             dispatch({
                 type: 'CLIENTS',
-                payload: {
-                    ...state.clients,
-                    data: [...state.clients.data.filter(c => c.id !== data.id)]
-                }
+                payload: [...state.clients.filter(c => c.id !== data.id)]
             })
+            setCount(count - 1)
             setMessage('Cliente eliminado correctamente.')
             setSeverity('success')
         } else {
@@ -188,6 +189,9 @@ export function useClients() {
         setOpen,
         getClients,
         clientFormData,
-        headCells
+        headCells,
+        filter,
+        setFilter,
+        count
     }
 }

@@ -1,57 +1,16 @@
-import { useContext, useEffect } from "react";
+/* eslint-disable react/prop-types */
 import { Box, Button, FormControl, Input, InputLabel } from "@mui/material";
 
-import { DataContext } from "../../providers/DataProvider";
-
-export function ClientFilter() {
-
-    const { state, dispatch } = useContext(DataContext)
-
-    const handleChange = e => {
-        dispatch({
-            type: 'CLIENTS',
-            payload: {
-                ...state.clients,
-                filter_fields: {
-                    ...state.clients.filter_fields,
-                    loaded: true,
-                    [e.target.name]: e.target.value
-                }
-            }
-        })
-    }
+export function ClientFilter({ filter, setFilter }) {
 
     const handleReset = () => {
-        dispatch({
-            type: 'CLIENTS',
-            payload: {
-                ...state.clients,
-                filter_fields: { first_name: '', last_name: '', loaded: false },
-                filters: ''
-            }
+        setFilter({
+            page: 0,
+            offset: 25,
+            first_name: '',
+            last_name: ''
         })
     }
-
-    useEffect(() => {
-        const { first_name, last_name, loaded } = state.clients.filter_fields
-        if (first_name.length > 0 || last_name.length > 0) {
-            dispatch({
-                type: 'CLIENTS',
-                payload: {
-                    ...state.clients,
-                    filters: `&first_name=${first_name}&last_name=${last_name}`
-                }
-            })
-        } else if (loaded) {
-            dispatch({
-                type: 'CLIENTS',
-                payload: {
-                    ...state.clients,
-                    filters: ''
-                }
-            })
-        }
-    }, [state.clients.filter_fields])
 
     return (
         <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 2 }}>
@@ -61,8 +20,8 @@ export function ClientFilter() {
                     id="first_name"
                     type="text"
                     name="first_name"
-                    value={state.clients.filter_fields.first_name}
-                    onChange={handleChange}
+                    value={filter.first_name}
+                    onChange={e => setFilter({ ...filter, first_name: e.target.value })}
                 />
             </FormControl>
             <FormControl>
@@ -71,8 +30,8 @@ export function ClientFilter() {
                     id="last_name"
                     type="text"
                     name="last_name"
-                    value={state.clients.filter_fields.last_name}
-                    onChange={handleChange}
+                    value={filter.last_name}
+                    onChange={e => setFilter({ ...filter, last_name: e.target.value })}
                 />
             </FormControl>
             <Button type="button" variant="outlined" onClick={handleReset}>

@@ -1,12 +1,5 @@
 export const initialState = {
-    'clients': {
-        count: 0,
-        data: [],
-        page: 0,
-        offset: 25,
-        filter_fields: { first_name: '', last_name: '', loaded: false },
-        filters: ''
-    },
+    'clients': [],
     'articles': {
         count: 0,
         data: [],
