@@ -1,10 +1,14 @@
-import { useContext, useState } from "react"
+import { useContext, useMemo, useState } from "react"
+import { Link } from "react-router-dom"
+import { Box, Checkbox, FormControlLabel } from "@mui/material"
 
 import { MessageContext } from "../providers/MessageProvider"
 import { DataContext } from "../providers/DataProvider"
 import { useApi } from "./useApi"
+import { useForm } from "./useForm"
 
 import { USER_URL } from "../utils/urls"
+import { STATUS_CODES } from "../utils/constants"
 
 export function useUsers() {
 
@@ -14,42 +18,102 @@ export function useUsers() {
     const [loadingUsers, setLoadingUsers] = useState(true)
     const [open, setOpen] = useState(null)
     const [newPwd, setNewPwd] = useState('')
+    const [showPassword, setShowPassword] = useState(false)
+    const [count, setCount] = useState(0)
+    const [filter, setFilter] = useState({
+        page: 0,
+        offset: 25,
+        name: '',
+        role: ''
+    })
 
     const { get, post, put, destroy } = useApi(USER_URL)
+    const userFormData = useForm({
+        defaultData: {
+            id: '',
+            name: '',
+            document_type: 'DNI',
+            document_number: '',
+            birth: new Date(Date.now()),
+            cell_phone: '',
+            local_phone: '',
+            email: '',
+            address: '',
+            username: '',
+            password: '',
+            role: 'VENDEDOR'
+        },
+        rules: {
+            name: {
+                required: true,
+                maxLength: 255
+            },
+            document_type: {
+                required: true
+            },
+            document_number: {
+                required: true,
+                maxLength: 255
+            },
+            local_phone: {
+                required: true,
+                maxLength: 255
+            },
+            cell_phone: {
+                required: true,
+                maxLength: 255
+            },
+            address: {
+                required: true,
+                maxLength: 255
+            },
+            username: {
+                required: true,
+                maxLength: 255
+            },
+            password: {
+                required: true,
+                minLength: 8,
+                maxLength: 255
+            },
+            email: {
+                maxLength: 255
+            },
+            role: {
+                required: true
+            }
+        }
+    })
 
     async function getUsers(params) {
         const { status, data } = await get(params)
-        if (status === 200) {
-            dispatch({
-                type: 'USERS',
-                payload: { ...state.users, data: data[0], count: data[1] }
-            })
-            setLoadingUsers(false)
+        if (status === STATUS_CODES.OK) {
+            dispatch({ type: 'USERS', payload: data[0] })
+            setCount(data[1])
         } else {
             setMessage(data.message)
             setSeverity('error')
             setOpenMessage(true)
         }
+        setLoadingUsers(false)
     }
 
     async function handleSubmit(e, validate, formData, reset, setDisabled) {
         e.preventDefault()
         if (validate()) {
             const { status, data } = open === 'NEW' ? await post(formData) : await put(formData)
-            if (status === 200) {
+            if (status === STATUS_CODES.OK) {
                 if (open === 'NEW') {
-                    dispatch({ type: 'USERS', payload: { ...state.users, data: [data, ...state.users.data] } })
+                    dispatch({ type: 'USERS', payload: [...state.users, data] })
+                    setCount(count + 1)
                     setMessage('Usuario creado correctamente.')
                 } else {
                     dispatch({
                         type: 'USERS',
-                        payload: {
-                            ...state.users,
-                            data: [
-                                data,
-                                ...state.users.data.filter(u => u.id !== formData.id)
-                            ]
-                        }
+                        payload: [
+                            data,
+                            ...state.users.data.filter(u => u.id !== formData.id)
+                        ]
                     })
                     setMessage('Usuario editado correctamente.')
                 }
@@ -70,11 +134,9 @@ export function useUsers() {
         if (status === 200) {
             dispatch({
                 type: 'USERS',
-                payload: {
-                    ...state.users,
-                    data: [...state.users.data.filter(u => u.id !== data.id)]
-                }
+                payload: [...state.users.data.filter(u => u.id !== data.id)]
             })
+            setCount(count - 1)
             setMessage('Usuario eliminado correctamente.')
             setSeverity('success')
         } else {
@@ -95,13 +157,10 @@ export function useUsers() {
         if (status === 200) {
             dispatch({
                 type: 'USERS',
-                payload: {
-                    ...state.users,
-                    data: [
-                        data,
-                        ...state.users.data.filter(u => u.id !== formData.id)
-                    ]
-                }
+                payload: [
+                    data,
+                    ...state.users.data.filter(u => u.id !== formData.id)
+                ]
             })
             setMessage('Usuario editado correctamente.')
             setSeverity('success')
@@ -112,6 +171,80 @@ export function useUsers() {
         setOpenMessage(true)
     }
 
+    const headCells = useMemo(() => [
+        {
+            id: "name",
+            numeric: false,
+            disablePadding: true,
+            label: "Nombre y Apellido",
+            sorter: (row) => row.name,
+            accessor: 'name'
+        },
+        {
+            id: "document_number",
+            numeric: false,
+            disablePadding: true,
+            label: "Nro. Documento",
+            sorter: (row) => row.document_number.toString(),
+            accessor: "document_number",
+        },
+        {
+            id: "cell_phone",
+            numeric: false,
+            disablePadding: true,
+            label: "Celular",
+            sorter: (row) => row.cell_phone.toString(),
+            accessor: "cell_phone"
+        },
+        {
+            id: "local_phone",
+            numeric: false,
+            disablePadding: true,
+            label: "Teléfono",
+            sorter: (row) => row.local_phone.toString(),
+            accessor: "local_phone"
+        },
+        {
+            id: "address",
+            numeric: false,
+            disablePadding: true,
+            label: "Dirección",
+            sorter: (row) => row.address,
+            accessor: (row) => (
+                <Link target="_blank" to={`https://www.google.com/maps?q=${row.address}`}>
+                    <span style={{ color: '#050622' }}>{row.address}</span>
+                </Link>
+            )
+        },
+        {
+            id: "role",
+            numeric: false,
+            disablePadding: true,
+            label: "Rol",
+            sorter: (row) => row.role,
+            accessor: "role"
+        },
+        {
+            id: "is_active",
+            numeric: false,
+            disablePadding: true,
+            label: "Alta/baja",
+            sorter: (row) => row.is_active ? 1 : 0,
+            accessor: (row) => (
+                <Box sx={{ textAlign: 'center' }}>
+                    <FormControlLabel
+                        control={<Checkbox />}
+                        checked={row.is_active}
+                        onChange={e => toggleActive({
+                            ...row,
+                            is_active: e.target.checked
+                        })}
+                    />
+                </Box>
+            )
+        }
+    ], [state.users.data])
+
     return {
         loadingUsers,
         setLoadingUsers,
@@ -120,8 +253,14 @@ export function useUsers() {
         handleSubmit,
         handleDelete,
         getUsers,
-        newPwd, 
+        newPwd,
         setNewPwd,
-        toggleActive
+        count,
+        filter,
+        setFilter,
+        showPassword,
+        setShowPassword,
+        userFormData,
+        headCells
     }
 }

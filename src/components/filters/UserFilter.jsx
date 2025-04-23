@@ -1,57 +1,16 @@
-import { useContext, useEffect } from "react";
+/* eslint-disable react/prop-types */
 import { Box, Button, FormControl, Input, InputLabel, MenuItem, Select } from "@mui/material";
 
-import { DataContext } from "../../providers/DataProvider";
-
-export function UserFilter() {
-
-    const { state, dispatch } = useContext(DataContext)
-
-    const handleChange = e => {
-        dispatch({
-            type: 'USERS',
-            payload: {
-                ...state.users,
-                filter_fields: {
-                    ...state.users.filter_fields,
-                    loaded: true,
-                    [e.target.name]: e.target.value
-                }
-            }
-        })
-    }
+export function UserFilter({ filter, setFilter }) {
 
     const handleReset = () => {
-        dispatch({
-            type: 'USERS',
-            payload: {
-                ...state.users,
-                filter_fields: { name: '', role: '', loaded: false },
-                filters: ''
-            }
+        setFilter({
+            page: 0,
+            offset: 60,
+            name: '',
+            role: ''
         })
     }
-
-    useEffect(() => {
-        const { name, role, loaded } = state.users.filter_fields
-        if (name.length > 0 || role.length > 0) {
-            dispatch({
-                type: 'USERS',
-                payload: {
-                    ...state.users,
-                    filters: `&name=${name}&role=${role}`
-                }
-            })
-        } else if (loaded) {
-            dispatch({
-                type: 'USERS',
-                payload: {
-                    ...state.users,
-                    filters: ''
-                }
-            })
-        }
-    }, [state.users.filter_fields])
 
     return (
         <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, width: { xs: '100%', md: '60%', lg: '40%' }, justifyContent: 'space-between' }}>
@@ -61,8 +20,8 @@ export function UserFilter() {
                     id="name"
                     type="text"
                     name="name"
-                    value={state.users.filter_fields.name}
-                    onChange={handleChange}
+                    value={filter.name}
+                    onChange={e => setFilter({ ...filter, name: e.target.value })}
                 />
             </FormControl>
             <FormControl sx={{ width: { xs: '100%', sm: '30%' } }}>
@@ -70,11 +29,10 @@ export function UserFilter() {
                 <Select
                     labelId="role-select"
                     id="role"
-                    value={state.users.filter_fields.role}
+                    value={filter.role}
+                    onChange={e => setFilter({ ...filter, role: e.target.value })}
                     label="Rol"
                     name="role"
-                    disabled={open === 'VIEW'}
-                    onChange={handleChange}
                 >
                     <MenuItem value="">Seleccione</MenuItem>
                     <MenuItem value="ADMINISTRADOR">ADMINISTRADOR</MenuItem>

@@ -51,7 +51,13 @@ export function useSuppliers() {
             }
         }
     })
+    const [filter, setFilter] = useState({
+        page: 0,
+        offset: 25,
+        name: ''
+    })
 
+    const [count, setCount] = useState(0)
     const [loadingSuppliers, setLoadingSuppliers] = useState(true)
     const [open, setOpen] = useState(null)
     const [supplierDiscounts, setSupplierDiscounts] = useState([])
@@ -62,14 +68,15 @@ export function useSuppliers() {
         if (status === 200) {
             dispatch({
                 type: 'SUPPLIERS',
-                payload: { ...state.suppliers, data: data[0], count: data[1] }
+                payload: { ...state.suppliers, data: data[0] }
             })
-            setLoadingSuppliers(false)
+            setCount(data[1])
         } else {
             setMessage(data.message)
             setSeverity('error')
             setOpenMessage(true)
         }
+        setLoadingSuppliers(false)
     }
 
     async function handleSubmit(e, validate, formData, reset, setDisabled) {

@@ -31,14 +31,7 @@ export const initialState = {
         filter_fields: { sale_id: '', from: '', to: '', p_type: '', created_by: '', loaded: false },
         filters: ''
     },
-    'users': {
-        count: 0,
-        data: [],
-        page: 0,
-        offset: 25,
-        filter_fields: { name: '', role: '', loaded: false },
-        filters: ''
-    },
+    'users': [],
     'registers': {
         count: 0,
         data: [],
@@ -47,14 +40,7 @@ export const initialState = {
         filter_fields: { user: '', loaded: false },
         filters: ''
     },
-    'suppliers': {
-        count: 0,
-        data: [],
-        page: 0,
-        offset: 25,
-        filter_fields: { name: '', loaded: false },
-        filters: ''
-    },
+    'suppliers': [],
     'budgets': {
         count: 0,
         data: [],
