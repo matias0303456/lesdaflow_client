@@ -61,7 +61,7 @@ export function useArticles() {
             const { status, data } = open === 'NEW' ? await post(formData) : await put(formData)
             if (status === 200) {
                 if (open === 'NEW') {
-                    dispatch({ type: 'ARTICLES', payload: { ...state.articles, data: [data, ...state.articles.data] } })
+                    dispatch({ type: 'ARTICLES', payload: { ...state.articles, data: [data, ...state.articles] } })
                     setMessage('Artículo creado correctamente.')
                 } else {
                     dispatch({
@@ -70,7 +70,7 @@ export function useArticles() {
                             ...state.articles,
                             data: [
                                 data,
-                                ...state.articles.data.filter(p => p.id !== formData.id)
+                                ...state.articles.filter(p => p.id !== formData.id)
                             ]
                         }
                     })
@@ -94,7 +94,7 @@ export function useArticles() {
                 type: 'ARTICLES',
                 payload: {
                     ...state.articles,
-                    data: [...state.articles.data.filter(p => p.id !== data.id)]
+                    data: [...state.articles.filter(p => p.id !== data.id)]
                 }
             })
             setMessage('Artículo eliminado correctamente.')
@@ -200,7 +200,7 @@ export function useArticles() {
             sorter: (row) => getStock(row),
             accessor: (row) => getStock(row)
         }
-    ], [state.articles.data])
+    ], [state.articles])
 
     return {
         open,

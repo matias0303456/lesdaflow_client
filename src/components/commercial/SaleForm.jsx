@@ -83,7 +83,7 @@ export function SaleForm({
     useEffect(() => {
         if (saleArticles.length > 0 && (open === 'NEW' || open === 'CONVERT')) {
             setSaleArticles(saleArticles.filter(sp => {
-                const p = state.articles.data.find(i => i.id === sp.article_id)
+                const p = state.articles.find(i => i.id === sp.article_id)
                 if ((formData.type === 'CONTADO' && p?.cash) ||
                     (formData.type === 'CUENTA_CORRIENTE' && p?.cta_cte)) return sp
             }))
@@ -91,14 +91,14 @@ export function SaleForm({
     }, [formData.type])
 
     const discAndSurch = useMemo(() => {
-        return getDiscountsAndSurchargesValues(saleArticles, state.articles.data)
+        return getDiscountsAndSurchargesValues(saleArticles, state.articles)
     }, [saleArticles])
 
     useEffect(() => {
         if (open === 'EDIT') return
         setFormData({
             ...formData,
-            total: getCurrentTotal(saleArticles, state.articles.data, discAndSurch),
+            total: getCurrentTotal(saleArticles, state.articles, discAndSurch),
         })
     }, [saleArticles, open])
 
@@ -185,7 +185,7 @@ export function SaleForm({
             {valueTab === 1 &&
                 <Box sx={{ p: 0 }}>
                     <PaymentsABM
-                        rows={state.sales.data.find(s => s.id === formData.id)?.payments ?? []}
+                        rows={state.sales.find(s => s.id === formData.id)?.payments ?? []}
                         handleCloseSale={handleClose}
                         open={open}
                         openPayment={openPayment}
@@ -231,7 +231,7 @@ export function SaleForm({
             {valueTab === 4 &&
                 <Box sx={{ p: 0 }}>
                     <VouchersABM
-                        rows={state.sales.data.find(s => s.id === formData.id)?.payments ?? []}
+                        rows={state.sales.find(s => s.id === formData.id)?.payments ?? []}
                         handleCloseSale={handleClose}
                     />
                 </Box>

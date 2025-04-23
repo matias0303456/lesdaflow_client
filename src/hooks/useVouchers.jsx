@@ -67,7 +67,7 @@ export function useVouchers() {
         if (validate()) {
             const { status, data } = await post(voucher)
             if (status === STATUS_CODES.OK) {
-                const currentSale = state.sales.data.find(s => s.id === voucher.sale_id)
+                const currentSale = state.sales.find(s => s.id === voucher.sale_id)
                 dispatch({
                     type: 'SALES',
                     payload: {
@@ -77,7 +77,7 @@ export function useVouchers() {
                                 ...currentSale,
                                 vouchers: [...currentSale.vouchers, data]
                             },
-                            ...state.sales.data.filter(s => s.id !== currentSale.id)
+                            ...state.sales.filter(s => s.id !== currentSale.id)
                         ]
                     }
                 })

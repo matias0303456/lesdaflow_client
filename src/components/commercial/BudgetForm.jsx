@@ -38,7 +38,7 @@ export function BudgetForm({
     useEffect(() => {
         if (budgetArticles.length > 0 && (open === 'NEW' || open === 'CONVERT')) {
             setBudgetArticles(budgetArticles.filter(bp => {
-                const p = state.articles.data.find(i => i.id === bp.article_id)
+                const p = state.articles.find(i => i.id === bp.article_id)
                 if ((formData.type === 'CONTADO' && p?.cash) ||
                     (formData.type === 'CUENTA_CORRIENTE' && p?.cta_cte)) return bp
             }))
@@ -46,14 +46,14 @@ export function BudgetForm({
     }, [formData.type])
 
     const discAndSurch = useMemo(() => {
-        return getDiscountsAndSurchargesValues(budgetArticles, state.articles.data)
+        return getDiscountsAndSurchargesValues(budgetArticles, state.articles)
     }, [budgetArticles])
 
     useEffect(() => {
         if (open === 'EDIT') return
         setFormData({
             ...formData,
-            total: getCurrentTotal(budgetArticles, state.articles.data, discAndSurch),
+            total: getCurrentTotal(budgetArticles, state.articles, discAndSurch),
         })
     }, [budgetArticles, open])
 
@@ -79,8 +79,8 @@ export function BudgetForm({
                         <Autocomplete
                             disablePortal
                             id="client-autocomplete"
-                            value={formData.client_id.toString().length > 0 ? `${state.clients.data.find(c => c.id === formData.client_id)?.first_name} - ${state.clients.data.find(c => c.id === formData.client_id)?.last_name}` : ''}
-                            options={state.clients.data.map(c => ({ label: `${c.first_name} ${c.last_name}`, id: c.id }))}
+                            value={formData.client_id.toString().length > 0 ? `${state.clients.find(c => c.id === formData.client_id)?.first_name} - ${state.clients.find(c => c.id === formData.client_id)?.last_name}` : ''}
+                            options={state.clients.map(c => ({ label: `${c.first_name} ${c.last_name}`, id: c.id }))}
                             noOptionsText="No hay clientes registrados."
                             onChange={(e, value) => handleChange({ target: { name: 'client_id', value: value?.id ?? '' } })}
                             renderInput={(params) => <TextField {...params} label="Cliente *" />}
@@ -144,7 +144,7 @@ export function BudgetForm({
                         />
                     </Box>
                     <AddArticlesToBudget
-                        articles={state.articles.data}
+                        articles={state.articles}
                         budgetArticles={budgetArticles}
                         setBudgetArticles={setBudgetArticles}
                         missing={missing}

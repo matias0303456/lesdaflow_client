@@ -21,20 +21,27 @@ export function useBudgets() {
     const [budgetArticles, setBudgetArticles] = useState([])
     const [idsToDelete, setIdsToDelete] = useState([])
     const [missing, setMissing] = useState(false)
+    const [count, setCount] = useState(0)
+    const [filter, setFilter] = useState({
+        page: 0,
+        offset: 25,
+        from: '',
+        to: '',
+        client: '',
+        type: ''
+    })
 
     async function getBudgets(params) {
         const { status, data } = await get(params)
         if (status === 200) {
-            dispatch({
-                type: 'BUDGETS',
-                payload: { ...state.budgets, data: data[0], count: data[1] }
-            })
-            setLoadingBudgets(false)
+            dispatch({ type: 'BUDGETS', payload: data[0] })
+            setCount(data[1])
         } else {
             setMessage(data.message)
             setSeverity('error')
             setOpenMessage(true)
         }
+        setLoadingBudgets(false)
     }
 
     async function handleSubmit(e, formData, validate, reset, setDisabled) {
@@ -49,18 +56,16 @@ export function useBudgets() {
             const { status, data } = open === 'NEW' ? await post(submitData) : await put(submitData)
             if (status === 200) {
                 if (open === 'NEW') {
-                    dispatch({ type: 'BUDGETS', payload: { ...state.budgets, data: [data, ...state.budgets.data] } })
+                    dispatch({ type: 'BUDGETS', payload: [data, ...state.budgets] })
+                    setCount(count + 1)
                     setMessage('Presupuesto creado correctamente.')
                 } else {
                     dispatch({
                         type: 'BUDGETS',
-                        payload: {
-                            ...state.budgets,
-                            data: [
-                                data,
-                                ...state.budgets.data.filter(b => b.id !== formData.id)
-                            ]
-                        }
+                        payload: [
+                            data,
+                            ...state.budgets.filter(b => b.id !== formData.id)
+                        ]
                     })
                     setMessage('Presupuesto editado correctamente.')
                     setOpenMessage(true)
@@ -90,11 +95,9 @@ export function useBudgets() {
         if (status === 200) {
             dispatch({
                 type: 'BUDGETS',
-                payload: {
-                    ...state.budgets,
-                    data: [...state.budgets.data.filter(b => b.id !== data.id)]
-                }
+                payload: [...state.budgets.filter(b => b.id !== data.id)]
             })
+            setCount(count - 1)
             setMessage(open === 'DELETE' ? 'Presupuesto eliminado correctamente.' : 'Venta creada y presupuesto eliminado correctamente.')
             setSeverity('success')
         } else {
@@ -168,7 +171,7 @@ export function useBudgets() {
             label: 'Tipo',
             accessor: (row) => row.type.replaceAll('CUENTA_CORRIENTE', 'CTA CTE')
         }
-    ], [state.budgets.data])
+    ], [state.budgets])
 
     return {
         loadingBudgets,
@@ -184,6 +187,9 @@ export function useBudgets() {
         handleSubmit,
         handleDelete,
         getBudgets,
-        headCells
+        headCells,
+        filter,
+        setFilter,
+        count
     }
 }

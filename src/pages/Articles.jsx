@@ -63,7 +63,7 @@ export function Articles() {
         <Layout title="Artículos">
             <DataGridWithBackendPagination
                 headCells={headCells}
-                rows={state.articles.data}
+                rows={state.articles}
                 setOpen={setOpen}
                 setOpenNewMovement={setOpenMovement}
                 setFormData={setFormData}
@@ -199,7 +199,7 @@ export function Articles() {
                                         onChange={handleChange}
                                         disabled={open === 'VIEW'}
                                     >
-                                        {state.suppliers.data.map(s => (
+                                        {state.suppliers.map(s => (
                                             <MenuItem key={s.id} value={s.id}>{s.name}</MenuItem>
                                         ))}
                                     </Select>

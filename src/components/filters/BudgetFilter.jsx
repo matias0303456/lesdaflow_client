@@ -1,62 +1,21 @@
-import { useContext, useEffect } from "react";
+/* eslint-disable react/prop-types */
 import { Box, Button, FormControl, Input, InputLabel, MenuItem, Select } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { es } from "date-fns/locale";
 
-import { DataContext } from "../../providers/DataProvider";
-
-export function BudgetFilter() {
-
-    const { state, dispatch } = useContext(DataContext)
-
-    const handleChange = e => {
-        dispatch({
-            type: 'BUDGETS',
-            payload: {
-                ...state.budgets,
-                filter_fields: {
-                    ...state.budgets.filter_fields,
-                    loaded: true,
-                    [e.target.name]: e.target.value
-                }
-            }
-        })
-    }
+export function BudgetFilter({ filter, setFilter }) {
 
     const handleReset = () => {
-        dispatch({
-            type: 'BUDGETS',
-            payload: {
-                ...state.budgets,
-                filter_fields: { from: '', to: '', user: '', client: '', type: '', loaded: false },
-                filters: ''
-            }
+        setFilter({
+            page: 0,
+            offset: 25,
+            from: '',
+            to: '',
+            client: '',
+            type: ''
         })
     }
-
-    useEffect(() => {
-        const { from, to, user, client, loaded, type } = state.budgets.filter_fields
-        const fromIsNotString = typeof from !== 'string'
-        const toIsNotString = typeof to !== 'string'
-        if (fromIsNotString || toIsNotString || user.length > 0 || client.length > 0 || type.length > 0) {
-            dispatch({
-                type: 'BUDGETS',
-                payload: {
-                    ...state.budgets,
-                    filters: `&from=${fromIsNotString ? new Date(from).toISOString() : ''}&to=${toIsNotString ? new Date(to).toISOString() : ''}&user=${user}&client=${client}&type=${type}`
-                }
-            })
-        } else if (loaded) {
-            dispatch({
-                type: 'BUDGETS',
-                payload: {
-                    ...state.budgets,
-                    filters: ''
-                }
-            })
-        }
-    }, [state.budgets.filter_fields])
 
     return (
         <Box sx={{
@@ -71,8 +30,8 @@ export function BudgetFilter() {
                 <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
                     <DatePicker
                         label="Desde"
-                        value={state.budgets.filter_fields.from.length === 0 ? new Date(Date.now()) : new Date(state.budgets.filter_fields.from)}
-                        onChange={value => handleChange({ target: { name: 'from', value: new Date(value.toISOString()) } })}
+                        value={filter.from.length === 0 ? new Date(Date.now()) : new Date(filter.from)}
+                        onChange={value => setFilter({ ...filter, from: new Date(value.toISOString()) })}
                     />
                 </LocalizationProvider>
             </FormControl>
@@ -80,8 +39,8 @@ export function BudgetFilter() {
                 <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
                     <DatePicker
                         label="Hasta"
-                        value={state.budgets.filter_fields.to.length === 0 ? new Date(Date.now()) : new Date(state.budgets.filter_fields.to)}
-                        onChange={value => handleChange({ target: { name: 'to', value: new Date(value.toISOString()) } })}
+                        value={filter.to.length === 0 ? new Date(Date.now()) : new Date(filter.to)}
+                        onChange={value => setFilter({ ...filter, to: new Date(value.toISOString()) })}
                     />
                 </LocalizationProvider>
             </FormControl>
@@ -91,8 +50,8 @@ export function BudgetFilter() {
                     id="client"
                     type="text"
                     name="client"
-                    value={state.budgets.filter_fields.client}
-                    onChange={handleChange}
+                    value={filter.client}
+                    onChange={e => setFilter({ ...filter, client: e.target.value })}
                 />
             </FormControl>
             <FormControl sx={{ width: { xs: '100%', md: '15%' } }}>
@@ -100,10 +59,10 @@ export function BudgetFilter() {
                 <Select
                     labelId="type-select"
                     id="type"
-                    value={state.budgets.filter_fields.type}
+                    value={filter.type}
                     label="Tipo"
                     name="type"
-                    onChange={handleChange}
+                    onChange={e => setFilter({ ...filter, type: e.target.value })}
                 >
                     <MenuItem value="">Seleccione</MenuItem>
                     <MenuItem value="CUENTA_CORRIENTE">CTA CTE</MenuItem>

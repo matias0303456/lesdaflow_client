@@ -43,14 +43,14 @@ export function useMovements() {
                             ...state.articles,
                             data: [
                                 {
-                                    ...state.articles.data.find(p => p.id === newMovement.article_id),
+                                    ...state.articles.find(p => p.id === newMovement.article_id),
                                     incomes: [
                                         newMovement,
-                                        ...state.articles.data.find(p => p.id === newMovement.article_id).incomes
+                                        ...state.articles.find(p => p.id === newMovement.article_id).incomes
                                             .filter(inc => inc.id !== newMovement.id)
                                     ]
                                 },
-                                ...state.articles.data.filter(p => p.id !== newMovement.article_id)
+                                ...state.articles.filter(p => p.id !== newMovement.article_id)
                             ]
                         }
                     })
@@ -62,14 +62,14 @@ export function useMovements() {
                             ...state.articles,
                             data: [
                                 {
-                                    ...state.articles.data.find(p => p.id === newMovement.article_id),
+                                    ...state.articles.find(p => p.id === newMovement.article_id),
                                     outcomes: [
                                         newMovement,
-                                        ...state.articles.data.find(p => p.id === newMovement.article_id).outcomes
+                                        ...state.articles.find(p => p.id === newMovement.article_id).outcomes
                                             .filter(out => out.id !== newMovement.id)
                                     ]
                                 },
-                                ...state.articles.data.filter(p => p.id !== newMovement.article_id)
+                                ...state.articles.filter(p => p.id !== newMovement.article_id)
                             ]
                         }
                     })
@@ -102,7 +102,7 @@ export function useMovements() {
                 payload: {
                     ...state.articles,
                     data: [
-                        ...state.articles.data.map(a => {
+                        ...state.articles.map(a => {
                             if (!newIncomeIds.includes(a.id)) return a
                             return {
                                 ...a,

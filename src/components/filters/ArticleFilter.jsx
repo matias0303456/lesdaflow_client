@@ -92,7 +92,7 @@ export function ArticleFilter() {
                     onChange={handleChange}
                 >
                     <MenuItem value="">Seleccione</MenuItem>
-                    {state.suppliers.data.map(s => (
+                    {state.suppliers.map(s => (
                         <MenuItem key={s.id} value={s.id}>{s.name}</MenuItem>
                     ))}
                 </Select>

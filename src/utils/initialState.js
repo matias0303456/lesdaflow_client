@@ -20,20 +20,5 @@ export const initialState = {
     'users': [],
     'registers': [],
     'suppliers': [],
-    'budgets': {
-        count: 0,
-        data: [],
-        page: 0,
-        offset: 25,
-        filter_fields: { from: '', to: '', user: '', client: '', type: '', loaded: false },
-        filters: ''
-    },
-    'discounts': {
-        count: 0,
-        data: [],
-        page: 0,
-        offset: 25,
-        filter_fields: { loaded: false },
-        filters: ''
-    }
+    'budgets': []
 }

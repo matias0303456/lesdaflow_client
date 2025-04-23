@@ -30,7 +30,7 @@ export function PaymentForm({
 
     useEffect(() => {
         if (sale.sale_articles) {
-            const current = state.sales.data.find(s => s.id === sale.id)
+            const current = state.sales.find(s => s.id === sale.id)
             const result = getSaleDifference(current).replace('$', '') - parseFloat(formData.amount)
             if (isNaN(result)) {
                 setNewDifference(getSaleDifference(current))

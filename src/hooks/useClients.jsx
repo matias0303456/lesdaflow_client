@@ -117,7 +117,7 @@ export function useClients() {
         const { status, data } = await get(params)
         if (status === 200) {
             dispatch({ type: 'CLIENTS', payload: data[0] })
-            setCount(data[0])
+            setCount(data[1])
         } else {
             setMessage(data.message)
             setSeverity('error')

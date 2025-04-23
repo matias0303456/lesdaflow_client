@@ -62,8 +62,8 @@ export function SaleFormFields({
                             <Autocomplete
                                 disablePortal
                                 id="client-autocomplete"
-                                value={formData.client_id.toString().length > 0 ? `${state.clients.data.find(c => c.id === formData.client_id)?.first_name} ${state.clients.data.find(c => c.id === formData.client_id)?.last_name}` : ''}
-                                options={state.clients.data.map(c => ({ label: `${c.first_name} ${c.last_name}`, id: c.id }))}
+                                value={formData.client_id.toString().length > 0 ? `${state.clients.find(c => c.id === formData.client_id)?.first_name} ${state.clients.find(c => c.id === formData.client_id)?.last_name}` : ''}
+                                options={state.clients.map(c => ({ label: `${c.first_name} ${c.last_name}`, id: c.id }))}
                                 noOptionsText="No hay clientes registrados."
                                 onChange={(e, value) => handleChange({ target: { name: 'client_id', value: value?.id ?? '' } })}
                                 renderInput={(params) => <TextField {...params} label="Cliente *" />}
@@ -114,7 +114,7 @@ export function SaleFormFields({
                         gap: 2
                     }}>
                         <AddArticlesToSale
-                            articles={state.articles.data}
+                            articles={state.articles}
                             saleArticles={saleArticles}
                             setSaleArticles={setSaleArticles}
                             missing={missing}
@@ -156,7 +156,7 @@ export function SaleFormFields({
                 <Box sx={{ display: 'flex', justifyContent: 'end', marginTop: 3 }}>
                     <FormControl>
                         <InputLabel htmlFor="subtotal">Subtotal</InputLabel>
-                        <Input value={getCurrentSubtotal(saleArticles, state.articles.data)} id="subtotal" type="number" name="subtotal" disabled />
+                        <Input value={getCurrentSubtotal(saleArticles, state.articles)} id="subtotal" type="number" name="subtotal" disabled />
                     </FormControl>
                     <FormControl>
                         <InputLabel htmlFor="total">Total</InputLabel>

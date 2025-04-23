@@ -45,7 +45,7 @@ export function usePayments() {
             setMessage('El importe es requerido.')
             setSeverity('error')
         } else {
-            const diff = getSaleDifference(state.sales.data.find(s => s.id === formData.sale_id)).replace('$', '')
+            const diff = getSaleDifference(state.sales.find(s => s.id === formData.sale_id)).replace('$', '')
             if (parseFloat(diff) >= parseFloat(formData.amount)) return true
             setMessage(`El importe debe ser menor al saldo. Saldo actual: $${diff}`)
             setSeverity('error')
@@ -57,7 +57,7 @@ export function usePayments() {
     const handleSubmit = async (e, validate, formData, reset, setDisabled) => {
         e.preventDefault()
         if (!checkDifference(formData)) return
-        if (state.registers.data.filter(r => r.user_id === auth.user.id).every(r => !r.is_open)) {
+        if (state.registers.filter(r => r.user_id === auth.user.id).every(r => !r.is_open)) {
             setMessage('No hay ninguna caja abierta.')
             setSeverity('error')
             setOpenMessage(true)
@@ -74,17 +74,17 @@ export function usePayments() {
                             ...state.sales,
                             data: [
                                 {
-                                    ...state.sales.data.find(s => s.id === data.sale_id),
+                                    ...state.sales.find(s => s.id === data.sale_id),
                                     payments: [
                                         data,
-                                        ...state.sales.data.find(s => s.id === data.sale_id).payments
+                                        ...state.sales.find(s => s.id === data.sale_id).payments
                                     ]
                                 },
-                                ...state.sales.data.filter(s => s.id !== data.sale_id)
+                                ...state.sales.filter(s => s.id !== data.sale_id)
                             ]
                         }
                     })
-                    dispatch({ type: 'PAYMENTS', payload: { ...state.payments, data: [data, ...state.payments.data] } })
+                    dispatch({ type: 'PAYMENTS', payload: { ...state.payments, data: [data, ...state.payments] } })
                     setMessage('Pago registrado correctamente.')
                 } else {
                     dispatch({
@@ -93,14 +93,14 @@ export function usePayments() {
                             ...state.sales,
                             data: [
                                 {
-                                    ...state.sales.data.find(s => s.id === data.sale_id),
+                                    ...state.sales.find(s => s.id === data.sale_id),
                                     payments: [
                                         data,
-                                        ...state.sales.data.find(s => s.id === data.sale_id).payments
+                                        ...state.sales.find(s => s.id === data.sale_id).payments
                                             .filter(p => p.id !== data.id)
                                     ]
                                 },
-                                ...state.sales.data.filter(s => s.id !== data.sale_id)
+                                ...state.sales.filter(s => s.id !== data.sale_id)
                             ]
                         }
                     })
@@ -110,7 +110,7 @@ export function usePayments() {
                             ...state.payments,
                             data: [
                                 data,
-                                ...state.payments.data.filter(p => p.id !== formData.id)
+                                ...state.payments.filter(p => p.id !== formData.id)
                             ]
                         }
                     })
@@ -136,13 +136,13 @@ export function usePayments() {
                     ...state.sales,
                     data: [
                         {
-                            ...state.sales.data.find(s => s.id === data.sale_id),
+                            ...state.sales.find(s => s.id === data.sale_id),
                             payments: [
-                                ...state.sales.data.find(s => s.id === data.sale_id).payments
+                                ...state.sales.find(s => s.id === data.sale_id).payments
                                     .filter(p => p.id !== data.id)
                             ]
                         },
-                        ...state.sales.data.filter(s => s.id !== data.sale_id)
+                        ...state.sales.filter(s => s.id !== data.sale_id)
                     ]
                 }
             })
@@ -150,7 +150,7 @@ export function usePayments() {
                 type: 'PAYMENTS',
                 payload: {
                     ...state.payments,
-                    data: [...state.payments.data.filter(p => p.id !== data.id)]
+                    data: [...state.payments.filter(p => p.id !== data.id)]
                 }
             })
             setMessage('Pago eliminado correctamente.')
@@ -173,7 +173,7 @@ export function usePayments() {
                     ...state.payments,
                     data: [
                         data,
-                        ...state.payments.data.filter(p => p.id !== formData.id)
+                        ...state.payments.filter(p => p.id !== formData.id)
                     ]
                 }
             })
