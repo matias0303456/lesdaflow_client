@@ -37,22 +37,28 @@ export function useArticles() {
     })
 
     const [loadingArticles, setloadingArticles] = useState(true)
+    const [count, setCount] = useState(0)
+    const [filter, setFilter] = useState({
+        page: 0,
+        offset: 25,
+        code: '',
+        details: '',
+        supplier_id: ''
+    })
 
     const actPricesRef = useRef(null);
 
     async function getArticles(params) {
         const { status, data } = await get(params)
         if (status === 200) {
-            dispatch({
-                type: 'ARTICLES',
-                payload: { ...state.articles, data: data[0], count: data[1] }
-            })
-            setloadingArticles(false)
+            dispatch({ type: 'ARTICLES', payload: data[0] })
+            setCount(data[1])
         } else {
             setMessage(data.message)
             setSeverity('error')
             setOpenMessage(true)
         }
+        setloadingArticles(false)
     }
 
     async function handleSubmit(e, validate, formData, reset, setDisabled) {
@@ -61,18 +67,16 @@ export function useArticles() {
             const { status, data } = open === 'NEW' ? await post(formData) : await put(formData)
             if (status === 200) {
                 if (open === 'NEW') {
-                    dispatch({ type: 'ARTICLES', payload: { ...state.articles, data: [data, ...state.articles] } })
+                    dispatch({ type: 'ARTICLES', payload: [data, ...state.articles] })
+                    setCount(count + 1)
                     setMessage('Artículo creado correctamente.')
                 } else {
                     dispatch({
                         type: 'ARTICLES',
-                        payload: {
-                            ...state.articles,
-                            data: [
-                                data,
-                                ...state.articles.filter(p => p.id !== formData.id)
-                            ]
-                        }
+                        payload: [
+                            data,
+                            ...state.articles.filter(p => p.id !== formData.id)
+                        ]
                     })
                     setMessage('Artículo editado correctamente.')
                 }
@@ -92,11 +96,9 @@ export function useArticles() {
         if (status === 200) {
             dispatch({
                 type: 'ARTICLES',
-                payload: {
-                    ...state.articles,
-                    data: [...state.articles.filter(p => p.id !== data.id)]
-                }
+                payload: [...state.articles.filter(p => p.id !== data.id)]
             })
+            setCount(count - 1)
             setMessage('Artículo eliminado correctamente.')
             setSeverity('success')
         } else {
@@ -128,17 +130,13 @@ export function useArticles() {
                 const data = await res.json()
                 const status = res.status
                 if (status === STATUS_CODES.OK) {
-                    dispatch({
-                        type: 'ARTICLES',
-                        payload: {
-                            ...state.articles,
-                            data: data[0],
-                            count: data[1],
-                            page: 0,
-                            offset: 25,
-                            filter_fields: { sale_id: '', from: '', to: '', p_type: '', created_by: '', loaded: false },
-                            filters: ''
-                        }
+                    dispatch({ type: 'ARTICLES', payload: data })
+                    setFilter({
+                        page: 0,
+                        offset: 25,
+                        code: '',
+                        details: '',
+                        supplier_id: ''
                     })
                     setMessage('Precios actualizados correctamente.')
                     setSeverity('success')
@@ -215,6 +213,9 @@ export function useArticles() {
         actPricesRef,
         handleActPrices,
         uploadedFile,
-        setUploadedFile
+        setUploadedFile,
+        filter,
+        setFilter,
+        count
     }
 }
