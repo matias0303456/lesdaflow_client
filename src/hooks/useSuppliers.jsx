@@ -51,12 +51,12 @@ export function useSuppliers() {
             }
         }
     })
+    
     const [filter, setFilter] = useState({
         page: 0,
         offset: 25,
         name: ''
     })
-
     const [count, setCount] = useState(0)
     const [loadingSuppliers, setLoadingSuppliers] = useState(true)
     const [open, setOpen] = useState(null)

@@ -1,145 +1,68 @@
 /* eslint-disable react/prop-types */
-import { useContext, useEffect } from "react";
-import { Box, Button, Checkbox, FormControl, FormControlLabel, Input, InputLabel, MenuItem, Select } from "@mui/material";
+import { Box, Button, FormControl, Input, InputLabel, MenuItem, Select } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { es } from "date-fns/locale";
 
-import { DataContext } from "../../providers/DataProvider";
-
-export function SaleFilter({
-    showDate,
-    showType,
-    width,
-    showPending,
-    salesAdapter,
-    pendingFilter,
-    setPendingFilter
-}) {
-
-    const { state, dispatch } = useContext(DataContext)
-
-    const handleChange = e => {
-        dispatch({
-            type: 'SALES',
-            payload: {
-                ...state.sales,
-                filter_fields: {
-                    ...state.sales.filter_fields,
-                    loaded: true,
-                    [e.target.name]: e.target.value
-                }
-            }
-        })
-    }
+export function SaleFilter({ filter, setFilter }) {
 
     const handleReset = () => {
-        dispatch({
-            type: 'SALES',
-            payload: {
-                ...state.sales,
-                filter_fields: { client: '', id: '', user: '', date: '', type: '', loaded: false },
-                filters: ''
-            }
+        setFilter({
+            page: 0,
+            offset: 25,
+            client: '',
+            id: '',
+            date: '',
+            type: ''
         })
     }
 
-    useEffect(() => {
-        const { client, id, user, date, type, loaded } = state.sales.filter_fields
-        const dateIsNotString = typeof date !== 'string'
-        if (client.length > 0 || id.length > 0 ||
-            user.length > 0 || dateIsNotString || type.length > 0) {
-            dispatch({
-                type: 'SALES',
-                payload: {
-                    ...state.sales,
-                    filters: `&client=${client}&id=${id}&user=${user}&date=${dateIsNotString ? new Date(date).toISOString() : ''}&type=${type}`
-                }
-            })
-        } else if (loaded) {
-            let newFilters = ''
-            if (salesAdapter && salesAdapter === 'CurrentAccount') {
-                newFilters = ''
-            } else if (salesAdapter && salesAdapter === 'Comissions') {
-                newFilters += '&is_delivered=true'
-            } else if (salesAdapter === 'SalesToDeliver') {
-                newFilters += '&is_prepared=true'
-            } else {
-                newFilters = ''
-            }
-            dispatch({
-                type: 'SALES',
-                payload: {
-                    ...state.sales,
-                    filters: newFilters
-                }
-            })
-        }
-    }, [state.sales.filter_fields, salesAdapter, pendingFilter])
-
     return (
-        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, width: width.main, alignItems: 'center', justifyContent: 'end' }}>
-            <FormControl sx={{ width: width.client }}>
+        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, width: { xs: '100%', md: '80%' }, alignItems: 'center', justifyContent: 'end' }}>
+            <FormControl>
                 <InputLabel htmlFor="client">Cliente</InputLabel>
                 <Input
                     id="client"
                     type="text"
                     name="client"
-                    value={state.sales.filter_fields.client}
-                    onChange={handleChange}
+                    value={filter.client}
+                    onChange={(e) => setFilter({ ...filter, client: e.target.value })}
                 />
             </FormControl>
-            <FormControl sx={{ width: width.id }}>
+            <FormControl >
                 <InputLabel htmlFor="id">N° venta</InputLabel>
                 <Input
                     id="id"
                     type="number"
                     name="id"
-                    value={state.sales.filter_fields.id}
-                    onChange={handleChange}
+                    value={filter.id}
+                    onChange={e => setFilter({ ...filter, id: e.target.value })}
                 />
             </FormControl>
-            {showDate &&
-                <FormControl sx={{ width: width.date }}>
-                    <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
-                        <DatePicker
-                            label="Fecha"
-                            value={state.sales.filter_fields.date.length === 0 ? new Date(Date.now()) : new Date(state.sales.filter_fields.date)}
-                            onChange={value => handleChange({
-                                target: {
-                                    name: 'date',
-                                    value: new Date(value.toISOString())
-                                }
-                            })}
-                        />
-                    </LocalizationProvider>
-                </FormControl>
-            }
-            {showType &&
-                <FormControl sx={{ width: width.type }}>
-                    <InputLabel id="type-select">T. Vta.</InputLabel>
-                    <Select
-                        labelId="type-select"
-                        id="type"
-                        value={state.sales.filter_fields.type}
-                        label="Tipo Comp."
-                        name="type"
-                        onChange={handleChange}
-                    >
-                        <MenuItem value="">Seleccione</MenuItem>
-                        <MenuItem value="CONTADO">CONTADO</MenuItem>
-                    </Select>
-                </FormControl>
-            }
-            {showPending &&
-                <FormControlLabel
-                    control={<Checkbox />}
-                    label="Pendientes"
-                    checked={pendingFilter}
-                    onChange={e => setPendingFilter(e.target.checked)}
-                />
-            }
-            <Button type="button" variant="outlined" sx={{ width: width.btn }} onClick={handleReset}>
+            <FormControl>
+                <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
+                    <DatePicker
+                        label="Fecha"
+                        value={filter.date.length === 0 ? new Date(Date.now()) : new Date(filter.date)}
+                        onChange={value => setFilter({ ...filter, date: new Date(value.toISOString()) })}
+                    />
+                </LocalizationProvider>
+            </FormControl>
+            <FormControl sx={{ width: 100 }}>
+                <InputLabel id="type-select">T. Vta.</InputLabel>
+                <Select
+                    labelId="type-select"
+                    id="type"
+                    value={filter.type}
+                    label="Tipo Comp."
+                    name="type"
+                    onChange={e => setFilter({ ...filter, type: e.target.value })}
+                >
+                    <MenuItem value="">Seleccione</MenuItem>
+                    <MenuItem value="CONTADO">CONTADO</MenuItem>
+                </Select>
+            </FormControl>
+            <Button type="button" variant="outlined" onClick={handleReset}>
                 Reiniciar filtros
             </Button>
         </Box>

@@ -18,6 +18,15 @@ export function useSales() {
     const { handleDelete: deleteBudget } = useBudgets()
     const { get, post, put, destroy } = useApi(SALE_URL)
 
+    const [filter, setFilter] = useState({
+        page: 0,
+        offset: 25,
+        client: '',
+        id: '',
+        date: '',
+        type: ''
+    })
+    const [count, setCount] = useState(0)
     const [loadingSales, setLoadingSales] = useState(true)
     const [open, setOpen] = useState(null)
     const [saleArticles, setSaleArticles] = useState([])
@@ -50,16 +59,14 @@ export function useSales() {
     async function getSales(params) {
         const { status, data } = await get(params)
         if (status === 200) {
-            dispatch({
-                type: 'SALES',
-                payload: { ...state.sales, data: data[0], count: data[1] }
-            })
-            setLoadingSales(false)
+            dispatch({ type: 'SALES', payload: data[0] })
+            setCount(data[1])
         } else {
             setMessage(data.message)
             setSeverity('error')
             setOpenMessage(true)
         }
+        setLoadingSales(false)
     }
 
     async function handleSubmit(e, formData, validate, reset, setDisabled) {
@@ -74,7 +81,8 @@ export function useSales() {
             const { status, data } = open === 'NEW' || open === 'CONVERT' ? await post(submitData) : await put(submitData)
             if (status === 200) {
                 if (open === 'NEW' || open === 'CONVERT') {
-                    dispatch({ type: 'SALES', payload: { ...state.sales, data: [data, ...state.sales.data] } })
+                    dispatch({ type: 'SALES', payload: [data, ...state.sales] })
+                    setCount(count + 1)
                     if (open === 'NEW') {
                         setMessage('Venta creada correctamente.')
                         setSaleSaved(data.id)
@@ -84,13 +92,10 @@ export function useSales() {
                 } else {
                     dispatch({
                         type: 'SALES',
-                        payload: {
-                            ...state.sales,
-                            data: [
-                                data,
-                                ...state.sales.data.filter(s => s.id !== formData.id)
-                            ]
-                        }
+                        payload: [
+                            data,
+                            ...state.sales.filter(s => s.id !== formData.id)
+                        ]
                     })
                     setMessage('Venta editada correctamente.')
                     setOpenMessage(true)
@@ -120,11 +125,9 @@ export function useSales() {
         if (status === 200) {
             dispatch({
                 type: 'SALES',
-                payload: {
-                    ...state.sales,
-                    data: [...state.sales.data.filter(s => s.id !== data.id)]
-                }
+                payload: [...state.sales.filter(s => s.id !== data.id)]
             })
+            setCount(count - 1)
             setMessage('Venta eliminada correctamente.')
             setSeverity('success')
         } else {
@@ -186,7 +189,7 @@ export function useSales() {
             sorter: (row) => getSaleTotal(row).replace('$', ''),
             accessor: (row) => getSaleTotal(row)
         }
-    ], [state.sales.data])
+    ], [state.sales])
 
     return {
         loadingSales,
@@ -205,6 +208,9 @@ export function useSales() {
         handleDelete,
         getSales,
         headCells,
-        saleFormData
+        saleFormData,
+        filter,
+        setFilter,
+        count
     }
 }

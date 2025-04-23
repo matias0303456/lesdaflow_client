@@ -15,14 +15,7 @@ export const initialState = {
         filter_fields: { code: '', details: '', supplier_id: '', loaded: false },
         filters: ''
     },
-    'sales': {
-        count: 0,
-        data: [],
-        page: 0,
-        offset: 25,
-        filter_fields: { client: '', id: '', user: '', date: '', type: '', loaded: false },
-        filters: ''
-    },
+    'sales': [],
     'payments': {
         count: 0,
         data: [],
