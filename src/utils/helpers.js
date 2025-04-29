@@ -150,7 +150,7 @@ export function a11yProps(index) {
 export function getCurrentSubtotal(saleArticles, articles) {
     const total = saleArticles.reduce((prev, curr) => {
         const a = articles.find(item => item.id === curr.article_id)
-        return prev + (((curr.buy_price ?? a.buy_price) + (((curr.buy_price ?? a.buy_price) / 100) * (curr.earn ?? a.earn))) * (isNaN(parseInt(curr.amount)) ? 0 : parseInt(curr.amount)))
+        return prev + ((curr.price ?? a.price) * (isNaN(parseInt(curr.amount)) ? 0 : parseInt(curr.amount)))
     }, 0)
     return total.toFixed(2)
 }

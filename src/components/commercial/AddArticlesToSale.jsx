@@ -5,7 +5,7 @@ import CancelSharpIcon from '@mui/icons-material/CancelSharp';
 
 import { AuthContext } from "../../providers/AuthProvider";
 
-import { getArticleSalePrice, getStock } from "../../utils/helpers";
+import { getStock } from "../../utils/helpers";
 
 export function AddArticlesToSale({
     articles,
@@ -128,9 +128,9 @@ export function AddArticlesToSale({
                                                 />
                                             </FormControl>
                                         </TableCell>
-                                        <TableCell>${getArticleSalePrice(sa.earn && sa.buy_price ? sa : a).toFixed(2)}</TableCell>
+                                        <TableCell>${a.price.toFixed(2)}</TableCell>
                                         {open !== 'VIEW' && <TableCell>{stock}</TableCell>}
-                                        <TableCell>${(currentAmount * getArticleSalePrice(sa.earn && sa.buy_price ? sa : a)).toFixed(2)}</TableCell>
+                                        <TableCell>${(currentAmount * a.price).toFixed(2)}</TableCell>
                                         {(open === 'NEW' || open === 'CONVERT' || (open === 'EDIT' && auth?.user.role === 'ADMINISTRADOR')) &&
                                             <TableCell align="center">
                                                 <Button type="button" onClick={() => handleDeleteArticle(sa.id, a?.id)}>
