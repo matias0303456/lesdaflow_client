@@ -86,7 +86,18 @@ export function Users() {
               {open === "EDIT" && "Editar usuario"}
               {open === "VIEW" && `Usuario ${formData.username}`}
             </Typography>
-            <form onChange={handleChange} onSubmit={(e) => handleSubmit(e, validate, formData, reset, setDisabled)}>
+            <form onChange={handleChange} onSubmit={(e) => {
+              handleSubmit(
+                e,
+                validate,
+                {
+                  ...formData,
+                  business_name: `CHICHO ${formData.business_name}`
+                },
+                reset,
+                setDisabled
+              )
+            }}>
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
                 <Box sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', gap: 2 }}>
                   <FormControl sx={{ width: { xs: '100%', sm: '30%' } }}>
@@ -195,24 +206,14 @@ export function Users() {
                     </Select>
                   </FormControl>
                   <FormControl sx={{ width: { xs: '100%', sm: '30%' } }}>
-                    <InputLabel htmlFor="document_number">Nro. documento / CUIT *</InputLabel>
+                    <InputLabel htmlFor="document_number">Nro. documento / CUIT</InputLabel>
                     <Input id="document_number" type="text" name="document_number" value={formData.document_number} disabled={open === 'VIEW'} />
-                    {errors.document_number?.type === 'required' &&
-                      <Typography variant="caption" color="red" marginTop={1}>
-                        * El número de documento es requerido.
-                      </Typography>
-                    }
                   </FormControl>
                 </Box>
                 <Box sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', gap: 2 }}>
                   <FormControl sx={{ width: { xs: '100%', sm: '30%' } }}>
-                    <InputLabel htmlFor="local_phone">Teléfono *</InputLabel>
+                    <InputLabel htmlFor="local_phone">Teléfono</InputLabel>
                     <Input id="local_phone" type="number" name="local_phone" value={formData.local_phone} disabled={open === 'VIEW'} />
-                    {errors.local_phone?.type === 'required' &&
-                      <Typography variant="caption" color="red" marginTop={1}>
-                        * El teléfono es requerido.
-                      </Typography>
-                    }
                     {errors.local_phone?.type === 'maxLength' &&
                       <Typography variant="caption" color="red" marginTop={1}>
                         * El teléfono es demasiado largo.
@@ -220,13 +221,8 @@ export function Users() {
                     }
                   </FormControl>
                   <FormControl sx={{ width: { xs: '100%', sm: '30%' } }}>
-                    <InputLabel htmlFor="cell_phone">Celular *</InputLabel>
+                    <InputLabel htmlFor="cell_phone">Celular</InputLabel>
                     <Input id="cell_phone" type="number" name="cell_phone" value={formData.cell_phone} disabled={open === 'VIEW'} />
-                    {errors.cell_phone?.type === 'required' &&
-                      <Typography variant="caption" color="red" marginTop={1}>
-                        * El celular es requerido.
-                      </Typography>
-                    }
                     {errors.cell_phone?.type === 'maxLength' &&
                       <Typography variant="caption" color="red" marginTop={1}>
                         * El celular es demasiado largo.
@@ -245,13 +241,8 @@ export function Users() {
                 </Box>
                 <Box sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'start', gap: { xs: 3, md: 6, xl: 9 } }}>
                   <FormControl sx={{ width: { xs: '100%', sm: '30%' } }}>
-                    <InputLabel htmlFor="address">Dirección *</InputLabel>
+                    <InputLabel htmlFor="address">Dirección</InputLabel>
                     <Input id="address" type="text" name="address" value={formData.address} disabled={open === 'VIEW'} />
-                    {errors.address?.type === 'required' &&
-                      <Typography variant="caption" color="red" marginTop={1}>
-                        * La dirección es requerida.
-                      </Typography>
-                    }
                     {errors.address?.type === 'maxLength' &&
                       <Typography variant="caption" color="red" marginTop={1}>
                         * La dirección es demasiado larga.
@@ -272,6 +263,17 @@ export function Users() {
                       <MenuItem value="ADMINISTRADOR">ADMINISTRADOR</MenuItem>
                       <MenuItem value="VENDEDOR">VENDEDOR</MenuItem>
                     </Select>
+                  </FormControl>
+                  <FormControl>
+                    <TextField
+                      label="Negocio (chicho)"
+                      id="business_name"
+                      type="number"
+                      onChange={handleChange}
+                      name="business_name"
+                      value={parseInt(formData.business_name?.split(' ')[1] ?? formData.business_name)}
+                      InputProps={{ inputProps: { step: 1, min: 1 } }}
+                    />
                   </FormControl>
                 </Box>
               </Box>

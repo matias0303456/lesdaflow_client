@@ -41,29 +41,11 @@ export function useUsers() {
             address: '',
             username: '',
             password: '',
-            role: 'VENDEDOR'
+            role: 'VENDEDOR',
+            business_name: '1'
         },
         rules: {
             name: {
-                required: true,
-                maxLength: 255
-            },
-            document_type: {
-                required: true
-            },
-            document_number: {
-                required: true,
-                maxLength: 255
-            },
-            local_phone: {
-                required: true,
-                maxLength: 255
-            },
-            cell_phone: {
-                required: true,
-                maxLength: 255
-            },
-            address: {
                 required: true,
                 maxLength: 255
             },
@@ -74,6 +56,18 @@ export function useUsers() {
             password: {
                 required: true,
                 minLength: 8,
+                maxLength: 255
+            },
+            document_number: {
+                maxLength: 255
+            },
+            local_phone: {
+                maxLength: 255
+            },
+            cell_phone: {
+                maxLength: 255
+            },
+            address: {
                 maxLength: 255
             },
             email: {
