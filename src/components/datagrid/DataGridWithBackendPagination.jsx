@@ -15,6 +15,7 @@ import { IconButton, Tooltip } from '@mui/material';
 import StorefrontSharpIcon from '@mui/icons-material/StorefrontSharp';
 import InputSharpIcon from '@mui/icons-material/InputSharp';
 import OutputSharpIcon from '@mui/icons-material/OutputSharp';
+import SettingsIcon from "@mui/icons-material/Settings"
 
 import { EnhancedTableHead } from './EnhancedTableHead';
 
@@ -39,6 +40,7 @@ export function DataGridWithBackendPagination({
   showInput = false,
   showOutput = false,
   showConvertToSale = false,
+  showSettingsAction = false,
   setOpenNewMovement,
   setFormDataMovement,
   setOpenNewSale
@@ -173,6 +175,19 @@ export function DataGridWithBackendPagination({
                             >
                               <IconButton>
                                 <OutputSharpIcon />
+                              </IconButton>
+                            </Tooltip>
+                          }
+                          {showSettingsAction &&
+                            <Tooltip
+                              title={showSettingsAction}
+                              onClick={() => {
+                                if (setFormData) setFormData(rows.find((r) => r.id === row.id))
+                                if (setOpen) setOpen("SETTINGS")
+                              }}
+                            >
+                              <IconButton>
+                                <SettingsIcon />
                               </IconButton>
                             </Tooltip>
                           }

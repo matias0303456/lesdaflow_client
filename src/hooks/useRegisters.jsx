@@ -5,6 +5,7 @@ import { MessageContext } from "../providers/MessageProvider"
 import { AuthContext } from "../providers/AuthProvider"
 import { DataContext } from "../providers/DataProvider"
 import { useApi } from "./useApi"
+import { useForm } from "./useForm"
 
 import { REGISTER_URL } from "../utils/urls"
 import { setLocalDate } from "../utils/helpers"
@@ -16,6 +17,15 @@ export function useRegisters() {
     const { setMessage, setOpenMessage, setSeverity } = useContext(MessageContext)
 
     const { get, post, put, destroy } = useApi(REGISTER_URL)
+    const registerFormData = useForm({
+        defaultData: {
+            id: '',
+            user_id: auth?.user.id,
+            amount: 0,
+            created_at: new Date(Date.now()),
+            updated_at: new Date(Date.now())
+        }
+    })
 
     const [filter, setFilter] = useState({
         page: 0,
@@ -143,7 +153,7 @@ export function useRegisters() {
             id: "open_date",
             numeric: false,
             disablePadding: true,
-            label: "Apertura Fecha",
+            label: "Ap. Fecha",
             sorter: (row) => format(setLocalDate(row.created_at), 'dd/MM/yy'),
             accessor: (row) => format(setLocalDate(row.created_at), 'dd/MM/yy')
         },
@@ -151,7 +161,7 @@ export function useRegisters() {
             id: "open_hour",
             numeric: false,
             disablePadding: true,
-            label: "Apertura Hora",
+            label: "Ap. Hora",
             sorter: (row) => format(new Date(row.created_at), 'HH:mm:ss').toString().replace(':', ''),
             accessor: (row) => format(setLocalDate(row.created_at), 'HH:mm:ss')
         },
@@ -159,7 +169,7 @@ export function useRegisters() {
             id: "open_amount",
             numeric: false,
             disablePadding: true,
-            label: "Apertura Saldo",
+            label: "Ap. Saldo",
             sorter: () => 0.00,
             accessor: () => '$0.00'
         },
@@ -202,6 +212,7 @@ export function useRegisters() {
         filter,
         setFilter,
         count,
-        headCells
+        headCells,
+        registerFormData
     }
 }

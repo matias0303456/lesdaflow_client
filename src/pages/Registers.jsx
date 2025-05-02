@@ -1,5 +1,5 @@
 import { useContext, useEffect } from "react";
-import { Box, Button, FormControl, LinearProgress, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
+import { Box, Button, FormControl, LinearProgress, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from "@mui/material";
 import { format } from "date-fns";
 import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers"
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns"
@@ -7,7 +7,6 @@ import { es } from "date-fns/locale"
 
 import { AuthContext } from "../providers/AuthProvider";
 import { DataContext } from "../providers/DataProvider";
-import { useForm } from "../hooks/useForm";
 import { useRegisters } from "../hooks/useRegisters";
 import { useUsers } from "../hooks/useUsers";
 
@@ -35,12 +34,11 @@ export function Registers() {
         filter,
         setFilter,
         count,
-        headCells
+        headCells,
+        registerFormData
     } = useRegisters()
     const { getUsers } = useUsers()
-    const { formData, setFormData, handleChange, disabled, setDisabled, reset } = useForm({
-        defaultData: { id: '', user_id: auth?.user.id, created_at: new Date(Date.now()), updated_at: new Date(Date.now()) }
-    })
+    const { formData, setFormData, handleChange, disabled, setDisabled, reset } = registerFormData
 
     useEffect(() => {
         getUsers()
@@ -54,7 +52,7 @@ export function Registers() {
 
     useEffect(() => {
         const { page, offset, user } = filter
-        getRegisters(`?page=${page}&offset=${offset}&user${user}`)
+        getRegisters(`?page=${page}&offset=${offset}&user=${user}`)
     }, [filter])
 
     return (
@@ -72,7 +70,7 @@ export function Registers() {
                     setFilter={setFilter}
                     count={count}
                     showSettingsAction="Cerrar caja"
-                    showEditAction={auth.user.role === 'ADMINISTRADOR'}
+                    // showEditAction={auth.user.role === 'ADMINISTRADOR'}
                     showPDFAction={`${REPORT_URL}/register-details?token=${auth?.token}&id=`}
                     showViewAction
                     contentHeader={
@@ -83,20 +81,18 @@ export function Registers() {
                             }}>
                                 Apertura caja
                             </Button>
-                            {auth?.user.role === 'ADMINISTRADOR' &&
-                                <RegisterFilter
-                                    filter={filter}
-                                    setFilter={setFilter}
-                                />
-                            }
+                            <RegisterFilter
+                                filter={filter}
+                                setFilter={setFilter}
+                            />
                         </Box>
                     }
                 >
                     <ModalComponent open={open === 'NEW' || open === 'SETTINGS' || open === 'VIEW'} onClose={() => reset(setOpen)}>
                         <Typography variant="h6" sx={{ marginBottom: 2 }}>
-                            {open === 'NEW' && 'Apertura de caja'}
-                            {open === 'VIEW' && `Caja ${formData.user.name}`}
-                            {open === 'SETTINGS' && 'Cerrar caja'}
+                            {open === 'NEW' && `Apertura de caja de ${auth?.user.username}`}
+                            {open === 'VIEW' && `Caja de ${formData.user.username}`}
+                            {open === 'SETTINGS' && `Cerrar caja de ${formData.user.username}`}
                         </Typography>
                         <form onChange={handleChange} onSubmit={(e) => handleSubmit(e, formData, reset, setDisabled, setOpen)}>
                             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
@@ -106,7 +102,7 @@ export function Registers() {
                                             <TableRow>
                                                 <TableCell align="center">Fecha</TableCell>
                                                 <TableCell align="center">Hora</TableCell>
-                                                <TableCell align="center">Saldo </TableCell>
+                                                <TableCell align="center">Saldo</TableCell>
                                             </TableRow>
                                         </TableHead>
                                         <TableBody>
@@ -119,7 +115,19 @@ export function Registers() {
                                                         <TableCell align="center">
                                                             {format(setLocalDate(Date.now()), 'HH:mm:ss')}
                                                         </TableCell>
-                                                        <TableCell align="center">$0.00</TableCell>
+                                                        <TableCell align="center">
+                                                            <FormControl>
+                                                                <TextField
+                                                                    label="Saldo"
+                                                                    id="amount"
+                                                                    type="number"
+                                                                    onChange={handleChange}
+                                                                    name="amount"
+                                                                    value={formData.amount}
+                                                                    InputProps={{ inputProps: { step: 0.01 } }}
+                                                                />
+                                                            </FormControl>
+                                                        </TableCell>
                                                     </>
                                                 }
                                                 {(open === 'SETTINGS' || open === 'VIEW') &&

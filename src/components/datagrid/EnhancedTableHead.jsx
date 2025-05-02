@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { Box, TableCell, TableRow } from '@mui/material'
 import TableHead from '@mui/material/TableHead'
 import TableSortLabel from '@mui/material/TableSortLabel'
@@ -21,7 +22,7 @@ export function EnhancedTableHead({
                 {headCells.map((headCell) => (
                     <TableCell
                         key={headCell.id}
-                        className='font-bold flex-1 px-4 py-1'
+                        className='font-bold flex-1 px-4 py-1 text-center'
                         align="inherit"
                         padding={headCell.disablePadding ? 'none' : 'normal'}
                         sortDirection={orderBy === headCell.id ? order : false}
