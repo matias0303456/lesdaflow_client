@@ -57,7 +57,7 @@ export function Sales() {
         if (open === 'EDIT' || open === 'VIEW') {
             setSaleArticles(formData.sale_articles)
         }
-    }, [formData])
+    }, [open])
 
     useEffect(() => {
         const { page, offset, client, id, date, type } = filter

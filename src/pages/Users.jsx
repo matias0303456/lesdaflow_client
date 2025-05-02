@@ -1,10 +1,11 @@
 import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Box, Button, FormControl, IconButton, Input, InputAdornment, InputLabel, LinearProgress, MenuItem, Select, TextField, Typography } from "@mui/material";
+import { Box, Button, FormControl, IconButton, Input, InputAdornment, InputLabel, LinearProgress, List, ListItem, ListItemText, MenuItem, Select, TextField, Typography } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { es } from "date-fns/locale";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
+import DeleteSharpIcon from '@mui/icons-material/DeleteSharp';
 
 import { AuthContext } from "../providers/AuthProvider";
 import { DataContext } from "../providers/DataProvider";
@@ -35,7 +36,12 @@ export function Users() {
     showPassword,
     setShowPassword,
     userFormData,
-    headCells
+    headCells,
+    businessNumbers,
+    setBusinessNumbers,
+    newBusinessNumber,
+    setNewBusinessNumber,
+    handleReset
   } = useUsers()
   const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = userFormData
 
@@ -47,6 +53,12 @@ export function Users() {
     const { page, offset, name, role } = filter
     getUsers(`?page=${page}&offset=${offset}&name=${name}&role=${role}`)
   }, [filter])
+
+  useEffect(() => {
+    if (open === 'EDIT' || open === 'VIEW') {
+      setBusinessNumbers(formData.businesses.map(b => b.business.number))
+    }
+  }, [open])
 
   return (
     <Layout title="Usuarios">
@@ -79,14 +91,14 @@ export function Users() {
         >
           <ModalComponent
             open={open === "NEW" || open === "EDIT" || open === "VIEW"}
-            onClose={() => reset(setOpen)}
+            onClose={handleReset}
           >
             <Typography variant="h6" sx={{ marginBottom: 2 }}>
               {open === "NEW" && "Nuevo usuario"}
               {open === "EDIT" && "Editar usuario"}
               {open === "VIEW" && `Usuario ${formData.username}`}
             </Typography>
-            <form onChange={handleChange} onSubmit={(e) => handleSubmit(e, validate, formData, reset, setDisabled)}>
+            <form onChange={handleChange} onSubmit={(e) => handleSubmit(e, validate, formData, setDisabled)}>
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
                 <Box sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', gap: 2 }}>
                   <FormControl sx={{ width: { xs: '100%', sm: '30%' } }}>
@@ -253,18 +265,61 @@ export function Users() {
                       <MenuItem value="VENDEDOR">VENDEDOR</MenuItem>
                     </Select>
                   </FormControl>
-                  <FormControl>
-                    <TextField
-                      label="Negocio (Chicho)"
-                      id="business_name"
-                      type="number"
-                      onChange={handleChange}
-                      name="business_name"
-                      value={formData.business_name ?? 1}
-                      InputProps={{ inputProps: { step: 1, min: 1 } }}
-                    />
-                  </FormControl>
                 </Box>
+              </Box>
+              <Box sx={{ display: 'flex', flexWrap: 'wrap', mt: 2, justifyContent: 'start', gap: { xs: 3, md: 6, xl: 9 } }}>
+                <Box>
+                  <Typography variant="h6">
+                    Negocios asociados
+                  </Typography>
+                  <List dense>
+                    {businessNumbers.map(bn => (
+                      <ListItem
+                        key={bn}
+                        secondaryAction={
+                          (open === 'NEW' || open === 'EDIT') ?
+                            <IconButton aria-label="delete" onClick={() => {
+                              setBusinessNumbers([...businessNumbers.filter(i => i !== bn)])
+                            }}>
+                              <DeleteSharpIcon />
+                            </IconButton> : null
+                        }
+                      >
+                        <ListItemText primary={bn} />
+                      </ListItem>
+                    ))}
+                  </List>
+                </Box>
+                {(open === 'NEW' || open === 'EDIT') &&
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                    <FormControl>
+                      <TextField
+                        label="Nuevo negocio (chicho)"
+                        id="total"
+                        type="number"
+                        onChange={e => setNewBusinessNumber(e.target.value)}
+                        name="business_number"
+                        value={parseInt(newBusinessNumber)}
+                        InputProps={{ inputProps: { step: 1 } }}
+                      />
+                    </FormControl>
+                    <Button
+                      size="small"
+                      type="button"
+                      variant="contained"
+                      disabled={disabled || newBusinessNumber.length === 0}
+                      onClick={() => {
+                        setBusinessNumbers([
+                          parseInt(newBusinessNumber),
+                          ...businessNumbers.filter(bn => bn !== parseInt(newBusinessNumber))
+                        ])
+                        setNewBusinessNumber('')
+                      }}
+                    >
+                      Agregar
+                    </Button>
+                  </Box>
+                }
               </Box>
               <FormControl sx={{
                 display: 'flex',
@@ -275,7 +330,7 @@ export function Users() {
                 marginTop: 3,
                 width: '50%'
               }}>
-                <Button type="button" variant="outlined" onClick={() => reset(setOpen)} sx={{
+                <Button type="button" variant="outlined" onClick={handleReset} sx={{
                   width: '50%'
                 }}>
                   {open === 'VIEW' ? 'Cerrar' : 'Cancelar'}
@@ -290,7 +345,7 @@ export function Users() {
               </FormControl>
             </form>
           </ModalComponent>
-          <ModalComponent open={open === 'DELETE'} onClose={() => reset(setOpen)} reduceWidth={900}>
+          <ModalComponent open={open === 'DELETE'} onClose={handleReset} reduceWidth={900}>
             <Typography variant="h6" marginBottom={1} textAlign="center">
               Confirmar eliminación de usuario
             </Typography>
@@ -298,7 +353,7 @@ export function Users() {
               Los datos no podrán recuperarse
             </Typography>
             <Box sx={{ display: 'flex', gap: 1, justifyContent: 'center' }}>
-              <Button type="button" variant="outlined" onClick={() => reset(setOpen)} sx={{ width: '35%' }}>
+              <Button type="button" variant="outlined" onClick={handleReset} sx={{ width: '35%' }}>
                 Cancelar
               </Button>
               <Button

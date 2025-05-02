@@ -1,6 +1,5 @@
 import { useContext, useMemo, useState } from "react"
 import { Link } from "react-router-dom"
-import { Box, Checkbox, FormControlLabel } from "@mui/material"
 
 import { MessageContext } from "../providers/MessageProvider"
 import { DataContext } from "../providers/DataProvider"
@@ -14,18 +13,6 @@ export function useUsers() {
 
     const { state, dispatch } = useContext(DataContext)
     const { setMessage, setOpenMessage, setSeverity } = useContext(MessageContext)
-
-    const [loadingUsers, setLoadingUsers] = useState(true)
-    const [open, setOpen] = useState(null)
-    const [newPwd, setNewPwd] = useState('')
-    const [showPassword, setShowPassword] = useState(false)
-    const [count, setCount] = useState(0)
-    const [filter, setFilter] = useState({
-        page: 0,
-        offset: 25,
-        name: '',
-        role: ''
-    })
 
     const { get, post, put, destroy } = useApi(USER_URL)
     const userFormData = useForm({
@@ -41,8 +28,7 @@ export function useUsers() {
             address: '',
             username: '',
             password: '',
-            role: 'VENDEDOR',
-            business_name: '1'
+            role: 'VENDEDOR'
         },
         rules: {
             name: {
@@ -79,6 +65,20 @@ export function useUsers() {
         }
     })
 
+    const [loadingUsers, setLoadingUsers] = useState(true)
+    const [open, setOpen] = useState(null)
+    const [newPwd, setNewPwd] = useState('')
+    const [showPassword, setShowPassword] = useState(false)
+    const [count, setCount] = useState(0)
+    const [businessNumbers, setBusinessNumbers] = useState([1])
+    const [newBusinessNumber, setNewBusinessNumber] = useState('')
+    const [filter, setFilter] = useState({
+        page: 0,
+        offset: 25,
+        name: '',
+        role: ''
+    })
+
     async function getUsers(params) {
         const { status, data } = await get(params)
         if (status === STATUS_CODES.OK) {
@@ -92,10 +92,14 @@ export function useUsers() {
         setLoadingUsers(false)
     }
 
-    async function handleSubmit(e, validate, formData, reset, setDisabled) {
+    async function handleSubmit(e, validate, formData, setDisabled) {
         e.preventDefault()
+        const submitData = {
+            ...formData,
+            business_numbers: businessNumbers
+        }
         if (validate()) {
-            const { status, data } = open === 'NEW' ? await post(formData) : await put(formData)
+            const { status, data } = open === 'NEW' ? await post(submitData) : await put(submitData)
             if (status === STATUS_CODES.OK) {
                 if (open === 'NEW') {
                     dispatch({ type: 'USERS', payload: [...state.users, data] })
@@ -112,7 +116,7 @@ export function useUsers() {
                     setMessage('Usuario editado correctamente.')
                 }
                 setSeverity('success')
-                reset(setOpen)
+                handleReset()
             } else {
                 setMessage(data.message)
                 setSeverity('error')
@@ -141,27 +145,8 @@ export function useUsers() {
             }
             setSeverity('error')
         }
-        setOpenMessage(true)
+        handleReset()
         setLoadingUsers(false)
-        setOpen(null)
-    }
-
-    async function toggleActive(formData) {
-        const { status, data } = await put(formData)
-        if (status === 200) {
-            dispatch({
-                type: 'USERS',
-                payload: [
-                    data,
-                    ...state.users.filter(u => u.id !== formData.id)
-                ]
-            })
-            setMessage('Usuario editado correctamente.')
-            setSeverity('success')
-        } else {
-            setMessage(data.message)
-            setSeverity('error')
-        }
         setOpenMessage(true)
     }
 
@@ -217,27 +202,14 @@ export function useUsers() {
             label: "Rol",
             sorter: (row) => row.role,
             accessor: "role"
-        },
-        {
-            id: "is_active",
-            numeric: false,
-            disablePadding: true,
-            label: "Alta/baja",
-            sorter: (row) => row.is_active ? 1 : 0,
-            accessor: (row) => (
-                <Box sx={{ textAlign: 'center' }}>
-                    <FormControlLabel
-                        control={<Checkbox />}
-                        checked={row.is_active}
-                        onChange={e => toggleActive({
-                            ...row,
-                            is_active: e.target.checked
-                        })}
-                    />
-                </Box>
-            )
         }
     ], [state.users])
+
+    function handleReset() {
+        userFormData.reset(setOpen)
+        setBusinessNumbers([1])
+        setNewBusinessNumber('')
+    }
 
     return {
         loadingUsers,
@@ -255,6 +227,11 @@ export function useUsers() {
         showPassword,
         setShowPassword,
         userFormData,
-        headCells
+        headCells,
+        businessNumbers,
+        setBusinessNumbers,
+        newBusinessNumber,
+        setNewBusinessNumber,
+        handleReset
     }
 }
