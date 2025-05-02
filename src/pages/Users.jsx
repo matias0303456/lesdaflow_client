@@ -86,18 +86,7 @@ export function Users() {
               {open === "EDIT" && "Editar usuario"}
               {open === "VIEW" && `Usuario ${formData.username}`}
             </Typography>
-            <form onChange={handleChange} onSubmit={(e) => {
-              handleSubmit(
-                e,
-                validate,
-                {
-                  ...formData,
-                  business_name: `CHICHO ${formData.business_name}`
-                },
-                reset,
-                setDisabled
-              )
-            }}>
+            <form onChange={handleChange} onSubmit={(e) => handleSubmit(e, validate, formData, reset, setDisabled)}>
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
                 <Box sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', gap: 2 }}>
                   <FormControl sx={{ width: { xs: '100%', sm: '30%' } }}>
@@ -266,12 +255,12 @@ export function Users() {
                   </FormControl>
                   <FormControl>
                     <TextField
-                      label="Negocio (chicho)"
+                      label="Negocio (Chicho)"
                       id="business_name"
                       type="number"
                       onChange={handleChange}
                       name="business_name"
-                      value={parseInt(formData.business_name?.split(' ')[1] ?? formData.business_name)}
+                      value={formData.business_name ?? 1}
                       InputProps={{ inputProps: { step: 1, min: 1 } }}
                     />
                   </FormControl>
