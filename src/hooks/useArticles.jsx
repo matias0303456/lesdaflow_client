@@ -7,7 +7,6 @@ import { useApi } from "./useApi"
 import { useForm } from "./useForm"
 
 import { ARTICLE_URL } from "../utils/urls"
-import { getStock } from "../utils/helpers"
 import { STATUS_CODES } from "../utils/constants"
 
 export function useArticles() {
@@ -17,25 +16,28 @@ export function useArticles() {
     const { setMessage, setOpenMessage, setSeverity } = useContext(MessageContext)
 
     const { get, post, put, destroy } = useApi(ARTICLE_URL)
-    const [open, setOpen] = useState(null)
-    const [uploadedFile, setUploadedFile] = useState(null)
     const articleFormData = useForm({
         defaultData: {
             id: '',
             code: '',
             details: '',
-            price: '',
+            buy_price: 0.00,
+            earn: 0.00,
             supplier_id: '',
-            amount: 0
+            amount: 0,
+            sale_price: 0
         },
         rules: {
             code: { required: true, maxLength: 55 },
             details: { required: true, maxLength: 191 },
-            price: { required: true },
             supplier_id: { required: true }
         }
     })
 
+    const [open, setOpen] = useState(null)
+    const [uploadedFile, setUploadedFile] = useState(null)
+    const [articleDiscounts, setArticleDiscounts] = useState([])
+    const [articleSurcharges, setArticleSurcharges] = useState([])
     const [loadingArticles, setloadingArticles] = useState(true)
     const [count, setCount] = useState(0)
     const [filter, setFilter] = useState({
@@ -64,7 +66,12 @@ export function useArticles() {
     async function handleSubmit(e, validate, formData, reset, setDisabled) {
         e.preventDefault()
         if (validate()) {
-            const { status, data } = open === 'NEW' ? await post(formData) : await put(formData)
+            const submitData = {
+                ...formData,
+                discounts: articleDiscounts,
+                surcharges: articleSurcharges
+            }
+            const { status, data } = open === 'NEW' ? await post(submitData) : await put(submitData)
             if (status === 200) {
                 if (open === 'NEW') {
                     dispatch({ type: 'ARTICLES', payload: [data, ...state.articles] })
@@ -179,24 +186,24 @@ export function useArticles() {
             numeric: false,
             disablePadding: true,
             label: 'Precio actual',
-            sorter: (row) => parseFloat(row.price).toFixed(2),
-            accessor: (row) => parseFloat(row.price).toFixed(2)
+            sorter: (row) => row.sale_price,
+            accessor: (row) => row.sale_price
         },
         {
             id: 'supplier',
             numeric: false,
             disablePadding: true,
             label: 'Proveedor',
-            sorter: (row) => row.supplier.name.toLowerCase(),
-            accessor: (row) => row.supplier.name
+            sorter: (row) => row.supplier_name.toLowerCase(),
+            accessor: (row) => row.supplier_name
         },
         {
             id: 'stock',
             numeric: false,
             disablePadding: true,
             label: 'Stock',
-            sorter: (row) => getStock(row),
-            accessor: (row) => getStock(row)
+            sorter: (row) => row.stock,
+            accessor: (row) => row.stock
         }
     ], [state.articles])
 
@@ -216,6 +223,10 @@ export function useArticles() {
         setUploadedFile,
         filter,
         setFilter,
-        count
+        count,
+        articleDiscounts,
+        articleSurcharges,
+        setArticleDiscounts,
+        setArticleSurcharges
     }
 }

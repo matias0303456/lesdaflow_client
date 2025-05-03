@@ -1,5 +1,5 @@
 import { useContext, useEffect } from "react";
-import { Box, Button, FormControl, Input, InputLabel, LinearProgress, MenuItem, Select, Typography } from "@mui/material";
+import { Box, Button, FormControl, Input, InputLabel, LinearProgress, MenuItem, Select, TextField, Typography } from "@mui/material";
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 
 import { AuthContext } from "../providers/AuthProvider";
@@ -14,6 +14,7 @@ import { ModalComponent } from "../components/common/ModalComponent";
 import { DataGridWithBackendPagination } from "../components/datagrid/DataGridWithBackendPagination";
 import { ArticleFilter } from "../components/filters/ArticleFilter";
 import { MovementsForm } from "../components/commercial/MovementsForm";
+import { DiscountsAndSurcharges } from "../components/common/DiscountsAndSurcharges";
 
 export function Articles() {
 
@@ -35,7 +36,11 @@ export function Articles() {
         setUploadedFile,
         filter,
         setFilter,
-        count
+        count,
+        articleDiscounts,
+        articleSurcharges,
+        setArticleDiscounts,
+        setArticleSurcharges
     } = useArticles()
     const { loadingSuppliers, getSuppliers } = useSuppliers()
     const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = articleFormData
@@ -157,7 +162,7 @@ export function Articles() {
                             {open === 'EDIT' && 'Editar artículo'}
                             {open === 'VIEW' && `Artículo #${formData.id}`}
                         </Typography>
-                        <form onChange={handleChange} onSubmit={(e) => handleSubmit(e, validate, formData, reset, setDisabled)}>
+                        <form onChange={handleChange}>
                             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                                 <Box sx={{ display: 'flex', gap: 3 }}>
                                     <FormControl sx={{ width: '50%' }}>
@@ -191,14 +196,27 @@ export function Articles() {
                                 </Box>
                                 <Box sx={{ display: 'flex', gap: 3 }}>
                                     <FormControl sx={{ width: '50%' }}>
-                                        <InputLabel htmlFor="price">Precio *</InputLabel>
-                                        <Input id="price" type="number" name="price" value={formData.price} disabled={open === 'VIEW'} />
-                                        {errors.price?.type === 'required' &&
-                                            <Typography variant="caption" color="red" marginTop={1}>
-                                                * El precio es requerido.
-                                            </Typography>
-                                        }
+                                        <TextField
+                                            type="number"
+                                            name="buy_price"
+                                            label="Precio de compra"
+                                            value={formData.buy_price}
+                                            disabled={open === 'VIEW'}
+                                            InputProps={{ inputProps: { step: 0.01 } }}
+                                        />
                                     </FormControl>
+                                    <FormControl sx={{ width: '50%' }}>
+                                        <TextField
+                                            type="number"
+                                            name="earn"
+                                            label="% Gan."
+                                            value={formData.earn}
+                                            disabled={open === 'VIEW'}
+                                            InputProps={{ inputProps: { step: 0.01 } }}
+                                        />
+                                    </FormControl>
+                                </Box>
+                                <Box sx={{ display: 'flex', gap: 3 }}>
                                     <FormControl sx={{ width: '50%' }}>
                                         <InputLabel id="supplier-select">Proveedor *</InputLabel>
                                         <Select
@@ -220,37 +238,71 @@ export function Articles() {
                                             </Typography>
                                         }
                                     </FormControl>
-                                </Box>
-                                {open === 'NEW' &&
-                                    <FormControl sx={{ width: '50%' }}>
-                                        <InputLabel htmlFor="amount">Stock</InputLabel>
-                                        <Input id="amount" type="number" name="amount" value={formData.amount} disabled={open === 'VIEW'} />
-                                    </FormControl>
-                                }
-                                <FormControl sx={{
-                                    display: 'flex',
-                                    flexDirection: 'row',
-                                    gap: 1,
-                                    justifyContent: 'center',
-                                    margin: '0 auto',
-                                    marginTop: 1,
-                                    width: '50%'
-                                }}>
-                                    <Button type="button" variant="outlined" onClick={() => reset(setOpen)} sx={{
-                                        width: '50%'
-                                    }}>
-                                        {open === 'VIEW' ? 'Cerrar' : 'Cancelar'}
-                                    </Button>
-                                    {(open === 'NEW' || open === 'EDIT') &&
-                                        <Button type="submit" variant="contained" disabled={disabled} sx={{
-                                            width: '50%'
-                                        }}>
-                                            Confirmar
-                                        </Button>
+                                    {open === 'NEW' &&
+                                        <FormControl sx={{ width: '50%' }}>
+                                            <TextField
+                                                type="number"
+                                                name="amount"
+                                                label="Stock inicial"
+                                                value={formData.amount}
+                                                InputProps={{ inputProps: { step: 1 } }}
+                                            />
+                                        </FormControl>
                                     }
-                                </FormControl>
+                                    {(open === 'VIEW' || open === 'EDIT') &&
+                                        <FormControl sx={{ width: '50%' }}>
+                                            <TextField
+                                                label="Precio de venta"
+                                                disabled
+                                                value={formData.sale_price}
+                                            />
+                                        </FormControl>
+                                    }
+                                </Box>
                             </Box>
                         </form>
+                        <Box sx={{ display: 'flex', gap: 2, my: 2 }}>
+                            <DiscountsAndSurcharges
+                                title="Descuentos"
+                                actions="descuentos"
+                                model="artículo"
+                                entities={articleDiscounts}
+                                setEntities={setArticleDiscounts}
+                                open={open}
+                            />
+                            <DiscountsAndSurcharges
+                                title="Recargos"
+                                actions="recargos"
+                                model="artículo"
+                                entities={articleSurcharges}
+                                setEntities={setArticleSurcharges}
+                                open={open}
+                            />
+                        </Box>
+                        <FormControl sx={{
+                            display: 'flex',
+                            flexDirection: 'row',
+                            gap: 1,
+                            justifyContent: 'center',
+                            margin: '0 auto',
+                            marginTop: 1,
+                            width: '50%'
+                        }}>
+                            <Button type="button" variant="outlined" onClick={() => reset(setOpen)} sx={{ width: '50%' }}>
+                                {open === 'VIEW' ? 'Cerrar' : 'Cancelar'}
+                            </Button>
+                            {(open === 'NEW' || open === 'EDIT') &&
+                                <Button
+                                    type="submit"
+                                    variant="contained"
+                                    disabled={disabled}
+                                    sx={{ width: '50%' }}
+                                    onClick={(e) => handleSubmit(e, validate, formData, reset, setDisabled)}
+                                >
+                                    Confirmar
+                                </Button>
+                            }
+                        </FormControl>
                     </ModalComponent>
                     <ModalComponent open={open === 'DELETE'} onClose={() => reset(setOpen)} reduceWidth={900}>
                         <Typography variant="h6" marginBottom={1} textAlign="center">

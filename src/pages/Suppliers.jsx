@@ -10,7 +10,7 @@ import { Layout } from "../components/common/Layout";
 import { ModalComponent } from "../components/common/ModalComponent";
 import { SupplierFilter } from "../components/filters/SupplierFilter";
 import { DataGridWithBackendPagination } from "../components/datagrid/DataGridWithBackendPagination";
-import { DiscountsAndSurcharges } from "../components/suppliers/DiscountsAndSurcharges";
+import { DiscountsAndSurcharges } from "../components/common/DiscountsAndSurcharges";
 
 // import { REPORT_URL } from "../utils/urls";
 
@@ -179,16 +179,18 @@ export function Suppliers() {
                         <Box sx={{ display: 'flex', gap: 2, my: 2 }}>
                             <DiscountsAndSurcharges
                                 title="Descuentos"
-                                entity="descuentos"
-                                supplierEntities={supplierDiscounts}
-                                setSupplierEntities={setSupplierDiscounts}
+                                actions="descuentos"
+                                model="proveedor"
+                                entities={supplierDiscounts}
+                                setEntities={setSupplierDiscounts}
                                 open={open}
                             />
                             <DiscountsAndSurcharges
                                 title="Recargos"
-                                entity="recargos"
-                                supplierEntities={supplierSurcharges}
-                                setSupplierEntities={setSupplierSurcharges}
+                                actions="recargos"
+                                model="proveedor"
+                                entities={supplierSurcharges}
+                                setEntities={setSupplierSurcharges}
                                 open={open}
                             />
                         </Box>
@@ -201,9 +203,7 @@ export function Suppliers() {
                             marginTop: 1,
                             width: '50%'
                         }}>
-                            <Button type="button" variant="outlined" onClick={() => reset(setOpen)} sx={{
-                                width: '50%'
-                            }}>
+                            <Button type="button" variant="outlined" onClick={() => reset(setOpen)} sx={{ width: '50%' }}>
                                 {open === 'VIEW' ? 'Cerrar' : 'Cancelar'}
                             </Button>
                             {(open === 'NEW' || open === 'EDIT') &&

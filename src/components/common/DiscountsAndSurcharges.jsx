@@ -5,10 +5,11 @@ import { useState } from "react";
 
 export function DiscountsAndSurcharges({
     title,
-    entity,
-    supplierEntities,
-    setSupplierEntities,
-    open
+    actions,
+    entities,
+    setEntities,
+    open,
+    model
 }) {
     const [newEntity, setNewEntity] = useState({
         name: '',
@@ -26,7 +27,7 @@ export function DiscountsAndSurcharges({
     const handleAddEntity = (e) => {
         e.preventDefault();
         if (newEntity.value !== '') {
-            setSupplierEntities([...supplierEntities, newEntity]);
+            setEntities([...entities, newEntity]);
             setNewEntity({ name: '', value: '' });
         }
     };
@@ -92,23 +93,23 @@ export function DiscountsAndSurcharges({
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {supplierEntities.length === 0 ?
+                        {entities.length === 0 ?
                             <TableRow>
-                                <TableCell colSpan={3} align="center">No hay {entity} asociados a este proveedor.</TableCell>
+                                <TableCell colSpan={3} align="center">No hay {actions} asociados a este {model}.</TableCell>
                             </TableRow> :
-                            supplierEntities.map((se, idx) => {
+                            entities.map((e, idx) => {
                                 return (
                                     <TableRow
                                         key={idx}
                                         sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                                     >
-                                        <TableCell align="center">{se.name}</TableCell>
-                                        <TableCell align="center">{se.value}</TableCell>
+                                        <TableCell align="center">{e.name}</TableCell>
+                                        <TableCell align="center">{e.value}</TableCell>
                                         {(open === 'NEW' || open === 'EDIT') &&
                                             <TableCell align="center">
                                                 <Button
                                                     type="button"
-                                                    onClick={() => setSupplierEntities(supplierEntities.filter((_, i) => i !== idx))}
+                                                    onClick={() => setEntities(entities.filter((_, i) => i !== idx))}
                                                     sx={{ color: 'red' }}
                                                 >
                                                     <CancelSharpIcon />
