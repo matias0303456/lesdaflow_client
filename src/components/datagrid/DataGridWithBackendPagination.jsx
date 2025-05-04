@@ -16,6 +16,7 @@ import StorefrontSharpIcon from '@mui/icons-material/StorefrontSharp';
 import InputSharpIcon from '@mui/icons-material/InputSharp';
 import OutputSharpIcon from '@mui/icons-material/OutputSharp';
 import SettingsIcon from "@mui/icons-material/Settings"
+import PictureAsPdfSharpIcon from '@mui/icons-material/PictureAsPdfSharp'
 
 import { EnhancedTableHead } from './EnhancedTableHead';
 
@@ -41,6 +42,7 @@ export function DataGridWithBackendPagination({
   showOutput = false,
   showConvertToSale = false,
   showSettingsAction = false,
+  showPDFAction = false,
   setOpenNewMovement,
   setFormDataMovement,
   setOpenNewSale
@@ -98,101 +100,109 @@ export function DataGridWithBackendPagination({
                       tabIndex={-1}
                       key={row.id}
                     >
-                      {(showEditAction || showDeleteAction || showViewAction) &&
-                        <TableCell>
-                          {showViewAction &&
-                            <Tooltip
-                              title="Detalles"
-                              onClick={() => {
-                                if (setFormData) setFormData(rows.find((r) => r.id === row.id))
-                                if (setOpen) setOpen("VIEW")
-                              }}
-                            >
-                              <IconButton>
-                                <SearchSharpIcon />
-                              </IconButton>
-                            </Tooltip>
-                          }
-                          {showEditAction &&
-                            <Tooltip
-                              title="Editar"
-                              onClick={() => {
-                                if (setFormData) setFormData(rows.find((r) => r.id === row.id))
-                                if (setOpen) setOpen("EDIT")
-                              }}
-                            >
-                              <IconButton>
-                                <EditIcon />
-                              </IconButton>
-                            </Tooltip>
-                          }
-                          {showDeleteAction &&
-                            <Tooltip
-                              title="Borrar"
-                              onClick={() => {
-                                if (setFormData) setFormData(rows.find((r) => r.id === row.id))
-                                if (setOpen) setOpen("DELETE")
-                              }}
-                            >
-                              <IconButton>
-                                <DeleteSharpIcon />
-                              </IconButton>
-                            </Tooltip>
-                          }
-                          {showConvertToSale &&
-                            <Tooltip
-                              title={showConvertToSale}
-                              onClick={() => {
-                                if (setFormData) setFormData(rows.find((r) => r.id === row.id))
-                                if (setOpenNewSale) setOpenNewSale("CONVERT")
-                              }}
-                            >
-                              <IconButton>
-                                <StorefrontSharpIcon />
-                              </IconButton>
-                            </Tooltip>
-                          }
-                          {showInput &&
-                            <Tooltip
-                              title={showInput}
-                              onClick={() => {
-                                if (setFormDataMovement) setFormDataMovement(rows.find((r) => r.id === row.id))
-                                if (setOpenNewMovement) setOpenNewMovement("NEW_INCOME")
-                              }}
-                            >
-                              <IconButton>
-                                <InputSharpIcon />
-                              </IconButton>
-                            </Tooltip>
-                          }
-                          {showOutput &&
-                            <Tooltip
-                              title={showOutput}
-                              onClick={() => {
-                                if (setFormDataMovement) setFormDataMovement(rows.find((r) => r.id === row.id))
-                                if (setOpenNewMovement) setOpenNewMovement("NEW_OUTCOME")
-                              }}
-                            >
-                              <IconButton>
-                                <OutputSharpIcon />
-                              </IconButton>
-                            </Tooltip>
-                          }
-                          {showSettingsAction &&
-                            <Tooltip
-                              title={showSettingsAction}
-                              onClick={() => {
-                                if (setFormData) setFormData(rows.find((r) => r.id === row.id))
-                                if (setOpen) setOpen("SETTINGS")
-                              }}
-                            >
-                              <IconButton>
-                                <SettingsIcon />
-                              </IconButton>
-                            </Tooltip>
-                          }
-                        </TableCell>
-                      }
+                      <TableCell>
+                        {showViewAction &&
+                          <Tooltip
+                            title="Detalles"
+                            onClick={() => {
+                              if (setFormData) setFormData(rows.find((r) => r.id === row.id))
+                              if (setOpen) setOpen("VIEW")
+                            }}
+                          >
+                            <IconButton>
+                              <SearchSharpIcon />
+                            </IconButton>
+                          </Tooltip>
+                        }
+                        {showEditAction &&
+                          <Tooltip
+                            title="Editar"
+                            onClick={() => {
+                              if (setFormData) setFormData(rows.find((r) => r.id === row.id))
+                              if (setOpen) setOpen("EDIT")
+                            }}
+                          >
+                            <IconButton>
+                              <EditIcon />
+                            </IconButton>
+                          </Tooltip>
+                        }
+                        {showDeleteAction &&
+                          <Tooltip
+                            title="Borrar"
+                            onClick={() => {
+                              if (setFormData) setFormData(rows.find((r) => r.id === row.id))
+                              if (setOpen) setOpen("DELETE")
+                            }}
+                          >
+                            <IconButton>
+                              <DeleteSharpIcon />
+                            </IconButton>
+                          </Tooltip>
+                        }
+                        {showConvertToSale &&
+                          <Tooltip
+                            title={showConvertToSale}
+                            onClick={() => {
+                              if (setFormData) setFormData(rows.find((r) => r.id === row.id))
+                              if (setOpenNewSale) setOpenNewSale("CONVERT")
+                            }}
+                          >
+                            <IconButton>
+                              <StorefrontSharpIcon />
+                            </IconButton>
+                          </Tooltip>
+                        }
+                        {showInput &&
+                          <Tooltip
+                            title={showInput}
+                            onClick={() => {
+                              if (setFormDataMovement) setFormDataMovement(rows.find((r) => r.id === row.id))
+                              if (setOpenNewMovement) setOpenNewMovement("NEW_INCOME")
+                            }}
+                          >
+                            <IconButton>
+                              <InputSharpIcon />
+                            </IconButton>
+                          </Tooltip>
+                        }
+                        {showOutput &&
+                          <Tooltip
+                            title={showOutput}
+                            onClick={() => {
+                              if (setFormDataMovement) setFormDataMovement(rows.find((r) => r.id === row.id))
+                              if (setOpenNewMovement) setOpenNewMovement("NEW_OUTCOME")
+                            }}
+                          >
+                            <IconButton>
+                              <OutputSharpIcon />
+                            </IconButton>
+                          </Tooltip>
+                        }
+                        {showSettingsAction &&
+                          <Tooltip
+                            title={showSettingsAction}
+                            onClick={() => {
+                              if (setFormData) setFormData(rows.find((r) => r.id === row.id))
+                              if (setOpen) setOpen("SETTINGS")
+                            }}
+                          >
+                            <IconButton>
+                              <SettingsIcon />
+                            </IconButton>
+                          </Tooltip>
+                        }
+                        {showPDFAction &&
+                          <Tooltip
+                            title="Imprimir PDF"
+                            onClick={() => window.open(showPDFAction + row.id, '_blank')}
+                          >
+                            <IconButton>
+                              <PictureAsPdfSharpIcon />
+                            </IconButton>
+                          </Tooltip>
+                        }
+                      </TableCell>
                       {headCells.map((cell) => cell.accessor).map((accessor) => (
                         <TableCell
                           key={accessor}

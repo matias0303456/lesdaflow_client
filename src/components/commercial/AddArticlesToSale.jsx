@@ -106,7 +106,7 @@ export function AddArticlesToSale({
                     <TableBody>
                         {saleArticles.length === 0 ?
                             <TableRow>
-                                <TableCell align="center" colSpan={7}>No hay artículos agregados a esta venta.</TableCell>
+                                <TableCell align="center" colSpan={7}>No hay artículos agregados a esta boleta.</TableCell>
                             </TableRow> :
                             saleArticles.map(sa => {
                                 const a = articles.find(a => a?.id === sa.article_id);

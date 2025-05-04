@@ -98,7 +98,7 @@ export function useBudgets() {
                 payload: [...state.budgets.filter(b => b.id !== data.id)]
             })
             setCount(count - 1)
-            setMessage(open === 'DELETE' ? 'Presupuesto eliminado correctamente.' : 'Venta creada y presupuesto eliminado correctamente.')
+            setMessage(open === 'DELETE' ? 'Presupuesto eliminado correctamente.' : 'Boleta creada y presupuesto eliminado correctamente.')
             setSeverity('success')
         } else {
             if (status === 300) {

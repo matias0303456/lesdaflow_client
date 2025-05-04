@@ -10,8 +10,6 @@ const reducer = (state, action) => {
             return { ...state, articles: action.payload }
         case 'SALES':
             return { ...state, sales: action.payload }
-        case 'PAYMENTS':
-            return { ...state, payments: action.payload }
         case 'USERS':
             return { ...state, users: action.payload }
         case 'REGISTERS':

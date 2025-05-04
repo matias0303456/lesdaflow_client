@@ -30,7 +30,7 @@ export function SaleFilter({ filter, setFilter }) {
                 />
             </FormControl>
             <FormControl >
-                <InputLabel htmlFor="id">N° venta</InputLabel>
+                <InputLabel htmlFor="id">N° boleta</InputLabel>
                 <Input
                     id="id"
                     type="number"
@@ -49,7 +49,7 @@ export function SaleFilter({ filter, setFilter }) {
                 </LocalizationProvider>
             </FormControl>
             <FormControl sx={{ width: 100 }}>
-                <InputLabel id="type-select">T. Vta.</InputLabel>
+                <InputLabel id="type-select">Tipo</InputLabel>
                 <Select
                     labelId="type-select"
                     id="type"
@@ -59,7 +59,11 @@ export function SaleFilter({ filter, setFilter }) {
                     onChange={e => setFilter({ ...filter, type: e.target.value })}
                 >
                     <MenuItem value="">Seleccione</MenuItem>
+                    <MenuItem value="EFECTIVO">EFECTIVO</MenuItem>
                     <MenuItem value="CONTADO">CONTADO</MenuItem>
+                    <MenuItem value="DEBITO">DEBITO</MenuItem>
+                    <MenuItem value="CREDITO">CREDITO</MenuItem>
+                    <MenuItem value="TRANSFERENCIA">TRANSFERENCIA</MenuItem>
                 </Select>
             </FormControl>
             <Button type="button" variant="outlined" onClick={handleReset}>

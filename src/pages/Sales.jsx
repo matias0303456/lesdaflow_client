@@ -66,7 +66,7 @@ export function Sales() {
     }, [filter])
 
     return (
-        <Layout title="Ventas">
+        <Layout title="Boletas">
             {(loadingClients || loadingSales || loadingArticles || disabled) ?
                 <Box sx={{ width: '100%' }}>
                     <LinearProgress />
@@ -81,6 +81,7 @@ export function Sales() {
                     count={count}
                     showEditAction
                     showDeleteAction={auth?.user.role === 'ADMINISTRADOR'}
+                    showPDFAction={`${REPORT_URL}/boleta-pdf?token=${auth?.token}&id=`}
                     showViewAction
                     contentHeader={
                         <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -126,7 +127,7 @@ export function Sales() {
                         onClose={() => setSaleSaved(null)}
                     >
                         <Typography variant="h6" sx={{ textAlign: 'center', marginBottom: 2 }}>
-                            Venta creada correctamente
+                            Boleta creada correctamente
                         </Typography>
                         <Button type="submit" variant="contained"
                             sx={{
@@ -135,7 +136,7 @@ export function Sales() {
                                 margin: '0 auto'
                             }}
                             onClick={() => {
-                                window.open(`${REPORT_URL}/venta-pdf?token=${auth?.token}&id=${saleSaved}`, '_blank')
+                                window.open(`${REPORT_URL}/boleta-pdf?token=${auth?.token}&id=${saleSaved}`, '_blank')
                                 setSaleSaved(null)
                             }}
                         >
@@ -144,7 +145,7 @@ export function Sales() {
                     </ModalComponent>
                     <ModalComponent open={open === 'DELETE'} onClose={() => reset(setOpen)} reduceWidth={900}>
                         <Typography variant="h6" marginBottom={1} textAlign="center">
-                            Confirmar eliminación de venta
+                            Confirmar eliminación de boleta
                         </Typography>
                         <Typography variant="body1" marginBottom={2} textAlign="center">
                             Los datos no podrán recuperarse

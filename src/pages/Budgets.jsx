@@ -1,5 +1,4 @@
 import { useContext, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import { Box, Button, LinearProgress, Typography } from "@mui/material";
 
 import { AuthContext } from "../providers/AuthProvider";
@@ -23,8 +22,6 @@ export function Budgets() {
 
     const { auth } = useContext(AuthContext)
     const { state } = useContext(DataContext)
-
-    const navigate = useNavigate()
 
     const { getArticles } = useArticles()
     const { getClients } = useClients()
@@ -87,10 +84,6 @@ export function Budgets() {
             }
         }
     })
-
-    useEffect(() => {
-        if (auth?.user.role !== 'ADMINISTRADOR' && auth?.user.role !== 'VENDEDOR') navigate('/prep-ventas')
-    }, [])
 
     useEffect(() => {
         getClients()

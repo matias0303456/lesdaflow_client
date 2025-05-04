@@ -54,19 +54,22 @@ export function BudgetFilter({ filter, setFilter }) {
                     onChange={e => setFilter({ ...filter, client: e.target.value })}
                 />
             </FormControl>
-            <FormControl sx={{ width: { xs: '100%', md: '15%' } }}>
+            <FormControl sx={{ width: 100 }}>
                 <InputLabel id="type-select">Tipo</InputLabel>
                 <Select
                     labelId="type-select"
                     id="type"
                     value={filter.type}
-                    label="Tipo"
+                    label="Tipo Comp."
                     name="type"
                     onChange={e => setFilter({ ...filter, type: e.target.value })}
                 >
                     <MenuItem value="">Seleccione</MenuItem>
-                    <MenuItem value="CUENTA_CORRIENTE">CTA CTE</MenuItem>
+                    <MenuItem value="EFECTIVO">EFECTIVO</MenuItem>
                     <MenuItem value="CONTADO">CONTADO</MenuItem>
+                    <MenuItem value="DEBITO">DEBITO</MenuItem>
+                    <MenuItem value="CREDITO">CREDITO</MenuItem>
+                    <MenuItem value="TRANSFERENCIA">TRANSFERENCIA</MenuItem>
                 </Select>
             </FormControl>
             <Button type="button" variant="outlined" onClick={handleReset} sx={{ width: { xs: '100%', md: '15%' } }}>

@@ -103,7 +103,7 @@ export function AddArticlesToBudget({
                                 <TableCell></TableCell>
                                 <TableCell></TableCell>
                                 <TableCell></TableCell>
-                                <TableCell align="center">No hay artículos agregados a esta venta.</TableCell>
+                                <TableCell align="center">No hay artículos agregados a esta boleta.</TableCell>
                                 <TableCell></TableCell>
                                 <TableCell></TableCell>
                                 <TableCell></TableCell>

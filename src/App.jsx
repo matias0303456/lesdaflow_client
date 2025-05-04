@@ -43,7 +43,7 @@ function App() {
                 <Route path="/clientes" element={<Clients />} />
                 <Route path="/usuarios" element={<Users />} />
                 <Route path="/proveedores" element={<Suppliers />} />
-                <Route path="/ventas" element={<Sales />} />
+                <Route path="/boletas" element={<Sales />} />
                 <Route path="/articulos" element={<Articles />} />
                 <Route path="/presupuestos" element={<Budgets />} />
                 <Route path="/cajas" element={<Registers />} />

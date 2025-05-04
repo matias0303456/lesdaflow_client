@@ -8,7 +8,6 @@ import { useBudgets } from "./useBudgets"
 import { useForm } from "./useForm"
 
 import { SALE_URL } from "../utils/urls"
-import { getSaleTotal } from "../utils/helpers"
 
 export function useSales() {
 
@@ -38,7 +37,7 @@ export function useSales() {
         defaultData: {
             id: '',
             client_id: '',
-            type: 'CUENTA_CORRIENTE',
+            type: 'EFECTIVO',
             date: new Date(Date.now()),
             observations: '',
             total: '0.00'
@@ -84,7 +83,7 @@ export function useSales() {
                     dispatch({ type: 'SALES', payload: [data, ...state.sales] })
                     setCount(count + 1)
                     if (open === 'NEW') {
-                        setMessage('Venta creada correctamente.')
+                        setMessage('Boleta creada correctamente.')
                         setSaleSaved(data.id)
                     } else {
                         deleteBudget(formData)
@@ -97,7 +96,7 @@ export function useSales() {
                             ...state.sales.filter(s => s.id !== formData.id)
                         ]
                     })
-                    setMessage('Venta editada correctamente.')
+                    setMessage('Boleta editada correctamente.')
                     setOpenMessage(true)
                 }
                 reset(setOpen)
@@ -128,11 +127,11 @@ export function useSales() {
                 payload: [...state.sales.filter(s => s.id !== data.id)]
             })
             setCount(count - 1)
-            setMessage('Venta eliminada correctamente.')
+            setMessage('Boleta eliminada correctamente.')
             setSeverity('success')
         } else {
             if (status === 300) {
-                setMessage('Existen ventas con datos asociados.')
+                setMessage('Existen boletas con datos asociados.')
             } else {
                 setMessage('Ocurrió un error. Actualice la página.')
             }
@@ -148,7 +147,7 @@ export function useSales() {
             id: 'id',
             numeric: true,
             disablePadding: false,
-            label: 'Cód.',
+            label: 'N°',
             accessor: 'id'
         },
         {
@@ -178,16 +177,16 @@ export function useSales() {
             id: 'type',
             numeric: false,
             disablePadding: true,
-            label: 'T. Vta.',
-            accessor: (row) => row.type.replaceAll('CUENTA_CORRIENTE', 'CTA CTE')
+            label: 'Tipo',
+            accessor: (row) => row.type
         },
         {
             id: 'total',
             numeric: false,
             disablePadding: true,
             label: 'Total',
-            sorter: (row) => getSaleTotal(row).replace('$', ''),
-            accessor: (row) => getSaleTotal(row)
+            sorter: (row) => row.total,
+            accessor: (row) => `$${row.total.toFixed(2)}`
         }
     ], [state.sales])
 

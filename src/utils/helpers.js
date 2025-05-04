@@ -9,24 +9,6 @@ export function getStock(article) {
     }, 0)
 }
 
-export function getSaleSubtotal(sale) {
-    const result = sale.sale_articles.reduce((prev, curr) => prev + ((curr.buy_price + ((curr.buy_price / 100) * curr.earn)) * curr.amount), 0)
-    return `$${result.toFixed(2)}`
-}
-
-export function getSaleTotal(sale) {
-    if (sale.total !== null) return `$${sale.total.toFixed(2)}`
-    const subtotal = getSaleSubtotal(sale).replace('$', '')
-    return `$${(subtotal - ((subtotal / 100) * sale.discount)).toFixed(2)}`
-}
-
-export function getSaleDifference(sale) {
-    if (!sale.sale_articles) return 0
-    const saleTotal = getSaleTotal(sale).replaceAll('$', '')
-    const paymentsTotal = sale.payments.reduce((prev, curr) => prev + curr.amount, 0)
-    return `$${(saleTotal - paymentsTotal).toFixed(2)}`
-}
-
 export function getDeadline(date) {
     const startDate = new Date(date)
     const endDate = new Date(startDate)
@@ -76,23 +58,6 @@ export function getNewCostAndEarnPrice(article, value, earn) {
         return (parseFloat(value) + (parseFloat(value) / 100) * article.earn).toFixed(2)
     }
     return (parseFloat(value) + (parseFloat(value) / 100) * parseFloat(earn)).toFixed(2)
-}
-
-export function getAccountStatus(sale) {
-    if (sale.type === 'CONTADO') return ''
-    const diff = getSaleDifference(sale).replaceAll('$', '')
-    if (diff > 0) {
-        return 'Pendiente'
-    } else {
-        return 'Finalizada'
-    }
-}
-
-export function getSaleDifferenceByPayment(sale, idx) {
-    const total = getSaleTotal(sale).replace('$', '')
-    const payments = sale.payments.sort((a, b) => a.id - b.id)
-    const totalTillPayment = payments.filter((_, index) => index <= idx).reduce((prev, curr) => prev + curr.amount, 0)
-    return `$${(total - totalTillPayment).toFixed(2)}`
 }
 
 export function getStockTillDate(row) {
@@ -147,24 +112,12 @@ export function a11yProps(index) {
     }
 }
 
-export function getCurrentSubtotal(saleArticles, articles) {
-    const total = saleArticles.reduce((prev, curr) => {
+export function getCurrentTotal(saleArticles, articles) {
+    const result = saleArticles.reduce((prev, curr) => {
         const a = articles.find(item => item.id === curr.article_id)
-        return prev + ((curr.price ?? a.price) * (isNaN(parseInt(curr.amount)) ? 0 : parseInt(curr.amount)))
+        return prev + ((curr.sale_price ?? getArticleSalePrice(a)) * (isNaN(parseInt(curr.amount)) ? 0 : parseInt(curr.amount)))
     }, 0)
-    return total.toFixed(2)
-}
-
-export function getCurrentTotal(saleArticles, articles, discAndSurch) {
-    const subtotal = getCurrentSubtotal(saleArticles, articles)
-    const discounts = discAndSurch.reduce((prev, curr) => {
-        return prev + curr.discounts.reduce((p, c) => p + c.value, 0)
-    }, 0)
-    const surcharges = discAndSurch.reduce((prev, curr) => {
-        return prev + curr.surcharges.reduce((p, c) => p + c.value, 0)
-    }, 0)
-    const total = subtotal - ((subtotal / 100) * discounts) + ((subtotal / 100) * surcharges)
-    return total.toFixed(2)
+    return result.toFixed(2)
 }
 
 export function getDiscountsAndSurchargesValues(saleArticles, articles) {

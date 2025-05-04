@@ -1,17 +1,12 @@
 /* eslint-disable react/prop-types */
 import { useContext } from "react"
-import { Autocomplete, Box, Button, Checkbox, FormControl, FormControlLabel, Input, InputLabel, TextField, Typography } from "@mui/material"
-import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers"
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns"
-import { es } from "date-fns/locale"
+import { Autocomplete, Box, Button, FormControl, Input, InputLabel, MenuItem, Select, TextField, Typography } from "@mui/material"
 
 import { DataContext } from "../../providers/DataProvider"
 import { AuthContext } from "../../providers/AuthProvider"
 
 import { AddArticlesToSale } from "./AddArticlesToSale"
 import { DataDisplay } from "./DataDisplay"
-
-import { getCurrentSubtotal } from "../../utils/helpers"
 
 export function SaleFormFields({
     handleChange,
@@ -68,7 +63,7 @@ export function SaleFormFields({
                                 onChange={(e, value) => handleChange({ target: { name: 'client_id', value: value?.id ?? '' } })}
                                 renderInput={(params) => <TextField {...params} label="Cliente *" />}
                                 isOptionEqualToValue={(option, value) => option.code === value.code || value.length === 0}
-                                disabled={open === 'VIEW' || (open === 'EDIT' && auth?.user.role !== 'ADMINISTRADOR')}
+                                disabled={open === 'VIEW'}
                             />
                             {errors.client_id?.type === 'required' &&
                                 <Typography variant="caption" color="red" marginTop={1}>
@@ -76,36 +71,24 @@ export function SaleFormFields({
                                 </Typography>
                             }
                         </FormControl>
-                        <Box sx={{ width: { xs: '100%', md: '40%' }, display: 'flex', justifyContent: 'space-around' }}>
-                            <FormControlLabel
-                                control={<Checkbox disabled={open === 'VIEW' || (open === 'EDIT' && auth?.user.role !== 'ADMINISTRADOR')} />}
-                                label="Cuenta Corriente"
-                                checked={formData.type === 'CUENTA_CORRIENTE'}
-                                disabled={saleArticles.length > 0 && auth?.user.role !== 'ADMINISTRADOR' && formData.type !== 'CUENTA_CORRIENTE' && formData.type !== 'CONTADO'}
-                                onChange={e => {
-                                    if (e.target.checked) {
-                                        setFormData({
-                                            ...formData,
-                                            type: 'CUENTA_CORRIENTE'
-                                        })
-                                    }
-                                }}
-                            />
-                            <FormControlLabel
-                                control={<Checkbox disabled={open === 'VIEW' || (open === 'EDIT' && auth?.user.role !== 'ADMINISTRADOR')} />}
-                                label="Contado"
-                                checked={formData.type === 'CONTADO'}
-                                disabled={saleArticles.length > 0 && auth?.user.role !== 'ADMINISTRADOR' && formData.type !== 'CUENTA_CORRIENTE' && formData.type !== 'CONTADO'}
-                                onChange={e => {
-                                    if (e.target.checked) {
-                                        setFormData({
-                                            ...formData,
-                                            type: 'CONTADO'
-                                        })
-                                    }
-                                }}
-                            />
-                        </Box>
+                        <FormControl sx={{ width: { xs: '100%', md: '40%' } }}>
+                            <InputLabel id="type-select">Tipo</InputLabel>
+                            <Select
+                                labelId="type-select"
+                                id="type"
+                                value={formData.type}
+                                label="Tipo Comp."
+                                name="type"
+                                onChange={e => setFormData({ ...formData, type: e.target.value })}
+                            >
+                                <MenuItem value="">Seleccione</MenuItem>
+                                <MenuItem value="EFECTIVO">EFECTIVO</MenuItem>
+                                <MenuItem value="CONTADO">CONTADO</MenuItem>
+                                <MenuItem value="DEBITO">DEBITO</MenuItem>
+                                <MenuItem value="CREDITO">CREDITO</MenuItem>
+                                <MenuItem value="TRANSFERENCIA">TRANSFERENCIA</MenuItem>
+                            </Select>
+                        </FormControl>
                     </Box>
                     <Box sx={{
                         display: 'flex',
@@ -129,35 +112,11 @@ export function SaleFormFields({
                             width: { xs: '100%', md: '40%' },
                             gap: 1
                         }}>
-                            <FormControl>
-                                <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
-                                    <DatePicker
-                                        label="Fecha"
-                                        value={new Date(formData.date)}
-                                        onChange={value => handleChange({
-                                            target: {
-                                                name: 'date',
-                                                value: new Date(value.toISOString())
-                                            }
-                                        })}
-                                        disabled={open === 'VIEW' || (open === 'EDIT' && auth?.user.role !== 'ADMINISTRADOR')}
-                                    />
-                                </LocalizationProvider>
-                                {errors.date?.type === 'required' &&
-                                    <Typography variant="caption" color="red" marginTop={1}>
-                                        * La fecha es requerida.
-                                    </Typography>
-                                }
-                            </FormControl>
                             <DataDisplay data={discAndSurch} />
                         </Box>
                     </Box>
                 </Box>
                 <Box sx={{ display: 'flex', justifyContent: 'end', marginTop: 3 }}>
-                    <FormControl>
-                        <InputLabel htmlFor="subtotal">Subtotal</InputLabel>
-                        <Input value={getCurrentSubtotal(saleArticles, state.articles)} id="subtotal" type="number" name="subtotal" disabled />
-                    </FormControl>
                     <FormControl>
                         <InputLabel htmlFor="total">Total</InputLabel>
                         <Input value={formData.total} id="total" type="number" name="total" />
@@ -165,7 +124,7 @@ export function SaleFormFields({
                 </Box>
                 {confirmed &&
                     <Typography variant="body1" color="red" marginTop={2} align="center">
-                        Confirme los datos de la venta antes de guardar
+                        Confirme los datos de la boleta antes de guardar
                     </Typography>
                 }
                 <FormControl sx={{
@@ -178,7 +137,7 @@ export function SaleFormFields({
                     width: '50%'
                 }}>
                     <Button type="button" variant="outlined" onClick={handleClose} sx={{ width: '50%' }}>
-                        {open === 'VIEW' || (open === 'EDIT' && auth?.user.role !== 'ADMINISTRADOR') ? 'Cerrar' : 'Cancelar'}
+                        {open === 'VIEW' ? 'Cerrar' : 'Cancelar'}
                     </Button>
                     {(open === 'NEW' || open === 'CONVERT' || (open === 'EDIT' && auth?.user.role === 'ADMINISTRADOR')) &&
                         <Button

@@ -15,8 +15,8 @@ export const nav_items = [
     can_access: ['ADMINISTRADOR']
   },
   {
-    title: "Ventas",
-    path: "/ventas",
+    title: "Boletas",
+    path: "/boletas",
     can_access: ['ADMINISTRADOR', 'VENDEDOR']
   },
   {
