@@ -1,13 +1,12 @@
 import { useContext, useMemo, useState } from "react"
-import { Link } from "react-router-dom";
 import { format } from "date-fns";
 
 import { useApi } from "./useApi"
 import { MessageContext } from "../providers/MessageProvider"
 import { DataContext } from "../providers/DataProvider"
+import { useForm } from "./useForm";
 
 import { BUDGET_URL } from "../utils/urls"
-import { getBudgetTotal, getBudgetSubtotal } from "../utils/helpers";
 
 export function useBudgets() {
 
@@ -22,13 +21,39 @@ export function useBudgets() {
     const [idsToDelete, setIdsToDelete] = useState([])
     const [missing, setMissing] = useState(false)
     const [count, setCount] = useState(0)
+    const [isFinalConsumer, setIsFinalConsumer] = useState(false)
     const [filter, setFilter] = useState({
         page: 0,
         offset: 25,
-        from: '',
-        to: '',
+        id: '',
+        date: '',
         client: '',
         type: ''
+    })
+
+    const budgetFormData = useForm({
+        defaultData: { id: '', client_id: '', type: 'EFECTIVO', total: '0.00' },
+        rules: {
+            client_id: {
+                required: !isFinalConsumer
+            },
+            final_consumer_document: {
+                required: isFinalConsumer,
+                maxLength: 191
+            }
+        }
+    })
+    const newSaleFormData = useForm({
+        defaultData: { id: '', client_id: '', type: 'EFECTIVO', total: '0.00' },
+        rules: {
+            client_id: {
+                required: !isFinalConsumer
+            },
+            final_consumer_document: {
+                required: isFinalConsumer,
+                maxLength: 191
+            }
+        }
     })
 
     async function getBudgets(params) {
@@ -75,6 +100,7 @@ export function useBudgets() {
                 setBudgetArticles([])
                 setMissing(false)
                 setIdsToDelete([])
+                setIsFinalConsumer(false)
             } else {
                 setMessage(data.message)
                 setSeverity('error')
@@ -118,7 +144,7 @@ export function useBudgets() {
             id: 'id',
             numeric: true,
             disablePadding: false,
-            label: 'Cod. Pres.',
+            label: 'N°',
             accessor: 'id'
         },
         {
@@ -126,50 +152,30 @@ export function useBudgets() {
             numeric: false,
             disablePadding: true,
             label: 'Fecha',
-            accessor: (row) => format(new Date(row.date), 'dd/MM/yy')
-        },
-        {
-            id: 'hour',
-            numeric: false,
-            disablePadding: true,
-            label: 'Hora',
-            sorter: (row) => format(new Date(row.date), 'HH:mm').toString().replace(':', ''),
-            accessor: (row) => format(new Date(row.date), 'HH:mm')
+            accessor: (row) => format(new Date(row.date), 'dd/MM/yy HH:mm')
         },
         {
             id: 'client_name',
             numeric: false,
             disablePadding: true,
             label: 'Cliente',
-            sorter: (row) => `${row.client.first_name} ${row.client.last_name}`,
-            accessor: (row) => `${row.client.first_name} ${row.client.last_name}`
-        },
-        {
-            id: 'address',
-            numeric: false,
-            disablePadding: true,
-            label: 'Dirección',
-            sorter: (row) => row.client.address,
-            accessor: (row) => (
-                <Link target="_blank" to={`https://www.google.com/maps?q=${row.client.address}`}>
-                    <span style={{ color: '#050622' }}>{row.client.address}</span>
-                </Link>
-            )
-        },
-        {
-            id: 'total_amount',
-            numeric: false,
-            disablePadding: true,
-            label: 'Total',
-            sorter: (row) => parseFloat(getBudgetTotal(row, getBudgetSubtotal(row.budget_articles))),
-            accessor: (row) => `$${getBudgetTotal(row, getBudgetSubtotal(row.budget_articles))}`
+            sorter: (row) => `${row.client?.first_name ?? 'CONS.'} ${row.client?.last_name ?? ' FINAL'}`,
+            accessor: (row) => `${row.client?.first_name ?? 'CONS.'} ${row.client?.last_name ?? ' FINAL'}`
         },
         {
             id: 'type',
             numeric: false,
             disablePadding: true,
             label: 'Tipo',
-            accessor: (row) => row.type.replaceAll('CUENTA_CORRIENTE', 'CTA CTE')
+            accessor: (row) => row.type
+        },
+        {
+            id: 'total',
+            numeric: false,
+            disablePadding: true,
+            label: 'Total',
+            sorter: (row) => row.total,
+            accessor: (row) => `$${row.total.toFixed(2)}`
         }
     ], [state.budgets])
 
@@ -190,6 +196,10 @@ export function useBudgets() {
         headCells,
         filter,
         setFilter,
-        count
+        count,
+        budgetFormData,
+        newSaleFormData,
+        isFinalConsumer,
+        setIsFinalConsumer
     }
 }

@@ -30,27 +30,27 @@ export function useSales() {
     const [open, setOpen] = useState(null)
     const [saleArticles, setSaleArticles] = useState([])
     const [idsToDelete, setIdsToDelete] = useState([])
-    const [saleSaved, setSaleSaved] = useState(null)
     const [missing, setMissing] = useState(false)
+    const [isFinalConsumer, setIsFinalConsumer] = useState(false)
 
     const saleFormData = useForm({
         defaultData: {
             id: '',
             client_id: '',
             type: 'EFECTIVO',
-            date: new Date(Date.now()),
             observations: '',
             total: '0.00'
         },
         rules: {
             client_id: {
-                required: true
+                required: !isFinalConsumer
             },
-            date: {
-                required: true
+            final_consumer_document: {
+                required: isFinalConsumer,
+                maxLength: 191
             },
             observations: {
-                maxLength: 255
+                maxLength: 191
             }
         }
     })
@@ -70,6 +70,7 @@ export function useSales() {
 
     async function handleSubmit(e, formData, validate, reset, setDisabled) {
         e.preventDefault()
+        console.log({ isFinalConsumer })
         const submitData = {
             ...formData,
             sale_articles: saleArticles,
@@ -84,7 +85,6 @@ export function useSales() {
                     setCount(count + 1)
                     if (open === 'NEW') {
                         setMessage('Boleta creada correctamente.')
-                        setSaleSaved(data.id)
                     } else {
                         deleteBudget(formData)
                     }
@@ -104,6 +104,7 @@ export function useSales() {
                 setSaleArticles([])
                 setMissing(false)
                 setIdsToDelete([])
+                setIsFinalConsumer(false)
             } else {
                 setMessage(data.message)
                 setSeverity('error')
@@ -170,8 +171,8 @@ export function useSales() {
             numeric: false,
             disablePadding: true,
             label: 'Cliente',
-            sorter: (row) => `${row.client.first_name} ${row.client.last_name}`,
-            accessor: (row) => `${row.client.first_name} ${row.client.last_name}`
+            sorter: (row) => `${row.client?.first_name ?? 'CONS.'} ${row.client?.last_name ?? ' FINAL'}`,
+            accessor: (row) => `${row.client?.first_name ?? 'CONS.'} ${row.client?.last_name ?? ' FINAL'}`
         },
         {
             id: 'type',
@@ -199,8 +200,6 @@ export function useSales() {
         setSaleArticles,
         idsToDelete,
         setIdsToDelete,
-        saleSaved,
-        setSaleSaved,
         missing,
         setMissing,
         handleSubmit,
@@ -210,6 +209,8 @@ export function useSales() {
         saleFormData,
         filter,
         setFilter,
-        count
+        count,
+        isFinalConsumer,
+        setIsFinalConsumer
     }
 }

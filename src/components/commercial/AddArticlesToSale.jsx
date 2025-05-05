@@ -5,8 +5,6 @@ import CancelSharpIcon from '@mui/icons-material/CancelSharp';
 
 import { AuthContext } from "../../providers/AuthProvider";
 
-import { getStock } from "../../utils/helpers";
-
 export function AddArticlesToSale({
     articles,
     saleArticles,
@@ -72,7 +70,7 @@ export function AddArticlesToSale({
                         <Autocomplete
                             disablePortal
                             id="article-autocomplete"
-                            options={articles.filter(a => !saleArticles.map(sa => sa.article_id).includes(a?.id) && getStock(a) > 0)
+                            options={articles.filter(a => !saleArticles.map(sa => sa.article_id).includes(a?.id))
                                 .map(a => ({ label: `${a?.code} - ${a?.details}`, id: a?.id }))}
                             noOptionsText="No hay artículos disponibles."
                             onChange={(_, value) => handleAdd({ idx: saleArticles.length, article_id: value?.id ?? '' })}
@@ -111,7 +109,7 @@ export function AddArticlesToSale({
                             saleArticles.map(sa => {
                                 const a = articles.find(a => a?.id === sa.article_id);
                                 const currentAmount = isNaN(parseInt(sa.amount)) ? 0 : parseInt(sa.amount);
-                                const stock = getStock(a);
+                                const stock = a.stock;
                                 return (
                                     <TableRow key={sa.article_id}>
                                         <TableCell align="center">{a?.code}</TableCell>
@@ -124,13 +122,13 @@ export function AddArticlesToSale({
                                                     disabled={open === 'VIEW' || (open === 'EDIT' && auth?.user.role !== 'ADMINISTRADOR')}
                                                     onChange={e => handleChangeAmount({ article_id: a?.id, amount: e.target.value })}
                                                     inputRef={el => inputRefs.current[sa.article_id] = el}
-                                                    InputProps={{ inputProps: { max: open === 'NEW' ? stock : stock + parseInt(sa.amount), step: 1 } }}
+                                                    InputProps={{ inputProps: { step: 1 } }}
                                                 />
                                             </FormControl>
                                         </TableCell>
-                                        <TableCell>${a.price.toFixed(2)}</TableCell>
+                                        <TableCell>${a.sale_price.toFixed(2)}</TableCell>
                                         {open !== 'VIEW' && <TableCell>{stock}</TableCell>}
-                                        <TableCell>${(currentAmount * a.price).toFixed(2)}</TableCell>
+                                        <TableCell>${(currentAmount * a.sale_price).toFixed(2)}</TableCell>
                                         {(open === 'NEW' || open === 'CONVERT' || (open === 'EDIT' && auth?.user.role === 'ADMINISTRADOR')) &&
                                             <TableCell align="center">
                                                 <Button type="button" onClick={() => handleDeleteArticle(sa.id, a?.id)}>

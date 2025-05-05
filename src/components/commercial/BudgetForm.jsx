@@ -1,9 +1,6 @@
 /* eslint-disable react/prop-types */
 import { useContext, useEffect, useMemo } from "react"
-import { Autocomplete, Box, FormControl, InputLabel, TextField, Typography, Input, Button, FormControlLabel, Checkbox } from "@mui/material"
-import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers"
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns"
-import { es } from "date-fns/locale"
+import { Autocomplete, Box, FormControl, InputLabel, TextField, Typography, Input, Button, Select, MenuItem } from "@mui/material"
 
 import { DataContext } from "../../providers/DataProvider"
 
@@ -30,7 +27,9 @@ export function BudgetForm({
     validate,
     disabled,
     setDisabled,
-    errors
+    errors,
+    isFinalConsumer,
+    setIsFinalConsumer
 }) {
 
     const { state } = useContext(DataContext)
@@ -57,6 +56,30 @@ export function BudgetForm({
         })
     }, [budgetArticles, open])
 
+    const getCurrentClient = () => {
+        if (isFinalConsumer) {
+            return 'CONSUMIDOR FINAL'
+        } else {
+            const { client_id } = formData
+            if (!client_id && open !== 'NEW') return 'CONSUMIDOR FINAL'
+            const c = state.clients.find(c => c.id === client_id)
+            if (client_id.toString().length === 0) return ''
+            return `${c?.first_name} ${c?.last_name}`
+        }
+    }
+
+    const handleChangeClient = (_, data) => {
+        let name = 'client_id'
+        let value = data?.id ?? ''
+        if (data === 'CONSUMIDOR FINAL') {
+            name = 'final_consumer_document'
+            setIsFinalConsumer(true)
+        } else {
+            setIsFinalConsumer(false)
+        }
+        handleChange({ target: { name, value } })
+    }
+
     return (
         <ModalComponent
             reduceWidth={500}
@@ -75,73 +98,69 @@ export function BudgetForm({
             </Typography>
             <form onChange={handleChange} onSubmit={(e) => handleSubmit(e, formData, validate, reset, setDisabled)}>
                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                    <FormControl>
-                        <Autocomplete
-                            disablePortal
-                            id="client-autocomplete"
-                            value={formData.client_id.toString().length > 0 ? `${state.clients.find(c => c.id === formData.client_id)?.first_name} - ${state.clients.find(c => c.id === formData.client_id)?.last_name}` : ''}
-                            options={state.clients.map(c => ({ label: `${c.first_name} ${c.last_name}`, id: c.id }))}
-                            noOptionsText="No hay clientes registrados."
-                            onChange={(e, value) => handleChange({ target: { name: 'client_id', value: value?.id ?? '' } })}
-                            renderInput={(params) => <TextField {...params} label="Cliente *" />}
-                            isOptionEqualToValue={(option, value) => option.code === value.code || value.length === 0}
-                            disabled={open === 'VIEW'}
-                        />
-                        {errors.client_id?.type === 'required' &&
-                            <Typography variant="caption" color="red" marginTop={1}>
-                                * El cliente es requerido.
-                            </Typography>
-                        }
-                    </FormControl>
-                    <FormControl>
-                        <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
-                            <DatePicker
-                                label="Fecha"
-                                value={new Date(formData.date)}
-                                onChange={value => handleChange({
-                                    target: {
-                                        name: 'date',
-                                        value: new Date(value.toISOString())
+                    <Box sx={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        flexDirection: { xs: 'column', md: 'row' },
+                        gap: 2
+                    }}>
+                        <Box sx={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            width: { xs: '100%', md: '60%' },
+                            gap: 2
+                        }}>
+                            <FormControl>
+                                <Autocomplete
+                                    disablePortal
+                                    id="client-autocomplete"
+                                    value={getCurrentClient()}
+                                    options={[
+                                        'CONSUMIDOR FINAL',
+                                        ...state.clients.map(c => ({ label: `${c.first_name} ${c.last_name}`, id: c.id }))
+                                    ]}
+                                    noOptionsText="No hay clientes registrados."
+                                    onChange={handleChangeClient}
+                                    renderInput={(params) => <TextField {...params} label="Cliente *" />}
+                                    isOptionEqualToValue={(option, value) => option.id === value.id || value.length === 0}
+                                    disabled={open === 'VIEW'}
+                                />
+                                {errors.client_id?.type === 'required' &&
+                                    <Typography variant="caption" color="red" marginTop={1}>
+                                        * El cliente es requerido.
+                                    </Typography>
+                                }
+                            </FormControl>
+                            {isFinalConsumer &&
+                                <FormControl>
+                                    <InputLabel htmlFor="final_consumer_document">DNI / CUIL</InputLabel>
+                                    <Input id="final_consumer_document" type="text" name="final_consumer_document" value={formData.final_consumer_document} />
+                                    {errors.final_consumer_document?.type === 'required' &&
+                                        <Typography variant="caption" color="red" marginTop={1}>
+                                            * El documento es requerido.
+                                        </Typography>
                                     }
-                                })}
-                                disabled={open === 'VIEW'}
-                            />
-                        </LocalizationProvider>
-                        {errors.date?.type === 'required' &&
-                            <Typography variant="caption" color="red" marginTop={1}>
-                                * La fecha es requerida.
-                            </Typography>
-                        }
-                    </FormControl>
-                    <Box sx={{ width: '100%', display: 'flex', justifyContent: 'space-around' }}>
-                        <FormControlLabel
-                            control={<Checkbox disabled={open === 'VIEW'} />}
-                            label="Cuenta Corriente"
-                            checked={formData.type === 'CUENTA_CORRIENTE'}
-                            disabled={budgetArticles.length > 0 && formData.type !== 'CUENTA_CORRIENTE' && formData.type !== 'CONTADO'}
-                            onChange={e => {
-                                if (e.target.checked) {
-                                    setFormData({
-                                        ...formData,
-                                        type: 'CUENTA_CORRIENTE'
-                                    })
-                                }
-                            }}
-                        />
-                        <FormControlLabel
-                            control={<Checkbox disabled={open === 'VIEW'} />}
-                            label="Contado"
-                            checked={formData.type === 'CONTADO'}
-                            disabled={budgetArticles.length > 0 && formData.type !== 'CUENTA_CORRIENTE' && formData.type !== 'CONTADO'}
-                            onChange={e => {
-                                if (e.target.checked) {
-                                    setFormData({
-                                        ...formData,
-                                        type: 'CONTADO'
-                                    })
-                                }
-                            }}
-                        />
+                                </FormControl>
+                            }
+                        </Box>
+                        <FormControl sx={{ width: { xs: '100%', md: '40%' } }}>
+                            <InputLabel id="type-select">Tipo</InputLabel>
+                            <Select
+                                labelId="type-select"
+                                id="type"
+                                value={formData.type}
+                                label="Tipo Comp."
+                                name="type"
+                                onChange={e => setFormData({ ...formData, type: e.target.value })}
+                            >
+                                <MenuItem value="">Seleccione</MenuItem>
+                                <MenuItem value="EFECTIVO">EFECTIVO</MenuItem>
+                                <MenuItem value="CONTADO">CONTADO</MenuItem>
+                                <MenuItem value="DEBITO">DEBITO</MenuItem>
+                                <MenuItem value="CREDITO">CREDITO</MenuItem>
+                                <MenuItem value="TRANSFERENCIA">TRANSFERENCIA</MenuItem>
+                            </Select>
+                        </FormControl>
                     </Box>
                     <AddArticlesToBudget
                         articles={state.articles}
@@ -181,6 +200,7 @@ export function BudgetForm({
                         setMissing(false)
                         reset(setOpen)
                         setIdsToDelete([])
+                        setIsFinalConsumer(false)
                     }} sx={{
                         width: '50%'
                     }}>

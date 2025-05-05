@@ -28,11 +28,37 @@ export function SaleFormFields({
     handleClose,
     disabled,
     open,
-    discAndSurch
+    discAndSurch,
+    isFinalConsumer,
+    setIsFinalConsumer
 }) {
 
     const { auth } = useContext(AuthContext)
     const { state } = useContext(DataContext)
+
+    const getCurrentClient = () => {
+        if (isFinalConsumer) {
+            return 'CONSUMIDOR FINAL'
+        } else {
+            const { client_id } = formData
+            if (!client_id && open !== 'NEW') return 'CONSUMIDOR FINAL'
+            const c = state.clients.find(c => c.id === client_id)
+            if (client_id.toString().length === 0) return ''
+            return `${c?.first_name} ${c?.last_name}`
+        }
+    }
+
+    const handleChangeClient = (_, data) => {
+        let name = 'client_id'
+        let value = data?.id ?? ''
+        if (data === 'CONSUMIDOR FINAL') {
+            name = 'final_consumer_document'
+            setIsFinalConsumer(true)
+        } else {
+            setIsFinalConsumer(false)
+        }
+        handleChange({ target: { name, value } })
+    }
 
     return (
         <Box sx={{ p: 1 }}>
@@ -53,24 +79,45 @@ export function SaleFormFields({
                         flexDirection: { xs: 'column', md: 'row' },
                         gap: 2
                     }}>
-                        <FormControl sx={{ width: { xs: '100%', md: '60%' } }}>
-                            <Autocomplete
-                                disablePortal
-                                id="client-autocomplete"
-                                value={formData.client_id.toString().length > 0 ? `${state.clients.find(c => c.id === formData.client_id)?.first_name} ${state.clients.find(c => c.id === formData.client_id)?.last_name}` : ''}
-                                options={state.clients.map(c => ({ label: `${c.first_name} ${c.last_name}`, id: c.id }))}
-                                noOptionsText="No hay clientes registrados."
-                                onChange={(e, value) => handleChange({ target: { name: 'client_id', value: value?.id ?? '' } })}
-                                renderInput={(params) => <TextField {...params} label="Cliente *" />}
-                                isOptionEqualToValue={(option, value) => option.code === value.code || value.length === 0}
-                                disabled={open === 'VIEW'}
-                            />
-                            {errors.client_id?.type === 'required' &&
-                                <Typography variant="caption" color="red" marginTop={1}>
-                                    * El cliente es requerido.
-                                </Typography>
+                        <Box sx={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            width: { xs: '100%', md: '60%' },
+                            gap: 2
+                        }}>
+                            <FormControl>
+                                <Autocomplete
+                                    disablePortal
+                                    id="client-autocomplete"
+                                    value={getCurrentClient()}
+                                    options={[
+                                        'CONSUMIDOR FINAL',
+                                        ...state.clients.map(c => ({ label: `${c.first_name} ${c.last_name}`, id: c.id }))
+                                    ]}
+                                    noOptionsText="No hay clientes registrados."
+                                    onChange={handleChangeClient}
+                                    renderInput={(params) => <TextField {...params} label="Cliente *" />}
+                                    isOptionEqualToValue={(option, value) => option.id === value.id || value.length === 0}
+                                    disabled={open === 'VIEW'}
+                                />
+                                {errors.client_id?.type === 'required' &&
+                                    <Typography variant="caption" color="red" marginTop={1}>
+                                        * El cliente es requerido.
+                                    </Typography>
+                                }
+                            </FormControl>
+                            {isFinalConsumer &&
+                                <FormControl>
+                                    <InputLabel htmlFor="final_consumer_document">DNI / CUIL</InputLabel>
+                                    <Input id="final_consumer_document" type="text" name="final_consumer_document" value={formData.final_consumer_document} />
+                                    {errors.final_consumer_document?.type === 'required' &&
+                                        <Typography variant="caption" color="red" marginTop={1}>
+                                            * El documento es requerido.
+                                        </Typography>
+                                    }
+                                </FormControl>
                             }
-                        </FormControl>
+                        </Box>
                         <FormControl sx={{ width: { xs: '100%', md: '40%' } }}>
                             <InputLabel id="type-select">Tipo</InputLabel>
                             <Select

@@ -31,6 +31,8 @@ export function SaleForm({
     setDisabled,
     handleChange,
     errors,
+    isFinalConsumer,
+    setIsFinalConsumer
 }) {
 
     const { state } = useContext(DataContext)
@@ -78,6 +80,7 @@ export function SaleForm({
         setIdsToDelete([])
         setValueTab(0)
         setConfirmed(false)
+        setIsFinalConsumer(false)
     }
 
     return (
@@ -134,6 +137,8 @@ export function SaleForm({
                     disabled={disabled}
                     open={open}
                     discAndSurch={discAndSurch}
+                    isFinalConsumer={isFinalConsumer}
+                    setIsFinalConsumer={setIsFinalConsumer}
                 />
             }
             {valueTab === 1 &&

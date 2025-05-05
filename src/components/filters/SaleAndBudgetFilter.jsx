@@ -4,7 +4,7 @@ import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { es } from "date-fns/locale";
 
-export function SaleFilter({ filter, setFilter }) {
+export function SaleAndBudgetFilter({ filter, setFilter }) {
 
     const handleReset = () => {
         setFilter({
@@ -30,7 +30,7 @@ export function SaleFilter({ filter, setFilter }) {
                 />
             </FormControl>
             <FormControl >
-                <InputLabel htmlFor="id">N° boleta</InputLabel>
+                <InputLabel htmlFor="id">N°</InputLabel>
                 <Input
                     id="id"
                     type="number"

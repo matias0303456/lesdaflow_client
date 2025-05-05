@@ -10,7 +10,7 @@ import { useUsers } from "../hooks/useUsers";
 
 import { Layout } from "../components/common/Layout";
 import { ModalComponent } from "../components/common/ModalComponent";
-import { SaleFilter } from "../components/filters/SaleFilter";
+import { SaleAndBudgetFilter } from "../components/filters/SaleAndBudgetFilter";
 import { DataGridWithBackendPagination } from "../components/datagrid/DataGridWithBackendPagination";
 import { SaleForm } from "../components/commercial/SaleForm";
 
@@ -31,8 +31,6 @@ export function Sales() {
         saleArticles,
         missing,
         idsToDelete,
-        saleSaved,
-        setSaleSaved,
         handleSubmit,
         handleDelete,
         getSales,
@@ -40,7 +38,9 @@ export function Sales() {
         saleFormData,
         filter,
         setFilter,
-        count
+        count,
+        isFinalConsumer,
+        setIsFinalConsumer
     } = useSales()
     const { loadingArticles, getArticles } = useArticles()
     const { loadingClients, getClients } = useClients()
@@ -98,7 +98,7 @@ export function Sales() {
                                 Excel
                             </Button> */}
                             </Box>
-                            <SaleFilter filter={filter} setFilter={setFilter} />
+                            <SaleAndBudgetFilter filter={filter} setFilter={setFilter} />
                         </Box>
                     }
                 >
@@ -120,29 +120,9 @@ export function Sales() {
                         setDisabled={setDisabled}
                         handleChange={handleChange}
                         errors={errors}
+                        isFinalConsumer={isFinalConsumer}
+                        setIsFinalConsumer={setIsFinalConsumer}
                     />
-                    <ModalComponent
-                        reduceWidth={800}
-                        open={saleSaved !== null}
-                        onClose={() => setSaleSaved(null)}
-                    >
-                        <Typography variant="h6" sx={{ textAlign: 'center', marginBottom: 2 }}>
-                            Boleta creada correctamente
-                        </Typography>
-                        <Button type="submit" variant="contained"
-                            sx={{
-                                width: '50%',
-                                display: 'block',
-                                margin: '0 auto'
-                            }}
-                            onClick={() => {
-                                window.open(`${REPORT_URL}/boleta-pdf?token=${auth?.token}&id=${saleSaved}`, '_blank')
-                                setSaleSaved(null)
-                            }}
-                        >
-                            Compartir comprobante
-                        </Button>
-                    </ModalComponent>
                     <ModalComponent open={open === 'DELETE'} onClose={() => reset(setOpen)} reduceWidth={900}>
                         <Typography variant="h6" marginBottom={1} textAlign="center">
                             Confirmar eliminación de boleta
