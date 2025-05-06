@@ -36,7 +36,7 @@ export function Login() {
         if (validate()) {
             const { status, data } = await post(formData, true)
             if (status === 200) {
-                localStorage.setItem('auth_mga', JSON.stringify(data))
+                localStorage.setItem('auth_chicho', JSON.stringify(data))
                 setAuth(data)
                 navigate('/articulos')
             } else {

@@ -21,7 +21,7 @@ export function useAuth() {
     const handleLogout = () => {
         setAuth(null);
         resetContext()
-        localStorage.removeItem('auth_mga');
+        localStorage.removeItem('auth_chicho');
         navigate("/login");
     }
 
