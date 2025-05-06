@@ -1,4 +1,5 @@
-import { useContext, useState } from "react"
+import { useContext, useMemo, useState } from "react"
+import { Button } from "@mui/material"
 
 import { DataContext } from "../providers/DataProvider"
 import { MessageContext } from "../providers/MessageProvider"
@@ -51,16 +52,17 @@ export function useVouchers() {
         }
     }
 
-    // async function getVoucherInfo(sale) {
-    //     const { status, data } = await get(`/factura/${sale.id}`)
-    //     if (status === 200) {
-
-    //     } else {
-    //         setMessage(data.message)
-    //         setSeverity('error')
-    //         setOpenMessage(true)
-    //     }
-    // }
+    async function getVoucherInfo({ number, sales_point, type }) {
+        const { status, data } = await get(`/voucher-info/${number}/${sales_point}/${type}`)
+        if (status === 200) {
+            setMessage(JSON.stringify(data))
+            setSeverity('success')
+        } else {
+            setMessage(data.message)
+            setSeverity('error')
+        }
+        setOpenMessage(true)
+    }
 
     async function createVoucher(e, validate, voucher, reset, setDisabled) {
         e.preventDefault()
@@ -70,16 +72,13 @@ export function useVouchers() {
                 const currentSale = state.sales.find(s => s.id === voucher.sale_id)
                 dispatch({
                     type: 'SALES',
-                    payload: {
-                        ...state.sales,
-                        data: [
-                            {
-                                ...currentSale,
-                                vouchers: [...currentSale.vouchers, data]
-                            },
-                            ...state.sales.filter(s => s.id !== currentSale.id)
-                        ]
-                    }
+                    payload: [
+                        {
+                            ...currentSale,
+                            vouchers: [...currentSale.vouchers, data]
+                        },
+                        ...state.sales.filter(s => s.id !== currentSale.id)
+                    ]
                 })
                 setMessage('Comprobante creado correctamente.')
                 setSeverity('success')
@@ -94,11 +93,60 @@ export function useVouchers() {
         }
     }
 
+    const headCells = useMemo(() => [
+        {
+            id: "id",
+            numeric: true,
+            disablePadding: false,
+            label: "#",
+            accessor: 'id'
+        },
+        {
+            id: "number",
+            numeric: false,
+            disablePadding: false,
+            label: "N°",
+            sorter: 'number',
+            accessor: 'number'
+        },
+        {
+            id: "cae",
+            numeric: false,
+            disablePadding: false,
+            label: "CAE",
+            sorter: 'cae',
+            accessor: (row) => (
+                <Button type="button" onClick={() => {
+                    const { number, sales_point, type } = row
+                    getVoucherInfo({ number, sales_point, type })
+                }}>
+                    {row.cae}
+                </Button>
+            )
+        },
+        {
+            id: "type",
+            numeric: false,
+            disablePadding: false,
+            label: "Tipo",
+            sorter: 'type',
+            accessor: 'type'
+        },
+        {
+            id: "sales_point",
+            numeric: false,
+            disablePadding: false,
+            label: "P. de venta",
+            sorter: 'sales_point',
+            accessor: 'sales_point'
+        },
+    ], [state.sales])
+
     return {
-        // getVoucherInfo
         getArcaData,
         arcaData,
         voucherFormData,
-        createVoucher
+        createVoucher,
+        headCells
     }
 }

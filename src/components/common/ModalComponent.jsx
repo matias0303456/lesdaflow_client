@@ -49,7 +49,7 @@ export function ModalComponent({ children, open, onClose, p = 3 }) {
         >
             <Fade in={open}>
                 {/* <Box sx={{ ...style, ...screenHeight, width: screenWidth, p }}> */}
-                <Box sx={{ ...style, height: '100%', width: '100%', p }}>
+                <Box sx={{ ...style, height: '100%', width: '100%', maxWidth: '1700px', p }}>
                     {children}
                 </Box>
             </Fade>

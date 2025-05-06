@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { createContext, useState } from "react";
 import { Alert, Snackbar } from "@mui/material";
 
@@ -31,6 +32,7 @@ export function MessageProvider({ children }) {
                 autoHideDuration={3000}
                 onClose={() => setOpenMessage(false)}
                 anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                sx={{ maxWidth: '90%' }}
             >
                 <Alert severity={severity} sx={{ width: '100%' }}>
                     {message}

@@ -28,89 +28,93 @@ export function VoucherForm({
 
     return (
         <form onSubmit={e => createVoucher(e, validate, formData, reset, setDisabled)}>
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                <Box sx={{ display: 'flex', gap: 2 }}>
+                    <FormControl sx={{ width: '50%' }}>
+                        <InputLabel id="voucher_type-select">Tipo Cbte.</InputLabel>
+                        <Select
+                            labelId="voucher_type-select"
+                            id="voucher_type"
+                            value={formData.voucher_type}
+                            label="Tipo Cbte."
+                            name="voucher_type"
+                            sx={{ width: '100%' }}
+                            onChange={handleChange}
+                        >
+                            <MenuItem value="">Seleccione</MenuItem>
+                            {arcaData.voucher_types.map((item) => (
+                                <MenuItem key={item.Id} value={item.Id}>{item.Desc}</MenuItem>
+                            ))}
+                        </Select>
+                        {errors.type?.voucher_type === 'required' &&
+                            <Typography variant="caption" color="red" marginTop={1}>
+                                * El tipo de comprobante es requerido.
+                            </Typography>
+                        }
+                    </FormControl>
+                    <FormControl sx={{ width: '50%' }}>
+                        <InputLabel id="sales_point-select">Punto Vta.</InputLabel>
+                        <Select
+                            labelId="sales_point-select"
+                            id="sales_point"
+                            value={formData.sales_point}
+                            label="Punto Vta."
+                            name="sales_point"
+                            sx={{ width: '100%' }}
+                            onChange={handleChange}
+                        >
+                            <MenuItem value="">Seleccione</MenuItem>
+                            {arcaData.sales_points.map((item) => (
+                                <MenuItem key={item.Nro} value={item.Nro}>{item.Nro}</MenuItem>
+                            ))}
+                        </Select>
+                        {errors.type?.sales_point === 'required' &&
+                            <Typography variant="caption" color="red" marginTop={1}>
+                                * El punto de venta es requerido.
+                            </Typography>
+                        }
+                    </FormControl>
+                </Box>
+                <Box sx={{ display: 'flex', gap: 2 }}>
+                    <FormControl sx={{ width: '50%' }}>
+                        <InputLabel id="document_type-select">Tipo Doc.</InputLabel>
+                        <Select
+                            labelId="document_type-select"
+                            id="document_type"
+                            value={formData.document_type}
+                            label="Tipo Doc."
+                            name="document_type"
+                            sx={{ width: '100%' }}
+                            onChange={handleChange}
+                        >
+                            <MenuItem value="">Seleccione</MenuItem>
+                            {arcaData.document_types.map((item) => (
+                                <MenuItem key={item.Id} value={item.Id}>{item.Desc}</MenuItem>
+                            ))}
+                        </Select>
+                        {errors.type?.document_type === 'required' &&
+                            <Typography variant="caption" color="red" marginTop={1}>
+                                * El tipo de documento es requerido.
+                            </Typography>
+                        }
+                    </FormControl>
+                    <FormControl sx={{ width: '50%' }}>
+                        <InputLabel htmlFor="document_number">Nro. documento</InputLabel>
+                        <Input
+                            id="document_number"
+                            type="text"
+                            name="document_number"
+                            value={formData.document_number}
+                            onChange={handleChange}
+                        />
+                        {errors.type?.document_number === 'required' &&
+                            <Typography variant="caption" color="red" marginTop={1}>
+                                * El número de documento es requerido.
+                            </Typography>
+                        }
+                    </FormControl>
+                </Box>
                 <FormControl>
-                    <InputLabel id="voucher_type-select">Tipo Cbte.</InputLabel>
-                    <Select
-                        labelId="voucher_type-select"
-                        id="voucher_type"
-                        value={formData.voucher_type}
-                        label="Tipo Cbte."
-                        name="voucher_type"
-                        sx={{ width: '100%' }}
-                        onChange={handleChange}
-                    >
-                        <MenuItem value="">Seleccione</MenuItem>
-                        {arcaData.voucher_types.map((item) => (
-                            <MenuItem key={item.Id} value={item.Id}>{item.Desc}</MenuItem>
-                        ))}
-                    </Select>
-                    {errors.type?.voucher_type === 'required' &&
-                        <Typography variant="caption" color="red" marginTop={1}>
-                            * El tipo de comprobante es requerido.
-                        </Typography>
-                    }
-                </FormControl>
-                <FormControl>
-                    <InputLabel id="sales_point-select">Punto Vta.</InputLabel>
-                    <Select
-                        labelId="sales_point-select"
-                        id="sales_point"
-                        value={formData.sales_point}
-                        label="Punto Vta."
-                        name="sales_point"
-                        sx={{ width: '100%' }}
-                        onChange={handleChange}
-                    >
-                        <MenuItem value="">Seleccione</MenuItem>
-                        {arcaData.sales_points.map((item) => (
-                            <MenuItem key={item.Nro} value={item.Nro}>{item.Nro}</MenuItem>
-                        ))}
-                    </Select>
-                    {errors.type?.sales_point === 'required' &&
-                        <Typography variant="caption" color="red" marginTop={1}>
-                            * El punto de venta es requerido.
-                        </Typography>
-                    }
-                </FormControl>
-                <FormControl>
-                    <InputLabel id="document_type-select">Tipo Doc.</InputLabel>
-                    <Select
-                        labelId="document_type-select"
-                        id="document_type"
-                        value={formData.document_type}
-                        label="Tipo Doc."
-                        name="document_type"
-                        sx={{ width: '100%' }}
-                        onChange={handleChange}
-                    >
-                        <MenuItem value="">Seleccione</MenuItem>
-                        {arcaData.document_types.map((item) => (
-                            <MenuItem key={item.Id} value={item.Id}>{item.Desc}</MenuItem>
-                        ))}
-                    </Select>
-                    {errors.type?.document_type === 'required' &&
-                        <Typography variant="caption" color="red" marginTop={1}>
-                            * El tipo de documento es requerido.
-                        </Typography>
-                    }
-                </FormControl>
-                <FormControl sx={{ mt: 2 }}>
-                    <InputLabel htmlFor="document_number">Nro. documento</InputLabel>
-                    <Input
-                        id="document_number"
-                        type="text"
-                        name="document_number"
-                        value={formData.document_number}
-                        onChange={handleChange}
-                    />
-                    {errors.type?.document_number === 'required' &&
-                        <Typography variant="caption" color="red" marginTop={1}>
-                            * El número de documento es requerido.
-                        </Typography>
-                    }
-                </FormControl>
-                <FormControl sx={{ mt: 2 }}>
                     <TextField
                         label="Total"
                         id="total"
