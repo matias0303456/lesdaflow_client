@@ -1,6 +1,5 @@
 import { useContext, useEffect } from "react";
-import { Box, Button, FormControl, Input, InputLabel, LinearProgress, MenuItem, Select, TextField, Typography } from "@mui/material";
-import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import { Box, Button, FormControl, LinearProgress, Typography } from "@mui/material";
 
 import { AuthContext } from "../providers/AuthProvider";
 import { DataContext } from "../providers/DataProvider";
@@ -12,9 +11,10 @@ import { useMovements } from "../hooks/useMovements";
 import { Layout } from "../components/common/Layout";
 import { ModalComponent } from "../components/common/ModalComponent";
 import { DataGridWithBackendPagination } from "../components/datagrid/DataGridWithBackendPagination";
-import { ArticleFilter } from "../components/filters/ArticleFilter";
 import { MovementsForm } from "../components/commercial/MovementsForm";
 import { DiscountsAndSurcharges } from "../components/common/DiscountsAndSurcharges";
+import { ArtContentHeader } from "../components/articles/ArtContentHeader";
+import { ArticleForm } from "../components/articles/ArticleForm";
 
 export function Articles() {
 
@@ -32,15 +32,19 @@ export function Articles() {
         headCells,
         actPricesRef,
         handleActPrices,
-        uploadedFile,
-        setUploadedFile,
+        uploadedActFile,
+        setUploadedActFile,
+        uploadedNewFile,
+        setUploadedNewFile,
         filter,
         setFilter,
         count,
         articleDiscounts,
         articleSurcharges,
         setArticleDiscounts,
-        setArticleSurcharges
+        setArticleSurcharges,
+        handleNewArticles,
+        newArticlesRef
     } = useArticles()
     const { loadingSuppliers, getSuppliers } = useSuppliers()
     const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = articleFormData
@@ -94,62 +98,20 @@ export function Articles() {
                     count={count}
                     showViewAction
                     contentHeader={
-                        <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: 2 }}>
-                            <Box sx={{
-                                display: 'flex',
-                                gap: 1,
-                                flexDirection: { xs: 'column', sm: 'row' },
-                                width: { xs: '100%', sm: 'auto' }
-                            }}>
-                                {auth?.user.role === 'ADMINISTRADOR' &&
-                                    <>
-                                        <Button
-                                            variant="outlined"
-                                            onClick={() => {
-                                                reset()
-                                                setOpen('NEW')
-                                            }}>
-                                            Agregar
-                                        </Button>
-                                        <input
-                                            type="file"
-                                            ref={actPricesRef}
-                                            onChange={(e) => setUploadedFile(e.target.files[0])}
-                                            accept=".xlsx, .xls"
-                                            style={{ display: 'none' }}
-                                        />
-                                        <Button
-                                            variant="outlined"
-                                            color='success'
-                                            startIcon={<CloudUploadIcon />}
-                                            onClick={() => {
-                                                if (uploadedFile !== null) {
-                                                    handleActPrices()
-                                                } else {
-                                                    actPricesRef.current.click()
-                                                }
-                                            }}
-                                        >
-                                            {uploadedFile !== null ? 'Subir' : 'Act. precios'}
-                                        </Button>
-                                        {uploadedFile !== null &&
-                                            <Button
-                                                variant="outlined"
-                                                color='error'
-                                                size="small"
-                                                onClick={() => {
-                                                    actPricesRef.current.value = null
-                                                    setUploadedFile(null)
-                                                }}
-                                            >
-                                                Cancelar
-                                            </Button>
-                                        }
-                                    </>
-                                }
-                            </Box>
-                            <ArticleFilter filter={filter} setFilter={setFilter} />
-                        </Box>
+                        <ArtContentHeader
+                            reset={reset}
+                            setOpen={setOpen}
+                            actPricesRef={actPricesRef}
+                            setUploadedActFile={setUploadedActFile}
+                            uploadedActFile={uploadedActFile}
+                            handleActPrices={handleActPrices}
+                            newArticlesRef={newArticlesRef}
+                            uploadedNewFile={uploadedNewFile}
+                            setUploadedNewFile={setUploadedNewFile}
+                            handleNewArticles={handleNewArticles}
+                            filter={filter}
+                            setFilter={setFilter}
+                        />
                     }
                 >
                     <ModalComponent
@@ -162,105 +124,12 @@ export function Articles() {
                             {open === 'EDIT' && 'Editar artículo'}
                             {open === 'VIEW' && `Artículo #${formData.id}`}
                         </Typography>
-                        <form onChange={handleChange}>
-                            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                                <Box sx={{ display: 'flex', gap: 3 }}>
-                                    <FormControl sx={{ width: '50%' }}>
-                                        <InputLabel htmlFor="code">Código *</InputLabel>
-                                        <Input id="code" type="text" name="code" value={formData.code} disabled={open === 'VIEW'} />
-                                        {errors.code?.type === 'required' &&
-                                            <Typography variant="caption" color="red" marginTop={1}>
-                                                * El código es requerido.
-                                            </Typography>
-                                        }
-                                        {errors.code?.type === 'maxLength' &&
-                                            <Typography variant="caption" color="red" marginTop={1}>
-                                                * El código es demasiado largo.
-                                            </Typography>
-                                        }
-                                    </FormControl>
-                                    <FormControl sx={{ width: '50%' }}>
-                                        <InputLabel htmlFor="details">Nombre Artículo *</InputLabel>
-                                        <Input id="details" type="text" name="details" value={formData.details} disabled={open === 'VIEW'} />
-                                        {errors.details?.type === 'required' &&
-                                            <Typography variant="caption" color="red" marginTop={1}>
-                                                * El nombre es requerido.
-                                            </Typography>
-                                        }
-                                        {errors.details?.type === 'maxLength' &&
-                                            <Typography variant="caption" color="red" marginTop={1}>
-                                                * El nombre es demasiado largo.
-                                            </Typography>
-                                        }
-                                    </FormControl>
-                                </Box>
-                                <Box sx={{ display: 'flex', gap: 3 }}>
-                                    <FormControl sx={{ width: '50%' }}>
-                                        <TextField
-                                            type="number"
-                                            name="buy_price"
-                                            label="Precio de compra"
-                                            value={formData.buy_price}
-                                            disabled={open === 'VIEW'}
-                                            InputProps={{ inputProps: { step: 0.01 } }}
-                                        />
-                                    </FormControl>
-                                    <FormControl sx={{ width: '50%' }}>
-                                        <TextField
-                                            type="number"
-                                            name="earn"
-                                            label="% Gan."
-                                            value={formData.earn}
-                                            disabled={open === 'VIEW'}
-                                            InputProps={{ inputProps: { step: 0.01 } }}
-                                        />
-                                    </FormControl>
-                                </Box>
-                                <Box sx={{ display: 'flex', gap: 3 }}>
-                                    <FormControl sx={{ width: '50%' }}>
-                                        <InputLabel id="supplier-select">Proveedor *</InputLabel>
-                                        <Select
-                                            labelId="supplier-select"
-                                            id="supplier_id"
-                                            value={formData.supplier_id}
-                                            label="Proveedor"
-                                            name="supplier_id"
-                                            onChange={handleChange}
-                                            disabled={open === 'VIEW'}
-                                        >
-                                            {state.suppliers.map(s => (
-                                                <MenuItem key={s.id} value={s.id}>{s.name}</MenuItem>
-                                            ))}
-                                        </Select>
-                                        {errors.supplier_id?.type === 'required' &&
-                                            <Typography variant="caption" color="red" marginTop={1}>
-                                                * El proveedor es requerido.
-                                            </Typography>
-                                        }
-                                    </FormControl>
-                                    {open === 'NEW' &&
-                                        <FormControl sx={{ width: '50%' }}>
-                                            <TextField
-                                                type="number"
-                                                name="amount"
-                                                label="Stock inicial"
-                                                value={formData.amount}
-                                                InputProps={{ inputProps: { step: 1 } }}
-                                            />
-                                        </FormControl>
-                                    }
-                                    {(open === 'VIEW' || open === 'EDIT') &&
-                                        <FormControl sx={{ width: '50%' }}>
-                                            <TextField
-                                                label="Precio de venta"
-                                                disabled
-                                                value={formData.sale_price}
-                                            />
-                                        </FormControl>
-                                    }
-                                </Box>
-                            </Box>
-                        </form>
+                        <ArticleForm
+                            handleChange={handleChange}
+                            errors={errors}
+                            formData={formData}
+                            open={open}
+                        />
                         <Box sx={{ display: 'flex', gap: 2, my: 2 }}>
                             <DiscountsAndSurcharges
                                 title="Descuentos"
@@ -293,7 +162,7 @@ export function Articles() {
                             </Button>
                             {(open === 'NEW' || open === 'EDIT') &&
                                 <Button
-                                    type="submit"
+                                    type="button"
                                     variant="contained"
                                     disabled={disabled}
                                     sx={{ width: '50%' }}

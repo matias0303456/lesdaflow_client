@@ -35,7 +35,8 @@ export function useArticles() {
     })
 
     const [open, setOpen] = useState(null)
-    const [uploadedFile, setUploadedFile] = useState(null)
+    const [uploadedActFile, setUploadedActFile] = useState(null)
+    const [uploadedNewFile, setUploadedNewFile] = useState(null)
     const [articleDiscounts, setArticleDiscounts] = useState([])
     const [articleSurcharges, setArticleSurcharges] = useState([])
     const [loadingArticles, setloadingArticles] = useState(true)
@@ -49,6 +50,7 @@ export function useArticles() {
     })
 
     const actPricesRef = useRef(null);
+    const newArticlesRef = useRef(null);
 
     async function getArticles(params) {
         const { status, data } = await get(params)
@@ -121,14 +123,14 @@ export function useArticles() {
     }
 
     async function handleActPrices() {
-        if (uploadedFile !== null) {
-            const isValidFile = uploadedFile.name.endsWith('.xlsx') || uploadedFile.name.endsWith('.xls');
+        if (uploadedActFile !== null) {
+            const isValidFile = uploadedActFile.name.endsWith('.xlsx') || uploadedActFile.name.endsWith('.xls');
             if (!isValidFile) {
                 setMessage('Por favor, sube un archivo Excel (.xlsx o .xls)')
                 setSeverity('error')
             } else {
                 const formData = new FormData()
-                formData.append('excelFile', uploadedFile, uploadedFile.name)
+                formData.append('excelFile', uploadedActFile, uploadedActFile.name)
                 const res = await fetch(ARTICLE_URL + '/act-prices', {
                     method: 'POST',
                     headers: { 'Authorization': auth?.token },
@@ -137,7 +139,6 @@ export function useArticles() {
                 const data = await res.json()
                 const status = res.status
                 if (status === STATUS_CODES.OK) {
-                    dispatch({ type: 'ARTICLES', payload: data })
                     setFilter({
                         page: 0,
                         offset: 25,
@@ -145,12 +146,54 @@ export function useArticles() {
                         details: '',
                         supplier_id: ''
                     })
-                    setMessage('Precios actualizados correctamente.')
+                    setMessage(data.message)
                     setSeverity('success')
-                    setUploadedFile(null)
+                    setUploadedActFile(null)
                     actPricesRef.current.value = null
                 } else {
                     setMessage('Ocurrió un error al actualizar los precios.')
+                    setSeverity('error')
+                }
+            }
+            setOpenMessage(true)
+        }
+    }
+
+    async function handleNewArticles() {
+        if (uploadedNewFile !== null) {
+            const isValidFile = uploadedNewFile.name.endsWith('.xlsx') || uploadedNewFile.name.endsWith('.xls');
+            if (!isValidFile) {
+                setMessage('Por favor, sube un archivo Excel (.xlsx o .xls)')
+                setSeverity('error')
+            } else {
+                const formData = new FormData()
+                formData.append('excelFile', uploadedNewFile, uploadedNewFile.name)
+                const res = await fetch(ARTICLE_URL + '/new-articles', {
+                    method: 'POST',
+                    headers: { 'Authorization': auth?.token },
+                    body: formData
+                })
+                const data = await res.json()
+                const status = res.status
+                if (status === STATUS_CODES.OK) {
+                    if (data.errors.length === 0) {
+                        setMessage(data.message)
+                        setSeverity('success')
+                    } else {
+                        setMessage(`Error: ${data.errors.join(', ')}`)
+                        setSeverity('error')
+                    }
+                    setFilter({
+                        page: 0,
+                        offset: 25,
+                        code: '',
+                        details: '',
+                        supplier_id: ''
+                    })
+                    setUploadedNewFile(null)
+                    newArticlesRef.current.value = null
+                } else {
+                    setMessage('Ocurrió un error al crear los artículos.')
                     setSeverity('error')
                 }
             }
@@ -219,14 +262,18 @@ export function useArticles() {
         headCells,
         actPricesRef,
         handleActPrices,
-        uploadedFile,
-        setUploadedFile,
+        uploadedActFile,
+        setUploadedActFile,
+        uploadedNewFile,
+        setUploadedNewFile,
         filter,
         setFilter,
         count,
         articleDiscounts,
         articleSurcharges,
         setArticleDiscounts,
-        setArticleSurcharges
+        setArticleSurcharges,
+        handleNewArticles,
+        newArticlesRef
     }
 }
