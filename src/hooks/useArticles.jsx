@@ -237,8 +237,8 @@ export function useArticles() {
             numeric: false,
             disablePadding: true,
             label: 'Proveedor',
-            sorter: (row) => row.supplier_name.toLowerCase(),
-            accessor: (row) => row.supplier_name
+            sorter: (row) => row.supplier?.name.toLowerCase(),
+            accessor: (row) => row.supplier?.name
         },
         {
             id: 'stock',
