@@ -180,7 +180,7 @@ export function useArticles() {
                         setMessage(data.message)
                         setSeverity('success')
                     } else {
-                        setMessage(`Error: ${data.errors.join(', ')}`)
+                        setMessage(`Error: ${data.errors.map(e => `${e.code} (${e.error})`).join('; ')}`)
                         setSeverity('error')
                     }
                     setFilter({
