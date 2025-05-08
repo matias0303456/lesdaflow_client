@@ -48,7 +48,6 @@ export function Clients() {
                 </Box> :
                 <DataGridWithBackendPagination
                     headCells={headCells}
-                    loading={loadingClients || disabled}
                     rows={state.clients}
                     setOpen={setOpen}
                     setFormData={setFormData}
