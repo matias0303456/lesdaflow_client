@@ -3,9 +3,10 @@ import { useContext, useState } from "react"
 import { AuthContext } from "../providers/AuthProvider"
 import { MessageContext } from "../providers/MessageProvider"
 import { DataContext } from "../providers/DataProvider"
+import { useApi } from "./useApi"
+import { useForm } from "./useForm"
 
 import { INCOME_URL, OUTCOME_URL } from "../utils/urls"
-import { useApi } from "./useApi"
 
 export function useMovements() {
 
@@ -14,6 +15,10 @@ export function useMovements() {
     const { state, dispatch } = useContext(DataContext)
 
     const { post: postIncomeByAmount } = useApi(INCOME_URL + '/by-amount')
+    const movementFormData = useForm({
+        defaultData: { amount: '', observations: '' },
+        rules: { amount: { required: true }, observations: { maxLength: 255 } }
+    })
 
     const [incomesByAmount, setIncomesByAmount] = useState([])
     const [amount, setAmount] = useState(1)
@@ -78,7 +83,7 @@ export function useMovements() {
                 reset(setOpen)
                 setSeverity('success')
             } else {
-                setMessage(data.message)
+                setMessage(newMovement.message)
                 setSeverity('error')
                 setDisabled(false)
             }
@@ -134,6 +139,7 @@ export function useMovements() {
         setIncomesByAmount,
         amount,
         setAmount,
-        handleSubmitIncomesByAmount
+        handleSubmitIncomesByAmount,
+        movementFormData
     }
 }

@@ -7,7 +7,6 @@ import { es } from "date-fns/locale"
 
 import { AuthContext } from "../providers/AuthProvider";
 import { DataContext } from "../providers/DataProvider";
-import { useForm } from "../hooks/useForm";
 import { useRegisters } from "../hooks/useRegisters";
 import { useUsers } from "../hooks/useUsers";
 
@@ -24,11 +23,19 @@ export function Registers() {
     const { auth } = useContext(AuthContext)
     const { state } = useContext(DataContext)
 
-    const { loadingRegisters, handleSubmit, open, setOpen, getRegisters, currentAmount, getCurrentRegister } = useRegisters()
     const { getUsers } = useUsers()
-    const { formData, setFormData, handleChange, disabled, setDisabled, reset } = useForm({
-        defaultData: { id: '', user_id: auth?.user.id, created_at: new Date(Date.now()), updated_at: new Date(Date.now()) }
-    })
+    const {
+        loadingRegisters,
+        handleSubmit,
+        open,
+        setOpen,
+        getRegisters,
+        currentAmount,
+        getCurrentRegister,
+        registerFormData,
+        headCells
+    } = useRegisters()
+    const { formData, setFormData, handleChange, disabled, setDisabled, reset } = registerFormData
 
     useEffect(() => {
         getUsers()
@@ -39,73 +46,6 @@ export function Registers() {
             getCurrentRegister(formData)
         }
     }, [open, formData])
-
-    const headCells = [
-        {
-            id: 'id',
-            numeric: true,
-            disablePadding: false,
-            label: '#',
-            sorter: (row) => parseInt(row.id),
-            accessor: (row) => parseInt(row.id)
-        },
-        {
-            id: "user",
-            numeric: false,
-            disablePadding: true,
-            label: "Caja",
-            sorter: (row) => row.user.username,
-            accessor: (row) => row.user.username,
-        },
-        {
-            id: "open_date",
-            numeric: false,
-            disablePadding: true,
-            label: "Apertura Fecha",
-            sorter: (row) => format(setLocalDate(row.created_at), 'dd/MM/yy'),
-            accessor: (row) => format(setLocalDate(row.created_at), 'dd/MM/yy')
-        },
-        {
-            id: "open_hour",
-            numeric: false,
-            disablePadding: true,
-            label: "Apertura Hora",
-            sorter: (row) => format(new Date(row.created_at), 'HH:mm:ss').toString().replace(':', ''),
-            accessor: (row) => format(setLocalDate(row.created_at), 'HH:mm:ss')
-        },
-        {
-            id: "open_amount",
-            numeric: false,
-            disablePadding: true,
-            label: "Apertura Saldo",
-            sorter: () => 0.00,
-            accessor: () => '$0.00'
-        },
-        {
-            id: "end_date",
-            numeric: false,
-            disablePadding: true,
-            label: "Cierre Fecha",
-            sorter: (row) => row.created_at === row.updated_at ? '-' : format(setLocalDate(row.updated_at), 'dd/MM/yy'),
-            accessor: (row) => row.created_at === row.updated_at ? '-' : format(setLocalDate(row.updated_at), 'dd/MM/yy')
-        },
-        {
-            id: "end_hour",
-            numeric: false,
-            disablePadding: true,
-            label: "Cierre hora",
-            sorter: (row) => row.created_at === row.updated_at ? '-' : format(new Date(row.updated_at), 'HH:mm:ss').toString().replace(':', ''),
-            accessor: (row) => row.created_at === row.updated_at ? '-' : format(setLocalDate(row.updated_at), 'HH:mm:ss')
-        },
-        {
-            id: "end_amount",
-            numeric: false,
-            disablePadding: true,
-            label: "Cierre Saldo",
-            sorter: (row) => parseFloat(row.end_amount.replace('$', '')),
-            accessor: (row) => row.end_amount
-        }
-    ];
 
     return (
         <Layout title="Movimientos Caja">

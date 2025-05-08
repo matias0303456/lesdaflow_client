@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { Box, Button, Checkbox, FormControl, FormControlLabel, IconButton, Input, InputAdornment, InputLabel, MenuItem, Select, TextField, Typography } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import { Box, Button, FormControl, IconButton, Input, InputAdornment, InputLabel, MenuItem, Select, TextField, Typography } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { es } from "date-fns/locale";
@@ -8,7 +8,6 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 
 import { AuthContext } from "../providers/AuthProvider";
 import { DataContext } from "../providers/DataProvider";
-import { useForm } from "../hooks/useForm";
 import { useUsers } from "../hooks/useUsers";
 
 import { Layout } from "../components/common/Layout";
@@ -23,143 +22,23 @@ export function Users() {
 
   const navigate = useNavigate()
 
-  const { loadingUsers, getUsers, setOpen, handleSubmit, open, handleDelete, toggleActive } = useUsers()
-  const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
-    defaultData: {
-      id: '',
-      name: '',
-      document_type: 'DNI',
-      document_number: '',
-      birth: new Date(Date.now()),
-      cell_phone: '',
-      local_phone: '',
-      email: '',
-      address: '',
-      username: '',
-      password: '',
-      role: 'VENDEDOR'
-    },
-    rules: {
-      name: {
-        required: true,
-        maxLength: 255
-      },
-      document_type: {
-        required: true
-      },
-      document_number: {
-        required: true,
-        maxLength: 255
-      },
-      local_phone: {
-        required: true,
-        maxLength: 255
-      },
-      cell_phone: {
-        required: true,
-        maxLength: 255
-      },
-      address: {
-        required: true,
-        maxLength: 255
-      },
-      username: {
-        required: true,
-        maxLength: 255
-      },
-      password: {
-        required: true,
-        minLength: 8,
-        maxLength: 255
-      },
-      email: {
-        maxLength: 255
-      },
-      role: {
-        required: true
-      }
-    }
-  })
+  const {
+    loadingUsers,
+    getUsers,
+    setOpen,
+    handleSubmit,
+    open,
+    handleDelete,
+    userFormData,
+    headCells
+  } = useUsers()
+  const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = userFormData
 
   const [showPassword, setShowPassword] = useState(false)
 
   useEffect(() => {
     if (auth?.user.role !== 'ADMINISTRADOR') navigate(auth?.user.role === 'CHOFER' ? '/prep-ventas' : "/productos")
   }, [])
-
-  const headCells = [
-    {
-      id: "name",
-      numeric: false,
-      disablePadding: true,
-      label: "Nombre y Apellido",
-      sorter: (row) => row.name,
-      accessor: 'name'
-    },
-    {
-      id: "document_number",
-      numeric: false,
-      disablePadding: true,
-      label: "Nro. Documento",
-      sorter: (row) => row.document_number.toString(),
-      accessor: "document_number",
-    },
-    {
-      id: "cell_phone",
-      numeric: false,
-      disablePadding: true,
-      label: "Celular",
-      sorter: (row) => row.cell_phone.toString(),
-      accessor: "cell_phone"
-    },
-    {
-      id: "local_phone",
-      numeric: false,
-      disablePadding: true,
-      label: "Teléfono",
-      sorter: (row) => row.local_phone.toString(),
-      accessor: "local_phone"
-    },
-    {
-      id: "address",
-      numeric: false,
-      disablePadding: true,
-      label: "Dirección",
-      sorter: (row) => row.address,
-      accessor: (row) => (
-        <Link target="_blank" to={`https://www.google.com/maps?q=${row.address}`}>
-          <span style={{ color: '#078BCD' }}>{row.address}</span>
-        </Link>
-      )
-    },
-    {
-      id: "role",
-      numeric: false,
-      disablePadding: true,
-      label: "Rol",
-      sorter: (row) => row.role,
-      accessor: "role"
-    },
-    {
-      id: "is_active",
-      numeric: false,
-      disablePadding: true,
-      label: "Alta/baja",
-      sorter: (row) => row.is_active ? 1 : 0,
-      accessor: (row) => (
-        <Box sx={{ textAlign: 'center' }}>
-          <FormControlLabel
-            control={<Checkbox />}
-            checked={row.is_active}
-            onChange={e => toggleActive({
-              ...row,
-              is_active: e.target.checked
-            })}
-          />
-        </Box>
-      )
-    }
-  ]
 
   return (
     <Layout title="Usuarios">

@@ -1,8 +1,10 @@
-import { useContext, useState } from "react"
+import { useContext, useMemo, useState } from "react"
+import { Link } from "react-router-dom"
 
 import { DataContext } from "../providers/DataProvider"
 import { MessageContext } from "../providers/MessageProvider"
 import { useApi } from "./useApi"
+import { useForm } from "./useForm"
 
 import { SUPPLIER_URL } from "../utils/urls"
 
@@ -12,6 +14,43 @@ export function useSuppliers() {
     const { setMessage, setOpenMessage, setSeverity } = useContext(MessageContext)
 
     const { get, post, put, destroy, putMassive } = useApi(SUPPLIER_URL)
+    const supplierFormData = useForm({
+        defaultData: {
+            id: '',
+            name: '',
+            business_name: '',
+            cuil: '',
+            address: '',
+            cell_phone: '',
+            business_phone: '',
+            email: '',
+            products: []
+        },
+        rules: {
+            name: {
+                required: true,
+                maxLength: 255
+            },
+            business_name: {
+                maxLength: 255
+            },
+            cuil: {
+                maxLength: 255
+            },
+            address: {
+                maxLength: 255
+            },
+            cell_phone: {
+                maxLength: 255
+            },
+            business_phone: {
+                maxLength: 255
+            },
+            email: {
+                maxLength: 255
+            }
+        }
+    })
 
     const [loadingSuppliers, setLoadingSuppliers] = useState(true)
     const [open, setOpen] = useState(null)
@@ -121,6 +160,69 @@ export function useSuppliers() {
         }
     }
 
+    const headCells = useMemo(() => [
+        {
+            id: 'id',
+            numeric: true,
+            disablePadding: false,
+            label: 'Código',
+            accessor: 'id'
+        },
+        {
+            id: 'name',
+            numeric: false,
+            disablePadding: true,
+            label: 'Proveedor',
+            accessor: 'name'
+        },
+        {
+            id: 'business_name',
+            numeric: false,
+            disablePadding: true,
+            label: 'Razón Social',
+            accessor: 'business_name'
+        },
+        {
+            id: 'cuil',
+            numeric: false,
+            disablePadding: true,
+            label: 'CUIL',
+            accessor: 'cuil'
+        },
+        {
+            id: 'address',
+            numeric: false,
+            disablePadding: true,
+            label: 'Dirección',
+            accessor: (row) => (
+                <Link target="_blank" to={`https://www.google.com/maps?q=${row.address}`}>
+                    <span style={{ color: '#078BCD' }}>{row.address}</span>
+                </Link>
+            )
+        },
+        {
+            id: 'cell_phone',
+            numeric: false,
+            disablePadding: true,
+            label: 'Teléfono',
+            accessor: 'cell_phone'
+        },
+        {
+            id: 'business_phone',
+            numeric: false,
+            disablePadding: true,
+            label: 'Teléfono',
+            accessor: 'business_phone'
+        },
+        {
+            id: 'email',
+            numeric: false,
+            disablePadding: true,
+            label: 'Email',
+            accessor: 'email'
+        }
+    ], [state.suppliers.data])
+
     return {
         loadingSuppliers,
         setLoadingSuppliers,
@@ -129,6 +231,8 @@ export function useSuppliers() {
         open,
         setOpen,
         handleSubmitMassive,
-        getSuppliers
+        getSuppliers,
+        headCells,
+        supplierFormData
     }
 }

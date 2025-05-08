@@ -1,11 +1,9 @@
 import { useContext, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Box, Button, Typography } from "@mui/material";
-import { format } from "date-fns";
 
 import { AuthContext } from "../providers/AuthProvider";
 import { DataContext } from "../providers/DataProvider";
-import { useForm } from "../hooks/useForm";
 import { useBudgets } from "../hooks/useBudgets";
 import { useProducts } from "../hooks/useProducts";
 import { useClients } from "../hooks/useClients";
@@ -19,7 +17,6 @@ import { BudgetFilter } from "../components/filters/BudgetFilter";
 import { BudgetForm } from "../components/commercial/BudgetForm";
 import { SaleForm } from "../components/commercial/SaleForm";
 
-import { getBudgetTotal, getBudgetSubtotal } from "../utils/helpers";
 import { REPORT_URL } from "../utils/urls";
 
 export function Budgets() {
@@ -44,12 +41,11 @@ export function Budgets() {
         setIdsToDelete,
         budgetProducts,
         idsToDelete,
-        missing
+        missing,
+        budgetFormData,
+        headCells
     } = useBudgets()
-    const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
-        defaultData: { id: '', client_id: '', date: new Date(Date.now()), type: 'CUENTA_CORRIENTE', total: '0.00' },
-        rules: { client_id: { required: true }, date: { required: true } }
-    })
+    const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = budgetFormData
     const {
         saleProducts,
         setSaleProducts,
@@ -61,7 +57,8 @@ export function Budgets() {
         setIdsToDelete: setIdsToDeleteNewSale,
         handleSubmit: handleSubmitNewSale,
         discountApplied,
-        setDiscountApplied
+        setDiscountApplied,
+        saleFormData
     } = useSales()
     const {
         formData: newSale,
@@ -72,23 +69,7 @@ export function Budgets() {
         validate: validateNewSale,
         reset: resetNewSale,
         errors: errorsNewSale
-    } = useForm({
-        defaultData: {
-            id: '',
-            client_id: '',
-            type: 'CUENTA_CORRIENTE',
-            date: new Date(Date.now()),
-            total: '0.00'
-        },
-        rules: {
-            client_id: {
-                required: true
-            },
-            date: {
-                required: true
-            }
-        }
-    })
+    } = saleFormData
 
     useEffect(() => {
         if (auth?.user.role !== 'ADMINISTRADOR' && auth?.user.role !== 'VENDEDOR') navigate('/prep-ventas')
@@ -114,74 +95,6 @@ export function Budgets() {
             setSaleProducts(formData.budget_products)
         }
     }, [formData])
-
-    const headCells = [
-        {
-            id: 'id',
-            numeric: true,
-            disablePadding: false,
-            label: 'Cod. Pres.',
-            accessor: 'id'
-        },
-        {
-            id: 'date',
-            numeric: false,
-            disablePadding: true,
-            label: 'Fecha',
-            accessor: (row) => format(new Date(row.date), 'dd/MM/yy')
-        },
-        {
-            id: 'hour',
-            numeric: false,
-            disablePadding: true,
-            label: 'Hora',
-            sorter: (row) => format(new Date(row.date), 'HH:mm').toString().replace(':', ''),
-            accessor: (row) => format(new Date(row.date), 'HH:mm')
-        },
-        {
-            id: 'seller',
-            numeric: false,
-            disablePadding: true,
-            label: 'Vendedor',
-            sorter: (row) => row.client.user.name,
-            accessor: (row) => row.client.user.name
-        },
-        {
-            id: 'client_name',
-            numeric: false,
-            disablePadding: true,
-            label: 'Cliente',
-            sorter: (row) => `${row.client.first_name} ${row.client.last_name}`,
-            accessor: (row) => `${row.client.first_name} ${row.client.last_name}`
-        },
-        {
-            id: 'address',
-            numeric: false,
-            disablePadding: true,
-            label: 'Dirección',
-            sorter: (row) => row.client.address,
-            accessor: (row) => (
-                <Link target="_blank" to={`https://www.google.com/maps?q=${row.client.address}`}>
-                    <span style={{ color: '#078BCD' }}>{row.client.address}</span>
-                </Link>
-            )
-        },
-        {
-            id: 'total_amount',
-            numeric: false,
-            disablePadding: true,
-            label: 'Total',
-            sorter: (row) => parseFloat(getBudgetTotal(row, getBudgetSubtotal(row.budget_products))),
-            accessor: (row) => `$${getBudgetTotal(row, getBudgetSubtotal(row.budget_products))}`
-        },
-        {
-            id: 'type',
-            numeric: false,
-            disablePadding: true,
-            label: 'Tipo',
-            accessor: (row) => row.type.replaceAll('CUENTA_CORRIENTE', 'CTA CTE')
-        }
-    ]
 
     return (
         <Layout title="Presupuestos">

@@ -1,11 +1,14 @@
-import { useContext, useState } from "react"
+import { useContext, useMemo, useState } from "react"
+import { format } from "date-fns"
 
 import { MessageContext } from "../providers/MessageProvider"
 import { AuthContext } from "../providers/AuthProvider"
 import { DataContext } from "../providers/DataProvider"
 import { useApi } from "./useApi"
+import { useForm } from "./useForm"
 
 import { REGISTER_URL } from "../utils/urls"
+import { setLocalDate } from "../utils/helpers"
 
 export function useRegisters() {
 
@@ -14,6 +17,10 @@ export function useRegisters() {
     const { setMessage, setOpenMessage, setSeverity } = useContext(MessageContext)
 
     const { get, post, put, destroy } = useApi(REGISTER_URL)
+    const registerFormData = useForm({
+        defaultData: { id: '', user_id: auth?.user.id, created_at: new Date(Date.now()), updated_at: new Date(Date.now()) }
+    })
+
 
     const [loadingRegisters, setLoadingRegisters] = useState(true)
     const [open, setOpen] = useState(null)
@@ -120,6 +127,73 @@ export function useRegisters() {
         setOpen(null)
     }
 
+    const headCells = useMemo(() => [
+        {
+            id: 'id',
+            numeric: true,
+            disablePadding: false,
+            label: '#',
+            sorter: (row) => parseInt(row.id),
+            accessor: (row) => parseInt(row.id)
+        },
+        {
+            id: "user",
+            numeric: false,
+            disablePadding: true,
+            label: "Caja",
+            sorter: (row) => row.user.username,
+            accessor: (row) => row.user.username,
+        },
+        {
+            id: "open_date",
+            numeric: false,
+            disablePadding: true,
+            label: "Apertura Fecha",
+            sorter: (row) => format(setLocalDate(row.created_at), 'dd/MM/yy'),
+            accessor: (row) => format(setLocalDate(row.created_at), 'dd/MM/yy')
+        },
+        {
+            id: "open_hour",
+            numeric: false,
+            disablePadding: true,
+            label: "Apertura Hora",
+            sorter: (row) => format(new Date(row.created_at), 'HH:mm:ss').toString().replace(':', ''),
+            accessor: (row) => format(setLocalDate(row.created_at), 'HH:mm:ss')
+        },
+        {
+            id: "open_amount",
+            numeric: false,
+            disablePadding: true,
+            label: "Apertura Saldo",
+            sorter: () => 0.00,
+            accessor: () => '$0.00'
+        },
+        {
+            id: "end_date",
+            numeric: false,
+            disablePadding: true,
+            label: "Cierre Fecha",
+            sorter: (row) => row.created_at === row.updated_at ? '-' : format(setLocalDate(row.updated_at), 'dd/MM/yy'),
+            accessor: (row) => row.created_at === row.updated_at ? '-' : format(setLocalDate(row.updated_at), 'dd/MM/yy')
+        },
+        {
+            id: "end_hour",
+            numeric: false,
+            disablePadding: true,
+            label: "Cierre hora",
+            sorter: (row) => row.created_at === row.updated_at ? '-' : format(new Date(row.updated_at), 'HH:mm:ss').toString().replace(':', ''),
+            accessor: (row) => row.created_at === row.updated_at ? '-' : format(setLocalDate(row.updated_at), 'HH:mm:ss')
+        },
+        {
+            id: "end_amount",
+            numeric: false,
+            disablePadding: true,
+            label: "Cierre Saldo",
+            sorter: (row) => parseFloat(row.end_amount.replace('$', '')),
+            accessor: (row) => row.end_amount
+        }
+    ], [state.registers.data])
+
     return {
         loadingRegisters,
         setLoadingRegisters,
@@ -129,6 +203,8 @@ export function useRegisters() {
         setOpen,
         getRegisters,
         currentAmount,
-        getCurrentRegister
+        getCurrentRegister,
+        registerFormData,
+        headCells
     }
 }

@@ -1,13 +1,11 @@
 import { useContext, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Box, Button, Typography } from "@mui/material";
-import { format } from "date-fns";
 
 import { AuthContext } from "../providers/AuthProvider";
 import { DataContext } from "../providers/DataProvider";
 import { useProducts } from "../hooks/useProducts";
 import { useClients } from '../hooks/useClients'
-import { useForm } from "../hooks/useForm";
 import { useSales } from "../hooks/useSales";
 import { useUsers } from "../hooks/useUsers";
 import { useDiscounts } from "../hooks/useDiscounts";
@@ -19,7 +17,7 @@ import { DataGridWithBackendPagination } from "../components/datagrid/DataGridWi
 import { SaleForm } from "../components/commercial/SaleForm";
 
 import { REPORT_URL } from "../utils/urls";
-import { getDeliveredDeadline, getSaleDifference, getSaleTotal } from "../utils/helpers";
+import { getDeliveredDeadline, getSaleDifference } from "../utils/helpers";
 
 export function Sales() {
 
@@ -28,6 +26,10 @@ export function Sales() {
 
     const navigate = useNavigate()
 
+    const { loadingProducts, getProducts } = useProducts()
+    const { loadingClients, getClients } = useClients()
+    const { getUsers } = useUsers()
+    const { getDiscounts } = useDiscounts()
     const {
         loadingSales,
         setSaleProducts,
@@ -46,33 +48,11 @@ export function Sales() {
         isBlocked,
         setIsBlocked,
         discountApplied,
-        setDiscountApplied
+        setDiscountApplied,
+        saleFormData,
+        headCells
     } = useSales()
-    const { loadingProducts, getProducts } = useProducts()
-    const { loadingClients, getClients } = useClients()
-    const { getUsers } = useUsers()
-    const { getDiscounts } = useDiscounts()
-    const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
-        defaultData: {
-            id: '',
-            client_id: '',
-            type: 'CUENTA_CORRIENTE',
-            date: new Date(Date.now()),
-            observations: '',
-            total: '0.00'
-        },
-        rules: {
-            client_id: {
-                required: true
-            },
-            date: {
-                required: true
-            },
-            observations: {
-                maxLength: 255
-            }
-        }
-    })
+    const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = saleFormData
 
     useEffect(() => {
         if (auth?.user.role !== 'ADMINISTRADOR' && auth?.user.role !== 'VENDEDOR') navigate('/prep-ventas')
@@ -101,90 +81,6 @@ export function Sales() {
         )
         setIsBlocked(currentClient?.is_blocked || someSaleIsPast)
     }, [formData.client_id])
-
-    const headCells = [
-        {
-            id: 'id',
-            numeric: true,
-            disablePadding: false,
-            label: 'Cód.',
-            accessor: 'id'
-        },
-        {
-            id: 'date',
-            numeric: false,
-            disablePadding: true,
-            label: 'Fecha',
-            accessor: (row) => format(new Date(row.date), 'dd/MM/yy HH:mm')
-        },
-        {
-            id: 'seller',
-            numeric: false,
-            disablePadding: true,
-            label: 'Vdor.',
-            sorter: (row) => auth?.user.role === 'ADMINISTRADOR' ? row.created_by : row.client.user.name,
-            accessor: (row) => auth?.user.role === 'ADMINISTRADOR' ? row.created_by : row.client.user.name
-        },
-        {
-            id: 'client_name',
-            numeric: false,
-            disablePadding: true,
-            label: 'Cliente',
-            sorter: (row) => `${row.client.first_name} ${row.client.last_name}`,
-            accessor: (row) => `${row.client.first_name} ${row.client.last_name}`
-        },
-        {
-            id: 'work_place',
-            numeric: false,
-            disablePadding: true,
-            label: 'Comercio',
-            sorter: (row) => row.client.work_place ?? '',
-            accessor: (row) => row.client.work_place
-        },
-        {
-            id: 'address',
-            numeric: false,
-            disablePadding: true,
-            label: 'Direcc.',
-            sorter: (row) => row.client.address,
-            accessor: (row) => (
-                <Link target="_blank" to={`https://www.google.com/maps?q=${row.client.address}`}>
-                    <span style={{ color: '#078BCD' }}>{row.client.address}</span>
-                </Link>
-            )
-        },
-        {
-            id: 'type',
-            numeric: false,
-            disablePadding: true,
-            label: 'T. Vta.',
-            accessor: (row) => row.type.replaceAll('CUENTA_CORRIENTE', 'CTA CTE')
-        },
-        {
-            id: 'total',
-            numeric: false,
-            disablePadding: true,
-            label: 'Total',
-            sorter: (row) => getSaleTotal(row).replace('$', ''),
-            accessor: (row) => getSaleTotal(row)
-        },
-        {
-            id: 'paid',
-            numeric: false,
-            disablePadding: true,
-            label: 'Pagado',
-            sorter: (row) => parseFloat(getSaleDifference(row).replace('$', '')) > 0 ? 1 : 0,
-            accessor: (row) => parseFloat(getSaleDifference(row).replace('$', '')) > 0 ? 'No' : 'Sí'
-        },
-        {
-            id: 'delivered',
-            numeric: false,
-            disablePadding: true,
-            label: 'Entregado',
-            sorter: (row) => row.is_delivered ? format(new Date(row.delivered_at), 'dd/MM/yy') : 'No',
-            accessor: (row) => row.is_delivered ? format(new Date(row.delivered_at), 'dd/MM/yy') : 'No'
-        }
-    ]
 
     return (
         <Layout title="Ventas">

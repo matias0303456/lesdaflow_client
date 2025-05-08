@@ -1,17 +1,70 @@
-import { useContext, useState } from "react"
+import { useContext, useMemo, useState } from "react"
+import { Link } from "react-router-dom"
+import { Box, Checkbox, FormControlLabel } from "@mui/material"
 
-import { useApi } from "./useApi"
+import { AuthContext } from "../providers/AuthProvider"
+import { DataContext } from "../providers/DataProvider"
 import { MessageContext } from "../providers/MessageProvider"
+import { useApi } from "./useApi"
+import { useForm } from "./useForm"
 
 import { CLIENT_URL } from "../utils/urls"
-import { DataContext } from "../providers/DataProvider"
 
 export function useClients() {
 
     const { state, dispatch } = useContext(DataContext)
+    const { auth } = useContext(AuthContext)
     const { setMessage, setOpenMessage, setSeverity } = useContext(MessageContext)
 
     const { get, post, put, destroy } = useApi(CLIENT_URL)
+    const clientFormData = useForm({
+        defaultData: {
+            id: '',
+            first_name: '',
+            last_name: '',
+            document_type: '',
+            document_number: '',
+            birth: new Date(Date.now()),
+            cell_phone: '',
+            local_phone: '',
+            email: '',
+            address: '',
+            work_place: '',
+            user_id: '',
+            is_blocked: false
+        },
+        rules: {
+            first_name: {
+                required: true,
+                maxLength: 255
+            },
+            last_name: {
+                required: true,
+                maxLength: 255
+            },
+            document_number: {
+                maxLength: 255
+            },
+            cell_phone: {
+                required: true,
+                maxLength: 255
+            },
+            local_phone: {
+                maxLength: 255
+            },
+            address: {
+                required: true,
+                maxLength: 255
+            },
+            work_place: {
+                required: true,
+                maxLength: 255
+            },
+            email: {
+                maxLength: 255
+            }
+        }
+    })
 
     const [open, setOpen] = useState(null)
     const [loadingClients, setLoadingClients] = useState(true)
@@ -111,5 +164,90 @@ export function useClients() {
         setOpenMessage(true)
     }
 
-    return { loadingClients, setLoadingClients, handleSubmit, handleDelete, open, setOpen, getClients, toggleBlocked }
+    const headCells = useMemo(() => [
+        {
+            id: "name",
+            numeric: false,
+            disablePadding: true,
+            label: "Cliente",
+            sorter: (row) => `${row.first_name} ${row.last_name}`,
+            accessor: (row) => `${row.first_name} ${row.last_name}`
+        },
+        {
+            id: "document_number",
+            numeric: false,
+            disablePadding: true,
+            label: "Doc./CUIT",
+            sorter: (row) => row.document_number ? row.document_number.toString() : '',
+            accessor: "document_number"
+        },
+        {
+            id: "cell_phone",
+            numeric: false,
+            disablePadding: true,
+            label: "Celular",
+            sorter: (row) => row.cell_phone.toString(),
+            accessor: "cell_phone"
+        },
+        {
+            id: "email",
+            numeric: false,
+            disablePadding: true,
+            label: "Email",
+            sorter: (row) => row.email ?? '',
+            accessor: "email"
+        },
+        {
+            id: "address",
+            numeric: false,
+            disablePadding: true,
+            label: "Dirección",
+            sorter: (row) => row.address,
+            accessor: (row) => (
+                <Link target="_blank" to={`https://www.google.com/maps?q=${row.address}`}>
+                    <span style={{ color: '#078BCD' }}>{row.address}</span>
+                </Link>
+            )
+        },
+        {
+            id: 'work_place',
+            numeric: false,
+            disablePadding: true,
+            label: 'Comercio',
+            sorter: (row) => row.work_place,
+            accessor: 'work_place'
+        },
+        {
+            id: 'is_blocked',
+            numeric: false,
+            disablePadding: true,
+            label: 'Bloqueado',
+            sorter: (row) => row.is_blocked ? 1 : 0,
+            accessor: (row) => (
+                <Box sx={{ textAlign: 'center' }}>
+                    <FormControlLabel
+                        control={<Checkbox disabled={auth?.user.role !== 'ADMINISTRADOR'} />}
+                        checked={row.is_blocked}
+                        onChange={e => toggleBlocked({
+                            ...row,
+                            is_blocked: e.target.checked
+                        })}
+                    />
+                </Box>
+            )
+        }
+    ], [state.clients.data])
+
+    return {
+        loadingClients,
+        setLoadingClients,
+        handleSubmit,
+        handleDelete,
+        open,
+        setOpen,
+        getClients,
+        toggleBlocked,
+        clientFormData,
+        headCells
+    }
 }

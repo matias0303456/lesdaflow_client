@@ -1,19 +1,42 @@
-import { useContext, useState } from "react"
+import { useContext, useMemo, useState } from "react"
+import { Link } from "react-router-dom"
+import { format } from "date-fns"
 
+import { AuthContext } from "../providers/AuthProvider"
 import { DataContext } from "../providers/DataProvider"
 import { MessageContext } from "../providers/MessageProvider"
 import { useApi } from "./useApi"
 import { useBudgets } from "./useBudgets"
+import { useForm } from "./useForm"
 
 import { SALE_URL } from "../utils/urls"
+import { getSaleDifference, getSaleTotal } from "../utils/helpers"
 
 export function useSales() {
 
+    const { auth } = useContext(AuthContext)
     const { state, dispatch } = useContext(DataContext)
     const { setMessage, setOpenMessage, setSeverity } = useContext(MessageContext)
 
     const { handleDelete: deleteBudget } = useBudgets()
     const { get, post, put, destroy } = useApi(SALE_URL)
+    const saleFormData = useForm({
+        defaultData: {
+            id: '',
+            client_id: '',
+            type: 'CUENTA_CORRIENTE',
+            date: new Date(Date.now()),
+            total: '0.00'
+        },
+        rules: {
+            client_id: {
+                required: true
+            },
+            date: {
+                required: true
+            }
+        }
+    })
 
     const [loadingSales, setLoadingSales] = useState(true)
     const [open, setOpen] = useState(null)
@@ -222,6 +245,90 @@ export function useSales() {
         setOpenMessage(true)
     }
 
+    const headCells = useMemo(() => [
+        {
+            id: 'id',
+            numeric: true,
+            disablePadding: false,
+            label: 'Cód.',
+            accessor: 'id'
+        },
+        {
+            id: 'date',
+            numeric: false,
+            disablePadding: true,
+            label: 'Fecha',
+            accessor: (row) => format(new Date(row.date), 'dd/MM/yy HH:mm')
+        },
+        {
+            id: 'seller',
+            numeric: false,
+            disablePadding: true,
+            label: 'Vdor.',
+            sorter: (row) => auth?.user.role === 'ADMINISTRADOR' ? row.created_by : row.client.user.name,
+            accessor: (row) => auth?.user.role === 'ADMINISTRADOR' ? row.created_by : row.client.user.name
+        },
+        {
+            id: 'client_name',
+            numeric: false,
+            disablePadding: true,
+            label: 'Cliente',
+            sorter: (row) => `${row.client.first_name} ${row.client.last_name}`,
+            accessor: (row) => `${row.client.first_name} ${row.client.last_name}`
+        },
+        {
+            id: 'work_place',
+            numeric: false,
+            disablePadding: true,
+            label: 'Comercio',
+            sorter: (row) => row.client.work_place ?? '',
+            accessor: (row) => row.client.work_place
+        },
+        {
+            id: 'address',
+            numeric: false,
+            disablePadding: true,
+            label: 'Direcc.',
+            sorter: (row) => row.client.address,
+            accessor: (row) => (
+                <Link target="_blank" to={`https://www.google.com/maps?q=${row.client.address}`}>
+                    <span style={{ color: '#078BCD' }}>{row.client.address}</span>
+                </Link>
+            )
+        },
+        {
+            id: 'type',
+            numeric: false,
+            disablePadding: true,
+            label: 'T. Vta.',
+            accessor: (row) => row.type.replaceAll('CUENTA_CORRIENTE', 'CTA CTE')
+        },
+        {
+            id: 'total',
+            numeric: false,
+            disablePadding: true,
+            label: 'Total',
+            sorter: (row) => getSaleTotal(row).replace('$', ''),
+            accessor: (row) => getSaleTotal(row)
+        },
+        {
+            id: 'paid',
+            numeric: false,
+            disablePadding: true,
+            label: 'Pagado',
+            sorter: (row) => parseFloat(getSaleDifference(row).replace('$', '')) > 0 ? 1 : 0,
+            accessor: (row) => parseFloat(getSaleDifference(row).replace('$', '')) > 0 ? 'No' : 'Sí'
+        },
+        {
+            id: 'delivered',
+            numeric: false,
+            disablePadding: true,
+            label: 'Entregado',
+            sorter: (row) => row.is_delivered ? format(new Date(row.delivered_at), 'dd/MM/yy') : 'No',
+            accessor: (row) => row.is_delivered ? format(new Date(row.delivered_at), 'dd/MM/yy') : 'No'
+        }
+    ], [state.sales.data])
+
     return {
         loadingSales,
         setLoadingSales,
@@ -246,6 +353,8 @@ export function useSales() {
         salesByClient,
         prepareAllSaleProducts,
         discountApplied,
-        setDiscountApplied
+        setDiscountApplied,
+        saleFormData,
+        headCells
     }
 }

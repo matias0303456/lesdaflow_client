@@ -1,13 +1,11 @@
 import { useContext, useState } from "react";
-import { Link } from "react-router-dom";
-import { Box, Button, Checkbox, FormControl, FormControlLabel, Input, InputLabel, MenuItem, Select, Tab, Tabs, Typography } from "@mui/material";
+import { Box, Button, FormControl, Input, InputLabel, MenuItem, Select, Tab, Tabs, Typography } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { es } from "date-fns/locale";
 
 import { AuthContext } from "../providers/AuthProvider";
 import { DataContext } from "../providers/DataProvider";
-import { useForm } from "../hooks/useForm";
 import { useClients } from "../hooks/useClients";
 
 import { Layout } from "../components/common/Layout";
@@ -24,55 +22,17 @@ export function Clients() {
     const { auth } = useContext(AuthContext)
     const { state } = useContext(DataContext)
 
-    const { loadingClients, handleSubmit, handleDelete, open, setOpen, getClients, toggleBlocked } = useClients()
-    const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
-        defaultData: {
-            id: '',
-            first_name: '',
-            last_name: '',
-            document_type: '',
-            document_number: '',
-            birth: new Date(Date.now()),
-            cell_phone: '',
-            local_phone: '',
-            email: '',
-            address: '',
-            work_place: '',
-            user_id: '',
-            is_blocked: false
-        },
-        rules: {
-            first_name: {
-                required: true,
-                maxLength: 255
-            },
-            last_name: {
-                required: true,
-                maxLength: 255
-            },
-            document_number: {
-                maxLength: 255
-            },
-            cell_phone: {
-                required: true,
-                maxLength: 255
-            },
-            local_phone: {
-                maxLength: 255
-            },
-            address: {
-                required: true,
-                maxLength: 255
-            },
-            work_place: {
-                required: true,
-                maxLength: 255
-            },
-            email: {
-                maxLength: 255
-            }
-        }
-    })
+    const {
+        loadingClients,
+        handleSubmit,
+        handleDelete,
+        open,
+        setOpen,
+        getClients,
+        clientFormData,
+        headCells
+    } = useClients()
+    const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = clientFormData
 
     const [valueTab, setValueTab] = useState(0)
 
@@ -84,80 +44,6 @@ export function Clients() {
         setValueTab(0)
         reset(setOpen)
     }
-
-    const headCells = [
-        {
-            id: "name",
-            numeric: false,
-            disablePadding: true,
-            label: "Cliente",
-            sorter: (row) => `${row.first_name} ${row.last_name}`,
-            accessor: (row) => `${row.first_name} ${row.last_name}`
-        },
-        {
-            id: "document_number",
-            numeric: false,
-            disablePadding: true,
-            label: "Doc./CUIT",
-            sorter: (row) => row.document_number ? row.document_number.toString() : '',
-            accessor: "document_number"
-        },
-        {
-            id: "cell_phone",
-            numeric: false,
-            disablePadding: true,
-            label: "Celular",
-            sorter: (row) => row.cell_phone.toString(),
-            accessor: "cell_phone"
-        },
-        {
-            id: "email",
-            numeric: false,
-            disablePadding: true,
-            label: "Email",
-            sorter: (row) => row.email ?? '',
-            accessor: "email"
-        },
-        {
-            id: "address",
-            numeric: false,
-            disablePadding: true,
-            label: "Dirección",
-            sorter: (row) => row.address,
-            accessor: (row) => (
-                <Link target="_blank" to={`https://www.google.com/maps?q=${row.address}`}>
-                    <span style={{ color: '#078BCD' }}>{row.address}</span>
-                </Link>
-            )
-        },
-        {
-            id: 'work_place',
-            numeric: false,
-            disablePadding: true,
-            label: 'Comercio',
-            sorter: (row) => row.work_place,
-            accessor: 'work_place'
-        },
-        {
-            id: 'is_blocked',
-            numeric: false,
-            disablePadding: true,
-            label: 'Bloqueado',
-            sorter: (row) => row.is_blocked ? 1 : 0,
-            accessor: (row) => (
-                <Box sx={{ textAlign: 'center' }}>
-                    <FormControlLabel
-                        control={<Checkbox disabled={auth?.user.role !== 'ADMINISTRADOR'} />}
-                        checked={row.is_blocked}
-                        onChange={e => toggleBlocked({
-                            ...row,
-                            is_blocked: e.target.checked
-                        })}
-                    />
-                </Box>
-            )
-        }
-    ];
 
     return (
         <Layout title="Clientes">
@@ -189,8 +75,8 @@ export function Clients() {
                     <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: 1 }}>
                         <Box sx={{ display: 'flex', gap: 1 }}>
                             <Button variant="outlined" onClick={() => {
-                                   reset()
-                                   setOpen('NEW')
+                                reset()
+                                setOpen('NEW')
                             }}>
                                 Agregar
                             </Button>

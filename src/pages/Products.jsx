@@ -5,7 +5,6 @@ import { AuthContext } from "../providers/AuthProvider";
 import { DataContext } from "../providers/DataProvider";
 import { useProducts } from '../hooks/useProducts'
 import { useSuppliers } from "../hooks/useSuppliers";
-import { useForm } from "../hooks/useForm";
 import { useMovements } from "../hooks/useMovements";
 
 import { Layout } from "../components/common/Layout";
@@ -14,7 +13,7 @@ import { DataGridWithBackendPagination } from "../components/datagrid/DataGridWi
 import { ProductFilter } from "../components/filters/ProductFilter";
 import { MovementsForm } from "../components/commercial/MovementsForm";
 
-import { getNewPrice, getStock } from "../utils/helpers";
+import { getNewPrice } from "../utils/helpers";
 import { REPORT_URL } from "../utils/urls";
 
 export function Products() {
@@ -35,37 +34,17 @@ export function Products() {
         setMassiveEditPercentage,
         handleSubmitMassive,
         handleDelete,
-        getProducts
+        getProducts,
+        productFormData,
+        headCells
     } = useProducts()
     const { loadingSuppliers, getSuppliers } = useSuppliers()
-    const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = useForm({
-        defaultData: {
-            id: '',
-            code: '',
-            details: '',
-            buy_price: '',
-            min_stock: '',
-            earn: '',
-            supplier_id: '',
-            cash: true,
-            cta_cte: true,
-            poxipol: false,
-            amount: ''
-        },
-        rules: {
-            code: { required: true, maxLength: 55 },
-            details: { required: true, maxLength: 191 },
-            buy_price: { required: true },
-            min_stock: { required: true },
-            earn: { required: true },
-            supplier_id: { required: true },
-            amount: { required: open === 'NEW' }
-        }
-    })
+    const { formData, setFormData, handleChange, disabled, setDisabled, validate, reset, errors } = productFormData
     const {
         open: openMovement,
         setOpen: setOpenMovement,
-        handleSubmit: handleSubmitMovement
+        handleSubmit: handleSubmitMovement,
+        movementFormData
     } = useMovements()
     const {
         formData: formDataMovement,
@@ -76,10 +55,7 @@ export function Products() {
         setDisabled: setDisabledMovement,
         reset: resetMovement,
         validate: validateMovement
-    } = useForm({
-        defaultData: { amount: '', observations: '' },
-        rules: { amount: { required: true }, observations: { maxLength: 255 } }
-    })
+    } = movementFormData
 
     useEffect(() => {
         getSuppliers()
@@ -90,74 +66,6 @@ export function Products() {
         const earn = formData.earn.toString().length === 0 ? 0 : parseInt(formData.earn)
         setEarnPrice(`$${(buy_price + ((buy_price / 100) * earn)).toFixed(2)}`)
     }, [formData])
-
-    const headCells = [
-        {
-            id: 'code',
-            numeric: false,
-            disablePadding: true,
-            label: 'Código',
-            accessor: 'code',
-            can_access: ['CHOFER', 'VENDEDOR']
-        },
-        {
-            id: 'details',
-            numeric: false,
-            disablePadding: true,
-            label: 'Producto',
-            accessor: 'details',
-            can_access: ['CHOFER', 'VENDEDOR']
-        },
-        {
-            id: 'buy_price',
-            numeric: false,
-            disablePadding: true,
-            label: 'P. compra',
-            sorter: (row) => parseFloat(row.buy_price).toFixed(2),
-            accessor: (row) => parseFloat(row.buy_price).toFixed(2)
-        },
-        {
-            id: 'earn',
-            numeric: false,
-            disablePadding: true,
-            label: '% Gan.',
-            accessor: 'earn'
-        },
-        {
-            id: 'sale_price',
-            numeric: false,
-            disablePadding: true,
-            label: 'P. venta',
-            sorter: (row) => parseFloat((row.buy_price + ((row.buy_price / 100) * row.earn)).toFixed(2)),
-            accessor: (row) => `$${(row.buy_price + ((row.buy_price / 100) * row.earn)).toFixed(2)}`,
-            can_access: ['CHOFER', 'VENDEDOR']
-        },
-        {
-            id: 'supplier',
-            numeric: false,
-            disablePadding: true,
-            label: 'Proveedor',
-            sorter: (row) => row.supplier.name.toLowerCase(),
-            accessor: (row) => row.supplier.name,
-            can_access: ['CHOFER', 'VENDEDOR']
-        },
-        {
-            id: 'stock',
-            numeric: false,
-            disablePadding: true,
-            label: 'Stock',
-            sorter: (row) => getStock(row),
-            accessor: (row) => getStock(row),
-            can_access: ['VENDEDOR']
-        },
-        {
-            id: 'min_stock',
-            numeric: false,
-            disablePadding: true,
-            label: 'Stock mínimo',
-            accessor: 'min_stock'
-        }
-    ]
 
     return (
         <Layout title="Productos">
