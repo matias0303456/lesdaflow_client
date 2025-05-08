@@ -82,6 +82,11 @@ export function Sales() {
         setIsBlocked(currentClient?.is_blocked || someSaleIsPast)
     }, [formData.client_id])
 
+    useEffect(() => {
+        const { page, offset } = state['sales']
+        getSales(`?page=${page}&offset=${offset}`)
+    }, [state['sales']])
+
     return (
         <Layout title="Ventas">
             <DataGridWithBackendPagination
@@ -89,7 +94,6 @@ export function Sales() {
                 headCells={headCells}
                 rows={state.sales.data}
                 entityKey="sales"
-                getter={getSales}
                 setOpen={setOpen}
                 setFormData={setFormData}
                 showEditAction={auth?.user.role === 'ADMINISTRADOR' || auth?.user.role === 'VENDEDOR'}

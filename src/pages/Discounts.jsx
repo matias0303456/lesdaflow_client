@@ -49,6 +49,11 @@ export function Discounts() {
     }, []);
 
     useEffect(() => {
+        const { page, offset } = state['discounts']
+        getDiscounts(`?page=${page}&offset=${offset}`)
+    }, [state['discounts']])
+
+    useEffect(() => {
         if (open === 'EDIT' || open === 'VIEW') {
             setDiscountProducts(formData.discount_by_products)
             setDiscountSuppliers(formData.discount_by_suppliers)
@@ -62,7 +67,6 @@ export function Discounts() {
                 loading={loadingDiscounts || loadingSuppliers || loadingProducts || disabled}
                 rows={state.discounts.data}
                 entityKey="discounts"
-                getter={getDiscounts}
                 setOpen={setOpen}
                 setFormData={setFormData}
                 showEditAction

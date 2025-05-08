@@ -36,6 +36,11 @@ export function Suppliers() {
         if (auth?.user.role !== 'ADMINISTRADOR') navigate(auth?.user.role === 'CHOFER' ? '/prep-ventas' : "/productos")
     }, [])
 
+    useEffect(() => {
+        const { page, offset } = state['suppliers']
+        getSuppliers(`?page=${page}&offset=${offset}`)
+    }, [state['suppliers']])
+
     return (
         <Layout title="Proveedores">
             <DataGridWithBackendPagination
@@ -43,7 +48,6 @@ export function Suppliers() {
                 headCells={headCells}
                 rows={state.suppliers.data}
                 entityKey="suppliers"
-                getter={getSuppliers}
                 setOpen={setOpen}
                 setFormData={setFormData}
                 showEditAction

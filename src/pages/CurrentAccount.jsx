@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Box, Button } from "@mui/material";
 import { format } from "date-fns";
@@ -24,7 +24,7 @@ export function CurrentAccount() {
   const navigate = useNavigate()
 
   const { getUsers } = useUsers()
-  const { loadingSales, setOpen, getSales } = useSales()
+  const { loadingSales, setOpen, getSales, pendingFilter, setPendingFilter } = useSales()
   const { setFormData } = useForm({
     defaultData: {}
   })
@@ -37,7 +37,10 @@ export function CurrentAccount() {
     }
   }, [])
 
-  const [pendingFilter, setPendingFilter] = useState(true)
+  useEffect(() => {
+    const { page, offset } = state['sales']
+    getSales(`?page=${page}&offset=${offset}&pending=true'`)
+  }, [state['sales']])
 
   const headCells = [
     {
@@ -118,9 +121,6 @@ export function CurrentAccount() {
         headCells={headCells}
         rows={state.sales.data}
         entityKey="sales"
-        salesAdapter="CurrentAccount"
-        pendingFilter={pendingFilter}
-        getter={getSales}
         setOpen={setOpen}
         setFormData={setFormData}
         showPDFAction={`${REPORT_URL}/accounts-pdf?token=${auth?.token}&id=`}
@@ -136,7 +136,6 @@ export function CurrentAccount() {
               showWorkPlace
               showPending
               showSeller={auth?.user.role === 'ADMINISTRADOR'}
-              salesAdapter="CurrentAccount"
               pendingFilter={pendingFilter}
               setPendingFilter={setPendingFilter}
               width={{

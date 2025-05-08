@@ -40,6 +40,11 @@ export function Users() {
     if (auth?.user.role !== 'ADMINISTRADOR') navigate(auth?.user.role === 'CHOFER' ? '/prep-ventas' : "/productos")
   }, [])
 
+  useEffect(() => {
+    const { page, offset } = state['users']
+    getUsers(`?page=${page}&offset=${offset}`)
+  }, [state['users']])
+
   return (
     <Layout title="Usuarios">
       <DataGridWithBackendPagination
@@ -47,7 +52,6 @@ export function Users() {
         headCells={headCells}
         rows={state.users.data}
         entityKey="users"
-        getter={getUsers}
         setOpen={setOpen}
         setFormData={setFormData}
         showEditAction

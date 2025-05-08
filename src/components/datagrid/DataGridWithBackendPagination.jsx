@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { useState, useMemo, useContext, useEffect, useCallback } from 'react'
+import { useState, useMemo, useContext } from 'react'
 import Box from '@mui/material/Box'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
@@ -28,7 +28,6 @@ import { EnhancedTableHead } from './EnhancedTableHead'
 
 import { deadlineIsPast, getStock, saleIsPrepared } from '../../utils/helpers'
 import { getComparator, stableSort } from '../../utils/dataGrid'
-import { debounce } from 'lodash'
 
 export function DataGridWithBackendPagination({
   children,
@@ -40,7 +39,6 @@ export function DataGridWithBackendPagination({
   setFormData,
   setFormDataMovement,
   entityKey,
-  getter,
   contentHeader,
   loading,
   deadlineColor = false,
@@ -55,8 +53,6 @@ export function DataGridWithBackendPagination({
   showConvertToSale = false,
   showInput = false,
   showOutput = false,
-  salesAdapter = false,
-  pendingFilter = false
 }) {
 
   const { auth } = useContext(AuthContext)
@@ -90,29 +86,6 @@ export function DataGridWithBackendPagination({
     () => stableSort(rows, getComparator(order, orderBy, headCells.find(hc => hc.id === orderBy)?.sorter)),
     [order, orderBy, state[entityKey].page, state[entityKey].offset, rows, headCells]
   )
-
-  const handleGetter = useCallback(debounce((salesFilter) => {
-    getter(`?page=${state[entityKey].page}&offset=${state[entityKey].offset}${state[entityKey].filters.replace('&type=', '').replace('CONTADO', '&type=CONTADO').replace('POXIPOL', '&type=POXIPOL').replace('CUENTA_CORRIENTE', salesAdapter && salesAdapter === 'Budgets' ? '&type=CUENTA_CORRIENTE' : 'CUENTA_CORRIENTE')}${salesAdapter && salesAdapter === 'CurrentAccount' ? '&type=CUENTA_CORRIENTE' : ''}${salesFilter}`)
-  }, 1000), [state[entityKey].page, state[entityKey].offset, state[entityKey].filters, salesAdapter, pendingFilter])
-
-  useEffect(() => {
-    let salesFilter = ''
-    if (salesAdapter) {
-      if (salesAdapter === 'SalesToDeliver') {
-        salesFilter = '&is_prepared=true'
-      }
-      if (salesAdapter === 'Comissions') {
-        salesFilter = '&is_delivered=true'
-      }
-      if (salesAdapter === 'CurrentAccount') {
-        salesFilter = pendingFilter ? '&pending=true' : ''
-      }
-    }
-    handleGetter(salesFilter)
-    return () => {
-      handleGetter.cancel()
-    }
-  }, [state[entityKey].page, state[entityKey].offset, state[entityKey].filters, salesAdapter, pendingFilter])
 
   return (
     <Box sx={{ width: '100%', backgroundColor: '#fff', padding: 1 }}>

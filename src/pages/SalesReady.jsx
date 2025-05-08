@@ -58,6 +58,11 @@ export function SalesReady() {
     }
   }, [formData])
 
+  useEffect(() => {
+    const { page, offset } = state['sales']
+    getSales(`?page=${page}&offset=${offset}`)
+}, [state['sales']])
+
   const headCells = [
     {
       id: 'id',
@@ -141,7 +146,6 @@ export function SalesReady() {
         headCells={headCells}
         rows={state.sales.data}
         entityKey="sales"
-        getter={getSales}
         setOpen={setOpen}
         setFormData={setFormData}
         showSettingsAction="Preparar venta"

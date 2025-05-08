@@ -47,6 +47,7 @@ export function useSales() {
     const [isBlocked, setIsBlocked] = useState(false)
     const [salesByClient, setSalesByClient] = useState([])
     const [discountApplied, setDiscountApplied] = useState('')
+    const [pendingFilter, setPendingFilter] = useState(true)
 
     async function getSales(params) {
         const { status, data } = await get(params)
@@ -355,6 +356,8 @@ export function useSales() {
         discountApplied,
         setDiscountApplied,
         saleFormData,
-        headCells
+        headCells,
+        pendingFilter,
+        setPendingFilter
     }
 }

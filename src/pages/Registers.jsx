@@ -42,6 +42,11 @@ export function Registers() {
     }, [])
 
     useEffect(() => {
+        const { page, offset } = state['registers']
+        getRegisters(`?page=${page}&offset=${offset}`)
+    }, [state['registers']])
+
+    useEffect(() => {
         if (open === 'SETTINGS') {
             getCurrentRegister(formData)
         }
@@ -54,7 +59,6 @@ export function Registers() {
                 headCells={headCells}
                 rows={state.registers.data}
                 entityKey="registers"
-                getter={getRegisters}
                 setOpen={setOpen}
                 setFormData={setFormData}
                 showSettingsAction="Cerrar caja"

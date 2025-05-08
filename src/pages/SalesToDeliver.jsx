@@ -76,6 +76,11 @@ export function SalesToDeliver() {
         }
     }, [formData])
 
+    useEffect(() => {
+        const { page, offset } = state['sales']
+        getSales(`?page=${page}&offset=${offset}&is_prepared=true`)
+    }, [state['sales']])
+
     const headCells = [
         {
             id: 'id',
@@ -167,8 +172,6 @@ export function SalesToDeliver() {
                 headCells={headCells}
                 rows={state.sales.data}
                 entityKey="sales"
-                salesAdapter="SalesToDeliver"
-                getter={getSales}
                 setOpen={setOpen}
                 setFormData={setFormData}
                 showPDFAction={`${REPORT_URL}/venta-pdf?token=${auth?.token}&id=`}

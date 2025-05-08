@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { useContext, useEffect } from "react";
 import { Box, Button, Checkbox, FormControl, FormControlLabel, Input, InputLabel, MenuItem, Select } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
@@ -13,7 +14,6 @@ export function SaleFilter({
     showType,
     width,
     showPending,
-    salesAdapter,
     pendingFilter,
     setPendingFilter
 }) {
@@ -58,25 +58,15 @@ export function SaleFilter({
                 }
             })
         } else if (loaded) {
-            let newFilters = ''
-            if (salesAdapter && salesAdapter === 'CurrentAccount') {
-                newFilters = ''
-            } else if (salesAdapter && salesAdapter === 'Comissions') {
-                newFilters += '&is_delivered=true'
-            } else if (salesAdapter === 'SalesToDeliver') {
-                newFilters += '&is_prepared=true'
-            } else {
-                newFilters = ''
-            }
             dispatch({
                 type: 'SALES',
                 payload: {
                     ...state.sales,
-                    filters: newFilters
+                    filters: ''
                 }
             })
         }
-    }, [state.sales.filter_fields, salesAdapter, pendingFilter])
+    }, [state.sales.filter_fields, pendingFilter])
 
     return (
         <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, width: width.main, alignItems: 'center', justifyContent: 'end' }}>

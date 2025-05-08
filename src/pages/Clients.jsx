@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Box, Button, FormControl, Input, InputLabel, MenuItem, Select, Tab, Tabs, Typography } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
@@ -45,6 +45,11 @@ export function Clients() {
         reset(setOpen)
     }
 
+    useEffect(() => {
+        const { page, offset } = state['clients']
+        getClients(`?page=${page}&offset=${offset}`)
+    }, [state['clients']])
+
     return (
         <Layout title="Clientes">
             <DataGridWithBackendPagination
@@ -65,7 +70,6 @@ export function Clients() {
                 loading={loadingClients || disabled}
                 rows={state.clients.data}
                 entityKey="clients"
-                getter={getClients}
                 setOpen={setOpen}
                 setFormData={setFormData}
                 showEditAction

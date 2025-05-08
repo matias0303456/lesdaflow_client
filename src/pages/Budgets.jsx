@@ -96,6 +96,11 @@ export function Budgets() {
         }
     }, [formData])
 
+    useEffect(() => {
+        const { page, offset } = state['budgets']
+        getBudgets(`?page=${page}&offset=${offset}`)
+    }, [state['budgets']])
+
     return (
         <Layout title="Presupuestos">
             <DataGridWithBackendPagination
@@ -103,13 +108,11 @@ export function Budgets() {
                 loading={loadingBudgets || disabled}
                 rows={state.budgets.data}
                 entityKey="budgets"
-                getter={getBudgets}
                 setOpen={setOpen}
                 setOpenNewSale={setOpenNewSale}
                 setFormData={setFormData}
                 showPDFAction={`${REPORT_URL}/presupuesto-pdf?token=${auth?.token}&id=`}
                 showConvertToSale="Convertir a venta"
-                salesAdapter="Budgets"
                 showViewAction
                 showEditAction
                 showDeleteAction

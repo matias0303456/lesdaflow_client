@@ -62,6 +62,11 @@ export function Products() {
     }, [])
 
     useEffect(() => {
+        const { page, offset } = state['products']
+        getProducts(`?page=${page}&offset=${offset}`)
+    }, [state['products']])
+
+    useEffect(() => {
         const buy_price = formData.buy_price.toString().length === 0 ? 0 : parseInt(formData.buy_price)
         const earn = formData.earn.toString().length === 0 ? 0 : parseInt(formData.earn)
         setEarnPrice(`$${(buy_price + ((buy_price / 100) * earn)).toFixed(2)}`)
@@ -77,7 +82,6 @@ export function Products() {
                 setFormData={setFormData}
                 setFormDataMovement={setFormDataMovement}
                 entityKey="products"
-                getter={getProducts}
                 loading={loadingSuppliers || loadingProducts || disabled}
                 deadlineColor="products"
                 showDeleteAction={auth?.user.role === 'ADMINISTRADOR'}
