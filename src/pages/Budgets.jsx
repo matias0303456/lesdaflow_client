@@ -99,7 +99,7 @@ export function Budgets() {
     useEffect(() => {
         const { page, offset } = state['budgets']
         getBudgets(`?page=${page}&offset=${offset}`)
-    }, [state['budgets']])
+    }, [state['budgets'].filters])
 
     return (
         <Layout title="Presupuestos">

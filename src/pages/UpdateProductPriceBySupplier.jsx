@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Box,
@@ -50,7 +50,7 @@ export function UpdateProductPriceBySupplier() {
     getSuppliers()
   }, [])
 
-  const headCells = [
+  const headCells = useMemo(() => [
     {
       id: "code",
       numeric: false,
@@ -97,7 +97,7 @@ export function UpdateProductPriceBySupplier() {
       sorter: (row) => parseFloat(getProductNewSalePriceByPercentage(row, formData.percentage).toFixed(2)),
       accessor: (row) => `$${getProductNewSalePriceByPercentage(row, formData.percentage).toFixed(2)}`
     }
-  ]
+  ], [state.suppliers.data])
 
   return (
     <Layout title="Actualizar Precios Proveedor">

@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -11,10 +11,10 @@ import { AuthContext } from "../providers/AuthProvider";
 import { DataContext } from "../providers/DataProvider";
 import { useForm } from "../hooks/useForm";
 import { useUsers } from "../hooks/useUsers";
+import { useSales } from "../hooks/useSales";
 
 import { Layout } from "../components/common/Layout";
 import { DataGridWithFrontendPagination } from "../components/datagrid/DataGridWithFrontendPagination";
-import { useSales } from "../hooks/useSales";
 
 export function SalesSearch() {
 
@@ -48,7 +48,7 @@ export function SalesSearch() {
     }
   }, [formData])
 
-  const headCells = [
+  const headCells = useMemo(() => [
     {
       id: "id",
       numeric: true,
@@ -78,7 +78,7 @@ export function SalesSearch() {
       label: "Tipo de Comprobante",
       accessor: (row) => row.type.replaceAll('CUENTA_CORRIENTE', 'CTA CTE')
     },
-  ];
+  ], [state.sales.data])
 
   return (
     <Layout title="Búsqueda de Ventas">

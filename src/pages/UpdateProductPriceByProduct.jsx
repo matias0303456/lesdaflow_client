@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Box,
@@ -48,7 +48,7 @@ export function UpdateProductPriceByProduct() {
     }
   }
 
-  const headCells = [
+  const headCells = useMemo(() => [
     {
       id: "code",
       numeric: false,
@@ -93,7 +93,7 @@ export function UpdateProductPriceByProduct() {
         </Tooltip>
       )
     },
-  ]
+  ], [state.products.data])
 
   return (
     <Layout title="Actualizar Precios Productos">

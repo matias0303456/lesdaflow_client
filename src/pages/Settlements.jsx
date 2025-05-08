@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { AuthContext } from "../providers/AuthProvider";
@@ -26,7 +26,7 @@ export function Settlements() {
         }
     }, [])
 
-    const headCells = [
+    const headCells = useMemo(() => [
         {
             id: "id",
             numeric: false,
@@ -99,7 +99,7 @@ export function Settlements() {
             sorter: (row) => row.commission_poxipol + row.commission_contado + row.commission_cta_cte,
             accessor: (row) => `$${(row.commission_poxipol + row.commission_contado + row.commission_cta_cte).toFixed(2)}`
         }
-    ];
+    ], [settlements])
 
     return (
         <Layout title="Liquidaciones">

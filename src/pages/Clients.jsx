@@ -48,7 +48,7 @@ export function Clients() {
     useEffect(() => {
         const { page, offset } = state['clients']
         getClients(`?page=${page}&offset=${offset}`)
-    }, [state['clients']])
+    }, [state['clients'].filters])
 
     return (
         <Layout title="Clientes">

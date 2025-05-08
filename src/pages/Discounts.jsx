@@ -51,7 +51,7 @@ export function Discounts() {
     useEffect(() => {
         const { page, offset } = state['discounts']
         getDiscounts(`?page=${page}&offset=${offset}`)
-    }, [state['discounts']])
+    }, [state['discounts'].filters])
 
     useEffect(() => {
         if (open === 'EDIT' || open === 'VIEW') {

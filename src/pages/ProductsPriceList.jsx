@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { Box, Button, Input, FormControl, InputLabel, Typography } from "@mui/material";
 
@@ -26,7 +26,7 @@ export function ProductsPriceList() {
     if (auth?.user.role !== 'ADMINISTRADOR' && auth?.user.role !== 'VENDEDOR') navigate('/prep-ventas')
   }, [])
 
-  const headCells = [
+  const headCells = useMemo(() => [
     {
       id: 'code',
       numeric: false,
@@ -57,7 +57,7 @@ export function ProductsPriceList() {
       sorter: (row) => getStock(row),
       accessor: (row) => getStock(row)
     }
-  ]
+  ], [state.products.data])
 
   return (
     <Layout title="Lista de Precios">

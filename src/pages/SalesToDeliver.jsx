@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Box, Button, Typography } from "@mui/material";
 import { format } from "date-fns";
@@ -79,9 +79,9 @@ export function SalesToDeliver() {
     useEffect(() => {
         const { page, offset } = state['sales']
         getSales(`?page=${page}&offset=${offset}&is_prepared=true`)
-    }, [state['sales']])
+    }, [state['sales'].filters])
 
-    const headCells = [
+    const headCells = useMemo(() => [
         {
             id: 'id',
             numeric: false,
@@ -163,7 +163,7 @@ export function SalesToDeliver() {
             sorter: (row) => getSaleTotal(row).replace('$', ''),
             accessor: (row) => getSaleTotal(row)
         }
-    ]
+    ], [state.sales.data])
 
     return (
         <Layout title="Ventas Pendientes Entrega">

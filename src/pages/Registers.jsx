@@ -44,7 +44,7 @@ export function Registers() {
     useEffect(() => {
         const { page, offset } = state['registers']
         getRegisters(`?page=${page}&offset=${offset}`)
-    }, [state['registers']])
+    }, [state['registers'].filters])
 
     useEffect(() => {
         if (open === 'SETTINGS') {

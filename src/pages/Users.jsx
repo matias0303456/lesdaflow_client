@@ -43,7 +43,7 @@ export function Users() {
   useEffect(() => {
     const { page, offset } = state['users']
     getUsers(`?page=${page}&offset=${offset}`)
-  }, [state['users']])
+  }, [state['users'].filters])
 
   return (
     <Layout title="Usuarios">

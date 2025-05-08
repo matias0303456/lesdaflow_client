@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { Box, Button } from "@mui/material";
 import { format } from "date-fns";
@@ -40,9 +40,9 @@ export function CurrentAccount() {
   useEffect(() => {
     const { page, offset } = state['sales']
     getSales(`?page=${page}&offset=${offset}&pending=true'`)
-  }, [state['sales']])
+  }, [state['sales'].filters])
 
-  const headCells = [
+  const headCells = useMemo(() => [
     {
       id: "id",
       numeric: false,
@@ -112,7 +112,7 @@ export function CurrentAccount() {
       sorter: (row) => getAccountStatus(row),
       accessor: (row) => getAccountStatus(row)
     }
-  ];
+  ], [state.sales.data])
 
   return (
     <Layout title="Cuentas Corrientes">

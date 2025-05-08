@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Box, FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 
@@ -31,7 +31,7 @@ export function ClientsBySeller() {
     getClients()
   }, [])
 
-  const headCells = [
+  const headCells = useMemo(() => [
     {
       id: "client",
       numeric: false,
@@ -76,7 +76,7 @@ export function ClientsBySeller() {
       sorter: (row) => row.email ?? '',
       accessor: "email"
     },
-  ];
+  ], [state.clients.data])
 
   return (
     <Layout title="Clientes por Vendedor">

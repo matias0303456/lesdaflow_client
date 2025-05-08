@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Box, Button, Checkbox, FormControlLabel, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
 import { format } from "date-fns";
@@ -61,9 +61,9 @@ export function SalesReady() {
   useEffect(() => {
     const { page, offset } = state['sales']
     getSales(`?page=${page}&offset=${offset}`)
-}, [state['sales']])
+  }, [state['sales'].filters])
 
-  const headCells = [
+  const headCells = useMemo(() => [
     {
       id: 'id',
       numeric: false,
@@ -137,7 +137,7 @@ export function SalesReady() {
       sorter: (row) => getSaleTotal(row).replace('$', ''),
       accessor: (row) => getSaleTotal(row)
     }
-  ]
+  ], [state.sales.data])
 
   return (
     <Layout title="Ventas Pendientes Preparacion">

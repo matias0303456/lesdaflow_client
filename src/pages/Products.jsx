@@ -64,7 +64,7 @@ export function Products() {
     useEffect(() => {
         const { page, offset } = state['products']
         getProducts(`?page=${page}&offset=${offset}`)
-    }, [state['products']])
+    }, [state['products'].filters])
 
     useEffect(() => {
         const buy_price = formData.buy_price.toString().length === 0 ? 0 : parseInt(formData.buy_price)

@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Box, FormControl, Autocomplete, TextField } from "@mui/material";
 
@@ -28,7 +28,7 @@ export function ProductHistory() {
         }
     }, []);
 
-    const headCells = [
+    const headCells = useMemo(() => [
         {
             id: "id",
             numeric: false,
@@ -77,7 +77,7 @@ export function ProductHistory() {
             sorter: (row) => row.created_by,
             accessor: (row) => row.created_by
         }
-    ]
+    ], [])
 
     return (
         <Layout title="Historial producto">

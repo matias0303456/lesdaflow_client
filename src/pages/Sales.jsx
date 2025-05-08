@@ -85,7 +85,7 @@ export function Sales() {
     useEffect(() => {
         const { page, offset } = state['sales']
         getSales(`?page=${page}&offset=${offset}`)
-    }, [state['sales']])
+    }, [state['sales'].filters])
 
     return (
         <Layout title="Ventas">
