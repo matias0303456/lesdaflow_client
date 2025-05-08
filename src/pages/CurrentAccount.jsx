@@ -38,8 +38,8 @@ export function CurrentAccount() {
   }, [])
 
   useEffect(() => {
-    const { page, offset } = state['sales']
-    getSales(`?page=${page}&offset=${offset}&pending=true'`)
+    const { page, offset, filters } = state['sales']
+    getSales(`?page=${page}&offset=${offset}&pending=true${filters}`)
   }, [state['sales'].filters])
 
   const headCells = useMemo(() => [

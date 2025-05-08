@@ -77,8 +77,8 @@ export function SalesToDeliver() {
     }, [formData])
 
     useEffect(() => {
-        const { page, offset } = state['sales']
-        getSales(`?page=${page}&offset=${offset}&is_prepared=true`)
+        const { page, offset, filters } = state['sales']
+        getSales(`?page=${page}&offset=${offset}&is_prepared=true${filters}`)
     }, [state['sales'].filters])
 
     const headCells = useMemo(() => [

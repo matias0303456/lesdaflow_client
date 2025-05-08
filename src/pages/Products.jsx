@@ -62,8 +62,8 @@ export function Products() {
     }, [])
 
     useEffect(() => {
-        const { page, offset } = state['products']
-        getProducts(`?page=${page}&offset=${offset}`)
+        const { page, offset, filters } = state['products']
+        getProducts(`?page=${page}&offset=${offset}${filters}`)
     }, [state['products'].filters])
 
     useEffect(() => {

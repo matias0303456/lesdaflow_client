@@ -83,8 +83,8 @@ export function Sales() {
     }, [formData.client_id])
 
     useEffect(() => {
-        const { page, offset } = state['sales']
-        getSales(`?page=${page}&offset=${offset}`)
+        const { page, offset, filters } = state['sales']
+        getSales(`?page=${page}&offset=${offset}${filters}`)
     }, [state['sales'].filters])
 
     return (

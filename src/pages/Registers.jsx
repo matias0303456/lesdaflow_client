@@ -42,8 +42,8 @@ export function Registers() {
     }, [])
 
     useEffect(() => {
-        const { page, offset } = state['registers']
-        getRegisters(`?page=${page}&offset=${offset}`)
+        const { page, offset, filters } = state['registers']
+        getRegisters(`?page=${page}&offset=${offset}${filters}`)
     }, [state['registers'].filters])
 
     useEffect(() => {

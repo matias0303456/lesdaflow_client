@@ -97,8 +97,8 @@ export function Budgets() {
     }, [formData])
 
     useEffect(() => {
-        const { page, offset } = state['budgets']
-        getBudgets(`?page=${page}&offset=${offset}`)
+        const { page, offset, filters } = state['budgets']
+        getBudgets(`?page=${page}&offset=${offset}${filters}`)
     }, [state['budgets'].filters])
 
     return (

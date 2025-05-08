@@ -49,8 +49,8 @@ export function Discounts() {
     }, []);
 
     useEffect(() => {
-        const { page, offset } = state['discounts']
-        getDiscounts(`?page=${page}&offset=${offset}`)
+        const { page, offset, filters } = state['discounts']
+        getDiscounts(`?page=${page}&offset=${offset}${filters}`)
     }, [state['discounts'].filters])
 
     useEffect(() => {
