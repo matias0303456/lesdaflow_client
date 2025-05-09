@@ -5,6 +5,7 @@ import { format } from "date-fns";
 
 import { AuthContext } from "../providers/AuthProvider";
 import { DataContext } from "../providers/DataProvider";
+import { FiltersContext } from "../providers/FiltersProvider";
 import { useForm } from "../hooks/useForm";
 import { useSales } from "../hooks/useSales";
 import { useUsers } from "../hooks/useUsers";
@@ -19,7 +20,8 @@ import { REPORT_URL } from "../utils/urls";
 export function CurrentAccount() {
 
   const { auth } = useContext(AuthContext)
-  const { state } = useContext(DataContext)
+  const { state: dataState } = useContext(DataContext)
+  const { state: filtersState } = useContext(FiltersContext)
 
   const navigate = useNavigate()
 
@@ -38,9 +40,9 @@ export function CurrentAccount() {
   }, [])
 
   useEffect(() => {
-    const { page, offset, filters } = state['sales']
+    const { page, offset, filters } = filtersState['sales']
     getSales(`?page=${page}&offset=${offset}&pending=true${filters}`)
-  }, [state['sales'].filters])
+  }, [filtersState['sales']])
 
   const headCells = useMemo(() => [
     {
@@ -112,7 +114,7 @@ export function CurrentAccount() {
       sorter: (row) => getAccountStatus(row),
       accessor: (row) => getAccountStatus(row)
     }
-  ], [state.sales.data])
+  ], [dataState.sales.data])
 
   return (
     <Layout title="Cuentas Corrientes">
@@ -122,7 +124,7 @@ export function CurrentAccount() {
         </Box> :
         <DataGridWithBackendPagination
           headCells={headCells}
-          rows={state.sales.data}
+          rows={dataState.sales.data}
           entityKey="sales"
           setOpen={setOpen}
           setFormData={setFormData}
@@ -130,8 +132,8 @@ export function CurrentAccount() {
           contentHeader={
             <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between' }}>
               <Button variant="outlined" color='error' sx={{ width: '10%' }} onClick={() => {
-                const { client, work_place, id } = state.sales.filter_fields
-                window.open(`${REPORT_URL}/accounts-pdf?token=${auth?.token}&client=${client}&work_place=${work_place}&id=${id}&pending=${pendingFilter}`, '_blank')
+                const { filters } = filtersState['sales']
+                window.open(`${REPORT_URL}/accounts-pdf?token=${auth?.token}${filters}&pending=${pendingFilter}`, '_blank')
               }}>
                 PDF
               </Button>

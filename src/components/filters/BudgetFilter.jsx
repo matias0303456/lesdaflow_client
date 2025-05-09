@@ -1,62 +1,33 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Box, Button, FormControl, Input, InputLabel, MenuItem, Select } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { es } from "date-fns/locale";
 
-import { DataContext } from "../../providers/DataProvider";
+import { FiltersContext } from "../../providers/FiltersProvider";
 
 export function BudgetFilter() {
 
-    const { state, dispatch } = useContext(DataContext)
+    const { state, dispatch } = useContext(FiltersContext)
 
-    const handleChange = e => {
-        dispatch({
-            type: 'BUDGETS',
-            payload: {
-                ...state.budgets,
-                filter_fields: {
-                    ...state.budgets.filter_fields,
-                    loaded: true,
-                    [e.target.name]: e.target.value
-                }
-            }
-        })
-    }
+    const [filter, setFilter] = useState({ from: '', to: '', user: '', client: '', type: '' })
 
-    const handleReset = () => {
-        dispatch({
-            type: 'BUDGETS',
-            payload: {
-                ...state.budgets,
-                filter_fields: { from: '', to: '', user: '', client: '', type: '', loaded: false },
-                filters: ''
-            }
-        })
-    }
+    const handleChange = e => setFilter({ ...filter, [e.target.name]: e.target.value })
+
+    const handleReset = () => setFilter({ from: '', to: '', user: '', client: '', type: '' })
 
     useEffect(() => {
-        const { from, to, user, client, loaded, type } = state.budgets.filter_fields
+        const { from, to, user, client, type } = filter
         const fromIsNotString = typeof from !== 'string'
         const toIsNotString = typeof to !== 'string'
-        if (fromIsNotString || toIsNotString || user.length > 0 || client.length > 0 || type.length > 0) {
-            dispatch({
-                type: 'BUDGETS',
-                payload: {
-                    ...state.budgets,
-                    filters: `&from=${fromIsNotString ? new Date(from).toISOString() : ''}&to=${toIsNotString ? new Date(to).toISOString() : ''}&user=${user}&client=${client}&type=${type}`
-                }
-            })
-        } else if (loaded) {
-            dispatch({
-                type: 'BUDGETS',
-                payload: {
-                    ...state.budgets,
-                    filters: ''
-                }
-            })
-        }
-    }, [state.budgets.filter_fields])
+        dispatch({
+            type: 'BUDGETS',
+            payload: {
+                ...state.budgets,
+                filters: `&from=${fromIsNotString ? new Date(from).toISOString() : ''}&to=${toIsNotString ? new Date(to).toISOString() : ''}&user=${user}&client=${client}&type=${type}`
+            }
+        })
+    }, [filter])
 
     return (
         <Box sx={{
@@ -71,7 +42,7 @@ export function BudgetFilter() {
                 <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
                     <DatePicker
                         label="Desde"
-                        value={state.budgets.filter_fields.from.length === 0 ? new Date(Date.now()) : new Date(state.budgets.filter_fields.from)}
+                        value={filter.from.length === 0 ? new Date(Date.now()) : new Date(filter.from)}
                         onChange={value => handleChange({ target: { name: 'from', value: new Date(value.toISOString()) } })}
                     />
                 </LocalizationProvider>
@@ -80,7 +51,7 @@ export function BudgetFilter() {
                 <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
                     <DatePicker
                         label="Hasta"
-                        value={state.budgets.filter_fields.to.length === 0 ? new Date(Date.now()) : new Date(state.budgets.filter_fields.to)}
+                        value={filter.to.length === 0 ? new Date(Date.now()) : new Date(filter.to)}
                         onChange={value => handleChange({ target: { name: 'to', value: new Date(value.toISOString()) } })}
                     />
                 </LocalizationProvider>
@@ -91,7 +62,7 @@ export function BudgetFilter() {
                     id="client"
                     type="text"
                     name="client"
-                    value={state.budgets.filter_fields.client}
+                    value={filter.client}
                     onChange={handleChange}
                 />
             </FormControl>
@@ -101,7 +72,7 @@ export function BudgetFilter() {
                     id="user"
                     type="text"
                     name="user"
-                    value={state.budgets.filter_fields.user}
+                    value={filter.user}
                     onChange={handleChange}
                 />
             </FormControl>
@@ -110,7 +81,7 @@ export function BudgetFilter() {
                 <Select
                     labelId="type-select"
                     id="type"
-                    value={state.budgets.filter_fields.type}
+                    value={filter.type}
                     label="Tipo"
                     name="type"
                     onChange={handleChange}

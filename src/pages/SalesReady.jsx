@@ -5,6 +5,7 @@ import { format } from "date-fns";
 
 import { AuthContext } from "../providers/AuthProvider";
 import { DataContext } from "../providers/DataProvider";
+import { FiltersContext } from "../providers/FiltersProvider";
 import { useForm } from "../hooks/useForm";
 import { useSales } from "../hooks/useSales";
 
@@ -19,7 +20,8 @@ import { REPORT_URL } from "../utils/urls";
 export function SalesReady() {
 
   const { auth } = useContext(AuthContext)
-  const { state } = useContext(DataContext)
+  const { state: dataState } = useContext(DataContext)
+  const { state: filtersState } = useContext(FiltersContext)
 
   const navigate = useNavigate()
 
@@ -59,9 +61,9 @@ export function SalesReady() {
   }, [formData])
 
   useEffect(() => {
-    const { page, offset, filters } = state['sales']
+    const { page, offset, filters } = filtersState['sales']
     getSales(`?page=${page}&offset=${offset}${filters}`)
-  }, [state['sales'].filters])
+  }, [filtersState['sales']])
 
   const headCells = useMemo(() => [
     {
@@ -137,7 +139,7 @@ export function SalesReady() {
       sorter: (row) => getSaleTotal(row).replace('$', ''),
       accessor: (row) => getSaleTotal(row)
     }
-  ], [state.sales.data])
+  ], [dataState.sales.data])
 
   return (
     <Layout title="Ventas Pendientes Preparacion">
@@ -147,7 +149,7 @@ export function SalesReady() {
         </Box> :
         <DataGridWithBackendPagination
           headCells={headCells}
-          rows={state.sales.data}
+          rows={dataState.sales.data}
           entityKey="sales"
           setOpen={setOpen}
           setFormData={setFormData}

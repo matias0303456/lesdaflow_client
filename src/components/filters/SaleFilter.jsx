@@ -1,10 +1,11 @@
 /* eslint-disable react/prop-types */
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Box, Button, Checkbox, FormControl, FormControlLabel, Input, InputLabel, MenuItem, Select } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { es } from "date-fns/locale";
 
+import { FiltersContext } from "../../providers/FiltersProvider";
 import { DataContext } from "../../providers/DataProvider";
 
 export function SaleFilter({
@@ -18,55 +19,26 @@ export function SaleFilter({
     setPendingFilter
 }) {
 
-    const { state, dispatch } = useContext(DataContext)
+    const { state: dataState } = useContext(DataContext)
+    const { state, dispatch } = useContext(FiltersContext)
 
-    const handleChange = e => {
-        dispatch({
-            type: 'SALES',
-            payload: {
-                ...state.sales,
-                filter_fields: {
-                    ...state.sales.filter_fields,
-                    loaded: true,
-                    [e.target.name]: e.target.value
-                }
-            }
-        })
-    }
+    const [filter, setFilter] = useState({ client: '', work_place: '', id: '', user: '', date: '', type: '' })
 
-    const handleReset = () => {
-        dispatch({
-            type: 'SALES',
-            payload: {
-                ...state.sales,
-                filter_fields: { client: '', work_place: '', id: '', user: '', date: '', type: '', loaded: false },
-                filters: ''
-            }
-        })
-    }
+    const handleChange = e => setFilter({ ...filter, [e.target.name]: e.target.value })
+
+    const handleReset = () => setFilter({ client: '', work_place: '', id: '', user: '', date: '', type: '' })
 
     useEffect(() => {
-        const { client, work_place, id, user, date, type, loaded } = state.sales.filter_fields
+        const { client, work_place, id, user, date, type } = filter
         const dateIsNotString = typeof date !== 'string'
-        if (client.length > 0 || work_place.length > 0 || id.length > 0 ||
-            user.length > 0 || dateIsNotString || type.length > 0) {
-            dispatch({
-                type: 'SALES',
-                payload: {
-                    ...state.sales,
-                    filters: `&client=${client}&work_place=${work_place}&id=${id}&user=${user}&date=${dateIsNotString ? new Date(date).toISOString() : ''}&type=${type}`
-                }
-            })
-        } else if (loaded) {
-            dispatch({
-                type: 'SALES',
-                payload: {
-                    ...state.sales,
-                    filters: ''
-                }
-            })
-        }
-    }, [state.sales.filter_fields, pendingFilter])
+        dispatch({
+            type: 'SALES',
+            payload: {
+                ...state.sales,
+                filters: `&client=${client}&work_place=${work_place}&id=${id}&user=${user}&date=${dateIsNotString ? new Date(date).toISOString() : ''}&type=${type}`
+            }
+        })
+    }, [filter, pendingFilter])
 
     return (
         <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, width: width.main, alignItems: 'center', justifyContent: 'end' }}>
@@ -76,7 +48,7 @@ export function SaleFilter({
                     id="client"
                     type="text"
                     name="client"
-                    value={state.sales.filter_fields.client}
+                    value={filter.client}
                     onChange={handleChange}
                 />
             </FormControl>
@@ -87,7 +59,7 @@ export function SaleFilter({
                         id="work_place"
                         type="text"
                         name="work_place"
-                        value={state.sales.filter_fields.work_place}
+                        value={filter.work_place}
                         onChange={handleChange}
                     />
                 </FormControl>
@@ -98,7 +70,7 @@ export function SaleFilter({
                     id="id"
                     type="number"
                     name="id"
-                    value={state.sales.filter_fields.id}
+                    value={filter.id}
                     onChange={handleChange}
                 />
             </FormControl>
@@ -108,13 +80,13 @@ export function SaleFilter({
                     <Select
                         labelId="user-select"
                         id="user"
-                        value={state.sales.filter_fields.user}
+                        value={filter.user}
                         label="Vendedor"
                         name="user"
                         onChange={handleChange}
                     >
                         <MenuItem value="">Seleccione</MenuItem>
-                        {state.users.data.map(u => (
+                        {dataState.users.data.map(u => (
                             <MenuItem key={u.id} value={u.username}>{u.name}</MenuItem>
                         ))}
                     </Select>
@@ -125,7 +97,7 @@ export function SaleFilter({
                     <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
                         <DatePicker
                             label="Fecha"
-                            value={state.sales.filter_fields.date.length === 0 ? new Date(Date.now()) : new Date(state.sales.filter_fields.date)}
+                            value={filter.date.length === 0 ? new Date(Date.now()) : new Date(filter.date)}
                             onChange={value => handleChange({
                                 target: {
                                     name: 'date',
@@ -142,7 +114,7 @@ export function SaleFilter({
                     <Select
                         labelId="type-select"
                         id="type"
-                        value={state.sales.filter_fields.type}
+                        value={filter.type}
                         label="Tipo Comp."
                         name="type"
                         onChange={handleChange}

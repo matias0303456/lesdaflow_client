@@ -7,6 +7,7 @@ import { es } from "date-fns/locale"
 
 import { AuthContext } from "../providers/AuthProvider";
 import { DataContext } from "../providers/DataProvider";
+import { FiltersContext } from "../providers/FiltersProvider";
 import { useRegisters } from "../hooks/useRegisters";
 import { useUsers } from "../hooks/useUsers";
 
@@ -21,7 +22,8 @@ import { REPORT_URL } from "../utils/urls";
 export function Registers() {
 
     const { auth } = useContext(AuthContext)
-    const { state } = useContext(DataContext)
+    const { state: dataState } = useContext(DataContext)
+    const { state: filtersState } = useContext(FiltersContext)
 
     const { getUsers } = useUsers()
     const {
@@ -42,9 +44,9 @@ export function Registers() {
     }, [])
 
     useEffect(() => {
-        const { page, offset, filters } = state['registers']
+        const { page, offset, filters } = filtersState['registers']
         getRegisters(`?page=${page}&offset=${offset}${filters}`)
-    }, [state['registers'].filters])
+    }, [filtersState['registers']])
 
     useEffect(() => {
         if (open === 'SETTINGS') {
@@ -60,7 +62,7 @@ export function Registers() {
                 </Box> :
                 <DataGridWithBackendPagination
                     headCells={headCells}
-                    rows={state.registers.data}
+                    rows={dataState.registers.data}
                     entityKey="registers"
                     setOpen={setOpen}
                     setFormData={setFormData}

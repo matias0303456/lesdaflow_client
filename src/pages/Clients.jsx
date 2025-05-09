@@ -6,6 +6,7 @@ import { es } from "date-fns/locale";
 
 import { AuthContext } from "../providers/AuthProvider";
 import { DataContext } from "../providers/DataProvider";
+import { FiltersContext } from "../providers/FiltersProvider";
 import { useClients } from "../hooks/useClients";
 
 import { Layout } from "../components/common/Layout";
@@ -20,7 +21,8 @@ import { a11yProps } from "../utils/helpers";
 export function Clients() {
 
     const { auth } = useContext(AuthContext)
-    const { state } = useContext(DataContext)
+    const { state: dataState } = useContext(DataContext)
+    const { state: filtersState } = useContext(FiltersContext)
 
     const {
         loadingClients,
@@ -46,9 +48,9 @@ export function Clients() {
     }
 
     useEffect(() => {
-        const { page, offset, filters } = state['clients']
+        const { page, offset, filters } = filtersState['clients']
         getClients(`?page=${page}&offset=${offset}${filters}`)
-    }, [state['clients'].filters])
+    }, [filtersState['clients']])
 
     return (
         <Layout title="Clientes">
@@ -71,7 +73,7 @@ export function Clients() {
                             }
                         ]
                     }
-                    rows={state.clients.data}
+                    rows={dataState.clients.data}
                     entityKey="clients"
                     setOpen={setOpen}
                     setFormData={setFormData}

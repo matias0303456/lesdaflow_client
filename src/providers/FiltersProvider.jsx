@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import { createContext, useReducer } from "react";
-import { dataInitialState } from "../utils/dataInitialState";
+import { filtersInitialState } from "../utils/filtersInitialState";
 
 const reducer = (state, action) => {
     switch (action.type) {
@@ -23,27 +23,27 @@ const reducer = (state, action) => {
         case 'DISCOUNTS':
             return { ...state, discounts: action.payload }
         case 'RESET':
-            return dataInitialState;
+            return filtersInitialState;
         default:
             return state;
     }
 }
 
-export const DataContext = createContext({
-    state: dataInitialState,
+export const FiltersContext = createContext({
+    state: filtersInitialState,
     dispatch: () => { }
 });
 
-export function DataProvider({ children }) {
-    const [state, dispatch] = useReducer(reducer, dataInitialState);
+export function FiltersProvider({ children }) {
+    const [state, dispatch] = useReducer(reducer, filtersInitialState);
 
     const resetContext = () => {
         dispatch({ type: 'RESET' });
     };
 
     return (
-        <DataContext.Provider value={{ state, dispatch, resetContext }}>
+        <FiltersContext.Provider value={{ state, dispatch, resetContext }}>
             {children}
-        </DataContext.Provider>
+        </FiltersContext.Provider>
     );
 }

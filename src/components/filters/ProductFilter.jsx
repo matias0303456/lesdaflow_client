@@ -1,57 +1,30 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Box, Button, FormControl, Input, InputLabel, MenuItem, Select } from "@mui/material";
 
+import { FiltersContext } from "../../providers/FiltersProvider";
 import { DataContext } from "../../providers/DataProvider";
 
 export function ProductFilter() {
 
-    const { state, dispatch } = useContext(DataContext)
+    const { state: dataState } = useContext(DataContext)
+    const { state, dispatch } = useContext(FiltersContext)
 
-    const handleChange = e => {
-        dispatch({
-            type: 'PRODUCTS',
-            payload: {
-                ...state.products,
-                filter_fields: {
-                    ...state.products.filter_fields,
-                    loaded: true,
-                    [e.target.name]: e.target.value
-                }
-            }
-        })
-    }
+    const [filter, setFilter] = useState({ code: '', details: '', supplier_id: '' })
 
-    const handleReset = () => {
-        dispatch({
-            type: 'PRODUCTS',
-            payload: {
-                ...state.products,
-                filter_fields: { code: '', details: '', supplier_id: '', loaded: false },
-                filters: ''
-            }
-        })
-    }
+    const handleChange = e => setFilter({ ...filter, [e.target.name]: e.target.value })
+
+    const handleReset = () => setFilter({ code: '', details: '', supplier_id: '' })
 
     useEffect(() => {
-        const { code, details, supplier_id, loaded } = state.products.filter_fields
-        if (code.length > 0 || details.length > 0 || supplier_id.toString().length > 0) {
-            dispatch({
-                type: 'PRODUCTS',
-                payload: {
-                    ...state.products,
-                    filters: `&code=${code}&details=${details}&supplier_id=${supplier_id}`
-                }
-            })
-        } else if (loaded) {
-            dispatch({
-                type: 'PRODUCTS',
-                payload: {
-                    ...state.products,
-                    filters: ''
-                }
-            })
-        }
-    }, [state.products.filter_fields])
+        const { code, details, supplier_id } = filter
+        dispatch({
+            type: 'PRODUCTS',
+            payload: {
+                ...state.products,
+                filters: `&code=${code}&details=${details}&supplier_id=${supplier_id}`
+            }
+        })
+    }, [filter])
 
     return (
         <Box sx={{
@@ -67,7 +40,7 @@ export function ProductFilter() {
                     id="code"
                     type="text"
                     name="code"
-                    value={state.products.filter_fields.code}
+                    value={filter.code}
                     onChange={handleChange}
                 />
             </FormControl>
@@ -77,7 +50,7 @@ export function ProductFilter() {
                     id="details"
                     type="text"
                     name="details"
-                    value={state.products.filter_fields.details}
+                    value={filter.details}
                     onChange={handleChange}
                 />
             </FormControl>
@@ -86,13 +59,13 @@ export function ProductFilter() {
                 <Select
                     labelId="supplier-select"
                     id="supplier_id"
-                    value={state.products.filter_fields.supplier_id}
+                    value={filter.supplier_id}
                     label="Proveedor"
                     name="supplier_id"
                     onChange={handleChange}
                 >
                     <MenuItem value="">Seleccione</MenuItem>
-                    {state.suppliers.data.map(s => (
+                    {dataState.suppliers.data.map(s => (
                         <MenuItem key={s.id} value={s.id}>{s.name}</MenuItem>
                     ))}
                 </Select>

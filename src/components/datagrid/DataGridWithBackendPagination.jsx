@@ -22,6 +22,7 @@ import OutputSharpIcon from '@mui/icons-material/OutputSharp';
 
 import { AuthContext } from '../../providers/AuthProvider'
 import { DataContext } from '../../providers/DataProvider'
+import { FiltersContext } from '../../providers/FiltersProvider'
 
 import { EnhancedTableHead } from './EnhancedTableHead'
 
@@ -54,35 +55,36 @@ export function DataGridWithBackendPagination({
 }) {
 
   const { auth } = useContext(AuthContext)
-  const { state, dispatch } = useContext(DataContext)
+  const { state: dataState } = useContext(DataContext)
+  const { state: filtersState, dispatch } = useContext(FiltersContext)
 
 
   const [order, setOrder] = useState(defaultOrder)
   const [orderBy, setOrderBy] = useState(defaultOrderBy)
 
-  const handleRequestSort = (event, property) => {
+  const handleRequestSort = (_, property) => {
     const isAsc = orderBy === property && order === 'asc'
     setOrder(isAsc ? 'desc' : 'asc')
     setOrderBy(property)
   }
 
-  const handleChangePage = (event, newPage) => {
+  const handleChangePage = (_, newPage) => {
     dispatch({
       type: entityKey.toUpperCase(),
-      payload: { ...state[entityKey.toLowerCase()], page: newPage }
+      payload: { ...filtersState[entityKey.toLowerCase()], page: newPage }
     })
   }
 
   const handleChangeRowsPerPage = (event) => {
     dispatch({
       type: entityKey.toUpperCase(),
-      payload: { ...state[entityKey.toLowerCase()], page: 0, offset: parseInt(event.target.value, 10) }
+      payload: { ...filtersState[entityKey.toLowerCase()], page: 0, offset: parseInt(event.target.value, 10) }
     })
   }
 
   const visibleRows = useMemo(
     () => stableSort(rows, getComparator(order, orderBy, headCells.find(hc => hc.id === orderBy)?.sorter)),
-    [order, orderBy, state[entityKey].page, state[entityKey].offset, rows, headCells]
+    [order, orderBy, filtersState[entityKey].page, filtersState[entityKey].offset, rows, headCells]
   )
 
   return (
@@ -302,16 +304,16 @@ export function DataGridWithBackendPagination({
           rowsPerPageOptions={[5, 10, 25, 50, 100]}
           component="div"
           count={-1}
-          rowsPerPage={state[entityKey].offset}
+          rowsPerPage={filtersState[entityKey].offset}
           labelRowsPerPage="Registros por página"
-          labelDisplayedRows={({ from, to }) => `${from}–${to} de ${state[entityKey].count}`}
-          page={state[entityKey].page}
+          labelDisplayedRows={({ from, to }) => `${from}–${to} de ${dataState[entityKey].count}`}
+          page={filtersState[entityKey].page}
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
           slotProps={{
             actions: {
               nextButton: {
-                disabled: ((state[entityKey].page + 1) * state[entityKey].offset) >= state[entityKey].count
+                disabled: ((filtersState[entityKey].page + 1) * filtersState[entityKey].offset) >= dataState[entityKey].count
               }
             }
           }}

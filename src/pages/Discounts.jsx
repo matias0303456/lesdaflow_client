@@ -4,6 +4,7 @@ import { Box, Button, LinearProgress, Typography } from "@mui/material";
 
 import { AuthContext } from "../providers/AuthProvider";
 import { DataContext } from "../providers/DataProvider";
+import { FiltersContext } from "../providers/FiltersProvider";
 import { useDiscounts } from "../hooks/useDiscounts";
 import { useSuppliers } from "../hooks/useSuppliers";
 import { useProducts } from "../hooks/useProducts";
@@ -16,7 +17,8 @@ import { DiscountForm } from "../components/discounts/DiscountForm";
 export function Discounts() {
 
     const { auth } = useContext(AuthContext)
-    const { state } = useContext(DataContext)
+    const { state: dataState } = useContext(DataContext)
+    const { state: filtersState } = useContext(FiltersContext)
 
     const navigate = useNavigate()
 
@@ -49,9 +51,9 @@ export function Discounts() {
     }, []);
 
     useEffect(() => {
-        const { page, offset, filters } = state['discounts']
+        const { page, offset, filters } = filtersState['discounts']
         getDiscounts(`?page=${page}&offset=${offset}${filters}`)
-    }, [state['discounts'].filters])
+    }, [filtersState['discounts']])
 
     useEffect(() => {
         if (open === 'EDIT' || open === 'VIEW') {
@@ -68,7 +70,7 @@ export function Discounts() {
                 </Box> :
                 <DataGridWithBackendPagination
                     headCells={headCells}
-                    rows={state.discounts.data}
+                    rows={dataState.discounts.data}
                     entityKey="discounts"
                     setOpen={setOpen}
                     setFormData={setFormData}

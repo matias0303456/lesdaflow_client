@@ -18,11 +18,13 @@ import { BudgetForm } from "../components/commercial/BudgetForm";
 import { SaleForm } from "../components/commercial/SaleForm";
 
 import { REPORT_URL } from "../utils/urls";
+import { FiltersContext } from "../providers/FiltersProvider";
 
 export function Budgets() {
 
     const { auth } = useContext(AuthContext)
-    const { state } = useContext(DataContext)
+    const { state: dataState } = useContext(DataContext)
+    const { state: filtersState } = useContext(FiltersContext)
 
     const navigate = useNavigate()
 
@@ -97,9 +99,9 @@ export function Budgets() {
     }, [formData])
 
     useEffect(() => {
-        const { page, offset, filters } = state['budgets']
+        const { page, offset, filters } = filtersState['budgets']
         getBudgets(`?page=${page}&offset=${offset}${filters}`)
-    }, [state['budgets'].filters])
+    }, [filtersState['budgets']])
 
     return (
         <Layout title="Presupuestos">
@@ -109,7 +111,7 @@ export function Budgets() {
                 </Box> :
                 <DataGridWithBackendPagination
                     headCells={headCells}
-                    rows={state.budgets.data}
+                    rows={dataState.budgets.data}
                     entityKey="budgets"
                     setOpen={setOpen}
                     setOpenNewSale={setOpenNewSale}

@@ -4,6 +4,7 @@ import { Box, Button, LinearProgress, Typography } from "@mui/material";
 
 import { AuthContext } from "../providers/AuthProvider";
 import { DataContext } from "../providers/DataProvider";
+import { FiltersContext } from "../providers/FiltersProvider";
 import { useProducts } from "../hooks/useProducts";
 import { useClients } from '../hooks/useClients'
 import { useSales } from "../hooks/useSales";
@@ -22,7 +23,8 @@ import { getDeliveredDeadline, getSaleDifference } from "../utils/helpers";
 export function Sales() {
 
     const { auth } = useContext(AuthContext)
-    const { state } = useContext(DataContext)
+    const { state: dataState } = useContext(DataContext)
+    const { state: filtersState } = useContext(FiltersContext)
 
     const navigate = useNavigate()
 
@@ -68,13 +70,13 @@ export function Sales() {
     useEffect(() => {
         if ((open === 'EDIT' || open === 'VIEW') && saleProducts.length === 0) {
             setSaleProducts(formData.sale_products)
-            setDiscountApplied(state.discounts.data.find(d => d.name === formData.discount_name) ?? 'none')
+            setDiscountApplied(dataState.discounts.data.find(d => d.name === formData.discount_name) ?? 'none')
         }
     }, [formData])
 
     useEffect(() => {
-        const currentClient = state.clients.data.find(c => c.id === parseInt(formData.client_id))
-        const currentClientSales = state.sales.data.filter(s => s.client_id === currentClient?.id)
+        const currentClient = dataState.clients.data.find(c => c.id === parseInt(formData.client_id))
+        const currentClientSales = dataState.sales.data.filter(s => s.client_id === currentClient?.id)
         const someSaleIsPast = currentClientSales.some(s =>
             getDeliveredDeadline(s) < new Date(Date.now()) &&
             parseFloat(getSaleDifference(s).replace('$', '')) > 0
@@ -83,9 +85,9 @@ export function Sales() {
     }, [formData.client_id])
 
     useEffect(() => {
-        const { page, offset, filters } = state['sales']
+        const { page, offset, filters } = filtersState['sales']
         getSales(`?page=${page}&offset=${offset}${filters}`)
-    }, [state['sales'].filters])
+    }, [filtersState['sales']])
 
     return (
         <Layout title="Ventas">
@@ -95,7 +97,7 @@ export function Sales() {
                 </Box> :
                 <DataGridWithBackendPagination
                     headCells={headCells}
-                    rows={state.sales.data}
+                    rows={dataState.sales.data}
                     entityKey="sales"
                     setOpen={setOpen}
                     setFormData={setFormData}

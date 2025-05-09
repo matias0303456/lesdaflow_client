@@ -8,6 +8,7 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 
 import { AuthContext } from "../providers/AuthProvider";
 import { DataContext } from "../providers/DataProvider";
+import { FiltersContext } from "../providers/FiltersProvider";
 import { useUsers } from "../hooks/useUsers";
 
 import { Layout } from "../components/common/Layout";
@@ -18,7 +19,8 @@ import { DataGridWithBackendPagination } from "../components/datagrid/DataGridWi
 export function Users() {
 
   const { auth } = useContext(AuthContext)
-  const { state } = useContext(DataContext)
+  const { state: dataState } = useContext(DataContext)
+  const { state: filtersState } = useContext(FiltersContext)
 
   const navigate = useNavigate()
 
@@ -41,9 +43,9 @@ export function Users() {
   }, [])
 
   useEffect(() => {
-    const { page, offset, filters } = state['users']
+    const { page, offset, filters } = filtersState['users']
     getUsers(`?page=${page}&offset=${offset}${filters}`)
-  }, [state['users'].filters])
+  }, [filtersState['users']])
 
   return (
     <Layout title="Usuarios">
@@ -54,7 +56,7 @@ export function Users() {
         <DataGridWithBackendPagination
           loading={loadingUsers || disabled}
           headCells={headCells}
-          rows={state.users.data}
+          rows={dataState.users.data}
           entityKey="users"
           setOpen={setOpen}
           setFormData={setFormData}

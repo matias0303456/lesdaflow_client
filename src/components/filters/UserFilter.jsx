@@ -1,57 +1,28 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Box, Button, FormControl, Input, InputLabel, MenuItem, Select } from "@mui/material";
 
-import { DataContext } from "../../providers/DataProvider";
+import { FiltersContext } from "../../providers/FiltersProvider";
 
 export function UserFilter() {
 
-    const { state, dispatch } = useContext(DataContext)
+    const { state, dispatch } = useContext(FiltersContext)
 
-    const handleChange = e => {
-        dispatch({
-            type: 'USERS',
-            payload: {
-                ...state.users,
-                filter_fields: {
-                    ...state.users.filter_fields,
-                    loaded: true,
-                    [e.target.name]: e.target.value
-                }
-            }
-        })
-    }
+    const [filter, setFilter] = useState({ name: '', role: '' })
 
-    const handleReset = () => {
-        dispatch({
-            type: 'USERS',
-            payload: {
-                ...state.users,
-                filter_fields: { name: '', role: '', loaded: false },
-                filters: ''
-            }
-        })
-    }
+    const handleChange = e => setFilter({ ...filter, [e.target.name]: e.target.value })
+
+    const handleReset = () => setFilter({ fname: '', role: '' })
 
     useEffect(() => {
-        const { name, role, loaded } = state.users.filter_fields
-        if (name.length > 0 || role.length > 0) {
-            dispatch({
-                type: 'USERS',
-                payload: {
-                    ...state.users,
-                    filters: `&name=${name}&role=${role}`
-                }
-            })
-        } else if (loaded) {
-            dispatch({
-                type: 'USERS',
-                payload: {
-                    ...state.users,
-                    filters: ''
-                }
-            })
-        }
-    }, [state.users.filter_fields])
+        const { name, role } = filter
+        dispatch({
+            type: 'USERS',
+            payload: {
+                ...state.users,
+                filters: `&name=${name}&role=${role}`
+            }
+        })
+    }, [filter])
 
     return (
         <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, width: { xs: '100%', md: '60%', lg: '40%' }, justifyContent: 'space-between' }}>
@@ -61,7 +32,7 @@ export function UserFilter() {
                     id="name"
                     type="text"
                     name="name"
-                    value={state.users.filter_fields.name}
+                    value={filter.name}
                     onChange={handleChange}
                 />
             </FormControl>
@@ -70,7 +41,7 @@ export function UserFilter() {
                 <Select
                     labelId="role-select"
                     id="role"
-                    value={state.users.filter_fields.role}
+                    value={filter.role}
                     label="Rol"
                     name="role"
                     disabled={open === 'VIEW'}

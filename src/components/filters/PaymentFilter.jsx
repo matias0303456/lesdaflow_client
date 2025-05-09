@@ -1,66 +1,37 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Box, Button, FormControl, Input, InputLabel, MenuItem, Select } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { es } from "date-fns/locale";
 
 import { AuthContext } from "../../providers/AuthProvider";
-import { DataContext } from "../../providers/DataProvider";
+import { FiltersContext } from "../../providers/FiltersProvider";
 
 import { REPORT_URL } from "../../utils/urls";
 
 export function PaymentFilter() {
 
     const { auth } = useContext(AuthContext)
-    const { state, dispatch } = useContext(DataContext)
+    const { state, dispatch } = useContext(FiltersContext)
 
-    const handleChange = e => {
-        dispatch({
-            type: 'PAYMENTS',
-            payload: {
-                ...state.payments,
-                filter_fields: {
-                    ...state.payments.filter_fields,
-                    loaded: true,
-                    [e.target.name]: e.target.value
-                }
-            }
-        })
-    }
+    const [filter, setFilter] = useState({ sale_id: '', from: '', to: '', p_type: '', created_by: '' })
 
-    const handleReset = () => {
-        dispatch({
-            type: 'PAYMENTS',
-            payload: {
-                ...state.payments,
-                filter_fields: { sale_id: '', from: '', to: '', p_type: '', created_by: '', loaded: false },
-                filters: ''
-            }
-        })
-    }
+    const handleChange = e => setFilter({ ...filter, [e.target.name]: e.target.value })
+
+    const handleReset = () => setFilter({ sale_id: '', from: '', to: '', p_type: '', created_by: '' })
 
     useEffect(() => {
-        const { sale_id, from, to, p_type, created_by, loaded } = state.payments.filter_fields
+        const { sale_id, from, to, p_type, created_by } = filter
         const fromIsNotString = typeof from !== 'string'
         const toIsNotString = typeof to !== 'string'
-        if (fromIsNotString || toIsNotString || sale_id.length > 0 || p_type.length > 0 || created_by.length > 0) {
-            dispatch({
-                type: 'PAYMENTS',
-                payload: {
-                    ...state.payments,
-                    filters: `&from=${fromIsNotString ? new Date(from).toISOString() : ''}&to=${toIsNotString ? new Date(to).toISOString() : ''}&sale_id=${sale_id}&p_type=${p_type}&created_by=${created_by}`
-                }
-            })
-        } else if (loaded) {
-            dispatch({
-                type: 'PAYMENTS',
-                payload: {
-                    ...state.payments,
-                    filters: ''
-                }
-            })
-        }
-    }, [state.payments.filter_fields])
+        dispatch({
+            type: 'PAYMENTS',
+            payload: {
+                ...state.payments,
+                filters: `&from=${fromIsNotString ? new Date(from).toISOString() : ''}&to=${toIsNotString ? new Date(to).toISOString() : ''}&sale_id=${sale_id}&p_type=${p_type}&created_by=${created_by}`
+            }
+        })
+    }, [filter])
 
     return (
         <Box sx={{ display: 'flex', gap: 1, alignItems: 'start', flexDirection: { xs: 'column', sm: 'row' } }}>
@@ -72,7 +43,7 @@ export function PaymentFilter() {
                             id="sale_id"
                             type="text"
                             name="sale_id"
-                            value={state.payments.filter_fields.sale_id}
+                            value={filter.sale_id}
                             onChange={handleChange}
                         />
                     </FormControl>
@@ -80,7 +51,7 @@ export function PaymentFilter() {
                         <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
                             <DatePicker
                                 label="Desde"
-                                value={state.payments.filter_fields.from.length === 0 ? new Date(Date.now()) : new Date(state.payments.filter_fields.from)}
+                                value={filter.from.length === 0 ? new Date(Date.now()) : new Date(filter.from)}
                                 onChange={value => handleChange({ target: { name: 'from', value: new Date(value.toISOString()) } })}
                             />
                         </LocalizationProvider>
@@ -90,7 +61,7 @@ export function PaymentFilter() {
                         <Select
                             labelId="type-select"
                             id="p_type"
-                            value={state.payments.filter_fields.p_type}
+                            value={filter.p_type}
                             label="T. pago"
                             name="p_type"
                             onChange={handleChange}
@@ -109,7 +80,7 @@ export function PaymentFilter() {
                             id="created_by"
                             type="text"
                             name="created_by"
-                            value={state.payments.filter_fields.created_by}
+                            value={filter.created_by}
                             onChange={handleChange}
                         />
                     </FormControl>
@@ -117,7 +88,7 @@ export function PaymentFilter() {
                         <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
                             <DatePicker
                                 label="Hasta"
-                                value={state.payments.filter_fields.to.length === 0 ? new Date(Date.now()) : new Date(state.payments.filter_fields.to)}
+                                value={filter.to.length === 0 ? new Date(Date.now()) : new Date(filter.to)}
                                 onChange={value => handleChange({ target: { name: 'to', value: new Date(value.toISOString()) } })}
                             />
                         </LocalizationProvider>
@@ -126,7 +97,7 @@ export function PaymentFilter() {
                         sx={{ width: { xs: '100%', sm: '30%' } }}
                         control={<Checkbox />}
                         label="Cancelados"
-                        checked={state.payments.filter_fields.is_canceled}
+                        checked={filter.is_canceled}
                         onChange={e => handleChange({ target: { name: 'is_canceled', value: e.target.checked } })}
                     /> */}
                 </Box>

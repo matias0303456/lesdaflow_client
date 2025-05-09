@@ -1,57 +1,28 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Box, Button, FormControl, Input, InputLabel } from "@mui/material";
 
-import { DataContext } from "../../providers/DataProvider";
+import { FiltersContext } from "../../providers/FiltersProvider";
 
 export function SupplierFilter() {
 
-    const { state, dispatch } = useContext(DataContext)
+    const { state, dispatch } = useContext(FiltersContext)
 
-    const handleChange = e => {
-        dispatch({
-            type: 'SUPPLIERS',
-            payload: {
-                ...state.suppliers,
-                filter_fields: {
-                    ...state.suppliers.filter_fields,
-                    loaded: true,
-                    [e.target.name]: e.target.value
-                }
-            }
-        })
-    }
+    const [filter, setFilter] = useState({ name: '' })
 
-    const handleReset = () => {
-        dispatch({
-            type: 'SUPPLIERS',
-            payload: {
-                ...state.suppliers,
-                filter_fields: { name: '', loaded: false },
-                filters: ''
-            }
-        })
-    }
+    const handleChange = e => setFilter({ ...filter, [e.target.name]: e.target.value })
+
+    const handleReset = () => setFilter({ name: '' })
 
     useEffect(() => {
-        const { name, loaded } = state.suppliers.filter_fields
-        if (name.length > 0) {
-            dispatch({
-                type: 'SUPPLIERS',
-                payload: {
-                    ...state.suppliers,
-                    filters: `&name=${name}`
-                }
-            })
-        } else if (loaded) {
-            dispatch({
-                type: 'SUPPLIERS',
-                payload: {
-                    ...state.suppliers,
-                    filters: ''
-                }
-            })
-        }
-    }, [state.suppliers.filter_fields])
+        const { name } = filter
+        dispatch({
+            type: 'SUPPLIERS',
+            payload: {
+                ...state.suppliers,
+                filters: `&name=${name}`
+            }
+        })
+    }, [filter])
 
     return (
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
@@ -61,7 +32,7 @@ export function SupplierFilter() {
                     id="name"
                     type="text"
                     name="name"
-                    value={state.suppliers.filter_fields.name}
+                    value={filter.name}
                     onChange={handleChange}
                 />
             </FormControl>

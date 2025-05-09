@@ -3,6 +3,7 @@ import { Box, Button, Checkbox, FormControl, FormControlLabel, Input, InputLabel
 
 import { AuthContext } from "../providers/AuthProvider";
 import { DataContext } from "../providers/DataProvider";
+import { FiltersContext } from "../providers/FiltersProvider";
 import { useProducts } from '../hooks/useProducts'
 import { useSuppliers } from "../hooks/useSuppliers";
 import { useMovements } from "../hooks/useMovements";
@@ -19,7 +20,8 @@ import { REPORT_URL } from "../utils/urls";
 export function Products() {
 
     const { auth } = useContext(AuthContext)
-    const { state } = useContext(DataContext)
+    const { state: dataState } = useContext(DataContext)
+    const { state: filtersState } = useContext(FiltersContext)
 
     const {
         loadingProducts,
@@ -62,9 +64,9 @@ export function Products() {
     }, [])
 
     useEffect(() => {
-        const { page, offset, filters } = state['products']
+        const { page, offset, filters } = filtersState['products']
         getProducts(`?page=${page}&offset=${offset}${filters}`)
-    }, [state['products'].filters])
+    }, [filtersState['products']])
 
     useEffect(() => {
         const buy_price = formData.buy_price.toString().length === 0 ? 0 : parseInt(formData.buy_price)
@@ -80,7 +82,7 @@ export function Products() {
                 </Box> :
                 <DataGridWithBackendPagination
                     headCells={headCells.filter(hc => auth?.user.role === 'ADMINISTRADOR' || hc.can_access?.includes(auth?.user.role))}
-                    rows={state.products.data}
+                    rows={dataState.products.data}
                     setOpen={setOpen}
                     setOpenNewMovement={setOpenMovement}
                     setFormData={setFormData}
@@ -114,14 +116,14 @@ export function Products() {
                                     variant="outlined"
                                     color='success'
                                     onClick={() => {
-                                        const { code, details, supplier_id } = state.products.filter_fields
-                                        window.open(`${REPORT_URL}/products-excel?token=${auth?.token}&for_client=true&code=${code}&details=${details}&supplier_id=${supplier_id}`, '_blank')
+                                        const { filters } = filtersState['products']
+                                        window.open(`${REPORT_URL}/products-excel?token=${auth?.token}${filters}&for_client=true`, '_blank')
                                     }}>
                                     Excel
                                 </Button>
                                 <Button variant="outlined" color='error' onClick={() => {
-                                    const { code, details, supplier_id } = state.products.filter_fields
-                                    window.open(`${REPORT_URL}/products-pdf?token=${auth?.token}&for_client=true&code=${code}&details=${details}&supplier_id=${supplier_id}`, '_blank')
+                                    const { filters } = filtersState['products']
+                                    window.open(`${REPORT_URL}/products-pdf?token=${auth?.token}${filters}&for_client=true`, '_blank')
                                 }}>
                                     PDF
                                 </Button>
@@ -237,7 +239,7 @@ export function Products() {
                                             onChange={handleChange}
                                             disabled={open === 'VIEW'}
                                         >
-                                            {state.suppliers.data.map(s => (
+                                            {dataState.suppliers.data.map(s => (
                                                 <MenuItem key={s.id} value={s.id}>{s.name}</MenuItem>
                                             ))}
                                         </Select>

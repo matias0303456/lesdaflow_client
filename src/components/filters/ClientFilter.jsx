@@ -1,40 +1,20 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Box, Button, FormControl, Input, InputLabel } from "@mui/material";
 
-import { DataContext } from "../../providers/DataProvider";
+import { FiltersContext } from "../../providers/FiltersProvider";
 
 export function ClientFilter() {
 
-    const { state, dispatch } = useContext(DataContext)
+    const { state, dispatch } = useContext(FiltersContext)
 
-    const handleChange = e => {
-        dispatch({
-            type: 'CLIENTS',
-            payload: {
-                ...state.clients,
-                filter_fields: {
-                    ...state.clients.filter_fields,
-                    loaded: true,
-                    [e.target.name]: e.target.value
-                }
-            }
-        })
-    }
+    const [filter, setFilter] = useState({ first_name: '', last_name: '', work_place: '' })
 
-    const handleReset = () => {
-        dispatch({
-            type: 'CLIENTS',
-            payload: {
-                ...state.clients,
-                filter_fields: { first_name: '', last_name: '', work_place: '', loaded: false },
-                filters: ''
-            }
-        })
-    }
+    const handleChange = e => setFilter({ ...filter, [e.target.name]: e.target.value })
+
+    const handleReset = () => setFilter({ first_name: '', last_name: '', work_place: '' })
 
     useEffect(() => {
-        const { first_name, last_name, work_place, loaded } = state.clients.filter_fields
-        if (first_name.length > 0 || last_name.length > 0 || work_place.length > 0) {
+        const { first_name, last_name, work_place } = filter
             dispatch({
                 type: 'CLIENTS',
                 payload: {
@@ -42,16 +22,7 @@ export function ClientFilter() {
                     filters: `&first_name=${first_name}&last_name=${last_name}&work_place=${work_place}`
                 }
             })
-        } else if (loaded) {
-            dispatch({
-                type: 'CLIENTS',
-                payload: {
-                    ...state.clients,
-                    filters: ''
-                }
-            })
-        }
-    }, [state.clients.filter_fields])
+    }, [filter])
 
     return (
         <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 2 }}>
@@ -61,7 +32,7 @@ export function ClientFilter() {
                     id="first_name"
                     type="text"
                     name="first_name"
-                    value={state.clients.filter_fields.first_name}
+                    value={filter.first_name}
                     onChange={handleChange}
                 />
             </FormControl>
@@ -71,7 +42,7 @@ export function ClientFilter() {
                     id="last_name"
                     type="text"
                     name="last_name"
-                    value={state.clients.filter_fields.last_name}
+                    value={filter.last_name}
                     onChange={handleChange}
                 />
             </FormControl>
@@ -81,7 +52,7 @@ export function ClientFilter() {
                     id="work_place"
                     type="text"
                     name="work_place"
-                    value={state.clients.filter_fields.work_place}
+                    value={filter.work_place}
                     onChange={handleChange}
                 />
             </FormControl>

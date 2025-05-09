@@ -1,46 +1,28 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 
+import { FiltersContext } from "../../providers/FiltersProvider";
 import { DataContext } from "../../providers/DataProvider";
 
 export function RegisterFilter() {
 
-    const { state, dispatch } = useContext(DataContext)
+    const { state: dataState } = useContext(DataContext)
+    const { state, dispatch } = useContext(FiltersContext)
 
-    const handleChange = e => {
+    const [filter, setFilter] = useState({ user: '' })
+
+    const handleChange = e => setFilter({ ...filter, [e.target.name]: e.target.value })
+
+    useEffect(() => {
+        const { user } = filter
         dispatch({
             type: 'REGISTERS',
             payload: {
                 ...state.registers,
-                filter_fields: {
-                    ...state.registers.filter_fields,
-                    loaded: true,
-                    [e.target.name]: e.target.value
-                }
+                filters: `&user=${user}`
             }
         })
-    }
-
-    useEffect(() => {
-        const { user, loaded } = state.registers.filter_fields
-        if (user.length > 0) {
-            dispatch({
-                type: 'REGISTERS',
-                payload: {
-                    ...state.registers,
-                    filters: `&user=${user}`
-                }
-            })
-        } else if (loaded) {
-            dispatch({
-                type: 'REGISTERS',
-                payload: {
-                    ...state.registers,
-                    filters: ''
-                }
-            })
-        }
-    }, [state.registers.filter_fields])
+    }, [filter])
 
     return (
         <FormControl sx={{ width: '20%' }}>
@@ -48,7 +30,7 @@ export function RegisterFilter() {
             <Select
                 labelId="user-select"
                 id="user"
-                value={state.registers.filter_fields.user}
+                value={filter.user}
                 label="Usuario"
                 name="user"
                 onChange={handleChange}
@@ -56,8 +38,8 @@ export function RegisterFilter() {
             >
                 {[
                     <MenuItem value="" key="select">Seleccione</MenuItem>,
-                    ...(state.users.data.length > 0 ?
-                        state.users.data.map((u) => (
+                    ...(dataState.users.data.length > 0 ?
+                        dataState.users.data.map((u) => (
                             <MenuItem key={u.id} value={u.username}>
                                 {`${u.name}`.toUpperCase()}
                             </MenuItem>
