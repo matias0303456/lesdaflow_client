@@ -1,6 +1,6 @@
 import { useContext, useEffect, useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Button, LinearProgress, Typography } from "@mui/material";
 import { format } from "date-fns";
 
 import { AuthContext } from "../providers/AuthProvider";
@@ -167,24 +167,28 @@ export function SalesToDeliver() {
 
     return (
         <Layout title="Ventas Pendientes Entrega">
-            <DataGridWithBackendPagination
-                loading={loadingSales || disabled}
-                headCells={headCells}
-                rows={state.sales.data}
-                entityKey="sales"
-                setOpen={setOpen}
-                setFormData={setFormData}
-                showPDFAction={`${REPORT_URL}/venta-pdf?token=${auth?.token}&id=`}
-                showSettingsAction="Registrar entrega"
-                showEditAction
-                contentHeader={<SaleFilter showDate width={{
-                    main: { xs: '100%', md: '100%' },
-                    client: { xs: '100%', md: '15%' },
-                    id: { xs: '100%', md: '15%' },
-                    date: { xs: '100%', md: '15%' },
-                    btn: { xs: '100%', md: '10%' }
-                }} />}
-            />
+            {(loadingSales || disabled) ?
+                <Box sx={{ width: '100%' }}>
+                    <LinearProgress />
+                </Box> :
+                <DataGridWithBackendPagination
+                    headCells={headCells}
+                    rows={state.sales.data}
+                    entityKey="sales"
+                    setOpen={setOpen}
+                    setFormData={setFormData}
+                    showPDFAction={`${REPORT_URL}/venta-pdf?token=${auth?.token}&id=`}
+                    showSettingsAction="Registrar entrega"
+                    showEditAction
+                    contentHeader={<SaleFilter showDate width={{
+                        main: { xs: '100%', md: '100%' },
+                        client: { xs: '100%', md: '15%' },
+                        id: { xs: '100%', md: '15%' },
+                        date: { xs: '100%', md: '15%' },
+                        btn: { xs: '100%', md: '10%' }
+                    }} />}
+                />
+            }
             <SaleForm
                 saleProducts={saleProducts}
                 setSaleProducts={setSaleProducts}

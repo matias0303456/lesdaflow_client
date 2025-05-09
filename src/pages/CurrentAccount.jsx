@@ -1,6 +1,6 @@
 import { useContext, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { Box, Button } from "@mui/material";
+import { Box, Button, LinearProgress } from "@mui/material";
 import { format } from "date-fns";
 
 import { AuthContext } from "../providers/AuthProvider";
@@ -116,40 +116,44 @@ export function CurrentAccount() {
 
   return (
     <Layout title="Cuentas Corrientes">
-      <DataGridWithBackendPagination
-        loading={loadingSales}
-        headCells={headCells}
-        rows={state.sales.data}
-        entityKey="sales"
-        setOpen={setOpen}
-        setFormData={setFormData}
-        showPDFAction={`${REPORT_URL}/accounts-pdf?token=${auth?.token}&id=`}
-        contentHeader={
-          <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between' }}>
-            <Button variant="outlined" color='error' sx={{ width: '10%' }} onClick={() => {
-              const { client, work_place, id } = state.sales.filter_fields
-              window.open(`${REPORT_URL}/accounts-pdf?token=${auth?.token}&client=${client}&work_place=${work_place}&id=${id}&pending=${pendingFilter}`, '_blank')
-            }}>
-              PDF
-            </Button>
-            <SaleFilter
-              showWorkPlace
-              showPending
-              showSeller={auth?.user.role === 'ADMINISTRADOR'}
-              pendingFilter={pendingFilter}
-              setPendingFilter={setPendingFilter}
-              width={{
-                main: { xs: '100%', md: '90%' },
-                client: { xs: '100%', md: '15%' },
-                id: { xs: '100%', md: '15%' },
-                btn: { xs: '100%', md: '10%' },
-                work_place: { xs: '100%', md: '15%' },
-                seller: { xs: '100%', md: '15%' }
-              }}
-            />
-          </Box>
-        }
-      />
+      {loadingSales ?
+        <Box sx={{ width: '100%' }}>
+          <LinearProgress />
+        </Box> :
+        <DataGridWithBackendPagination
+          headCells={headCells}
+          rows={state.sales.data}
+          entityKey="sales"
+          setOpen={setOpen}
+          setFormData={setFormData}
+          showPDFAction={`${REPORT_URL}/accounts-pdf?token=${auth?.token}&id=`}
+          contentHeader={
+            <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between' }}>
+              <Button variant="outlined" color='error' sx={{ width: '10%' }} onClick={() => {
+                const { client, work_place, id } = state.sales.filter_fields
+                window.open(`${REPORT_URL}/accounts-pdf?token=${auth?.token}&client=${client}&work_place=${work_place}&id=${id}&pending=${pendingFilter}`, '_blank')
+              }}>
+                PDF
+              </Button>
+              <SaleFilter
+                showWorkPlace
+                showPending
+                showSeller={auth?.user.role === 'ADMINISTRADOR'}
+                pendingFilter={pendingFilter}
+                setPendingFilter={setPendingFilter}
+                width={{
+                  main: { xs: '100%', md: '90%' },
+                  client: { xs: '100%', md: '15%' },
+                  id: { xs: '100%', md: '15%' },
+                  btn: { xs: '100%', md: '10%' },
+                  work_place: { xs: '100%', md: '15%' },
+                  seller: { xs: '100%', md: '15%' }
+                }}
+              />
+            </Box>
+          }
+        />
+      }
     </Layout>
   );
 }

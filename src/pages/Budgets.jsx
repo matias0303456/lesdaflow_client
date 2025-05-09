@@ -1,6 +1,6 @@
 import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Button, LinearProgress, Typography } from "@mui/material";
 
 import { AuthContext } from "../providers/AuthProvider";
 import { DataContext } from "../providers/DataProvider";
@@ -103,106 +103,110 @@ export function Budgets() {
 
     return (
         <Layout title="Presupuestos">
-            <DataGridWithBackendPagination
-                headCells={headCells}
-                loading={loadingBudgets || disabled}
-                rows={state.budgets.data}
-                entityKey="budgets"
-                setOpen={setOpen}
-                setOpenNewSale={setOpenNewSale}
-                setFormData={setFormData}
-                showPDFAction={`${REPORT_URL}/presupuesto-pdf?token=${auth?.token}&id=`}
-                showConvertToSale="Convertir a venta"
-                showViewAction
-                showEditAction
-                showDeleteAction
-                contentHeader={
-                    <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 2, justifyContent: 'space-between' }}>
-                        <Box sx={{ display: 'flex', gap: 1, width: { xs: '100%', md: '20%' } }}>
-                            <Button variant="outlined" onClick={() => {
-                                reset()
-                                setOpen('NEW')
-                            }}>
-                                Agregar
+            {(loadingBudgets || disabled) ?
+                <Box sx={{ width: '100%' }}>
+                    <LinearProgress />
+                </Box> :
+                <DataGridWithBackendPagination
+                    headCells={headCells}
+                    rows={state.budgets.data}
+                    entityKey="budgets"
+                    setOpen={setOpen}
+                    setOpenNewSale={setOpenNewSale}
+                    setFormData={setFormData}
+                    showPDFAction={`${REPORT_URL}/presupuesto-pdf?token=${auth?.token}&id=`}
+                    showConvertToSale="Convertir a venta"
+                    showViewAction
+                    showEditAction
+                    showDeleteAction
+                    contentHeader={
+                        <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 2, justifyContent: 'space-between' }}>
+                            <Box sx={{ display: 'flex', gap: 1, width: { xs: '100%', md: '20%' } }}>
+                                <Button variant="outlined" onClick={() => {
+                                    reset()
+                                    setOpen('NEW')
+                                }}>
+                                    Agregar
+                                </Button>
+                                <Button variant="outlined" color='success' onClick={() => {
+                                    window.open(`${REPORT_URL}/budgets-excel?token=${auth?.token}`, '_blank')
+                                }}>
+                                    Excel
+                                </Button>
+                                <Button variant="outlined" color='error' onClick={() => {
+                                    window.open(`${REPORT_URL}/presupuesto-pdf?token=${auth?.token}`, '_blank')
+                                }}>
+                                    PDF
+                                </Button>
+                            </Box>
+                            <BudgetFilter />
+                        </Box>
+                    }
+                >
+                    <BudgetForm
+                        budgetProducts={budgetProducts}
+                        setBudgetProducts={setBudgetProducts}
+                        missing={missing}
+                        setMissing={setMissing}
+                        reset={reset}
+                        open={open}
+                        setOpen={setOpen}
+                        idsToDelete={idsToDelete}
+                        setIdsToDelete={setIdsToDelete}
+                        handleChange={handleChange}
+                        formData={formData}
+                        setFormData={setFormData}
+                        handleSubmit={handleSubmit}
+                        validate={validate}
+                        disabled={disabled}
+                        setDisabled={setDisabled}
+                        errors={errors}
+                    />
+                    <SaleForm
+                        saleProducts={saleProducts}
+                        setSaleProducts={setSaleProducts}
+                        missing={missingNewSale}
+                        setMissing={setMissingNewSale}
+                        reset={resetNewSale}
+                        open={openNewSale}
+                        setOpen={setOpenNewSale}
+                        idsToDelete={idsToDeleteNewSale}
+                        setIdsToDelete={setIdsToDeleteNewSale}
+                        formData={newSale}
+                        setFormData={setNewSale}
+                        handleSubmit={handleSubmitNewSale}
+                        validate={validateNewSale}
+                        disabled={disabledNewSale}
+                        setDisabled={setDisabledNewSale}
+                        handleChange={handleChangeNewSale}
+                        errors={errorsNewSale}
+                        discountApplied={discountApplied}
+                        setDiscountApplied={setDiscountApplied}
+                    />
+                    <ModalComponent open={open === 'DELETE'} onClose={() => reset(setOpen)} reduceWidth={900}>
+                        <Typography variant="h6" marginBottom={1} textAlign="center">
+                            Confirmar eliminación de presupuesto
+                        </Typography>
+                        <Typography variant="body1" marginBottom={2} textAlign="center">
+                            Los datos no podrán recuperarse
+                        </Typography>
+                        <Box sx={{ display: 'flex', gap: 1, justifyContent: 'center' }}>
+                            <Button type="button" variant="outlined" onClick={() => reset(setOpen)} sx={{ width: '35%' }}>
+                                Cancelar
                             </Button>
-                            <Button variant="outlined" color='success' onClick={() => {
-                                window.open(`${REPORT_URL}/budgets-excel?token=${auth?.token}`, '_blank')
-                            }}>
-                                Excel
-                            </Button>
-                            <Button variant="outlined" color='error' onClick={() => {
-                                window.open(`${REPORT_URL}/presupuesto-pdf?token=${auth?.token}`, '_blank')
-                            }}>
-                                PDF
+                            <Button
+                                type="button"
+                                variant="contained"
+                                disabled={disabled}
+                                sx={{ width: '35%' }}
+                                onClick={() => handleDelete(formData)}
+                            >
+                                Confirmar
                             </Button>
                         </Box>
-                        <BudgetFilter />
-                    </Box>
-                }
-            >
-                <BudgetForm
-                    budgetProducts={budgetProducts}
-                    setBudgetProducts={setBudgetProducts}
-                    missing={missing}
-                    setMissing={setMissing}
-                    reset={reset}
-                    open={open}
-                    setOpen={setOpen}
-                    idsToDelete={idsToDelete}
-                    setIdsToDelete={setIdsToDelete}
-                    handleChange={handleChange}
-                    formData={formData}
-                    setFormData={setFormData}
-                    handleSubmit={handleSubmit}
-                    validate={validate}
-                    disabled={disabled}
-                    setDisabled={setDisabled}
-                    errors={errors}
-                />
-                <SaleForm
-                    saleProducts={saleProducts}
-                    setSaleProducts={setSaleProducts}
-                    missing={missingNewSale}
-                    setMissing={setMissingNewSale}
-                    reset={resetNewSale}
-                    open={openNewSale}
-                    setOpen={setOpenNewSale}
-                    idsToDelete={idsToDeleteNewSale}
-                    setIdsToDelete={setIdsToDeleteNewSale}
-                    formData={newSale}
-                    setFormData={setNewSale}
-                    handleSubmit={handleSubmitNewSale}
-                    validate={validateNewSale}
-                    disabled={disabledNewSale}
-                    setDisabled={setDisabledNewSale}
-                    handleChange={handleChangeNewSale}
-                    errors={errorsNewSale}
-                    discountApplied={discountApplied}
-                    setDiscountApplied={setDiscountApplied}
-                />
-                <ModalComponent open={open === 'DELETE'} onClose={() => reset(setOpen)} reduceWidth={900}>
-                    <Typography variant="h6" marginBottom={1} textAlign="center">
-                        Confirmar eliminación de presupuesto
-                    </Typography>
-                    <Typography variant="body1" marginBottom={2} textAlign="center">
-                        Los datos no podrán recuperarse
-                    </Typography>
-                    <Box sx={{ display: 'flex', gap: 1, justifyContent: 'center' }}>
-                        <Button type="button" variant="outlined" onClick={() => reset(setOpen)} sx={{ width: '35%' }}>
-                            Cancelar
-                        </Button>
-                        <Button
-                            type="button"
-                            variant="contained"
-                            disabled={disabled}
-                            sx={{ width: '35%' }}
-                            onClick={() => handleDelete(formData)}
-                        >
-                            Confirmar
-                        </Button>
-                    </Box>
-                </ModalComponent>
-            </DataGridWithBackendPagination>
+                    </ModalComponent>
+                </DataGridWithBackendPagination>
+            }
         </Layout>
     )
 }

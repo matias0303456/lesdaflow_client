@@ -1,6 +1,6 @@
 import { useContext, useEffect, useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Box, Button, Checkbox, FormControlLabel, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
+import { Box, Button, Checkbox, FormControlLabel, LinearProgress, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
 import { format } from "date-fns";
 
 import { AuthContext } from "../providers/AuthProvider";
@@ -141,23 +141,27 @@ export function SalesReady() {
 
   return (
     <Layout title="Ventas Pendientes Preparacion">
-      <DataGridWithBackendPagination
-        loading={loadingSales}
-        headCells={headCells}
-        rows={state.sales.data}
-        entityKey="sales"
-        setOpen={setOpen}
-        setFormData={setFormData}
-        showSettingsAction="Preparar venta"
-        showPDFAction={`${REPORT_URL}/venta-pdf?token=${auth?.token}&id=`}
-        contentHeader={<SaleFilter showDate width={{
-          main: { xs: '100%', md: '100%' },
-          client: { xs: '100%', md: '15%' },
-          id: { xs: '100%', md: '15%' },
-          date: { xs: '100%', md: '15%' },
-          btn: { xs: '100%', md: '10%' }
-        }} />}
-      />
+      {loadingSales ?
+        <Box sx={{ width: '100%' }}>
+          <LinearProgress />
+        </Box> :
+        <DataGridWithBackendPagination
+          headCells={headCells}
+          rows={state.sales.data}
+          entityKey="sales"
+          setOpen={setOpen}
+          setFormData={setFormData}
+          showSettingsAction="Preparar venta"
+          showPDFAction={`${REPORT_URL}/venta-pdf?token=${auth?.token}&id=`}
+          contentHeader={<SaleFilter showDate width={{
+            main: { xs: '100%', md: '100%' },
+            client: { xs: '100%', md: '15%' },
+            id: { xs: '100%', md: '15%' },
+            date: { xs: '100%', md: '15%' },
+            btn: { xs: '100%', md: '10%' }
+          }} />}
+        />
+      }
       <ModalComponent open={open === 'SETTINGS'} onClose={() => setOpen(null)} reduceWidth={800}>
         <Typography variant="h6" marginBottom={1}>
           Preparar venta
