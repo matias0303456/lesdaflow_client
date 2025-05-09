@@ -86,7 +86,8 @@ export function Sales() {
 
     useEffect(() => {
         const { page, offset, filters } = filtersState['sales']
-        getSales(`?page=${page}&offset=${offset}${filters}`)
+        const { client, work_place, id, user, type } = filters
+        getSales(`?page=${page}&offset=${offset}&client=${client}&work_place=${work_place}&id=${id}&user=${user}&type=${type}`)
     }, [filtersState['sales']])
 
     return (

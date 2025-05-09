@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { useContext, useEffect, useState } from "react";
+import { useContext } from "react";
 import { Box, Button, Checkbox, FormControl, FormControlLabel, Input, InputLabel, MenuItem, Select } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
@@ -20,25 +20,30 @@ export function SaleFilter({
 }) {
 
     const { state: dataState } = useContext(DataContext)
-    const { state, dispatch } = useContext(FiltersContext)
+    const { state: filtersState, dispatch } = useContext(FiltersContext)
 
-    const [filter, setFilter] = useState({ client: '', work_place: '', id: '', user: '', date: '', type: '' })
-
-    const handleChange = e => setFilter({ ...filter, [e.target.name]: e.target.value })
-
-    const handleReset = () => setFilter({ client: '', work_place: '', id: '', user: '', date: '', type: '' })
-
-    useEffect(() => {
-        const { client, work_place, id, user, date, type } = filter
-        const dateIsNotString = typeof date !== 'string'
+    const handleChange = e => {
         dispatch({
             type: 'SALES',
             payload: {
-                ...state.sales,
-                filters: `&client=${client}&work_place=${work_place}&id=${id}&user=${user}&date=${dateIsNotString ? new Date(date).toISOString() : ''}&type=${type}`
+                ...filtersState.sales,
+                filters: {
+                    ...filtersState.sales.filters,
+                    [e.target.name]: e.target.value
+                }
             }
         })
-    }, [filter, pendingFilter])
+    }
+
+    const handleReset = () => {
+        dispatch({
+            type: 'SALES',
+            payload: {
+                ...filtersState.sales,
+                filters: { client: '', work_place: '', id: '', user: '', date: '', type: '' }
+            }
+        })
+    }
 
     return (
         <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, width: width.main, alignItems: 'center', justifyContent: 'end' }}>
@@ -48,7 +53,7 @@ export function SaleFilter({
                     id="client"
                     type="text"
                     name="client"
-                    value={filter.client}
+                    value={filtersState.sales.filters.client}
                     onChange={handleChange}
                 />
             </FormControl>
@@ -59,7 +64,7 @@ export function SaleFilter({
                         id="work_place"
                         type="text"
                         name="work_place"
-                        value={filter.work_place}
+                        value={filtersState.sales.filters.work_place}
                         onChange={handleChange}
                     />
                 </FormControl>
@@ -70,7 +75,7 @@ export function SaleFilter({
                     id="id"
                     type="number"
                     name="id"
-                    value={filter.id}
+                    value={filtersState.sales.filters.id}
                     onChange={handleChange}
                 />
             </FormControl>
@@ -80,7 +85,7 @@ export function SaleFilter({
                     <Select
                         labelId="user-select"
                         id="user"
-                        value={filter.user}
+                        value={filtersState.sales.filters.user}
                         label="Vendedor"
                         name="user"
                         onChange={handleChange}
@@ -97,7 +102,7 @@ export function SaleFilter({
                     <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
                         <DatePicker
                             label="Fecha"
-                            value={filter.date.length === 0 ? new Date(Date.now()) : new Date(filter.date)}
+                            value={filtersState.sales.filters.date.length === 0 ? new Date(Date.now()) : new Date(filtersState.sales.filters.date)}
                             onChange={value => handleChange({
                                 target: {
                                     name: 'date',
@@ -114,7 +119,7 @@ export function SaleFilter({
                     <Select
                         labelId="type-select"
                         id="type"
-                        value={filter.type}
+                        value={filtersState.sales.filters.type}
                         label="Tipo Comp."
                         name="type"
                         onChange={handleChange}

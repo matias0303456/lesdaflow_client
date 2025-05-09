@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext } from "react";
 import { Box, Button, FormControl, Input, InputLabel } from "@mui/material";
 
 import { FiltersContext } from "../../providers/FiltersProvider";
@@ -7,22 +7,28 @@ export function SupplierFilter() {
 
     const { state, dispatch } = useContext(FiltersContext)
 
-    const [filter, setFilter] = useState({ name: '' })
-
-    const handleChange = e => setFilter({ ...filter, [e.target.name]: e.target.value })
-
-    const handleReset = () => setFilter({ name: '' })
-
-    useEffect(() => {
-        const { name } = filter
+    const handleChange = e => {
         dispatch({
             type: 'SUPPLIERS',
             payload: {
                 ...state.suppliers,
-                filters: `&name=${name}`
+                filters: {
+                    ...state.suppliers.filters,
+                    [e.target.name]: e.target.value
+                }
             }
         })
-    }, [filter])
+    }
+
+    const handleReset = () => {
+        dispatch({
+            type: 'SUPPLIERS',
+            payload: {
+                ...state.suppliers,
+                filters: { name: '' }
+            }
+        })
+    }
 
     return (
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
@@ -32,7 +38,7 @@ export function SupplierFilter() {
                     id="name"
                     type="text"
                     name="name"
-                    value={filter.name}
+                    value={state.suppliers.filters.name}
                     onChange={handleChange}
                 />
             </FormControl>

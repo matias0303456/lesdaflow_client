@@ -62,7 +62,9 @@ export function SalesReady() {
 
   useEffect(() => {
     const { page, offset, filters } = filtersState['sales']
-    getSales(`?page=${page}&offset=${offset}${filters}`)
+    const { client, id, date } = filters
+    const dateIsNotString = typeof date !== 'string'
+    getSales(`?page=${page}&offset=${offset}&client=${client}&id=${id}&date=${dateIsNotString ? new Date(date).toISOString() : ''}`)
   }, [filtersState['sales']])
 
   const headCells = useMemo(() => [

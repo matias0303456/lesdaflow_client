@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext } from "react";
 import { Box, Button, FormControl, Input, InputLabel } from "@mui/material";
 
 import { FiltersContext } from "../../providers/FiltersProvider";
@@ -7,22 +7,28 @@ export function ClientFilter() {
 
     const { state, dispatch } = useContext(FiltersContext)
 
-    const [filter, setFilter] = useState({ first_name: '', last_name: '', work_place: '' })
-
-    const handleChange = e => setFilter({ ...filter, [e.target.name]: e.target.value })
-
-    const handleReset = () => setFilter({ first_name: '', last_name: '', work_place: '' })
-
-    useEffect(() => {
-        const { first_name, last_name, work_place } = filter
-            dispatch({
-                type: 'CLIENTS',
-                payload: {
-                    ...state.clients,
-                    filters: `&first_name=${first_name}&last_name=${last_name}&work_place=${work_place}`
+    const handleChange = e => {
+        dispatch({
+            type: 'CLIENTS',
+            payload: {
+                ...state.clients,
+                filters: {
+                    ...state.clients.filters,
+                    [e.target.name]: e.target.value
                 }
-            })
-    }, [filter])
+            }
+        })
+    }
+
+    const handleReset = () => {
+        dispatch({
+            type: 'CLIENTS',
+            payload: {
+                ...state.clients,
+                filters: { first_name: '', last_name: '', work_place: '' }
+            }
+        })
+    }
 
     return (
         <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 2 }}>
@@ -32,7 +38,7 @@ export function ClientFilter() {
                     id="first_name"
                     type="text"
                     name="first_name"
-                    value={filter.first_name}
+                    value={state.clients.filters.first_name}
                     onChange={handleChange}
                 />
             </FormControl>
@@ -42,7 +48,7 @@ export function ClientFilter() {
                     id="last_name"
                     type="text"
                     name="last_name"
-                    value={filter.last_name}
+                    value={state.clients.filters.last_name}
                     onChange={handleChange}
                 />
             </FormControl>
@@ -52,7 +58,7 @@ export function ClientFilter() {
                     id="work_place"
                     type="text"
                     name="work_place"
-                    value={filter.work_place}
+                    value={state.clients.filters.work_place}
                     onChange={handleChange}
                 />
             </FormControl>

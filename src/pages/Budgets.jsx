@@ -99,9 +99,12 @@ export function Budgets() {
     }, [formData])
 
     useEffect(() => {
-        const { page, offset, filters } = filtersState['budgets']
-        getBudgets(`?page=${page}&offset=${offset}${filters}`)
-    }, [filtersState['budgets']])
+        const { page, offset, filters } = filtersState.budgets
+        const { from, to, user, client, type } = filters
+        const fromIsNotString = typeof from !== 'string'
+        const toIsNotString = typeof to !== 'string'
+        getBudgets(`?page=${page}&offset=${offset}&from=${fromIsNotString ? new Date(from).toISOString() : ''}&to=${toIsNotString ? new Date(to).toISOString() : ''}&user=${user}&client=${client}&type=${type}`)
+    }, [filtersState.budgets])
 
     return (
         <Layout title="Presupuestos">

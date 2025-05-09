@@ -39,9 +39,10 @@ export function Suppliers() {
     }, [])
 
     useEffect(() => {
-        const { page, offset, filters } = filtersState['suppliers']
-        getSuppliers(`?page=${page}&offset=${offset}${filters}`)
-    }, [filtersState['suppliers']])
+        const { page, offset, filters } = filtersState.suppliers
+        const { name } = filters
+        getSuppliers(`?page=${page}&offset=${offset}&name=${name}`)
+    }, [filtersState.suppliers])
 
     return (
         <Layout title="Proveedores">

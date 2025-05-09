@@ -41,7 +41,9 @@ export function CurrentAccount() {
 
   useEffect(() => {
     const { page, offset, filters } = filtersState['sales']
-    getSales(`?page=${page}&offset=${offset}&pending=true${filters}`)
+    const { client, work_place, id, user, date, type } = filters
+    const dateIsNotString = typeof date !== 'string'
+    getSales(`?page=${page}&offset=${offset}&pending=true&client=${client}&work_place=${work_place}&id=${id}&user=${user}&date=${dateIsNotString ? new Date(date).toISOString() : ''}&type=${type}`)
   }, [filtersState['sales']])
 
   const headCells = useMemo(() => [

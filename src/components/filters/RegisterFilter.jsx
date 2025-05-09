@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext } from "react";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 
 import { FiltersContext } from "../../providers/FiltersProvider";
@@ -7,22 +7,20 @@ import { DataContext } from "../../providers/DataProvider";
 export function RegisterFilter() {
 
     const { state: dataState } = useContext(DataContext)
-    const { state, dispatch } = useContext(FiltersContext)
+    const { state: filtersState, dispatch } = useContext(FiltersContext)
 
-    const [filter, setFilter] = useState({ user: '' })
-
-    const handleChange = e => setFilter({ ...filter, [e.target.name]: e.target.value })
-
-    useEffect(() => {
-        const { user } = filter
+    const handleChange = e => {
         dispatch({
             type: 'REGISTERS',
             payload: {
-                ...state.registers,
-                filters: `&user=${user}`
+                ...filtersState.registers,
+                filters: {
+                    ...filtersState.registers.filters,
+                    [e.target.name]: e.target.value
+                }
             }
         })
-    }, [filter])
+    }
 
     return (
         <FormControl sx={{ width: '20%' }}>
@@ -30,7 +28,7 @@ export function RegisterFilter() {
             <Select
                 labelId="user-select"
                 id="user"
-                value={filter.user}
+                value={filtersState.registers.filters.user}
                 label="Usuario"
                 name="user"
                 onChange={handleChange}

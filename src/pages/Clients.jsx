@@ -49,7 +49,8 @@ export function Clients() {
 
     useEffect(() => {
         const { page, offset, filters } = filtersState['clients']
-        getClients(`?page=${page}&offset=${offset}${filters}`)
+        const { first_name, last_name, work_place } = filters
+        getClients(`?page=${page}&offset=${offset}&first_name=${first_name}&last_name=${last_name}&work_place=${work_place}`)
     }, [filtersState['clients']])
 
     return (

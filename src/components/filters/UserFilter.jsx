@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext } from "react";
 import { Box, Button, FormControl, Input, InputLabel, MenuItem, Select } from "@mui/material";
 
 import { FiltersContext } from "../../providers/FiltersProvider";
@@ -7,22 +7,28 @@ export function UserFilter() {
 
     const { state, dispatch } = useContext(FiltersContext)
 
-    const [filter, setFilter] = useState({ name: '', role: '' })
-
-    const handleChange = e => setFilter({ ...filter, [e.target.name]: e.target.value })
-
-    const handleReset = () => setFilter({ fname: '', role: '' })
-
-    useEffect(() => {
-        const { name, role } = filter
+    const handleChange = e => {
         dispatch({
             type: 'USERS',
             payload: {
                 ...state.users,
-                filters: `&name=${name}&role=${role}`
+                filters: {
+                    ...state.users.filters,
+                    [e.target.name]: e.target.value
+                }
             }
         })
-    }, [filter])
+    }
+
+    const handleReset = () => {
+        dispatch({
+            type: 'USERS',
+            payload: {
+                ...state.users,
+                filters: { name: '', role: '' }
+            }
+        })
+    }
 
     return (
         <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, width: { xs: '100%', md: '60%', lg: '40%' }, justifyContent: 'space-between' }}>
@@ -32,7 +38,7 @@ export function UserFilter() {
                     id="name"
                     type="text"
                     name="name"
-                    value={filter.name}
+                    value={state.users.filters.name}
                     onChange={handleChange}
                 />
             </FormControl>
@@ -41,10 +47,9 @@ export function UserFilter() {
                 <Select
                     labelId="role-select"
                     id="role"
-                    value={filter.role}
+                    value={state.users.filters.role}
                     label="Rol"
                     name="role"
-                    disabled={open === 'VIEW'}
                     onChange={handleChange}
                 >
                     <MenuItem value="">Seleccione</MenuItem>

@@ -44,7 +44,8 @@ export function Users() {
 
   useEffect(() => {
     const { page, offset, filters } = filtersState['users']
-    getUsers(`?page=${page}&offset=${offset}${filters}`)
+    const { name, role } = filters
+    getUsers(`?page=${page}&offset=${offset}&name=${name}&role=${role}`)
   }, [filtersState['users']])
 
   return (
