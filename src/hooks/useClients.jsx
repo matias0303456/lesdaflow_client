@@ -18,7 +18,10 @@ export function useClients() {
     const [loadingClients, setLoadingClients] = useState(true)
     const [filter, setFilter] = useState({
         page: 0,
-        offset: 25
+        offset: 25,
+        first_name: '',
+        last_name: '',
+        work_place: ''
     })
 
     async function getClients(params) {

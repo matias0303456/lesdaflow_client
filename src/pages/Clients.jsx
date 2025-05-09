@@ -1,9 +1,10 @@
 import { useContext, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Box, Button, Checkbox, FormControl, FormControlLabel, Input, InputLabel, LinearProgress, MenuItem, Select, Typography } from "@mui/material";
+import { Box, Button, Checkbox, FormControl, FormControlLabel, IconButton, Input, InputLabel, LinearProgress, MenuItem, Select, Tooltip, Typography } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { es } from "date-fns/locale";
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 
 import { AuthContext } from "../providers/AuthProvider";
 import { useForm } from "../hooks/useForm";
@@ -13,6 +14,7 @@ import { Layout } from "../components/common/Layout";
 import { ModalComponent } from "../components/common/ModalComponent";
 import { DataGridWithBackendPagination } from "../components/datagrid/DataGridWithBackendPagination";
 import { LoginForm } from "../components/common/LoginForm";
+import { ClientFilter } from "../components/filters/ClientFilter";
 
 export function Clients() {
 
@@ -43,6 +45,7 @@ export function Clients() {
             local_phone: '',
             email: '',
             address: '',
+            alias: '',
             user_id: '',
             work_place: ''
         },
@@ -71,6 +74,9 @@ export function Clients() {
             address: {
                 maxLength: 55
             },
+            alias: {
+                maxLength: 55
+            },
             email: {
                 maxLength: 55
             }
@@ -78,8 +84,8 @@ export function Clients() {
     })
 
     useEffect(() => {
-        const { page, offset } = filter
-        getClients(`?page=${page}&offset=${offset}include_inactive=true`)
+        const { page, offset, first_name, last_name, work_place } = filter
+        getClients(`?page=${page}&offset=${offset}include_inactive=true&first_name=${first_name}&last_name=${last_name}&work_place=${work_place}`)
     }, [filter])
 
     const handleClose = () => {
@@ -140,6 +146,29 @@ export function Clients() {
             )
         },
         {
+            id: "alias",
+            numeric: false,
+            disablePadding: true,
+            label: "Alias",
+            sorter: (row) => row.alias,
+            accessor: (row) => (
+                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                    {row.alias && row.alias.length > 0 &&
+                        <>
+                            <Box>{row.alias}</Box>
+                            <Tooltip title="Copiar alias">
+                                <IconButton size="small" onClick={() => {
+                                    if (navigator.clipboard) navigator.clipboard.writeText(row.alias)
+                                }}>
+                                    <ContentCopyIcon fontSize="small" />
+                                </IconButton>
+                            </Tooltip>
+                        </>
+                    }
+                </Box>
+            )
+        },
+        {
             id: 'is_active',
             numeric: false,
             disablePadding: true,
@@ -188,6 +217,7 @@ export function Clients() {
                                         }}>
                                             Agregar
                                         </Button>
+                                        <ClientFilter filter={filter} setFilter={setFilter} />
                                     </Box>
                                 }
                             >
@@ -199,7 +229,7 @@ export function Clients() {
                                     </Typography>
                                     <form onChange={handleChange} onSubmit={(e) => handleSubmit(e, validate, formData, reset, setDisabled)}>
                                         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-                                            <Box sx={{ display: 'flex', gap: 5 }}>
+                                            <Box sx={{ display: 'flex', gap: 3 }}>
                                                 <FormControl sx={{ width: '50%' }}>
                                                     <InputLabel htmlFor="first_name">Nombre *</InputLabel>
                                                     <Input id="first_name" type="text" name="first_name" value={formData.first_name} disabled={open === 'VIEW'} />
@@ -229,7 +259,7 @@ export function Clients() {
                                                     }
                                                 </FormControl>
                                             </Box>
-                                            <Box sx={{ display: 'flex', gap: 5 }}>
+                                            <Box sx={{ display: 'flex', gap: 3 }}>
                                                 <FormControl sx={{ width: '50%' }}>
                                                     <InputLabel id="type-select">Tipo documento</InputLabel>
                                                     <Select
@@ -251,7 +281,7 @@ export function Clients() {
                                                     <Input id="document_number" type="text" name="document_number" value={formData.document_number} disabled={open === 'VIEW'} />
                                                 </FormControl>
                                             </Box>
-                                            <Box sx={{ display: 'flex', gap: 5 }}>
+                                            <Box sx={{ display: 'flex', gap: 3 }}>
                                                 <FormControl sx={{ width: '50%' }}>
                                                     <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
                                                         <DatePicker
@@ -277,7 +307,7 @@ export function Clients() {
                                                     }
                                                 </FormControl>
                                             </Box>
-                                            <Box sx={{ display: 'flex', gap: 5 }}>
+                                            <Box sx={{ display: 'flex', gap: 3 }}>
                                                 <FormControl sx={{ width: '50%' }}>
                                                     <InputLabel htmlFor="cell_phone">Celular</InputLabel>
                                                     <Input id="cell_phone" type="number" name="cell_phone" value={formData.cell_phone} disabled={open === 'VIEW'} />
@@ -292,7 +322,7 @@ export function Clients() {
                                                     <Input id="local_phone" type="number" name="local_phone" value={formData.local_phone} disabled={open === 'VIEW'} />
                                                 </FormControl>
                                             </Box>
-                                            <Box sx={{ display: 'flex', gap: 5 }}>
+                                            <Box sx={{ display: 'flex', gap: 3 }}>
                                                 <FormControl sx={{ width: '50%' }}>
                                                     <InputLabel htmlFor="email">Email</InputLabel>
                                                     <Input id="email" type="email" name="email" value={formData.email} disabled={open === 'VIEW'} />
@@ -313,6 +343,17 @@ export function Clients() {
                                                     {errors.work_place?.type === 'maxLength' &&
                                                         <Typography variant="caption" color="red" marginTop={1}>
                                                             * El lugar de trabajo es deamsiado largo.
+                                                        </Typography>
+                                                    }
+                                                </FormControl>
+                                            </Box>
+                                            <Box sx={{ display: 'flex', gap: 3 }}>
+                                                <FormControl sx={{ width: '50%' }}>
+                                                    <InputLabel htmlFor="alias">Alias</InputLabel>
+                                                    <Input id="alias" type="text" name="alias" value={formData.alias} disabled={open === 'VIEW'} />
+                                                    {errors.alias?.type === 'maxLength' &&
+                                                        <Typography variant="caption" color="red" marginTop={1}>
+                                                            * El alias es demasiado largo.
                                                         </Typography>
                                                     }
                                                 </FormControl>
