@@ -118,13 +118,15 @@ export function Products() {
                                     color='success'
                                     onClick={() => {
                                         const { filters } = filtersState['products']
-                                        window.open(`${REPORT_URL}/products-excel?token=${auth?.token}${filters}&for_client=true`, '_blank')
+                                        const { code, details, supplier_id } = filters
+                                        window.open(`${REPORT_URL}/products-excel?token=${auth?.token}&code=${code}&details=${details}&supplier_id=${supplier_id}&for_client=true`, '_blank')
                                     }}>
                                     Excel
                                 </Button>
                                 <Button variant="outlined" color='error' onClick={() => {
                                     const { filters } = filtersState['products']
-                                    window.open(`${REPORT_URL}/products-pdf?token=${auth?.token}${filters}&for_client=true`, '_blank')
+                                    const { code, details, supplier_id } = filters
+                                    window.open(`${REPORT_URL}/products-pdf?token=${auth?.token}&code=${code}&details=${details}&supplier_id=${supplier_id}&for_client=true`, '_blank')
                                 }}>
                                     PDF
                                 </Button>

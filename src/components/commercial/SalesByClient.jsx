@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { useContext, useEffect } from "react"
 import { Box, Button, IconButton, Tooltip, Typography } from "@mui/material"
 import PictureAsPdfSharpIcon from '@mui/icons-material/PictureAsPdfSharp'
