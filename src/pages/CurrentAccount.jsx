@@ -43,7 +43,7 @@ export function CurrentAccount() {
     const { page, offset, filters } = filtersState['sales']
     const { client, work_place, id, user, date } = filters
     const dateIsNotString = typeof date !== 'string'
-    getSales(`?page=${page}&offset=${offset}&client=${client}&work_place=${work_place}&id=${id}&user=${user}&date=${dateIsNotString ? new Date(date).toISOString() : ''}&type=CUENTA_CORRIENTE&pending=${pendingFilter}`)
+    getSales(`?page=${page}&offset=${offset}&client=${client}&work_place=${work_place}&id=${id}&user=${user}&date=${dateIsNotString ? new Date(date).toISOString() : ''}&type=CUENTA_CORRIENTE${pendingFilter ? '&pending=true' : ''}`)
   }, [filtersState['sales'], pendingFilter])
 
   const headCells = useMemo(() => [
